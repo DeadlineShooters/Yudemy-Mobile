@@ -1,6 +1,6 @@
 # Yudemy (Udemy Clone)
 
-This Android Kotlin project adopts the MVVM architectural pattern, as outlined in [this guide](https://medium.com/@jecky999/mvvm-architecture-in-android-using-kotlin-a-practical-guide-73f8de1d9c58). It utilizes Firebase as the primary data storage solution and Cloudinary for media storage purposes.
+This Android Kotlin project adopts the MVVM architectural pattern, as outlined in [this guide](https://medium.com/@jecky999/mvvm-architecture-in-android-using-kotlin-a-practical-guide-73f8de1d9c58). **<--- Please read the guide**. It utilizes Firebase as the primary data storage solution and Cloudinary for media storage purposes.
 
 ## Features
 
@@ -21,11 +21,15 @@ This Android Kotlin project adopts the MVVM architectural pattern, as outlined i
 
 7. **View binding** is enabled, allowing you to access view components easily: https://developer.android.com/topic/libraries/view-binding
 
-8.`Constants.kt`: used to avoid Magic Numbers/Strings. Please check out this file.
+8. `Constants.kt`: used to avoid Magic Numbers/Strings. Please check out this file.
 
-9. `viewmodels` folder: stores view models to handle interactions with the Firestore database. It fetches tweets in real-time and also incorporates business logic.
+9. `ViewModel` class: Responsible for managing UI-related data and business logic. It interacts with the Model and exposes data to the View. It should contain LiveData objects or observable properties to hold the data and state. I've only added example for LiveData objects in `UserViewModel` so check out this file yourself.
 
-10. Every data class, there is always an `id` field. This can help with quicker id retrieval. It is especially useful for `User` data class.
+   E.g: `UserViewModel` stores userRepository so it doesn't interact directly with the data source. -> data abstraction. `_userData` is mutable and we can update it while `userData` is immutable so the view observe `userData`. Any changes to `_userData` will update `userData`. See example on how the View observes `userData` [here](https://medium.com/@jecky999/mvvm-architecture-in-android-using-kotlin-a-practical-guide-73f8de1d9c58) (section 4)
+
+10. `Repository` class: Handles data operations (such as fetching data from a database, network, or other sources). It abstracts the data source details from the ViewModel.
+
+11. Every data class, there is always an `id` field. This can help with quicker id retrieval. It is especially useful for `User` data class.
 
 ## How to add project keys
 

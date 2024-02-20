@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.google.type.DateTime
 import java.util.*
 import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.RawValue
 
 @Parcelize
 data class CourseFeedback(
@@ -12,5 +13,5 @@ data class CourseFeedback(
     val userId: String,
     val feedback: String,
     val rating: Number,
-    val createdDatetime: DateTime
+    val createdDatetime: @RawValue DateTime
 ) : Parcelable

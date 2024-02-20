@@ -1,8 +1,8 @@
 package com.deadlineshooters.yudemy.viewmodels
 
-import com.google.firebase.firestore.FirebaseFirestore
+import com.deadlineshooters.yudemy.repositories.QuestionRepository
 
 class QuestionViewModel {
-    private val mFireStore = FirebaseFirestore.getInstance()
+    private val questionRepository = QuestionRepository()
 
 }

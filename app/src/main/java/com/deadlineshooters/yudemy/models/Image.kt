@@ -5,6 +5,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Image(
-    val secure_url: String,
-    val public_id: String
+    val secure_url: String = "",
+    val public_id: String = ""
 ) : Parcelable

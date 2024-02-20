@@ -1,8 +1,8 @@
 package com.deadlineshooters.yudemy.viewmodels
 
-import com.google.firebase.firestore.FirebaseFirestore
+import com.deadlineshooters.yudemy.repositories.LanguageRepository
 
 class LanguageViewModel {
-    private val mFireStore = FirebaseFirestore.getInstance()
+    private val languageRepository = LanguageRepository()
 
 }

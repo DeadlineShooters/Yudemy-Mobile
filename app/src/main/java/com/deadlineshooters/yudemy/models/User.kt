@@ -7,7 +7,7 @@ data class User(
     val id: String = "",
     val firstName: String = "",
     val lastName: String = "",
-    val avatar: Image,
+    val avatar: Image = Image(),
     val courseList: ArrayList<String> = arrayListOf(),
     val wishList: ArrayList<String> = arrayListOf(),
     val favoriteCourses: ArrayList<String> = arrayListOf(),

@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.google.type.DateTime
 import java.util.*
 import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.RawValue
 
 @Parcelize
 data class Reply(
@@ -12,5 +13,5 @@ data class Reply(
     val questionId: String,
     val images: Image,
     val content: String,
-    val createdTime: DateTime
+    val createdTime: @RawValue DateTime
 ) : Parcelable
