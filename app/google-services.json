@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "54920611721",
+    "project_id": "test-b0670",
+    "storage_bucket": "test-b0670.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:54920611721:android:0e0ad7d8706ae2e76c8358",
+        "android_client_info": {
+          "package_name": "com.deadlineshooters.yudemy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq_xO3qd0jwDAbenL1jxd8mpiWYCrgRgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:54920611721:android:fb8a11b50149824c6c8358",
+        "android_client_info": {
+          "package_name": "com.example.calculatorapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq_xO3qd0jwDAbenL1jxd8mpiWYCrgRgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

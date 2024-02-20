@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:title="Featured"
+        android:id="@+id/featured"
+        android:icon="@drawable/selector_featured_icon"
+        app:showAsAction="withText"/>
+    <item android:title="Search"
+        android:id="@+id/search"
+        android:icon="@drawable/selector_search_icon"
+        app:showAsAction="withText"
+        />
+    <item android:title="My Learning"
+        android:id="@+id/my_learning"
+        android:icon="@drawable/selector_play_icon"
+        app:showAsAction="withText"/>
+    <item android:title="Wishlist"
+        android:id="@+id/wishlist"
+        android:icon="@drawable/selector_favorite_icon"
+        app:showAsAction="withText"/>
+    <item android:title="Account"
+        android:id="@+id/account"
+        android:icon="@drawable/selector_account_icon"
+        app:showAsAction="withText"/>
+</menu>
