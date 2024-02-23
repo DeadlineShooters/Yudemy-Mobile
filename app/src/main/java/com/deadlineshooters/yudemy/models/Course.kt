@@ -20,5 +20,6 @@ data class Course(
     val totalLecture: Int = 0,
     val totalSection: Int = 0,
     val totalLength: Int = 0, // in seconds
-    val totalQuiz: Int = 0
+    val totalQuiz: Int = 0,
+    val thumbnail: Image = Image()
 ) : Parcelable
