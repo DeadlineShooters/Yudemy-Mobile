@@ -8,10 +8,10 @@ import kotlinx.parcelize.RawValue
 
 @Parcelize
 data class CourseFeedback(
-    val _id: String,
-    val courseId: String,
-    val userId: String,
-    val feedback: String,
-    val rating: Number,
-    val createdDatetime: @RawValue DateTime
+    var _id: String,
+    var courseId: String,
+    var userId: String,
+    var feedback: String,
+    var rating: Number,
+    var createdDatetime: @RawValue DateTime
 ) : Parcelable

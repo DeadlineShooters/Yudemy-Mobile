@@ -3,9 +3,19 @@ package com.deadlineshooters.yudemy.activities
 import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import com.cloudinary.android.MediaManager
+import com.cloudinary.android.callback.ErrorInfo
+import com.cloudinary.android.callback.UploadCallback
+import com.deadlineshooters.yudemy.BuildConfig
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.DialogProgressBinding
+import com.deadlineshooters.yudemy.models.Image
+import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
+import com.deadlineshooters.yudemy.viewmodels.LectureViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 
@@ -17,7 +27,8 @@ open class BaseActivity : AppCompatActivity() {
      */
     private lateinit var mProgressDialog : Dialog
     private lateinit var binding: DialogProgressBinding
-
+    open lateinit var courseViewModel: CourseViewModel
+    open lateinit var lecturerViewModel: LectureViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +36,22 @@ open class BaseActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
+        //Create global variable
+        var config: HashMap<String, String> = HashMap()
 
+    // Initialize cloudinary. Put in onCreate() function
+        config["cloud_name"] = BuildConfig.CLOUD_NAME;
+        MediaManager.init(this, config)
+
+
+        /** add dummy data */
+        // Course
+//        courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
+//        viewModel.addDummyCourse()
+
+        // Lecturer
+//        lecturerViewModel = ViewModelProvider(this).get(LectureViewModel::class.java)
+//        lecturerViewModel.addDummyLecturer()
     }
 
     fun showProgressDialog(text: String) {
@@ -64,4 +90,6 @@ open class BaseActivity : AppCompatActivity() {
         )
         snackBar.show()
     }
+
+
 }

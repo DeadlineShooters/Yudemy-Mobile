@@ -7,9 +7,9 @@ import kotlinx.parcelize.RawValue
 
 @Parcelize
 data class Certificate(
-    val _id: String = "",
-    val createdDate: @RawValue Date? = null,
-    val courseId: String = "",
-    val title: String = "",
-    val length: Int = 0 // in seconds
+    var _id: String = "",
+    var createdDate: @RawValue Date? = null,
+    var courseId: String = "",
+    var title: String = "",
+    var length: Int = 0 // in seconds
 ) : Parcelable

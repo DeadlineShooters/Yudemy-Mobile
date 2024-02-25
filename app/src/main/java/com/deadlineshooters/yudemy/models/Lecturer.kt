@@ -5,12 +5,12 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Lecturer(
-    val _id: String = "",
-    val firstName: String = "",
-    val lastName: String = "",
-    val headline: String = "",
-    val totalReviews: Int = 0,
-    val totalStudents: Int = 0,
-    val bio: String = "",
-    val image: Image
+    var _id: String = "",
+    var firstName: String = "",
+    var lastName: String = "",
+    var headline: String = "",
+    var totalReviews: Int = 0,
+    var totalStudents: Int = 0,
+    var bio: String = "",
+    var image: Image = Image()
 ) : Parcelable

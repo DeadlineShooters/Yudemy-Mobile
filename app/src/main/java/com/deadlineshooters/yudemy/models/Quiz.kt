@@ -5,13 +5,13 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Quiz(
-    val _id: String,
-    val sectionId: String,
-    val questions: ArrayList<Question>,
-    val description: String,
-    val choices: ArrayList<String>,
-    val index: Int,
-    val completed: Boolean
+    var _id: String,
+    var sectionId: String,
+    var questions: ArrayList<Question>,
+    var description: String,
+    var choices: ArrayList<String>,
+    var index: Int,
+    var completed: Boolean
 
 
     ) : Parcelable

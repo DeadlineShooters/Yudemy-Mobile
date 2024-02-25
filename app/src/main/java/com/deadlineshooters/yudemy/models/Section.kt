@@ -5,8 +5,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Section(
-    val _id: String = "",
-    val title: String = "",
-    val index: Int = 0,
+    var _id: String = "",
+    var title: String = "",
+    var index: Int = 0,
 
 ) : Parcelable

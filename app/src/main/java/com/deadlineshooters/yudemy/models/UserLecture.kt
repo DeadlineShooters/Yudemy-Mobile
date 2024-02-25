@@ -6,9 +6,9 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class UserLecture(
-    val _id: String,
-    val userId: String,
-    val lectureId: String,
-    val watchedTime: Long, // in seconds
-    val minuteInVid: Timestamp
+    var _id: String,
+    var userId: String,
+    var lectureId: String,
+    var watchedTime: Long, // in seconds
+    var minuteInVid: Timestamp
 ) : Parcelable

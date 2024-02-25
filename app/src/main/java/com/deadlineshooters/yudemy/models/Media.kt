@@ -1,11 +1,11 @@
 package com.deadlineshooters.yudemy.models
 
-
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Language(
-    var _id: String = "",
-    var name: String = ""
+open class Media(
+    open var secure_url: String = "",
+    open var public_id: String = ""
 ) : Parcelable
+
