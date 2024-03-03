@@ -5,9 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.MainActivity
 import com.deadlineshooters.yudemy.adapters.CourseListAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentWishlistBinding
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
@@ -37,6 +40,8 @@ class WishlistFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val toolbarTitle: TextView = (activity as MainActivity).getToolbarTitle() ?: return
+        toolbarTitle.text = "Wishlist"
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
             val adapter = CourseListAdapter(requireContext(), R.layout.course_list_item, courses)
