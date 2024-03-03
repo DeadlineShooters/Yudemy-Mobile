@@ -5,14 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ListView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.adapters.WishlistAdapter
+import com.deadlineshooters.yudemy.adapters.CourseListAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentWishlistBinding
-import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 
 // TODO: Rename parameter arguments, choose names that match
@@ -33,7 +30,7 @@ class WishlistFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentWishlistBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -42,7 +39,7 @@ class WishlistFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-            val adapter = WishlistAdapter(requireContext(), R.layout.wishlist_item, courses)
+            val adapter = CourseListAdapter(requireContext(), R.layout.course_list_item, courses)
             binding.wishlistList.adapter = adapter
         })
     }
