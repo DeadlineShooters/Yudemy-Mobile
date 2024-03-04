@@ -7,21 +7,26 @@ import android.widget.Button
 import android.widget.TextView
 import com.deadlineshooters.yudemy.R
 
-class SignInActivity : AppCompatActivity() {
+class SignInActivity : BaseActivity() {
     private var signupHref: TextView? = null
-    private var closeBtn: Button? = null
+    private var signInEmailBtn: Button? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
 
         signupHref = findViewById(R.id.signupHref)
-        closeBtn = findViewById(R.id.closeBtn)
+        signInEmailBtn = findViewById(R.id.signInEmailBtn)
+
 
         signupHref?.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent);
         }
 
-
+        signInEmailBtn?.setOnClickListener {
+            val intent = Intent(this, EmailInputActivity::class.java)
+            startActivity(intent);
+        }
     }
 }
