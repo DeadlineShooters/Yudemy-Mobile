@@ -13,8 +13,6 @@
     <string name="select_filter">Select filter</string>
     <string-array name="my_learning_filter">
         <item>Favorite courses</item>
-        <item>Archived courses</item>
-        <item>Downloaded courses</item>
         <item>All courses</item>
     </string-array>
 </resources>

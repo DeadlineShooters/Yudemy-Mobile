@@ -3,7 +3,6 @@ package com.deadlineshooters.yudemy.fragments
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,16 +12,19 @@ import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.helpers.MyLearningAdapter
+import com.deadlineshooters.yudemy.helpers.MyLearningFilterAdapter
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Video
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -40,6 +42,7 @@ class MyLearningFragment : Fragment() {
     private var param2: String? = null
     var searchView: SearchView? = null
     var rvCourses: RecyclerView? = null
+    var filterDialog: BottomSheetDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +65,7 @@ class MyLearningFragment : Fragment() {
 
         searchView = view.findViewById(R.id.searchView)
         rvCourses = view.findViewById(R.id.rvCourses)
+        filterDialog =createFilterDialog()
 
         val courses = generateDummyData() // TODO: get user's courses from database
 //        val userId = (activity as BaseActivity).getCurrentUserID() TODO: get current user id
@@ -88,8 +92,7 @@ class MyLearningFragment : Fragment() {
 
         // Click to filter icon
         view.findViewById<Button>(R.id.filterBtn).setOnClickListener {
-            val bottomSheetFragment = MyLearningFilterDialog()
-            bottomSheetFragment.show(requireActivity().supportFragmentManager, MyLearningFilterDialog.TAG)
+            filterDialog!!.show()
         }
     }
 
@@ -113,6 +116,29 @@ class MyLearningFragment : Fragment() {
         layoutParams.topToBottom = R.id.frmTitle
         // clear text in search view
         searchView!!.setQuery("", false)
+    }
+
+    private fun createFilterDialog(): BottomSheetDialog {
+        val dialog = BottomSheetDialog(requireContext())
+        val bottomSheet = layoutInflater.inflate(R.layout.dialog_my_learning_filter, null)
+        val rvFilters = bottomSheet.findViewById<RecyclerView>(R.id.rvFilters)
+
+        val adapter = MyLearningFilterAdapter(resources.getStringArray(R.array.my_learning_filter))
+        rvFilters!!.adapter = adapter
+        rvFilters.layoutManager = LinearLayoutManager(activity)
+        val itemDecoration: RecyclerView.ItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+        rvFilters.addItemDecoration(itemDecoration)
+        adapter.onItemClick = { filter ->
+            // TODO: handle filter
+            Log.i("Filter option click", filter)
+        }
+
+        bottomSheet.findViewById<Button>(R.id.cancelBtn).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setContentView(bottomSheet)
+        return dialog
     }
 
     fun generateDummyData(): ArrayList<Course> {
