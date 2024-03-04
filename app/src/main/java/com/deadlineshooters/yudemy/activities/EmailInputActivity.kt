@@ -24,6 +24,12 @@ class EmailInputActivity : AppCompatActivity() {
             val intent = Intent(this, PasswordInputActivity::class.java)
             intent.putExtra("email", emailInput?.text.toString())
             startActivity(intent);
+            //TODO: check if email is valid, button change background to black and set button to clickable
+        }
+
+        forgotHref?.setOnClickListener {
+            val intent = Intent(this, ResetPasswordActivity::class.java)
+            startActivity(intent);
         }
 
     }
