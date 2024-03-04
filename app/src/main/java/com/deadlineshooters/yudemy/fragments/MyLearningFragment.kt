@@ -133,6 +133,10 @@ class MyLearningFragment : Fragment() {
             Log.i("Filter option click", filter)
         }
 
+        dialog.setOnShowListener {
+            (bottomSheet.parent.parent as ViewGroup).background = ResourcesCompat.getDrawable(resources, R.color.dialog_background, null)
+        }
+
         bottomSheet.findViewById<Button>(R.id.cancelBtn).setOnClickListener {
             dialog.dismiss()
         }
