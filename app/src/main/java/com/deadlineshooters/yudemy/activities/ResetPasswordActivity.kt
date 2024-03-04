@@ -10,6 +10,7 @@ import com.deadlineshooters.yudemy.R
 class ResetPasswordActivity : AppCompatActivity() {
     private var emailReset: TextView? = null
     private var submitBtn: Button? = null
+    private var backBtn2: Button? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reset_password)
@@ -23,5 +24,9 @@ class ResetPasswordActivity : AppCompatActivity() {
             startActivity(intent);
         }
 
+        backBtn2 = findViewById(R.id.backBtn2)
+        backBtn2!!.setOnClickListener {
+            finish()
+        }
     }
 }

@@ -11,6 +11,7 @@ class EmailInputActivity : AppCompatActivity() {
     private var nextBtn: Button? = null
     private var forgotHref: TextView? = null
     private var emailInput: TextView? = null
+    private var backBtn: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,6 +20,7 @@ class EmailInputActivity : AppCompatActivity() {
         nextBtn = findViewById(R.id.nextBtn)
         forgotHref = findViewById(R.id.forgotHref)
         emailInput = findViewById(R.id.emailInput)
+        backBtn = findViewById(R.id.backBtn)
 
         nextBtn?.setOnClickListener {
             val intent = Intent(this, PasswordInputActivity::class.java)
@@ -30,6 +32,10 @@ class EmailInputActivity : AppCompatActivity() {
         forgotHref?.setOnClickListener {
             val intent = Intent(this, ResetPasswordActivity::class.java)
             startActivity(intent);
+        }
+
+        backBtn?.setOnClickListener {
+            finish()
         }
 
     }

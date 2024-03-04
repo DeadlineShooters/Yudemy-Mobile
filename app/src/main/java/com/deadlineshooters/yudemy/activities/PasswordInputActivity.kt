@@ -11,6 +11,7 @@ class PasswordInputActivity : AppCompatActivity() {
     private var email: TextView? = null
     private var forgotHref: TextView? = null
     private var signinBtn: Button? = null
+    private var backBtn1: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,6 +21,7 @@ class PasswordInputActivity : AppCompatActivity() {
         forgotHref = findViewById(R.id.forgotHref)
         email?.text = intent.getStringExtra("email")
         signinBtn = findViewById(R.id.signinBtn)
+        backBtn1 = findViewById(R.id.backBtn1)
 
         forgotHref!!.setOnClickListener {
             val intent = Intent(this, ResetPasswordActivity::class.java)
@@ -30,6 +32,10 @@ class PasswordInputActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent);
             //TODO: Check password from database
+        }
+
+        backBtn1!!.setOnClickListener {
+            finish()
         }
 
     }
