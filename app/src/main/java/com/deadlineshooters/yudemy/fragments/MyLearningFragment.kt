@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.MainActivity
 import com.deadlineshooters.yudemy.helpers.MyLearningAdapter
 import com.deadlineshooters.yudemy.helpers.MyLearningFilterAdapter
 import com.deadlineshooters.yudemy.models.Course
@@ -43,7 +44,7 @@ class MyLearningFragment : Fragment() {
     var searchView: SearchView? = null
     var rvCourses: RecyclerView? = null
     var filterDialog: BottomSheetDialog? = null
-
+ 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -56,6 +57,11 @@ class MyLearningFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // Inflate the layout for this fragment
+        val toolbarTitle: TextView = (activity as MainActivity).getToolbarTitle() ?: return null
+        // If getToolbarTitle() returns null, the function returns null immediately
+
+        toolbarTitle.text = "My courses"
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_my_learning, container, false)
     }

@@ -1,6 +1,9 @@
 package com.deadlineshooters.yudemy.repositories
 
+import android.content.ContentValues.TAG
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Video
@@ -39,8 +42,28 @@ class CourseRepository {
             .addOnSuccessListener {
                 Log.d("Course", "DocumentSnapshot successfully written!\n$course")
             }
-            .addOnFailureListener {
-                e -> Log.w("Course", "Error writing document", e)
+            .addOnFailureListener { e ->
+                Log.w("Course", "Error writing document", e)
             }
+    }
+
+    fun getCourses(): LiveData<List<Course>> {
+        val coursesLiveData = MutableLiveData<List<Course>>()
+
+        coursesCollection.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e)
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && !snapshot.isEmpty) {
+                val courses = snapshot.documents.mapNotNull { it.toObject(Course::class.java) }
+                coursesLiveData.value = courses
+            } else {
+                Log.d(TAG, "Current data: null")
+            }
+        }
+
+        return coursesLiveData
     }
 }

@@ -1,6 +1,8 @@
 package com.deadlineshooters.yudemy.activities
 
 import android.os.Bundle
+import android.widget.TextView
+import android.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.deadlineshooters.yudemy.R
@@ -22,6 +24,9 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         replaceFragment(FeaturedFragment())  // show Featured fragment firstly
 
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->
@@ -53,9 +58,9 @@ class MainActivity : BaseActivity() {
             true
         }
 
-
-
-
+    }
+    fun getToolbarTitle(): TextView? {
+        return binding.toolbarTitle
     }
 
 
