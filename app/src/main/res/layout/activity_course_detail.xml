@@ -6,31 +6,734 @@
     android:layout_height="match_parent"
     tools:context=".activities.CourseDetailActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_sign_up_activity"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-<!--    <ImageView-->
-<!--        android:id="@+id/imageView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:src="@drawable/your_image" &lt;!&ndash; replace with your image resource &ndash;&gt;-->
-<!--    app:layout_constraintTop_toTopOf="parent"-->
-<!--    app:layout_constraintStart_toStartOf="parent"-->
-<!--    app:layout_constraintEnd_toEndOf="parent" />-->
+        <TextView
+            android:id="@+id/tv_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text=""
+            android:textColor="@color/primary_text_color"
+            android:textStyle="bold" />
+    </androidx.appcompat.widget.Toolbar>
 
-<!--    <TextView-->
-<!--        android:id="@+id/textView"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Preview this course"-->
-<!--        app:layout_constraintBottom_toTopOf="@id/imageView"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent" />-->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_sign_up_activity">
 
-<!--    <ImageView-->
-<!--        android:id="@+id/vectorAsset"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:src="@drawable/your_vector_asset" &lt;!&ndash; replace with your vector asset resource &ndash;&gt;-->
-<!--    app:layout_constraintTop_toTopOf="@id/imageView"-->
-<!--    app:layout_constraintStart_toStartOf="parent"-->
-<!--    app:layout_constraintEnd_toEndOf="parent" />-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <ImageView
+                    android:id="@+id/iv_thumbnail"
+                    android:layout_width="0dp"
+                    android:layout_height="210dp"
+                    android:foreground="@drawable/inner_shadow"
+                    android:src="@drawable/img_thumbnail"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="w,178:100"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <ImageView
+                    android:id="@+id/iv_play"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/background_play"
+                    android:contentDescription="@string/play_preview_video"
+                    android:src="@drawable/ic_play_filled_24"
+
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_thumbnail"
+                    app:layout_constraintEnd_toEndOf="@+id/iv_thumbnail"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/preview_this_course"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_thumbnail"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="Data Processing with Logstash (and Filebeat)"
+                android:textColor="@color/black"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/tv_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Process data with Logstash, which is a key part of the ELK stack (Elasticsearch, Logstash, Kibana) and Elastic Stack."
+                android:textColor="@color/black"
+                android:textSize="20dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4,5"
+                    android:textColor="@color/rating_color"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/iv_star"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    app:tint="@color/star_color"
+                    tools:srcCompat="@drawable/baseline_star_24" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_figures"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+
+                android:text="(2,827 ratings) 20,348 students"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/iv_exclamation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    app:tint="@color/grey_800"
+                    tools:srcCompat="@drawable/ic_warning" />
+
+                <TextView
+                    android:id="@+id/tv_createdDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+
+                    android:text="Created date Apr 9, 2022 "
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="1.299.000 đ"
+                android:textColor="@color/black"
+                android:textSize="35sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_buy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/buynow_btn_color"
+                android:text="@string/buy_now"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                app:cornerRadius="0dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_wishlist"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add to wishlist"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+
+                android:textStyle="bold"
+                app:cornerRadius="0dp"
+                app:strokeColor="@color/black" />
+
+            <TextView
+                android:id="@+id/tv_curriculum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="Curriculum"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/tv_curriculum_overview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5 sections • 53 lectures • 5h 31m total length"
+                android:textSize="16dp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
+
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Section 1 - Getting started"
+                    android:textSize="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!--  <ImageView
+                      android:id="@+id/iv_minus"
+                      android:layout_width="wrap_content"
+                      android:layout_height="match_parent"
+                      app:layout_constraintBottom_toBottomOf="parent"
+                      app:layout_constraintEnd_toEndOf="parent"
+                      app:layout_constraintTop_toTopOf="parent"
+                      tools:srcCompat="@drawable/ic_minus" />-->
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:padding="15dp"
+                    android:text="1"
+                    android:textColor="@color/black"
+                    android:textSize="18dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Introduction to the course"
+                        android:textColor="@color/black"
+                        android:textSize="20dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="04:29"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_lecture2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:padding="15dp"
+                    android:text="2"
+                    android:textColor="@color/black"
+                    android:textSize="18dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_lectureName2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Introduction to Logstash"
+                        android:textColor="@color/black"
+                        android:textSize="20dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_lectureDuration2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="04:32"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_desc_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="@string/description"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/tv_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_medium"
+                android:text="Want to learn how to process events with Logstash? Then you have come to the right place; this course is by far the most comprehensive course on Logstash here at Udemy! This course specifically covers Logstash, meaning than we can go into much more detail than if this course covered the entire Elastic Stack. So if you want to learn Logstash specifically, then this course is for you!
+
+\n\nThis course assumes no prior knowledge of or experience with Logstash. We start from the very basics and gradually transition into more advanced topics. The course is designed so that you can follow along the whole time step by step, and you can find all of the configuration files within a GitHub repository. The course covers topics such as handling Apache web server logs (both access and error logs), data enrichment, sending data to Elasticsearch, visualizing data with Kibana, along with covering a number of popular use cases that you are likely to come across. Upon completing this course, you will know all of the most important aspects of Logstash, and will be able to build complex pipeline configurations and process many different kinds of events and data."
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/tv_showMoreDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:text="@string/show_more"
+                android:textColor="@color/design_default_color_primary"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_instructor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="Instructor"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/tv_nameInstructor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="Bo Andersen"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lead Developer"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    app:cardCornerRadius="100dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        app:srcCompat="@drawable/ic_launcher_background" />
+
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_reviews"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="29.214 Reviews"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/tv_students"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="152.348 Students"
+                        android:textSize="18sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_viewProfile"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/view_profile"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+
+                android:textStyle="bold"
+                app:cornerRadius="0dp"
+                app:strokeColor="@color/black" />
+
+            <TextView
+                android:id="@+id/tv_student_feedback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="Student feedback"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ProgressBar
+                        android:id="@+id/pb_5Star"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:progressDrawable="@drawable/progress_drawable" />
+
+                    <TextView
+                        android:id="@+id/tv_5Star"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="20dp"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:text="@string/_5_star"
+                        android:textSize="15sp" />
+                    <TextView
+                        android:id="@+id/tv_5StarPercentage"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="20dp"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:text="52%"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ProgressBar
+                        android:id="@+id/pb_4Star"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:progressDrawable="@drawable/progress_drawable" />
+
+                    <TextView
+                        android:id="@+id/tv_4Star"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="20dp"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:text="@string/_4_star"
+                        android:textSize="15sp" />
+                    <TextView
+                        android:id="@+id/tv_4StarPercentage"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="20dp"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:text="38%"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ProgressBar
+                        android:id="@+id/pb_3Star"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:progressDrawable="@drawable/progress_drawable" />
+
+                    <TextView
+                        android:id="@+id/tv_3Star"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="20dp"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:text="@string/_3_star"
+                        android:textSize="15sp" />
+                    <TextView
+                        android:id="@+id/tv_3StarPercentage"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="20dp"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:text="8%"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ProgressBar
+                        android:id="@+id/pb_5Star"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:progressDrawable="@drawable/progress_drawable" />
+
+                    <TextView
+                        android:id="@+id/tv_2Star"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="20dp"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:text="@string/_2_star"
+                        android:textSize="15sp" />
+                    <TextView
+                        android:id="@+id/tv_2StarPercentage"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="20dp"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:text="1%"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ProgressBar
+                        android:id="@+id/pb_1Star"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:progressDrawable="@drawable/progress_drawable" />
+
+                    <TextView
+                        android:id="@+id/tv_1Star"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="20dp"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:text="@string/_1_star"
+                        android:textSize="15sp" />
+                    <TextView
+                        android:id="@+id/tv_1StarPercentage"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="20dp"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:text="1%"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Serhii M"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        app:tint="@color/star_color"
+                        tools:srcCompat="@drawable/baseline_star_24" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2 Feb 2024"
+                        android:layout_marginStart="10dp"
+                        android:textSize="15sp" />
+                </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thank you!"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Serhii M"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        app:tint="@color/star_color"
+                        tools:srcCompat="@drawable/baseline_star_24" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2 Feb 2024"
+                        android:layout_marginStart="10dp"
+                        android:textSize="15sp" />
+                </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thank you!"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

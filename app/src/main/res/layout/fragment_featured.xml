@@ -13,4 +13,10 @@
         android:layout_gravity="center"
         android:textSize="26sp"/>
 
+    <Button
+        android:id="@+id/btn_courseDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go to course detail" />
+
 </FrameLayout>

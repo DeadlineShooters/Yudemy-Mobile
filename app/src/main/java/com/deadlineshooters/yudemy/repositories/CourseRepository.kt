@@ -13,7 +13,7 @@ class CourseRepository {
     fun generateDummyCourse(img: Image, vid: Video): Course {
         return Course(
             name = "Graph Theory Algorithms for Competitive Programming (2022)",
-            lecturer = "34349",
+            instructor = "34349",
             totalStudents = 0,
             introduction = "Learn Graphs Algorithms in Computer Science & Mathematics, theory + hands-on coding and ace Competitive Coding problems!",
             description = "Welcome to Graph Algorithms for Competitive Coding - the most detailed Specialisation in Graph Theory for Competitive Programmers, Software Engineers & Computer Science students!\n" +

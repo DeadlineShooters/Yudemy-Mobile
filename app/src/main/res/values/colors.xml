@@ -5,4 +5,11 @@
 
     <color name="primary_text_color">#363A43</color>
     <color name="snackbar_error_color">#F72400</color>
+
+<!--    product details colors-->
+    <color name="rating_color">#8C5B13</color>
+    <color name="star_color">#C39E2F</color>
+    <color name="grey_800">#363839</color>
+    <color name="buynow_btn_color">#A035EC</color>
+
 </resources>

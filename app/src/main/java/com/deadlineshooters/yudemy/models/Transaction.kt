@@ -6,12 +6,11 @@ import kotlinx.android.parcel.Parcelize
 import kotlinx.parcelize.RawValue
 
 @Parcelize
-data class CourseFeedback(
+data class Transaction(
     var _id: String,
+    var senderId: String,
+    var receiverId: String,
     var courseId: String,
-    var userId: String,
-    var feedback: String,
-    var rating: Number,
-    var createdDatetime: @RawValue DateTime,
-    var instructorResponse: FeedbackResponse
+    var amount: Number,
+    var date: @RawValue DateTime
 ) : Parcelable
