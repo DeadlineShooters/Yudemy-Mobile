@@ -7,19 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.MainActivity
-import com.deadlineshooters.yudemy.adapters.CategoryAdapter
+import com.deadlineshooters.yudemy.adapters.CategoryAdapter1
 import com.deadlineshooters.yudemy.adapters.CourseListAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentFeaturedBinding
-import com.deadlineshooters.yudemy.databinding.FragmentWishlistBinding
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 
 
@@ -55,7 +51,7 @@ class FeaturedFragment : Fragment() {
         )
 
         // Create an instance of the CategoryAdapter
-        val adapter = CategoryAdapter(categories)
+        val adapter = CategoryAdapter1(categories)
 
         // Set the adapter on the RecyclerView
         recyclerView.adapter = adapter

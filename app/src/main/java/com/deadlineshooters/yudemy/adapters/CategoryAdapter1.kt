@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.google.android.material.button.MaterialButton
 
-class CategoryAdapter(private val categories: List<String>) :
-    RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
+class CategoryAdapter1(private val categories: List<String>) :
+    RecyclerView.Adapter<CategoryAdapter1.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.category_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.category_item_1, parent, false)
         return ViewHolder(view)
     }
 

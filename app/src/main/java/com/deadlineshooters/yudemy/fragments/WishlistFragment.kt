@@ -5,12 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.MainActivity
+import com.deadlineshooters.yudemy.adapters.CategoryAdapter1
+import com.deadlineshooters.yudemy.adapters.CategoryAdapter2
 import com.deadlineshooters.yudemy.adapters.CourseListAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentWishlistBinding
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
@@ -42,10 +47,28 @@ class WishlistFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val toolbarTitle: TextView = (activity as MainActivity).getToolbarTitle() ?: return
         toolbarTitle.text = "Wishlist"
+        val categories = listOf(
+            "Development", "Business", "Office Productivity", "Design",
+            "Marketing", "Photography & Video", "Teaching & Academics",
+            "Finance & Accounting", "IT & Software", "Personal Development",
+            "Lifestyle", "Health & Fitness", "Music"
+        )
+
+        val adapter = CategoryAdapter2(categories)
+        binding.categoryList.adapter = adapter
+        binding.categoryList.layoutManager = LinearLayoutManager(context)
+        binding.categoryList.addItemDecoration(FeaturedFragment.SpaceItemDecoration(8))
+
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
             val adapter = CourseListAdapter(requireContext(), R.layout.course_list_item, courses)
             binding.wishlistList.adapter = adapter
+            binding.wishlistList.visibility = View.GONE
+//            if (courses.isEmpty()) {
+//                binding.emptyFrame.visibility = View.VISIBLE
+//            } else {
+//                binding.emptyFrame.visibility = View.GONE
+//            }
         })
     }
 
