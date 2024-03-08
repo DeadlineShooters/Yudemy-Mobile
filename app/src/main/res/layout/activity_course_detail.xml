@@ -23,11 +23,13 @@
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
 
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_sign_up_activity">
@@ -465,7 +467,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginBottom="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -486,23 +489,25 @@
                     <TextView
                         android:id="@+id/tv_5Star"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="20dp"
-                        android:gravity="center"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
                         android:text="@string/_5_star"
                         android:textSize="15sp" />
+
                     <TextView
                         android:id="@+id/tv_5StarPercentage"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="20dp"
-                        android:gravity="center"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
                         android:text="52%"
                         android:textSize="15sp" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -522,23 +527,25 @@
                     <TextView
                         android:id="@+id/tv_4Star"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="20dp"
-                        android:gravity="center"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
                         android:text="@string/_4_star"
                         android:textSize="15sp" />
+
                     <TextView
                         android:id="@+id/tv_4StarPercentage"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="20dp"
-                        android:gravity="center"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
                         android:text="38%"
                         android:textSize="15sp" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -558,23 +565,25 @@
                     <TextView
                         android:id="@+id/tv_3Star"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="20dp"
-                        android:gravity="center"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
                         android:text="@string/_3_star"
                         android:textSize="15sp" />
+
                     <TextView
                         android:id="@+id/tv_3StarPercentage"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="20dp"
-                        android:gravity="center"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
                         android:text="8%"
                         android:textSize="15sp" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -582,7 +591,7 @@
                     android:orientation="horizontal">
 
                     <ProgressBar
-                        android:id="@+id/pb_5Star"
+                        android:id="@+id/pb_2Star"
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -594,23 +603,25 @@
                     <TextView
                         android:id="@+id/tv_2Star"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="20dp"
-                        android:gravity="center"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
                         android:text="@string/_2_star"
                         android:textSize="15sp" />
+
                     <TextView
                         android:id="@+id/tv_2StarPercentage"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="20dp"
-                        android:gravity="center"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
                         android:text="1%"
                         android:textSize="15sp" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -630,29 +641,32 @@
                     <TextView
                         android:id="@+id/tv_1Star"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="20dp"
-                        android:gravity="center"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
                         android:text="@string/_1_star"
                         android:textSize="15sp" />
+
                     <TextView
                         android:id="@+id/tv_1StarPercentage"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="20dp"
-                        android:gravity="center"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
                         android:text="1%"
                         android:textSize="15sp" />
 
                 </LinearLayout>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -660,29 +674,34 @@
                     android:text="Serhii M"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="5"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
+
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="18dp"
                         app:tint="@color/star_color"
                         tools:srcCompat="@drawable/baseline_star_24" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="2 Feb 2024"
                         android:layout_marginStart="10dp"
+                        android:text="2 Feb 2024"
                         android:textSize="15sp" />
                 </LinearLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -690,11 +709,13 @@
                     android:textColor="@color/black"
                     android:textSize="18sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -702,29 +723,34 @@
                     android:text="Serhii M"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="5"
                         android:textColor="@color/black"
                         android:textSize="15sp" />
+
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="18dp"
                         app:tint="@color/star_color"
                         tools:srcCompat="@drawable/baseline_star_24" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="2 Feb 2024"
                         android:layout_marginStart="10dp"
+                        android:text="2 Feb 2024"
                         android:textSize="15sp" />
                 </LinearLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

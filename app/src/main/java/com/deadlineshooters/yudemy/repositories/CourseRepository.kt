@@ -5,6 +5,7 @@ import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Video
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Date
 
 class CourseRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
@@ -28,7 +29,8 @@ class CourseRepository {
             promotionalVideo = vid,
             language = "ylTlDABgESXAzOHGyAxR", // English
             category = "hJqfxq5tTYVFsw69Mts9",
-            thumbnail = img // replace with your dummy image
+            thumbnail = img,
+            createdDate = Date()
         )
     }
 

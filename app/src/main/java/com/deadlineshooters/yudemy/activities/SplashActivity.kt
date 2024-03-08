@@ -12,7 +12,6 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        val typeFace : Typeface = Typeface.createFromAsset(assets, "font/inter_variablefont_slnt_wght.ttf")
 
         // Adding the handler to after the a task after some delay.
         Handler().postDelayed({

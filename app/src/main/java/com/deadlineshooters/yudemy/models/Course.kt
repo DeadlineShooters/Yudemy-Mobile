@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.google.type.DateTime
 import kotlinx.android.parcel.Parcelize
 import kotlinx.parcelize.RawValue
+import java.util.Date
 
 @Parcelize
 data class Course(
@@ -25,6 +26,6 @@ data class Course(
     var thumbnail: Image = Image(),
     var avgRating: Number = 0,
     var status: Boolean = false,
-    var createdDate: @RawValue DateTime,
+    var createdDate: Date,
     var totalRevenue: Number = 0.0
 ) : Parcelable

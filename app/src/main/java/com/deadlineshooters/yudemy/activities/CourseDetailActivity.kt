@@ -2,6 +2,8 @@ package com.deadlineshooters.yudemy.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.ActivityCourseDetailBinding
 import com.deadlineshooters.yudemy.databinding.ActivityMainBinding
@@ -15,6 +17,8 @@ class CourseDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupActionBar()
+
+
     }
 
     private fun setupActionBar() {

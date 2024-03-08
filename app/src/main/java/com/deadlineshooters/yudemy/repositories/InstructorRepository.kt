@@ -8,7 +8,7 @@ class InstructorRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
     private val lecturersCollection = mFireStore.collection("lecturers")
 
-    fun addLecturer(instructor: Instructor) {
+    fun addInstructor(instructor: Instructor) {
         val documentReference = lecturersCollection.document()
         instructor._id = documentReference.id
         documentReference.set(instructor)
