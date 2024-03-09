@@ -128,7 +128,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
                     app:tint="@color/star_color"
-                    tools:srcCompat="@drawable/baseline_star_24" />
+                    tools:srcCompat="@drawable/star_full" />
 
             </LinearLayout>
 
@@ -681,19 +681,15 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <RatingBar
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="5"
-                        android:textColor="@color/black"
-                        android:textSize="15sp" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="18dp"
-                        app:tint="@color/star_color"
-                        tools:srcCompat="@drawable/baseline_star_24" />
-
+                        android:layout_gravity="center_horizontal"
+                        android:numStars="5"
+                        android:rating="4"
+                        android:theme="@style/RatingBar"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:stepSize="1" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -730,24 +726,20 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <RatingBar
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="5"
-                        android:textColor="@color/black"
-                        android:textSize="15sp" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="18dp"
-                        app:tint="@color/star_color"
-                        tools:srcCompat="@drawable/baseline_star_24" />
-
+                        android:layout_gravity="center_horizontal"
+                        android:numStars="5"
+                        android:rating="5"
+                        android:theme="@style/RatingBar"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:stepSize="1" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:text="2 Feb 2024"
+                        android:text="1 Feb 2024"
                         android:textSize="15sp" />
                 </LinearLayout>
 

@@ -25,6 +25,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav"
+        app:itemTextAppearanceActive="@style/menu_text_style_active"
+        app:itemTextAppearanceInactive="@style/menu_text_style_inactive"
         app:labelVisibilityMode="labeled"
       />
 

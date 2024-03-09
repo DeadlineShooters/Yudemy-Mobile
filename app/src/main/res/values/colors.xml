@@ -11,5 +11,6 @@
     <color name="star_color">#C39E2F</color>
     <color name="grey_800">#363839</color>
     <color name="buynow_btn_color">#A035EC</color>
+    <color name="star_deactivated">#CFCBD0</color>
 
 </resources>
