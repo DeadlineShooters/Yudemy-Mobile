@@ -13,6 +13,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.CourseDetailActivity
+import com.deadlineshooters.yudemy.activities.InstructorMainActivity
+import com.deadlineshooters.yudemy.activities.SignInActivity
 
 
 /**
@@ -53,6 +55,12 @@ class FeaturedFragment : Fragment(), View.OnClickListener {
             }
 
             dialog.show()
+        }
+        val btnGoToInstructor = view.findViewById<Button>(R.id.btn_instructor)
+
+        btnGoToInstructor.setOnClickListener {
+            val intent = Intent(context, InstructorMainActivity::class.java)
+            startActivity(intent)
         }
 
 
