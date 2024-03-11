@@ -1,12 +1,19 @@
 package com.deadlineshooters.yudemy.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.helpers.CourseLearningAdapter
+import com.deadlineshooters.yudemy.models.Section
+import com.deadlineshooters.yudemy.models.UserLecture
+import com.google.firebase.Timestamp
+import java.util.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -42,7 +49,22 @@ class LectureLearningFragment : Fragment() {
 
         rvSections = view.findViewById(R.id.rvSections)
 
+        val courseLearningAdapter = CourseLearningAdapter(createDummyData(), "userId")
+        rvSections.adapter = courseLearningAdapter
+        rvSections.layoutManager = LinearLayoutManager(activity)
 
+        courseLearningAdapter.onItemClick = { userLecture ->
+            // TODO: open lecture
+        }
+    }
+
+    fun createDummyData(): ArrayList<Section> {
+        val sections = ArrayList<Section>()
+        for(i in 1..5) {
+            val l = Section("1", "Introduction", 1)
+            sections.add(l)
+        }
+        return sections
     }
 
     companion object {

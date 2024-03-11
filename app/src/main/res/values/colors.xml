@@ -7,6 +7,7 @@
     <color name="snackbar_error_color">#F72400</color>
     <color name="primary_color">#C377F6</color> <!-- purple-250 -->
     <color name="purple_200">#E1B8FC</color>
+    <color name="purple_alpha">#80C377F6</color>
     <color name="gray_100">#F7F9FA</color>
     <color name="gray_150">#E4E8EB</color>
     <color name="gray_200">#D1D7DC</color>

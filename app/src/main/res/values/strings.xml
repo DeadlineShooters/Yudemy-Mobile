@@ -15,4 +15,6 @@
         <item>Favorite courses</item>
         <item>All courses</item>
     </string-array>
+    <string name="learning_section_title">Section %d - %s</string>
+    <string name="learning_lecture_detail">Video - %d:%d mins</string>
 </resources>
