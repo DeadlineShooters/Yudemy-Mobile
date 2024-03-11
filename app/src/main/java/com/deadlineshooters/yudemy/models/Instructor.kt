@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Lecturer(
+data class Instructor(
     var _id: String = "",
     var firstName: String = "",
     var lastName: String = "",

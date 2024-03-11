@@ -1,7 +1,10 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.content.ContentValues.TAG
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -52,6 +55,17 @@ class FeaturedFragment : Fragment() {
 
         // Create an instance of the CategoryAdapter
         val adapter = CategoryAdapter1(categories)
+        adapter.onItemClick = { category ->
+            val fragment = FeaturedCategoryFragment()
+            val bundle = Bundle()
+            bundle.putString("category", category)
+            fragment.arguments = bundle
+            val fragmentManager = activity?.supportFragmentManager
+            val fragmentTransaction = fragmentManager?.beginTransaction()
+            fragmentTransaction?.addToBackStack(null)
+            fragmentTransaction?.replace(R.id.frameLayout, fragment)
+            fragmentTransaction?.commit()
+        }
 
         // Set the adapter on the RecyclerView
         recyclerView.adapter = adapter
