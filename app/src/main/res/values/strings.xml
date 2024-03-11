@@ -47,5 +47,37 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="play_preview_video">play preview video</string>
+    <string name="preview_this_course">Preview this course</string>
+    <string name="buy_now">Buy now</string>
+    <string name="show_more">Show more</string>
+    <string name="description">Description</string>
+    <string name="view_profile">View profile</string>
+    <string name="_4_star">4 star</string>
+    <string name="_5_star">5 star</string>
+    <string name="_3_star">3 star</string>
+    <string name="_2_star">2 star</string>
+    <string name="_1_star">1 star</string>
+    <string name="cancel">Cancel</string>
+    <string name="search_for_feedback">Search for feedback</string>
+    <string name="student_feedback">Student feedback</string>
+    <string name="course_dashboard">Course dashboard</string>
+    <string name="newest">Newest</string>
+    <string name="oldest">Oldest</string>
+    <string name="live">LIVE</string>
+    <string name="total_earning">Total revenue</string>
+    <string name="date_range">Date range:</string>
+    <string name="total_revenue">Total revenue</string>
 
+    <string name="my_learning">My learning</string>
+    <string name="progress_complete">%d%% complete</string>
+    <string name="completed">Completed</string>
+    <string name="start_course">Start course</string>
+    <string name="cancel">Cancel</string>
+    <string name="search">Search</string>
+    <string name="select_filter">Select filter</string>
+    <string-array name="my_learning_filter">
+        <item>Favorite courses</item>
+        <item>All courses</item>
+    </string-array>
 </resources>

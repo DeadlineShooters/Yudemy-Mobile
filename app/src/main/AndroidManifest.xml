@@ -26,7 +26,22 @@
             android:exported="false" />
         <activity
             android:name=".activities.BaseActivity"
+              android:exported="false" />
+ <activity
+            android:name=".activities.CourseRevenueAnalyticsActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.InstructorMainActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Yudemy.NoActionBar" />
+        <activity
+            android:name=".activities.CourseDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Yudemy.NoActionBar" /> <!-- <activity -->
+        <!-- android:name=".activities.BaseActivity" -->
+        <!-- android:exported="false" /> -->
         <activity
             android:name=".activities.SignUpWithEmailActivity"
             android:exported="false"
@@ -54,7 +69,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activities.StudentMainActivity"
             android:exported="true" />
     </application>
 

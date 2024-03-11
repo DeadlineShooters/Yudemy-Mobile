@@ -5,6 +5,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Image(
-    val secure_url: String = "",
-    val public_id: String = ""
-) : Parcelable
+    override var secure_url: String = "",
+    override var public_id: String = ""
+) : Media(secure_url, public_id)

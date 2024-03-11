@@ -1,19 +1,18 @@
 package com.deadlineshooters.yudemy.models
 
 import android.os.Parcelable
-import com.google.type.DateTime
 import kotlinx.android.parcel.Parcelize
 import kotlinx.parcelize.RawValue
 
 @Parcelize
 data class Question(
-    val _id: String,
-    val asker: String, // object id
-    val lectureId: String,
-    val title: String,
-    val details: String,
-    val images: ArrayList<Image>,
-    val createdTime: @RawValue DateTime
+    var _id: String,
+    var asker: String, // object id
+    var lectureId: String,
+    var title: String,
+    var details: String,
+    var images: ArrayList<Image>,
+    var createdTime: String = "01/01/2003" // dd/mm/yyyy
 
 
 ) : Parcelable

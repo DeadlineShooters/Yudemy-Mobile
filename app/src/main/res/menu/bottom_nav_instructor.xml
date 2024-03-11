@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:title="Courses"
+        android:id="@+id/courses"
+        android:icon="@drawable/baseline_smart_display_24"
+        app:showAsAction="withText"/>
+    <item android:title="Q&amp;A"
+        android:id="@+id/qna"
+        android:icon="@drawable/ic_message_text_square_02"
+        app:showAsAction="withText"
+        />
+    <item android:title="Analytics"
+        android:id="@+id/analytics"
+        android:icon="@drawable/ic_line_chart_up_01"
+        app:showAsAction="withText"/>
+    <item android:title="Feedback"
+        android:id="@+id/reviews"
+        android:icon="@drawable/ic_award_03"
+        app:showAsAction="withText"/>
+</menu>
+

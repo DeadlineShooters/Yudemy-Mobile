@@ -1,7 +1,6 @@
 package com.deadlineshooters.yudemy.activities
 
 import android.content.Intent
-import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -12,7 +11,6 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        val typeFace : Typeface = Typeface.createFromAsset(assets, "Inter-VariableFont_slnt,wght.ttf")
 
         // Adding the handler to after the a task after some delay.
         Handler().postDelayed({

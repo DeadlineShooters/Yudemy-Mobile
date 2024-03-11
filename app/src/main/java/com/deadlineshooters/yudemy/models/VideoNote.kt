@@ -6,9 +6,9 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class VideoNote(
-    val _id: String,
-    val userId: String,
-    val lectureId: String,
-    val noteContent: String,
-    val minuteInVid: Timestamp
+    var _id: String,
+    var userId: String,
+    var lectureId: String,
+    var noteContent: String,
+    var minuteInVid: Timestamp
 ) : Parcelable

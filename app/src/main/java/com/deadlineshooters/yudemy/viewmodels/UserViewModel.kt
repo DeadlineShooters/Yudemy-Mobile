@@ -2,6 +2,7 @@ package com.deadlineshooters.yudemy.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.deadlineshooters.yudemy.activities.SignUpActivity
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.repositories.UserRepository
@@ -10,7 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 /**
  * The ViewModel should contain LiveData objects or observable properties to hold the user data and state.
  * */
-class UserViewModel {
+class UserViewModel : ViewModel() {
     private val userRepository = UserRepository()
 
     private val _userList = MutableLiveData<List<User>>()
