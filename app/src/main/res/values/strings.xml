@@ -17,4 +17,8 @@
     </string-array>
     <string name="learning_section_title">Section %d - %s</string>
     <string name="learning_lecture_detail">Video - %d:%d mins</string>
+    <string name="about_this_course">About this course</string>
+    <string name="course_certificate">Course certificate</string>
+    <string name="q_a">Q&amp;A</string>
+    <string name="add_course_to_favorites">Add course to favorites</string>
 </resources>
