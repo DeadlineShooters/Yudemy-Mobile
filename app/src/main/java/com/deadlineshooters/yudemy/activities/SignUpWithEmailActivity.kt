@@ -37,6 +37,7 @@ class SignUpWithEmailActivity : AppCompatActivity() {
     private var email: EditText? = null
     private var password: EditText? = null
     private var name: EditText? = null
+    private var backBtn4: Button? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up_with_email)
@@ -46,10 +47,15 @@ class SignUpWithEmailActivity : AppCompatActivity() {
         name = findViewById(R.id.nameInput)
         email = findViewById(R.id.mailInput)
         password = findViewById(R.id.passInput)
+        backBtn4 = findViewById(R.id.backBtn4)
 
         signinHref!!.setOnClickListener{
             val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
+        }
+
+        backBtn4!!.setOnClickListener{
+            finish()
         }
     }
 }
