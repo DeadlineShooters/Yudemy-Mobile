@@ -26,4 +26,15 @@
     <string name="date_range">Date range:</string>
     <string name="total_revenue">Total revenue</string>
 
+    <string name="my_learning">My learning</string>
+    <string name="progress_complete">%d%% complete</string>
+    <string name="completed">Completed</string>
+    <string name="start_course">Start course</string>
+    <string name="cancel">Cancel</string>
+    <string name="search">Search</string>
+    <string name="select_filter">Select filter</string>
+    <string-array name="my_learning_filter">
+        <item>Favorite courses</item>
+        <item>All courses</item>
+    </string-array>
 </resources>
