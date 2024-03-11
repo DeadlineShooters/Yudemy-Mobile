@@ -1,6 +1,9 @@
 package com.deadlineshooters.yudemy.activities
 
 import android.os.Bundle
+import android.view.View
+import android.view.View.GONE
+import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -27,6 +30,7 @@ class MainActivity : BaseActivity() {
         val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
+        binding.searchView.visibility = GONE
         replaceFragment(FeaturedFragment())  // show Featured fragment firstly
 
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->
@@ -59,7 +63,7 @@ class MainActivity : BaseActivity() {
         }
 
     }
-    fun getToolbarTitle(): TextView? {
+    fun getToolbarTitle(): TextView {
         return binding.toolbarTitle
     }
 
@@ -71,6 +75,10 @@ class MainActivity : BaseActivity() {
         fragmentTransaction.replace(R.id.frameLayout, fragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
+    }
+
+    fun getSearchView(): SearchView {
+        return binding.searchView
     }
 
 }

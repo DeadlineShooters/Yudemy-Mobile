@@ -1,13 +1,21 @@
 package com.deadlineshooters.yudemy.fragments
 
 import android.os.Bundle
+import android.view.*
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.MainActivity
+import com.deadlineshooters.yudemy.adapters.CategoryAdapter1
+import com.deadlineshooters.yudemy.adapters.CategoryAdapter3
+import com.deadlineshooters.yudemy.databinding.FragmentFeaturedBinding
+import com.deadlineshooters.yudemy.databinding.FragmentSearchBinding
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -20,30 +28,70 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class SearchFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var _binding: FragmentSearchBinding? = null
+
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
+    private lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
         val toolbarTitle: TextView = (activity as MainActivity).getToolbarTitle() ?: return null
-        // If getToolbarTitle() returns null, the function returns null immediately
 
         toolbarTitle.text = ""
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false)
+        searchView = (activity as MainActivity).getSearchView()
+        val categories = listOf(
+            "Development", "Business", "Office Productivity", "Design",
+            "Marketing", "Photography & Video", "Teaching & Academics",
+            "Finance & Accounting", "IT & Software", "Personal Development",
+            "Lifestyle", "Health & Fitness", "Music"
+        )
+
+        val topSearchList = binding.topSearchList
+        val topSearchAdapter = CategoryAdapter1(categories)
+        topSearchList.adapter = topSearchAdapter
+
+        // Set a FlexboxLayoutManager for wrapping content
+        var layoutManager = FlexboxLayoutManager(context)
+        layoutManager.flexDirection = FlexDirection.ROW
+        layoutManager.justifyContent = JustifyContent.FLEX_START
+        topSearchList.layoutManager = layoutManager
+        topSearchList.addItemDecoration(FeaturedFragment.SpaceItemDecoration(8))
+
+        val categoryList = binding.categoryList
+        val categoryAdapter = CategoryAdapter3(categories)
+        categoryList.adapter = categoryAdapter
+        categoryList.layoutManager = object : LinearLayoutManager(context) {
+            override fun canScrollVertically() = false
+        }
+        categoryList.addItemDecoration(FeaturedFragment.SpaceItemDecoration(8))
+
+        return binding.root
     }
+
+
+    override fun onResume() {
+        super.onResume()
+        searchView.visibility = View.VISIBLE
+    }
+
+    override fun onPause() {
+        super.onPause()
+        searchView.visibility = View.GONE
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 
     companion object {
         /**

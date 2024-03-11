@@ -28,7 +28,7 @@
         />
         <ImageView
                 android:layout_width="48dp"
-                android:layout_height="48dp" app:srcCompat="@drawable/user_icon" android:id="@+id/imageView3"
+                android:layout_height="48dp" app:srcCompat="@drawable/ic_user" android:id="@+id/imageView3"
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
         <TextView
