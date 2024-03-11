@@ -1,23 +1,14 @@
 package com.deadlineshooters.yudemy.activities
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.ActivityInstructorMainBinding
-import com.deadlineshooters.yudemy.databinding.ActivityMainBinding
-import com.deadlineshooters.yudemy.fragments.AccountFragment
 import com.deadlineshooters.yudemy.fragments.AnalyticsFragment
-import com.deadlineshooters.yudemy.fragments.CoursesFragment
-import com.deadlineshooters.yudemy.fragments.FeaturedFragment
-import com.deadlineshooters.yudemy.fragments.MyLearningFragment
+import com.deadlineshooters.yudemy.fragments.CourseDashboardFragment
 import com.deadlineshooters.yudemy.fragments.QAFragment
-import com.deadlineshooters.yudemy.fragments.ReviewsFragment
-import com.deadlineshooters.yudemy.fragments.SearchFragment
-import com.deadlineshooters.yudemy.fragments.WishlistFragment
+import com.deadlineshooters.yudemy.fragments.FeedbackFragment
 
 class InstructorMainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityInstructorMainBinding
@@ -27,12 +18,12 @@ class InstructorMainActivity : AppCompatActivity() {
         binding = ActivityInstructorMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        replaceFragment(CoursesFragment())  // show Courses fragment firstly
+        replaceFragment(CourseDashboardFragment())  // show Courses fragment firstly
 
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.courses -> {
-                    replaceFragment(CoursesFragment())
+                    replaceFragment(CourseDashboardFragment())
                 }
 
                 R.id.qna -> {
@@ -44,7 +35,7 @@ class InstructorMainActivity : AppCompatActivity() {
                 }
 
                 R.id.reviews -> {
-                    replaceFragment(ReviewsFragment())
+                    replaceFragment(FeedbackFragment())
                 }
 
                 else -> {

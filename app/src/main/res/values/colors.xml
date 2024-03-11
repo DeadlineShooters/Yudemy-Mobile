@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<!--    global -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-
+    <color name="lighter_gray">#ddd</color>
     <color name="primary_text_color">#363A43</color>
     <color name="snackbar_error_color">#F72400</color>
 
@@ -12,5 +13,12 @@
     <color name="grey_800">#363839</color>
     <color name="buynow_btn_color">#A035EC</color>
     <color name="star_deactivated">#CFCBD0</color>
+
+<!--    course colors-->
+    <color name="live_pill_color">#42031C</color>
+    <color name="draft_pill_color">#777777</color>
+
+
+
 
 </resources>

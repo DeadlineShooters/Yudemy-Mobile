@@ -15,5 +15,15 @@
     <string name="_3_star">3 star</string>
     <string name="_2_star">2 star</string>
     <string name="_1_star">1 star</string>
+    <string name="cancel">Cancel</string>
+    <string name="search_for_feedback">Search for feedback</string>
+    <string name="student_feedback">Student feedback</string>
+    <string name="course_dashboard">Course dashboard</string>
+    <string name="newest">Newest</string>
+    <string name="oldest">Oldest</string>
+    <string name="live">LIVE</string>
+    <string name="total_earning">Total revenue</string>
+    <string name="date_range">Date range:</string>
+    <string name="total_revenue">Total revenue</string>
 
 </resources>

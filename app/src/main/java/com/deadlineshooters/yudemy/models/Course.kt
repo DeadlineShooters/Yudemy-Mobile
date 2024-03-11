@@ -1,10 +1,11 @@
 package com.deadlineshooters.yudemy.models
 
 import android.os.Parcelable
-import com.google.type.DateTime
 import kotlinx.android.parcel.Parcelize
 import kotlinx.parcelize.RawValue
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 @Parcelize
 data class Course(
@@ -26,6 +27,6 @@ data class Course(
     var thumbnail: Image = Image(),
     var avgRating: Number = 0,
     var status: Boolean = false,
-    var createdDate: Date,
+    var createdDate: String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
     var totalRevenue: Number = 0.0
 ) : Parcelable

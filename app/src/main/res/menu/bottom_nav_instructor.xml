@@ -14,7 +14,7 @@
         android:id="@+id/analytics"
         android:icon="@drawable/ic_line_chart_up_01"
         app:showAsAction="withText"/>
-    <item android:title="Reviews"
+    <item android:title="Feedback"
         android:id="@+id/reviews"
         android:icon="@drawable/ic_award_03"
         app:showAsAction="withText"/>

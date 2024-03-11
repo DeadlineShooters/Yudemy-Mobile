@@ -1,14 +1,20 @@
 package com.deadlineshooters.yudemy.models
 
 import android.os.Parcelable
-import com.google.type.DateTime
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 
 @Parcelize
 data class FeedbackResponse(
     var instructorId: String = "",
     var content: String = "",
-    var createdTime: @RawValue DateTime
+    var createdDatetime: String = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault()).format(
+        Date()
+    )
 
-) : Parcelable
+    ) : Parcelable

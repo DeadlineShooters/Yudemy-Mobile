@@ -29,8 +29,7 @@ class CourseRepository {
             promotionalVideo = vid,
             language = "ylTlDABgESXAzOHGyAxR", // English
             category = "hJqfxq5tTYVFsw69Mts9",
-            thumbnail = img,
-            createdDate = Date()
+            thumbnail = img
         )
     }
 
