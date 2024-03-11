@@ -1,6 +1,7 @@
 package com.deadlineshooters.yudemy.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.CourseLearningActivity
 import com.deadlineshooters.yudemy.helpers.MyLearningAdapter
 import com.deadlineshooters.yudemy.helpers.MyLearningFilterAdapter
 import com.deadlineshooters.yudemy.models.Course
@@ -74,7 +76,10 @@ class MyLearningFragment : Fragment() {
         rvCourses!!.layoutManager = LinearLayoutManager(activity)
         adapter.onItemClick = { course ->
             // TODO: open course learning
-            Log.i("Course click", course.name)
+
+            val intent = Intent(activity, CourseLearningActivity::class.java)
+            intent.putExtra("courseId", course.id)
+            startActivity(intent)
         }
 
         // Click to search icon
@@ -167,6 +172,7 @@ class MyLearningFragment : Fragment() {
                 category = "hJqfxq5tTYVFsw69Mts9",
                 thumbnail = Image("https://img-c.udemycdn.com/course/480x270/927356_8108_7.jpg", "") // replace with your dummy image
             )
+            c.id = "course$i"
             courses.add(c)
         }
         return courses
