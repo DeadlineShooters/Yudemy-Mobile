@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity">
+    tools:context=".activities.StudentMainActivity">
 
 
     <FrameLayout
@@ -24,7 +24,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav"
+        app:menu="@menu/bottom_nav_student"
+        app:itemTextAppearanceActive="@style/menu_text_style_active"
+        app:itemTextAppearanceInactive="@style/menu_text_style_inactive"
         app:labelVisibilityMode="labeled"
       />
 <!--    <include layout="@layout/my_learning_filter_bottom_sheet" />-->

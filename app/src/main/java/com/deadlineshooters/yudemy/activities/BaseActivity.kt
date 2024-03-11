@@ -28,7 +28,7 @@ open class BaseActivity : AppCompatActivity() {
     private lateinit var mProgressDialog : Dialog
     private lateinit var binding: DialogProgressBinding
     open lateinit var courseViewModel: CourseViewModel
-    open lateinit var lecturerViewModel: LectureViewModel
+    open lateinit var instructorViewModel: LectureViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,7 +1,6 @@
 package com.deadlineshooters.yudemy.models
 
 import android.os.Parcelable
-import com.google.type.DateTime
 import kotlinx.android.parcel.Parcelize
 import kotlinx.parcelize.RawValue
 
@@ -13,7 +12,7 @@ data class Question(
     var title: String,
     var details: String,
     var images: ArrayList<Image>,
-    var createdTime: @RawValue DateTime
+    var createdTime: String = "01/01/2003" // dd/mm/yyyy
 
 
 ) : Parcelable
