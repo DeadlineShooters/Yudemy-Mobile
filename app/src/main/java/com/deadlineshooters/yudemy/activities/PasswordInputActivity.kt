@@ -29,7 +29,7 @@ class PasswordInputActivity : AppCompatActivity() {
         }
 
         signinBtn!!.setOnClickListener{
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent);
             //TODO: Check password from database
         }

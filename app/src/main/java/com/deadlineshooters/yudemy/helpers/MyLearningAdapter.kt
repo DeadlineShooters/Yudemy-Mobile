@@ -43,7 +43,7 @@ class MyLearningAdapter(private val courses: List<Course>, private val userId: S
         val course: Course = courses[position]
         ImageViewHelper().setImageViewFromUrl(course.thumbnail, holder.thumbnailView)
         holder.name.text = course.name
-        holder.lecturer.text = course.lecturer
+        holder.lecturer.text = course.instructor
         val progress = 30 // TODO: calculate progress of user
         when(progress) {
             0 -> {
