@@ -21,4 +21,14 @@
     <string name="course_certificate">Course certificate</string>
     <string name="q_a">Q&amp;A</string>
     <string name="add_course_to_favorites">Add course to favorites</string>
+    <string name="switch_to_instructor_view">Switch to instructor view</string>
+    <string name="become_an_instructor">Become an instructor</string>
+    <string name="account_settings">Account settings</string>
+    <string name="learning_reminders">Learning reminders</string>
+    <string name="account_security">Account security</string>
+    <string name="close_account">Close account</string>
+    <string name="support">Support</string>
+    <string name="about_yudemy">About Yudemy</string>
+    <string name="sign_out">Sign out</string>
+    <string name="Yudemy_v1.0">Yudemy v1.0</string>
 </resources>

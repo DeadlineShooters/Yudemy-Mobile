@@ -1,11 +1,16 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.helpers.ImageViewHelper
+import com.deadlineshooters.yudemy.models.Image
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +27,15 @@ class AccountFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private lateinit var avatar: ImageView
+    private lateinit var email: TextView
+    private lateinit var navigateIns: TextView
+    private lateinit var learningReminders: TextView
+    private lateinit var accSecurity: TextView
+    private lateinit var closeAcc: TextView
+    private lateinit var aboutYudemy: TextView
+    private lateinit var signOut: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -36,6 +50,46 @@ class AccountFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_account, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        avatar = view.findViewById(R.id.avatar)
+        email = view.findViewById(R.id.email)
+        navigateIns = view.findViewById(R.id.navigateIns)
+        learningReminders = view.findViewById(R.id.learningReminders)
+        accSecurity = view.findViewById(R.id.accSecurity)
+        closeAcc = view.findViewById(R.id.closeAcc)
+        aboutYudemy = view.findViewById(R.id.aboutUs)
+        signOut = view.findViewById(R.id.signOut)
+
+//        learningReminders.setOnClickListener {
+//            val intent = Intent(context, LearningRemindersActivity::class.java)
+//            startActivity(intent)
+//        }
+//
+//        accSecurity.setOnClickListener {
+//            val intent = Intent(context, AccountSecurityActivity::class.java)
+//            startActivity(intent)
+//        }
+//
+//        closeAcc.setOnClickListener {
+//            val intent = Intent(context, CloseAccountActivity::class.java)
+//            startActivity(intent)
+//        }
+//
+//        aboutYudemy.setOnClickListener {
+//            val intent = Intent(context, AboutYudemyActivity::class.java)
+//            startActivity(intent)
+//        }
+
+        signOut.setOnClickListener {
+            // TODO: Implement sign out
+        }
+
+        val imageUrl = "https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg"
+        ImageViewHelper().setImageViewFromUrl(Image(imageUrl, ""), avatar)
     }
 
     companion object {
