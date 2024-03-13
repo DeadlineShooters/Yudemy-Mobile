@@ -27,7 +27,7 @@ class SplashActivity : AppCompatActivity() {
 //                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
 //            } else {
                 // Start the Intro Activity
-                startActivity(Intent(this@SplashActivity, InstructorProfileActivity::class.java))
+                startActivity(Intent(this@SplashActivity, CertificateActivity::class.java))
 //            }
             finish() // Call this when your activity is done and should be closed.
         }, 2500) // Here we pass the delay time in milliSeconds after which the splash activity will disappear.
