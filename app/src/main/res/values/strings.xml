@@ -138,4 +138,12 @@
     <string name="change_password">Change password</string>
     <string name="close_your_account_permanently">Close your account permanently</string>
     <string name="close_account_warning">Warning: If you close your account, you will be unsubscribe from all your courses, and will lose access forever.</string>
+    <string name="about_yudemy_description">Yudemy is an online learning platform featuring 100+ video courses taught by expert instructors. Take courses in anything from programming languages like Python, and Java to personal development classes like design, drawing, writing and yoga. Join the more than 30 million students who are mastering new skills, advancing their careers, and exploring new hobbies on Udemy.</string>
+    <string name="NTVT">Team NTVT:</string>
+    <string-array name="NTVT_members">
+        <item>Pham Anh Nhu Ngoc</item>
+        <item>Ngo Phuoc Tai</item>
+        <item>Tran Thi Thanh Van</item>
+        <item>Pham Tran Tuan Tu</item>
+    </string-array>
 </resources>

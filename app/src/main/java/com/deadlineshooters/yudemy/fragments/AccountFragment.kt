@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.AboutUsActivity
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Image
 
@@ -77,10 +78,10 @@ class AccountFragment : Fragment() {
             replaceFragment(CloseAccountFragment())
         }
 
-//        aboutYudemy.setOnClickListener {
-//            val intent = Intent(context, AboutYudemyActivity::class.java)
-//            startActivity(intent)
-//        }
+        aboutYudemy.setOnClickListener {
+            val intent = Intent(context, AboutUsActivity::class.java)
+            startActivity(intent)
+        }
 
         signOut.setOnClickListener {
             // TODO: Implement sign out
