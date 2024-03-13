@@ -6,4 +6,13 @@
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">16sp</item>
     </style>
+
+    <style name="MySwitch" parent="Theme.AppCompat.Light">
+        <!-- active thumb & track color (30% transparency) -->
+        <item name="colorControlActivated">@color/primary_color</item>
+        <!-- inactive thumb color -->
+        <item name="colorSwitchThumbNormal">@color/gray_150</item>
+        <!-- inactive track color -->
+        <item name="android:colorForeground">@color/gray_400</item>
+    </style>
 </resources>

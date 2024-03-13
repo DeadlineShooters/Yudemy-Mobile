@@ -31,4 +31,10 @@
     <string name="about_yudemy">About Yudemy</string>
     <string name="sign_out">Sign out</string>
     <string name="Yudemy_v1.0">Yudemy v1.0</string>
+    <string name="learning_reminder_description">Learning a little each day adds up. Research shows that students who make learning a habit are more likely to retain information and reach their goals</string>
+    <string name="learning_reminder_description1">Choose which day(s) you want to get a reminder</string>
+    <string name="learning_reminder_description2">Choose what time you want to learn</string>
+    <string name="learning_reminder_description3">Update or pause your reminders at any time</string>
+    <string name="allow_reminders">Allow reminders</string>
+    <string name="frequency">Frequency</string>
 </resources>
