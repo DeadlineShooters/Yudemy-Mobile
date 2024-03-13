@@ -15,4 +15,18 @@
         <!-- inactive track color -->
         <item name="android:colorForeground">@color/gray_400</item>
     </style>
+
+    <style name="FrequencyDayTime" parent="Theme.Yudemy">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/primary_text_color</item>
+        <item name="android:drawableTint">@color/primary_color</item>
+        <item name="lineHeight">22sp</item>
+    </style>
+
+    <style name="FrequencyTimeDetail" parent="Theme.Yudemy">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/gray_300</item>
+    </style>
 </resources>
