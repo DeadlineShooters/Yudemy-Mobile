@@ -40,9 +40,9 @@ class MyLearningFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    var searchView: SearchView? = null
-    var rvCourses: RecyclerView? = null
-    var filterDialog: BottomSheetDialog? = null
+    private var searchView: SearchView? = null
+    private var rvCourses: RecyclerView? = null
+    private var filterDialog: BottomSheetDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

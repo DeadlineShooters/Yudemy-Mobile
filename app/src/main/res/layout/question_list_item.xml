@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/askerImageBackground"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:cardCornerRadius="1000dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/askerImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_user" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/questionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="TextView"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/questionContentView"
+        app:layout_constraintStart_toStartOf="@+id/questionContentView" />
+
+    <TextView
+        android:id="@+id/askerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="TextView"
+        android:textColor="#7E7C7F"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/questionContentView"
+        app:layout_constraintTop_toBottomOf="@+id/questionContentView" />
+
+    <TextView
+        android:id="@+id/askDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="TextView"
+        android:textColor="#777477"
+        app:layout_constraintBottom_toBottomOf="@+id/askerName"
+        app:layout_constraintStart_toEndOf="@+id/askerName"
+        app:layout_constraintTop_toTopOf="@+id/askerName" />
+
+    <TextView
+        android:id="@+id/lectureId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="TextView"
+        android:textColor="#777477"
+        app:layout_constraintStart_toEndOf="@+id/askDate"
+        app:layout_constraintTop_toTopOf="@+id/askDate" />
+
+    <TextView
+        android:id="@+id/amountReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="TextView"
+        android:textColor="#4027AB"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/questionContentView"
+        app:layout_constraintTop_toBottomOf="@+id/askerName" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/questionContentView"
+        android:layout_width="290dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintStart_toEndOf="@+id/askerImageBackground"
+        app:layout_constraintTop_toTopOf="@+id/askerImageBackground">
+
+        <TextView
+            android:id="@+id/questionContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/questionImage"
+            android:layout_width="290dp"
+            android:layout_height="163dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/questionContent"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

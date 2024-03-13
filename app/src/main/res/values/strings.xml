@@ -76,6 +76,7 @@
     <string name="start_course">Start course</string>
     <string name="search">Search</string>
     <string name="select_filter">Select filter</string>
+    <string name="ask_a_question">Ask a question</string>
     <string-array name="my_learning_filter">
         <item>Favorite courses</item>
         <item>All courses</item>
