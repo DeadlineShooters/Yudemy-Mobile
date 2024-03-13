@@ -37,4 +37,15 @@
     <string name="learning_reminder_description3">Update or pause your reminders at any time</string>
     <string name="allow_reminders">Allow reminders</string>
     <string name="frequency">Frequency</string>
+    <string name="day">Day</string>
+    <string name="time">Time</string>
+    <string-array name="frequency_day">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
 </resources>
