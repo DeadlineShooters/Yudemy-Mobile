@@ -20,8 +20,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.CourseLearningActivity
-import com.deadlineshooters.yudemy.helpers.MyLearningAdapter
-import com.deadlineshooters.yudemy.helpers.MyLearningFilterAdapter
+import com.deadlineshooters.yudemy.adapters.MyLearningAdapter
+import com.deadlineshooters.yudemy.adapters.MyLearningFilterAdapter
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Video

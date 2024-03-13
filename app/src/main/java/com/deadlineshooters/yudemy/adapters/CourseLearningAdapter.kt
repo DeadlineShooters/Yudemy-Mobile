@@ -1,4 +1,4 @@
-package com.deadlineshooters.yudemy.helpers
+package com.deadlineshooters.yudemy.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -21,7 +21,7 @@ class CourseLearningAdapter(private val sections: List<Section>, private val use
         val sectionTitle: TextView = listItemView.findViewById(R.id.sectionTitle)
         val lectureList: RecyclerView = listItemView.findViewById(R.id.lectureList)
     }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseLearningAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
         val inflater = LayoutInflater.from(context)
         val sectionView = inflater.inflate(R.layout.section_learning_item, parent, false)

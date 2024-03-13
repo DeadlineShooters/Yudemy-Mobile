@@ -6,7 +6,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.fragments.LectureLearningFragment
 import com.deadlineshooters.yudemy.fragments.MoreLearningFragment
-import com.deadlineshooters.yudemy.helpers.TabsAdapter
+import com.deadlineshooters.yudemy.adapters.TabsAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 

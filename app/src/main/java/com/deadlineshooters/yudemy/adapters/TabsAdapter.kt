@@ -1,4 +1,4 @@
-package com.deadlineshooters.yudemy.helpers
+package com.deadlineshooters.yudemy.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

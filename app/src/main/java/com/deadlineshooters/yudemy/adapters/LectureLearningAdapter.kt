@@ -1,8 +1,6 @@
-package com.deadlineshooters.yudemy.helpers
+package com.deadlineshooters.yudemy.adapters
 
 import android.content.Context
-import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +24,7 @@ class LectureLearningAdapter(private val lectures: List<UserLecture>): RecyclerV
             }
         }
     }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LectureLearningAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
         val inflater = LayoutInflater.from(context)
         val lectureView = inflater.inflate(R.layout.lecture_learning_item, parent, false)
