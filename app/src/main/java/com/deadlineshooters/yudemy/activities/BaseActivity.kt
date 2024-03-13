@@ -28,21 +28,13 @@ open class BaseActivity : AppCompatActivity() {
     private lateinit var mProgressDialog : Dialog
     private lateinit var binding: DialogProgressBinding
     open lateinit var courseViewModel: CourseViewModel
-    open lateinit var lecturerViewModel: LectureViewModel
+    open lateinit var instructorViewModel: LectureViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DialogProgressBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-
-        //Create global variable
-        var config: HashMap<String, String> = HashMap()
-
-    // Initialize cloudinary. Put in onCreate() function
-        config["cloud_name"] = BuildConfig.CLOUD_NAME;
-        MediaManager.init(this, config)
-
 
         /** add dummy data */
         // Course
