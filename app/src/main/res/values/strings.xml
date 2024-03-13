@@ -128,4 +128,12 @@
         <item>18:00</item>
         <item>21:00</item>
     </string-array>
+    <string name="done">Done</string>
+    <string name="account_security_description">Edit your account settings and change your password here.</string>
+    <string name="email">Email:</string>
+    <string name="password">Password:</string>
+    <string name="enter_current_password">Enter current password</string>
+    <string name="enter_new_password">Enter new password</string>
+    <string name="retype_new_password">Re-type new password</string>
+    <string name="change_password">Change password</string>
 </resources>

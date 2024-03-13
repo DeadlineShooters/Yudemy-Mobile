@@ -45,7 +45,7 @@
         android:textAppearance="@style/TitleFragment"
         app:layout_constraintBottom_toBottomOf="@+id/backFromReminders"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/backFromReminders"
+        app:layout_constraintStart_toStartOf="@+id/backFromReminders"
         app:layout_constraintTop_toTopOf="@+id/backFromReminders" />
 
     <TextView

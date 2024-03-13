@@ -68,12 +68,11 @@ class AccountFragment : Fragment() {
         learningReminders.setOnClickListener {
             replaceFragment(LearningRemindersFragment())
         }
-//
-//        accSecurity.setOnClickListener {
-//            val intent = Intent(context, AccountSecurityActivity::class.java)
-//            startActivity(intent)
-//        }
-//
+
+        accSecurity.setOnClickListener {
+            replaceFragment(AccountSecurityFragment())
+        }
+
 //        closeAcc.setOnClickListener {
 //            val intent = Intent(context, CloseAccountActivity::class.java)
 //            startActivity(intent)

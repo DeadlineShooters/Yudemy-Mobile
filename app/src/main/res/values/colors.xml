@@ -28,7 +28,7 @@
     <color name="gray_250">#9DA3A7</color>
     <color name="gray_300">#6A6F73</color>
     <color name="gray_400">#3E4143</color>
+    <color name="gray_500">#2E2F31</color>
     <color name="divider_color">#D9DBDC</color>
     <color name="dialog_background">#33000000</color>
-
 </resources>

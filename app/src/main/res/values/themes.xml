@@ -9,6 +9,7 @@
         <item name="tabTextColor">@color/primary_text_color</item>
         <item name="tabSelectedTextColor">@color/primary_color</item>
         <item name="tabIndicatorColor">@color/primary_color</item>
+        <item name="editTextStyle">@style/MyEditText</item>
     </style>
 
     <style name="Theme.Yudemy" parent="Base.Theme.Yudemy" />
