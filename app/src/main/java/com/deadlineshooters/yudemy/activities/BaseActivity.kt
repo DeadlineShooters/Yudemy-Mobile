@@ -36,14 +36,6 @@ open class BaseActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        //Create global variable
-        var config: HashMap<String, String> = HashMap()
-
-    // Initialize cloudinary. Put in onCreate() function
-        config["cloud_name"] = BuildConfig.CLOUD_NAME;
-        MediaManager.init(this, config)
-
-
         /** add dummy data */
         // Course
 //        courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
