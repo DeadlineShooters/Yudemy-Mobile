@@ -136,4 +136,6 @@
     <string name="enter_new_password">Enter new password</string>
     <string name="retype_new_password">Re-type new password</string>
     <string name="change_password">Change password</string>
+    <string name="close_your_account_permanently">Close your account permanently</string>
+    <string name="close_account_warning">Warning: If you close your account, you will be unsubscribe from all your courses, and will lose access forever.</string>
 </resources>

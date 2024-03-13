@@ -73,11 +73,10 @@ class AccountFragment : Fragment() {
             replaceFragment(AccountSecurityFragment())
         }
 
-//        closeAcc.setOnClickListener {
-//            val intent = Intent(context, CloseAccountActivity::class.java)
-//            startActivity(intent)
-//        }
-//
+        closeAcc.setOnClickListener {
+            replaceFragment(CloseAccountFragment())
+        }
+
 //        aboutYudemy.setOnClickListener {
 //            val intent = Intent(context, AboutYudemyActivity::class.java)
 //            startActivity(intent)
