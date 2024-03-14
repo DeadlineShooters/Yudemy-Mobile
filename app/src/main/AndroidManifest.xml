@@ -13,6 +13,11 @@
             android:theme="@style/Theme.Yudemy"
             tools:targetApi="31">
         <activity
+                android:name=".activities.SuccessfullyEnrollActivity"
+                android:exported="false"
+                android:label="@string/title_activity_successfully_enroll"
+                android:theme="@style/Theme.Yudemy"/>
+        <activity
                 android:name=".activities.FilterActivity"
                 android:exported="false"/>
         <activity

@@ -15,4 +15,5 @@
         <item>Favorite courses</item>
         <item>All courses</item>
     </string-array>
+    <string name="title_activity_successfully_enroll">SuccessfullyEnrollActivity</string>
 </resources>
