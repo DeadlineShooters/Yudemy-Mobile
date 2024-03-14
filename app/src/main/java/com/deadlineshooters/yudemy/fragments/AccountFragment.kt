@@ -1,5 +1,6 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -13,6 +14,7 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.AboutUsActivity
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Image
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -84,7 +86,7 @@ class AccountFragment : Fragment() {
         }
 
         signOut.setOnClickListener {
-            // TODO: Implement sign out
+            showSignOutDialog()
         }
 
         val imageUrl = "https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg"
@@ -96,6 +98,18 @@ class AccountFragment : Fragment() {
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frameLayout, fragment)
         fragmentTransaction.commit()
+    }
+
+    private fun showSignOutDialog() {
+        MaterialAlertDialogBuilder(requireContext(),  R.style.ThemeOverlay_MyApp_MaterialAlertDialog)
+            .setMessage("Sign out from Yudemy?")
+            .setPositiveButton("Sign out") { dialog, which ->
+                // TODO: Implement sign out
+            }
+            .setNegativeButton("Cancel") { dialog, which ->
+                // Do something else.
+            }
+            .show()
     }
 
     companion object {
