@@ -45,8 +45,6 @@ class WishlistFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val toolbarTitle: TextView = (activity as MainActivity).getToolbarTitle() ?: return
-        toolbarTitle.text = "Wishlist"
         val categories = listOf(
             "Development", "Business", "Office Productivity", "Design",
             "Marketing", "Photography & Video", "Teaching & Academics",
@@ -61,14 +59,15 @@ class WishlistFragment : Fragment() {
 
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-            val adapter = CourseListAdapter(requireContext(), R.layout.course_list_item, courses)
-            binding.wishlistList.adapter = adapter
-            binding.wishlistList.visibility = View.GONE
-//            if (courses.isEmpty()) {
-//                binding.emptyFrame.visibility = View.VISIBLE
-//            } else {
-//                binding.emptyFrame.visibility = View.GONE
-//            }
+            val wishListAdapter = CourseListAdapter(requireContext(), R.layout.course_list_item, courses)
+            binding.wishlistList.adapter = wishListAdapter
+            if (courses.isEmpty()) {
+                binding.emptyFrame.visibility = View.VISIBLE
+                binding.wishlistList.visibility = View.GONE
+            } else {
+                binding.emptyFrame.visibility = View.GONE
+                binding.wishlistList.visibility = View.VISIBLE
+            }
         })
     }
 

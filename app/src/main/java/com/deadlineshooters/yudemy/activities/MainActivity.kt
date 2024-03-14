@@ -27,10 +27,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val toolbar: androidx.appcompat.widget.Toolbar = binding.toolbar
-        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.searchView.visibility = GONE
         replaceFragment(FeaturedFragment())  // show Featured fragment firstly
 
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->
@@ -63,10 +60,6 @@ class MainActivity : BaseActivity() {
         }
 
     }
-    fun getToolbarTitle(): TextView {
-        return binding.toolbarTitle
-    }
-
 
 
     private fun replaceFragment(fragment: Fragment) {
@@ -75,10 +68,6 @@ class MainActivity : BaseActivity() {
         fragmentTransaction.replace(R.id.frameLayout, fragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
-    }
-
-    fun getSearchView(): SearchView {
-        return binding.searchView
     }
 
 }

@@ -36,13 +36,7 @@ class AccountFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val toolbarTitle: TextView = (activity as MainActivity).getToolbarTitle() ?: return null
-        // If getToolbarTitle() returns null, the function returns null immediately
 
-        toolbarTitle.text = "Account"
-
-        // Otherwise, it inflates the layout and returns it
         return inflater.inflate(R.layout.fragment_account, container, false)
     }
 

@@ -1,18 +1,26 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Context.*
+import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.*
+import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
-import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.activities.MainActivity
+import com.deadlineshooters.yudemy.activities.FilterActivity
 import com.deadlineshooters.yudemy.adapters.CategoryAdapter1
 import com.deadlineshooters.yudemy.adapters.CategoryAdapter3
-import com.deadlineshooters.yudemy.databinding.FragmentFeaturedBinding
+import com.deadlineshooters.yudemy.adapters.CourseListAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentSearchBinding
+import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -28,11 +36,11 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class SearchFragment : Fragment() {
+    private lateinit var courseViewModel: CourseViewModel
     private var _binding: FragmentSearchBinding? = null
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
-    private lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,12 +49,14 @@ class SearchFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
-        val toolbarTitle: TextView = (activity as MainActivity).getToolbarTitle() ?: return null
+        return binding.root
+    }
 
-        toolbarTitle.text = ""
-        searchView = (activity as MainActivity).getSearchView()
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val categories = listOf(
             "Development", "Business", "Office Productivity", "Design",
             "Marketing", "Photography & Video", "Teaching & Academics",
@@ -73,18 +83,30 @@ class SearchFragment : Fragment() {
         }
         categoryList.addItemDecoration(FeaturedFragment.SpaceItemDecoration(8))
 
-        return binding.root
-    }
+        val searchView = binding.searchView
+        courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                courseViewModel = ViewModelProvider(this@SearchFragment).get(CourseViewModel::class.java)
+                courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
+                    val resultAdapter = CourseListAdapter(requireContext(), R.layout.course_list_item, courses)
+                    binding.resultList.adapter = resultAdapter
+                    binding.emptyFrame.visibility = View.GONE
+                    binding.resultList.visibility = View.VISIBLE
+                    searchView.clearFocus()
+                })
+                return true
+            }
 
-
-    override fun onResume() {
-        super.onResume()
-        searchView.visibility = View.VISIBLE
-    }
-
-    override fun onPause() {
-        super.onPause()
-        searchView.visibility = View.GONE
+            override fun onQueryTextChange(newText: String): Boolean {
+                // The query text has changed
+                return true
+            }
+        })
+        binding.filterBtn.setOnClickListener {
+            val intent = Intent(context, FilterActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onDestroyView() {

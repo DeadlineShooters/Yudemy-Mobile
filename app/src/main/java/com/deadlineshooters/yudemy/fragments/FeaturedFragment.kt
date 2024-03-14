@@ -78,8 +78,6 @@ class FeaturedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val toolbarTitle: TextView = (activity as MainActivity).getToolbarTitle() ?: return
-        toolbarTitle.text = ""
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
             val adapter = CourseListAdapter(requireContext(), R.layout.course_list_item, courses)

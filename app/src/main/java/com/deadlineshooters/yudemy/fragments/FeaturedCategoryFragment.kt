@@ -1,5 +1,6 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.FilterActivity
 import com.deadlineshooters.yudemy.activities.MainActivity
 import com.deadlineshooters.yudemy.adapters.CategoryAdapter1
 import com.deadlineshooters.yudemy.adapters.CourseListAdapter
@@ -53,8 +55,6 @@ class FeaturedCategoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val toolbarTitle: TextView = (activity as MainActivity).getToolbarTitle() ?: return
-        toolbarTitle.text = ""
         binding.categoryName.text = category
 
         instructorViewModel = ViewModelProvider(this).get(InstructorViewModel::class.java)

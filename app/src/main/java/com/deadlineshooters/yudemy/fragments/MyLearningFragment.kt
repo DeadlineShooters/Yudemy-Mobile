@@ -57,12 +57,7 @@ class MyLearningFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val toolbarTitle: TextView = (activity as MainActivity).getToolbarTitle() ?: return null
-        // If getToolbarTitle() returns null, the function returns null immediately
 
-        toolbarTitle.text = "My courses"
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_my_learning, container, false)
     }
 
