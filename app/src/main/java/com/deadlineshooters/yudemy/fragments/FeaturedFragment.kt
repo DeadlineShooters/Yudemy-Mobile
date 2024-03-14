@@ -1,23 +1,20 @@
 package com.deadlineshooters.yudemy.fragments
 
-import android.content.ContentValues.TAG
-import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.activities.MainActivity
 import com.deadlineshooters.yudemy.adapters.CategoryAdapter1
-import com.deadlineshooters.yudemy.adapters.CourseListAdapter
+import com.deadlineshooters.yudemy.adapters.CourseListAdapter1
+import com.deadlineshooters.yudemy.adapters.CourseListAdapter2
 import com.deadlineshooters.yudemy.databinding.FragmentFeaturedBinding
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 
@@ -80,7 +77,9 @@ class FeaturedFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-            val adapter = CourseListAdapter(requireContext(), R.layout.course_list_item, courses)
+            val clonedCourses = List(10) { courses[0] }
+            val adapter = CourseListAdapter2(clonedCourses)
+            binding.courseList.layoutManager = LinearLayoutManager(context)
             binding.courseList.adapter = adapter
         })
     }

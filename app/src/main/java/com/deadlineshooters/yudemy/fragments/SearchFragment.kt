@@ -1,14 +1,9 @@
 package com.deadlineshooters.yudemy.fragments
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Context.*
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.*
-import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -18,7 +13,7 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.FilterActivity
 import com.deadlineshooters.yudemy.adapters.CategoryAdapter1
 import com.deadlineshooters.yudemy.adapters.CategoryAdapter3
-import com.deadlineshooters.yudemy.adapters.CourseListAdapter
+import com.deadlineshooters.yudemy.adapters.CourseListAdapter1
 import com.deadlineshooters.yudemy.databinding.FragmentSearchBinding
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.google.android.flexbox.FlexDirection
@@ -89,11 +84,11 @@ class SearchFragment : Fragment() {
             override fun onQueryTextSubmit(query: String): Boolean {
                 courseViewModel = ViewModelProvider(this@SearchFragment).get(CourseViewModel::class.java)
                 courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-                    val resultAdapter = CourseListAdapter(requireContext(), R.layout.course_list_item, courses)
+                    val clonedCourses = List(10) { courses[0] }
+                    val resultAdapter = CourseListAdapter1(requireContext(), R.layout.course_list_item, clonedCourses)
                     binding.resultList.adapter = resultAdapter
                     binding.emptyFrame.visibility = View.GONE
                     binding.resultList.visibility = View.VISIBLE
-                    searchView.clearFocus()
                 })
                 return true
             }

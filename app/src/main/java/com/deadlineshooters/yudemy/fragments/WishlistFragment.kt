@@ -5,18 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.activities.MainActivity
-import com.deadlineshooters.yudemy.adapters.CategoryAdapter1
 import com.deadlineshooters.yudemy.adapters.CategoryAdapter2
-import com.deadlineshooters.yudemy.adapters.CourseListAdapter
+import com.deadlineshooters.yudemy.adapters.CourseListAdapter1
 import com.deadlineshooters.yudemy.databinding.FragmentWishlistBinding
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 
@@ -59,7 +53,8 @@ class WishlistFragment : Fragment() {
 
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-            val wishListAdapter = CourseListAdapter(requireContext(), R.layout.course_list_item, courses)
+            val clonedCourses = List(10) { courses[0] }
+            val wishListAdapter = CourseListAdapter1(requireContext(), R.layout.course_list_item, clonedCourses)
             binding.wishlistList.adapter = wishListAdapter
             if (courses.isEmpty()) {
                 binding.emptyFrame.visibility = View.VISIBLE

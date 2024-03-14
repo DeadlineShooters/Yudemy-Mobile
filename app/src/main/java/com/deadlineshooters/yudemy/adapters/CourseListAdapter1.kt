@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.models.Course
 
-class CourseListAdapter(context: Context, private val resource: Int, private val courses: List<Course>) :
+class CourseListAdapter1(context: Context, private val resource: Int, private val courses: List<Course>) :
     ArrayAdapter<Course>(context, resource, courses) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {

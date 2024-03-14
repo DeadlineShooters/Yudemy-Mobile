@@ -1,79 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                   xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
-                                                   android:layout_width="match_parent"
-                                                   android:layout_height="match_parent"
-                                                   tools:context=".fragments.FeaturedFragment" android:layout_marginLeft="16dp"
-                                                   android:id="@+id/featuredFragment">
+<androidx.core.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".fragments.FeaturedFragment"
+        android:id="@+id/featuredFragment">
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent" android:id="@+id/constraintLayout"
-            android:layout_marginTop="32dp">
-
-        <TextView
-                android:text="Career goal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/careerGoal"
-                android:textColor="#777"
-                app:layout_constraintTop_toBottomOf="@+id/welcomeLine"
-                app:layout_constraintStart_toStartOf="@+id/welcomeLine"
-        />
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/welcomeLine"
-                android:textStyle="bold" android:textSize="16sp"
-                android:text="Welcome, User" app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.5" app:layout_constraintBottom_toTopOf="@+id/careerGoal"
-                app:layout_constraintStart_toEndOf="@+id/imageView3" android:layout_marginStart="16dp" android:layout_marginBottom="8dp"
-        />
-        <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp" app:srcCompat="@drawable/ic_user" android:id="@+id/imageView3"
-                app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" android:id="@+id/constraintLayout2">
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold" android:textSize="28sp"
-                android:text="Categories"
-                android:id="@+id/textView2"
-                app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="16dp"/>
-        <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/category_button_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/textView2" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="16dp">
-
-        </androidx.recyclerview.widget.RecyclerView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="24sp"
-                android:text="All courses"
-                android:id="@+id/textView4"
-                app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="16dp"/>
-        <ListView
-                android:id="@+id/courseList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".fragments.FeaturedFragment">
+        <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent" android:id="@+id/constraintLayout"
+                android:layout_marginTop="32dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                    android:text="Career goal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/careerGoal"
+                    android:textColor="#777"
+                    app:layout_constraintTop_toBottomOf="@+id/welcomeLine"
+                    app:layout_constraintStart_toStartOf="@+id/welcomeLine"
+            />
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/welcomeLine"
+                    android:textStyle="bold" android:textSize="16sp"
+                    android:text="Welcome, User" app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.5" app:layout_constraintBottom_toTopOf="@+id/careerGoal"
+                    app:layout_constraintStart_toEndOf="@+id/imageView3" android:layout_marginStart="16dp" android:layout_marginBottom="8dp"
+            />
+            <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp" app:srcCompat="@drawable/ic_user" android:id="@+id/imageView3"
+                    app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" android:layout_marginStart="16dp"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+                app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" android:id="@+id/constraintLayout2"
+        >
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold" android:textSize="28sp"
+                    android:text="Categories"
+                    android:id="@+id/textView2"
+                    app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent" android:layout_marginTop="16dp"
+                    android:layout_marginStart="16dp"/>
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/category_button_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/textView2" app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="16dp" android:layout_marginStart="8dp">
+
+            </androidx.recyclerview.widget.RecyclerView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:text="All courses"
+                    android:id="@+id/textView4"
+                    app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="16dp" android:layout_marginLeft="16dp"/>
+            <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" app:layout_constraintTop_toBottomOf="@+id/textView4"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" android:id="@+id/courseList"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

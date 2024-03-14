@@ -1,23 +1,16 @@
 package com.deadlineshooters.yudemy.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.activities.FilterActivity
-import com.deadlineshooters.yudemy.activities.MainActivity
-import com.deadlineshooters.yudemy.adapters.CategoryAdapter1
-import com.deadlineshooters.yudemy.adapters.CourseListAdapter
+import com.deadlineshooters.yudemy.adapters.CourseListAdapter1
 import com.deadlineshooters.yudemy.adapters.InstructorListAdapter
-import com.deadlineshooters.yudemy.databinding.FragmentFeaturedBinding
 import com.deadlineshooters.yudemy.databinding.FragmentFeaturedCategoryBinding
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.deadlineshooters.yudemy.viewmodels.InstructorViewModel
@@ -66,7 +59,7 @@ class FeaturedCategoryFragment : Fragment() {
 
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-            val adapter = CourseListAdapter(requireContext(), R.layout.course_list_item, courses)
+            val adapter = CourseListAdapter1(requireContext(), R.layout.course_list_item, courses)
             binding.courseList.adapter = adapter
         })
     }
