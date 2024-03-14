@@ -20,13 +20,17 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.adapters.QuestionListAdapter
 import com.deadlineshooters.yudemy.adapters.ReplyListAdapter
+import com.deadlineshooters.yudemy.helpers.MyLearningFilterAdapter
 import com.deadlineshooters.yudemy.models.Question
 import com.deadlineshooters.yudemy.models.Reply
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -53,6 +57,10 @@ class QAFragment : Fragment() {
     private lateinit var askQuestionDialog: Dialog
     private lateinit var questionDetailDialog: Dialog
     private lateinit var editQuestionDialog: Dialog
+    private lateinit var filterQuestionDialog: Dialog
+    private lateinit var filterByLecturesDialog: Dialog
+    private lateinit var filterSortMostRecentDialog: Dialog
+    private lateinit var filterByQuestionDialog: Dialog
     private lateinit var startForImagePickerResult: ActivityResultLauncher<PickVisualMediaRequest>
     private val originalFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val newFormat = SimpleDateFormat("dd, MMM, yyyy", Locale.getDefault())
@@ -96,7 +104,7 @@ class QAFragment : Fragment() {
 
 
         qaCloseBtn.setOnClickListener {
-            //TODO: Close the activity
+            //TODO: Close the fragment
         }
 
         startForImagePickerResult = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia()) { uris ->
@@ -124,12 +132,16 @@ class QAFragment : Fragment() {
             questionDetailDialog.show()
         }
 
+        qaFilterBtn.setOnClickListener {
+            filterQuestionDialog = createFilterQuestionDialog()
+            filterQuestionDialog.show()
+        }
+
     }
 
     private fun createAskQuestionDialog(): Dialog {
         val sheet = layoutInflater.inflate(R.layout.dialog_ask_question, null)
         val dialog = Dialog(requireContext(), android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
-        Log.d("Sheet", sheet.toString())
         val dumpLectureList = listOf("Lecture 1", "Lecture 2", "Lecture 3")
         val cancelAskBtn = sheet.findViewById<TextView>(R.id.cancelAskBtn)
         val lectureSpinner = sheet.findViewById<Spinner>(R.id.lectureSpinner)
@@ -298,7 +310,6 @@ class QAFragment : Fragment() {
     private fun createEditQuestionDialog(): Dialog {
         val sheet = layoutInflater.inflate(R.layout.dialog_edit_question, null)
         val dialog = Dialog(requireContext(), android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
-        Log.d("Sheet", sheet.toString())
         val dumpLectureList = listOf("Lecture 1", "Lecture 2", "Lecture 3")
         val cancelEditBtn = sheet.findViewById<TextView>(R.id.cancelEditBtn)
         val editLectureSpinner = sheet.findViewById<Spinner>(R.id.editLectureSpinner)
@@ -341,6 +352,87 @@ class QAFragment : Fragment() {
         return dialog
     }
 
+    private fun createFilterQuestionDialog(): Dialog {
+        val sheet = layoutInflater.inflate(R.layout.dialog_filter_question, null)
+        val dialog = Dialog(requireContext(), android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
+        val closeFilterBtn = sheet.findViewById<TextView>(R.id.closeFilterBtn)
+        val resetFilterBtn = sheet.findViewById<TextView>(R.id.resetFilterBtn)
+        val lectureFilter = sheet.findViewById<TextView>(R.id.lectureFilter)
+        val sortMostRecentFilter = sheet.findViewById<TextView>(R.id.sortMostRecentFilter)
+        val allQuestionsFilter= sheet.findViewById<TextView>(R.id.allQuestionsFilter)
+        val applyFilerBtn = sheet.findViewById<Button>(R.id.applyFilerBtn)
+
+        filterByLecturesDialog = createQuestionFilterDialog(lectureFilter, 1)
+        filterSortMostRecentDialog = createQuestionFilterDialog(sortMostRecentFilter, 2)
+        filterByQuestionDialog = createQuestionFilterDialog(allQuestionsFilter, 3)
+
+        lectureFilter.setOnClickListener {
+            filterByLecturesDialog.show()
+        }
+        sortMostRecentFilter.setOnClickListener {
+            filterSortMostRecentDialog.show()
+        }
+        allQuestionsFilter.setOnClickListener {
+            filterByQuestionDialog.show()
+        }
+
+        closeFilterBtn.setOnClickListener{
+            filterQuestionDialog.dismiss()
+        }
+
+        resetFilterBtn.setOnClickListener{
+            lectureFilter.text = "All lectures"
+            sortMostRecentFilter.text = "Sort by most recent"
+            allQuestionsFilter.text = "All questions"
+        }
+
+        applyFilerBtn.setOnClickListener{
+            //TODO: Apply filter and find questions from database
+        }
+
+        dialog.setContentView(sheet)
+        return dialog
+    }
+
+    private fun createQuestionFilterDialog(view: TextView, state: Int): BottomSheetDialog {
+        val dialog = BottomSheetDialog(requireContext(), android.R.style.Theme_Material_Light)
+        val bottomSheet = layoutInflater.inflate(R.layout.dialog_my_learning_filter, null)
+        var adapter: MyLearningFilterAdapter? = null
+        when (state) {
+            1 -> {
+                adapter = MyLearningFilterAdapter(resources.getStringArray(R.array.lectures_filter))
+            }
+            2 -> {
+                adapter = MyLearningFilterAdapter(resources.getStringArray(R.array.sort_most_recent_filter))
+            }
+            3 -> {
+                adapter = MyLearningFilterAdapter(resources.getStringArray(R.array.questions_filter))
+            }
+        }
+        val rvFilters = bottomSheet.findViewById<RecyclerView>(R.id.filterRV)
+
+        rvFilters!!.adapter = adapter
+        rvFilters.layoutManager = LinearLayoutManager(activity)
+        val itemDecoration: RecyclerView.ItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+        rvFilters.addItemDecoration(itemDecoration)
+        adapter?.onItemClick = { filter ->
+            // TODO: handle filter
+            Log.i("Filter option click", filter)
+            view.text = filter
+            dialog.dismiss()
+        }
+
+        dialog.setOnShowListener {
+            (bottomSheet.parent.parent as ViewGroup).background = ResourcesCompat.getDrawable(resources, R.color.dialog_background, null)
+        }
+
+        bottomSheet.findViewById<Button>(R.id.cancelFilterBtn).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setContentView(bottomSheet)
+        return dialog
+    }
 
     companion object {
         /**

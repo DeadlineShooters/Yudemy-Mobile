@@ -81,4 +81,17 @@
         <item>Favorite courses</item>
         <item>All courses</item>
     </string-array>
+    <string-array name="lectures_filter">
+        <item>All lectures</item>
+        <item>Current lecture</item>
+    </string-array>
+    <string-array name="sort_most_recent_filter">
+        <item>Sort by most recent</item>
+        <item>Sort by recommended</item>
+    </string-array>
+    <string-array name="questions_filter">
+        <item>All questions</item>
+        <item>Question I asked</item>
+        <item>Question without responses</item>
+    </string-array>
 </resources>
