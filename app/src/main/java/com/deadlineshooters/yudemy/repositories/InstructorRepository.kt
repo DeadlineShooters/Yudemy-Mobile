@@ -1,19 +1,19 @@
 package com.deadlineshooters.yudemy.repositories
 
-import android.content.ContentValues
 import android.util.Log
+import com.deadlineshooters.yudemy.models.Instructor
+import com.google.firebase.firestore.FirebaseFirestore
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.deadlineshooters.yudemy.models.Course
-import com.deadlineshooters.yudemy.models.Instructor
-import com.google.firebase.firestore.FirebaseFirestore
+import android.content.ContentValues
 
 class InstructorRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
-    private val instructorCollection = mFireStore.collection("lecturers")
+    private val instructorsCollection = mFireStore.collection("lecturers")
 
-    fun addLecturer(instructor: Instructor) {
-        val documentReference = instructorCollection.document()
+    fun addInstructor(instructor: Instructor) {
+        val documentReference = instructorsCollection.document()
         instructor._id = documentReference.id
         documentReference.set(instructor)
             .addOnSuccessListener {
@@ -23,11 +23,10 @@ class InstructorRepository {
                     e -> Log.w("Lecturer", "Error writing document", e)
             }
     }
-
     fun getInstructor(): LiveData<List<Instructor>> {
         val instructorsLiveData = MutableLiveData<List<Instructor>>()
 
-        instructorCollection.addSnapshotListener { snapshot, e ->
+        instructorsCollection.addSnapshotListener { snapshot, e ->
             if (e != null) {
                 Log.w(ContentValues.TAG, "Listen failed.", e)
                 return@addSnapshotListener

@@ -2,12 +2,16 @@ package com.deadlineshooters.yudemy.models
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.RawValue
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Parcelize
 data class Course(
     var id: String = "",
     var name: String = "",
-    var lecturer: String = "",
+    var instructor: String = "",
     var totalStudents: Int = 0,
     var introduction: String = "",
     var description: String = "",
@@ -20,5 +24,9 @@ data class Course(
     var totalSection: Int = 0,
     var totalLength: Int = 0, // in seconds
     var totalQuiz: Int = 0,
-    var thumbnail: Image = Image()
+    var thumbnail: Image = Image(),
+    var avgRating: Double = 0.0,
+    var status: Boolean = false,
+    var createdDate: String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
+    var totalRevenue: Number = 0.0
 ) : Parcelable

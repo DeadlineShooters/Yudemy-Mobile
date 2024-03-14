@@ -1,13 +1,7 @@
 package com.deadlineshooters.yudemy.activities
 
 import android.os.Bundle
-import android.view.View
-import android.view.View.GONE
-import android.widget.SearchView
-import android.widget.TextView
-import android.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.ActivityMainBinding
 import com.deadlineshooters.yudemy.fragments.AccountFragment
@@ -15,11 +9,10 @@ import com.deadlineshooters.yudemy.fragments.FeaturedFragment
 import com.deadlineshooters.yudemy.fragments.MyLearningFragment
 import com.deadlineshooters.yudemy.fragments.SearchFragment
 import com.deadlineshooters.yudemy.fragments.WishlistFragment
-import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class MainActivity : BaseActivity() {
+class StudentMainActivity : BaseActivity() {
     val db = Firebase.firestore
     private lateinit var binding: ActivityMainBinding
 
@@ -60,7 +53,6 @@ class MainActivity : BaseActivity() {
         }
 
     }
-
 
     private fun replaceFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager

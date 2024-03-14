@@ -1,17 +1,27 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.app.Dialog
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.CourseDetailActivity
+import com.deadlineshooters.yudemy.activities.EnrolledActivity
+import com.deadlineshooters.yudemy.activities.InstructorMainActivity
+import com.deadlineshooters.yudemy.activities.SignInActivity
 import com.deadlineshooters.yudemy.adapters.CategoryAdapter1
 import com.deadlineshooters.yudemy.adapters.CourseListAdapter1
 import com.deadlineshooters.yudemy.adapters.CourseListAdapter2
@@ -35,10 +45,44 @@ class FeaturedFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Inflate the layout for this fragment
         _binding = FragmentFeaturedBinding.inflate(inflater, container, false)
-        // Inflate the layout containing the RecyclerView
         val view = inflater.inflate(R.layout.fragment_featured, container, false)
 
+        binding.btnCourseDetail.setOnClickListener {
+            val intent = Intent(activity, CourseDetailActivity::class.java)
+            startActivity(intent)
+        }
+
+        // test code for feedback popup
+        val btnPopUpFeedback = view.findViewById<Button>(R.id.btn_popUpFeedback)
+        btnPopUpFeedback.setOnClickListener {
+            val dialog = Dialog(requireContext())
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(true)
+            dialog.setContentView(R.layout.course_feedback_popup_layout) // replace 'your_layout' with the name of your layout file
+
+            dialog.setCancelable(false) // Prevent the dialog from being dismissed when the user touches outside the dialog
+
+            val closeButton = dialog.findViewById<ImageView>(R.id.iv_exit)
+            closeButton.setOnClickListener {
+                // Handle close button click here
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        }
+        val btnGoToInstructor = view.findViewById<Button>(R.id.btn_instructor)
+
+        btnGoToInstructor.setOnClickListener {
+            val intent = Intent(context, InstructorMainActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.btnEnrolledCourse.setOnClickListener {
+            val intent = Intent(activity, EnrolledActivity::class.java)
+            startActivity(intent)
+        }
         // Obtain a reference to the RecyclerView
         val recyclerView = binding.categoryButtonList // Replace with your RecyclerView's ID
 
