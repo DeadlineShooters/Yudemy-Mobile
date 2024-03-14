@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,19 +12,23 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.contains
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.adapters.QuestionListAdapter
+import com.deadlineshooters.yudemy.adapters.ReplyListAdapter
 import com.deadlineshooters.yudemy.models.Question
+import com.deadlineshooters.yudemy.models.Reply
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import kotlin.properties.Delegates
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -46,8 +49,11 @@ class QAFragment : Fragment() {
     private lateinit var addQuestionBtn: Button
     private lateinit var questionListView: RecyclerView
     private lateinit var askQuestionDialog: Dialog
+    private lateinit var questionDetailDialog: Dialog
     private lateinit var startForImagePickerResult: ActivityResultLauncher<PickVisualMediaRequest>
-
+    private val originalFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    private val newFormat = SimpleDateFormat("dd, MMM, yyyy", Locale.getDefault())
+    private var state by Delegates.notNull<Int>()
 
 
     private val dumpQuestion1 = Question("123", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
@@ -85,6 +91,7 @@ class QAFragment : Fragment() {
         questionListView.adapter = questionListAdapter
         questionListView.layoutManager = LinearLayoutManager(requireContext())
 
+
         qaCloseBtn.setOnClickListener {
             //TODO: Close the activity
         }
@@ -100,16 +107,25 @@ class QAFragment : Fragment() {
             }
         }
 
+
         addQuestionBtn.setOnClickListener {
             askQuestionDialog = createAskQuestionDialog()
+            state = 1
             askQuestionDialog.show()
+        }
+
+        questionListAdapter.onItemClick = { question ->
+            questionDetailDialog = createQuestionDetailDialog(question)
+            state = 2
+            questionDetailDialog.show()
         }
 
     }
 
     private fun createAskQuestionDialog(): Dialog {
-        val dialog = Dialog(requireContext(), android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
         val sheet = layoutInflater.inflate(R.layout.dialog_ask_question, null)
+        val dialog = Dialog(requireContext(), android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
+        Log.d("Sheet", sheet.toString())
         val dumpLectureList = listOf("Lecture 1", "Lecture 2", "Lecture 3")
         val cancelAskBtn = sheet.findViewById<TextView>(R.id.cancelAskBtn)
         val lectureSpinner = sheet.findViewById<Spinner>(R.id.lectureSpinner)
@@ -123,6 +139,8 @@ class QAFragment : Fragment() {
                 android.R.layout.simple_spinner_dropdown_item)
             lectureSpinner.adapter = adapter
         }
+
+
 
         cancelAskBtn.setOnClickListener{
             askQuestionDialog.dismiss()
@@ -141,7 +159,14 @@ class QAFragment : Fragment() {
     }
 
     private fun addImageView(uri: Uri) {
-        val imageContainer = askQuestionDialog.findViewById<LinearLayout>(R.id.imageContainer)
+        var imageContainer: LinearLayout = LinearLayout(requireContext())
+        if(state == 1){
+            imageContainer = askQuestionDialog.findViewById(R.id.questionImageContainer)
+        }
+        if(state == 2){
+            imageContainer = questionDetailDialog.findViewById(R.id.replyImageContainer)
+        }
+
         val imageView = ImageView(requireContext())
         val layoutParams = LinearLayout.LayoutParams(
             200,
@@ -179,6 +204,65 @@ class QAFragment : Fragment() {
         }
         return questionList
     }
+
+    private fun createQuestionDetailDialog(question: Question): Dialog {
+        val sheet = layoutInflater.inflate(R.layout.dialog_question_detail, null)
+        val dialog = Dialog(requireContext(), android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
+
+        val backQuestionDetailBtn = sheet.findViewById<TextView>(R.id.backQuestionDetailBtn)
+        val questionDetailTitle = sheet.findViewById<TextView>(R.id.questionDetailTitle)
+        val questionDetailAskerName = sheet.findViewById<TextView>(R.id.questionDetailAskerName)
+        val questionDetailAskDate = sheet.findViewById<TextView>(R.id.questionDetailAskDate)
+        val questionDetailLectureId = sheet.findViewById<TextView>(R.id.questionDetailLectureId)
+        val questionDetailContentView = sheet.findViewById<ConstraintLayout>(R.id.questionDetailContentView)
+        val questionDetailContent = sheet.findViewById<TextView>(R.id.questionDetailContent)
+        val questionDetailImage = sheet.findViewById<ImageView>(R.id.questionDetailImage)
+        val replyListView = sheet.findViewById<RecyclerView>(R.id.replyListView)
+        val cameraBtn1 = sheet.findViewById<Button>(R.id.cameraBtn1)
+        val sendBtn = sheet.findViewById<Button>(R.id.sendBtn)
+
+        val dumpReply1 = Reply("John Doe", "Brad Schiff", "123", arrayListOf(), "I think you should do this I think you should do this I think you should do this", "14/03/2024")
+        val dumpReply2 = Reply("John Doe", "Brad Schiff", "123", arrayListOf(), "I think you should do this", "14/03/2024")
+        val dumpReplyList = listOf(dumpReply1, dumpReply2)
+        //TODO: Get reply list by questionId from database
+
+        questionDetailTitle.text = question.title
+        questionDetailAskerName.text = question.asker
+        val date: Date = originalFormat.parse(question.createdTime) ?: Date()
+        val formattedDate: String = newFormat.format(date)
+        questionDetailAskDate.text = formattedDate
+
+        questionDetailLectureId.text = question.lectureId
+        questionDetailContent.text = question.details
+        if(question.images.isEmpty()){
+            questionDetailImage.visibility = View.GONE
+        }
+        else {
+            questionDetailImage.visibility = View.VISIBLE
+        }
+
+
+        val replyListAdapter = ReplyListAdapter(dumpReplyList)
+        replyListView.adapter = replyListAdapter
+        replyListView.layoutManager = LinearLayoutManager(requireContext())
+
+        backQuestionDetailBtn.setOnClickListener{
+            questionDetailDialog.dismiss()
+        }
+
+        cameraBtn1.setOnClickListener {
+            startForImagePickerResult.launch(PickVisualMediaRequest())
+        }
+
+        sendBtn.setOnClickListener{
+            //TODO: Submit reply to database
+        }
+
+        dialog.setContentView(sheet)
+        return dialog
+    }
+
+
     companion object {
         /**
          * Use this factory method to create a new instance of

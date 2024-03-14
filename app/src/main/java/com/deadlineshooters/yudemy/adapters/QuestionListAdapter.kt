@@ -11,9 +11,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Question
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class QuestionListAdapter (val questionList: List<Question>): RecyclerView.Adapter<QuestionListAdapter.ViewHolder>() {
     var onItemClick: ((Question) -> Unit)? = null
+    private val originalFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    private val newFormat = SimpleDateFormat("dd, MMM, yyyy", Locale.getDefault())
 
     inner class ViewHolder(listQuestionView: View) : RecyclerView.ViewHolder(listQuestionView) {
         val askerImage: ImageView = listQuestionView.findViewById(R.id.askerImage)
@@ -22,15 +27,13 @@ class QuestionListAdapter (val questionList: List<Question>): RecyclerView.Adapt
         val askDate: TextView = listQuestionView.findViewById(R.id.askDate)
         val lectureId: TextView = listQuestionView.findViewById(R.id.lectureId)
         val amountReply: TextView = listQuestionView.findViewById(R.id.amountReply)
-        private var questionContentView: ConstraintLayout = listQuestionView.findViewById(R.id.questionContentView)
+        val questionContentView: ConstraintLayout = listQuestionView.findViewById(R.id.questionContentView)
         val questionContent: TextView = listQuestionView.findViewById(R.id.questionContent)
         val questionImage: ImageView = listQuestionView.findViewById(R.id.questionImage)
 
         init {
             listQuestionView.setOnClickListener {
-                questionContentView = listQuestionView.findViewById(R.id.questionContentView) as ConstraintLayout
-                questionContentView.visibility = if (questionContentView.visibility == View.VISIBLE) View.GONE else View.VISIBLE
-
+                onItemClick?.invoke(questionList[bindingAdapterPosition])
             }
         }
     }
@@ -59,7 +62,11 @@ class QuestionListAdapter (val questionList: List<Question>): RecyclerView.Adapt
 
         questionTitle.text = question.title
         askerName.text = question.asker
-        askDate.text = question.createdTime
+
+        val date: Date = originalFormat.parse(question.createdTime) ?: Date()
+        val formattedDate: String = newFormat.format(date)
+        askDate.text = formattedDate
+
         lectureId.text = question.lectureId
         amountReply.text = "No Replies"
         questionContent.text = question.details
