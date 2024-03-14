@@ -409,7 +409,7 @@ class QAFragment : Fragment() {
                 adapter = MyLearningFilterAdapter(resources.getStringArray(R.array.questions_filter))
             }
         }
-        val rvFilters = bottomSheet.findViewById<RecyclerView>(R.id.filterRV)
+        val rvFilters = bottomSheet.findViewById<RecyclerView>(R.id.rvFilters)
 
         rvFilters!!.adapter = adapter
         rvFilters.layoutManager = LinearLayoutManager(activity)
@@ -426,7 +426,7 @@ class QAFragment : Fragment() {
             (bottomSheet.parent.parent as ViewGroup).background = ResourcesCompat.getDrawable(resources, R.color.dialog_background, null)
         }
 
-        bottomSheet.findViewById<Button>(R.id.cancelFilterBtn).setOnClickListener {
+        bottomSheet.findViewById<Button>(R.id.cancelBtn).setOnClickListener {
             dialog.dismiss()
         }
 
