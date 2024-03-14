@@ -1,8 +1,10 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.app.AlertDialog
 import android.app.Dialog
 import android.net.Uri
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -50,6 +52,7 @@ class QAFragment : Fragment() {
     private lateinit var questionListView: RecyclerView
     private lateinit var askQuestionDialog: Dialog
     private lateinit var questionDetailDialog: Dialog
+    private lateinit var editQuestionDialog: Dialog
     private lateinit var startForImagePickerResult: ActivityResultLauncher<PickVisualMediaRequest>
     private val originalFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val newFormat = SimpleDateFormat("dd, MMM, yyyy", Locale.getDefault())
@@ -115,6 +118,7 @@ class QAFragment : Fragment() {
         }
 
         questionListAdapter.onItemClick = { question ->
+            // TODO: check if the clicked question has asker = user._id
             questionDetailDialog = createQuestionDetailDialog(question)
             state = 2
             questionDetailDialog.show()
@@ -129,7 +133,7 @@ class QAFragment : Fragment() {
         val dumpLectureList = listOf("Lecture 1", "Lecture 2", "Lecture 3")
         val cancelAskBtn = sheet.findViewById<TextView>(R.id.cancelAskBtn)
         val lectureSpinner = sheet.findViewById<Spinner>(R.id.lectureSpinner)
-        val cameraBtn = sheet.findViewById<Button>(R.id.cameraBtn)
+        val cameraBtn = sheet.findViewById<Button>(R.id.editCameraBtn)
         val submitQuestionBtn = sheet.findViewById<TextView>(R.id.submitQuestionBtn)
 
 
@@ -159,12 +163,11 @@ class QAFragment : Fragment() {
     }
 
     private fun addImageView(uri: Uri) {
-        var imageContainer: LinearLayout = LinearLayout(requireContext())
-        if(state == 1){
-            imageContainer = askQuestionDialog.findViewById(R.id.questionImageContainer)
-        }
-        if(state == 2){
-            imageContainer = questionDetailDialog.findViewById(R.id.replyImageContainer)
+        val imageContainer = when (state) {
+            1 -> askQuestionDialog.findViewById(R.id.questionImageContainer)
+            2 -> questionDetailDialog.findViewById(R.id.replyImageContainer)
+            3 -> askQuestionDialog.findViewById(R.id.editQuestionImageContainer)
+            else -> LinearLayout(requireContext())
         }
 
         val imageView = ImageView(requireContext())
@@ -220,11 +223,14 @@ class QAFragment : Fragment() {
         val replyListView = sheet.findViewById<RecyclerView>(R.id.replyListView)
         val cameraBtn1 = sheet.findViewById<Button>(R.id.cameraBtn1)
         val sendBtn = sheet.findViewById<Button>(R.id.sendBtn)
+        val deleteQuestionBtn = sheet.findViewById<Button>(R.id.deleteQuestionBtn)
+        val editQuestionBtn = sheet.findViewById<TextView>(R.id.editQuestionBtn)
 
         val dumpReply1 = Reply("John Doe", "Brad Schiff", "123", arrayListOf(), "I think you should do this I think you should do this I think you should do this", "14/03/2024")
         val dumpReply2 = Reply("John Doe", "Brad Schiff", "123", arrayListOf(), "I think you should do this", "14/03/2024")
         val dumpReplyList = listOf(dumpReply1, dumpReply2)
         //TODO: Get reply list by questionId from database
+        //TODO: check if the question is asked by the user, if not, change the headpage to "New Question'
 
         questionDetailTitle.text = question.title
         questionDetailAskerName.text = question.asker
@@ -256,6 +262,79 @@ class QAFragment : Fragment() {
 
         sendBtn.setOnClickListener{
             //TODO: Submit reply to database
+        }
+
+        //TODO: check if the question is asked by the user, if not, hide the buttons (uncomment the 2 lines below), and change the headpage to "New Question'
+//        deleteQuestionBtn.visibility = View.GONE
+//        editQuestionBtn.visibility = View.GONE
+
+        deleteQuestionBtn.setOnClickListener{
+            //TODO: Delete question from database
+            val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+            builder
+                .setMessage("Are you sure you want delete this question? This action cannot be undone.")
+                .setTitle("Delete question")
+                .setNegativeButton(Html.fromHtml("<font color='#00000FF'><b>Cancel</b></font>")) { dialog, which ->
+
+                }
+                .setPositiveButton(Html.fromHtml("<font color='#FF0000'><b>Delete</b></font>")) { dialog, which ->
+                    //TODO: Delete question from database
+                }
+
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
+        }
+
+        editQuestionBtn.setOnClickListener{
+            editQuestionDialog = createEditQuestionDialog()
+            state = 3
+            editQuestionDialog.show()
+        }
+
+        dialog.setContentView(sheet)
+        return dialog
+    }
+
+    private fun createEditQuestionDialog(): Dialog {
+        val sheet = layoutInflater.inflate(R.layout.dialog_edit_question, null)
+        val dialog = Dialog(requireContext(), android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
+        Log.d("Sheet", sheet.toString())
+        val dumpLectureList = listOf("Lecture 1", "Lecture 2", "Lecture 3")
+        val cancelEditBtn = sheet.findViewById<TextView>(R.id.cancelEditBtn)
+        val editLectureSpinner = sheet.findViewById<Spinner>(R.id.editLectureSpinner)
+        val editCameraBtn = sheet.findViewById<Button>(R.id.editCameraBtn)
+        val submitEditQuestionBtn = sheet.findViewById<TextView>(R.id.submitEditQuestionBtn)
+
+
+        ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, dumpLectureList)
+            .also { adapter ->
+                adapter.setDropDownViewResource(
+                    android.R.layout.simple_spinner_dropdown_item)
+                editLectureSpinner.adapter = adapter
+            }
+
+        cancelEditBtn.setOnClickListener{
+            val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+            builder
+                .setMessage("Are you sure you want to discard the changes?")
+                .setTitle("Please Confirm")
+                .setNegativeButton(Html.fromHtml("<font color='#00000FF'><b>Cancel</b></font>")) { dialog, which ->
+
+                }
+                .setPositiveButton(Html.fromHtml("<font color='#FF0000'><b>Discard</b></font>")) { dialog, which ->
+                    editQuestionDialog.dismiss()
+                }
+
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
+        }
+
+        editCameraBtn.setOnClickListener {
+            startForImagePickerResult.launch(PickVisualMediaRequest())
+        }
+
+        submitEditQuestionBtn.setOnClickListener{
+            //TODO: Submit question to database
         }
 
         dialog.setContentView(sheet)

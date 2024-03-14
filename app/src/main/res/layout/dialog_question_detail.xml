@@ -204,4 +204,26 @@
             android:orientation="horizontal" />
     </HorizontalScrollView>
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/deleteQuestionBtn"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="64dp"
+        android:background="@drawable/ic_trash_01"
+        app:layout_constraintBottom_toBottomOf="@+id/textView32"
+        app:layout_constraintStart_toEndOf="@+id/textView32"
+        app:layout_constraintTop_toTopOf="@+id/textView32" />
+
+    <TextView
+        android:id="@+id/editQuestionBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:clickable="true"
+        android:text="Edit"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/deleteQuestionBtn"
+        app:layout_constraintStart_toEndOf="@+id/deleteQuestionBtn"
+        app:layout_constraintTop_toTopOf="@+id/deleteQuestionBtn" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
