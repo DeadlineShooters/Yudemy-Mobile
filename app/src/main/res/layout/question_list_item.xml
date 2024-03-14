@@ -24,12 +24,12 @@
         android:id="@+id/questionTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginStart="12dp"
         android:text="TextView"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/questionContentView"
-        app:layout_constraintStart_toStartOf="@+id/questionContentView" />
+        app:layout_constraintStart_toEndOf="@+id/askerImageBackground"
+        app:layout_constraintTop_toTopOf="@+id/askerImageBackground" />
 
     <TextView
         android:id="@+id/askerName"
@@ -39,7 +39,7 @@
         android:text="TextView"
         android:textColor="#7E7C7F"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/questionContentView"
+        app:layout_constraintStart_toStartOf="@+id/questionTitle"
         app:layout_constraintTop_toBottomOf="@+id/questionContentView" />
 
     <TextView
@@ -71,17 +71,17 @@
         android:text="TextView"
         android:textColor="#4027AB"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/questionContentView"
+        app:layout_constraintStart_toStartOf="@+id/questionTitle"
         app:layout_constraintTop_toBottomOf="@+id/askerName" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/questionContentView"
         android:layout_width="290dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="28dp"
-        app:layout_constraintStart_toEndOf="@+id/askerImageBackground"
-        app:layout_constraintTop_toTopOf="@+id/askerImageBackground">
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/questionTitle"
+        app:layout_constraintTop_toBottomOf="@+id/questionTitle">
 
         <TextView
             android:id="@+id/questionContent"

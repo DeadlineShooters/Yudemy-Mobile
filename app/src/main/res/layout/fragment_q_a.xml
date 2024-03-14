@@ -56,12 +56,11 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/questionListView"
-        android:layout_width="360dp"
-        android:layout_height="601dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/addQuestionBtn"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/addQuestionBtn"
-        app:layout_constraintTop_toBottomOf="@+id/addQuestionBtn"
-        app:layout_constraintVertical_bias="0.409" />
+        app:layout_constraintTop_toBottomOf="@+id/addQuestionBtn" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,8 @@ plugins {
 
 }
 
+
+
 android {
     namespace 'com.deadlineshooters.yudemy'
     compileSdk 34
@@ -52,7 +54,11 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+
 }
+
+
 
 dependencies {
     // Import the Firebase BoM: manage all the firebase libraries' versions
@@ -85,5 +91,7 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:21.2.0"
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'com.github.dhaval2404:imagepicker:2.1'
+    implementation "androidx.fragment:fragment-ktx:1.3.3"
 
 }

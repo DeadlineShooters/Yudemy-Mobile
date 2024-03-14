@@ -6,12 +6,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Question
 
-class QuestionListAdapter (private val questionList: List<Question>): RecyclerView.Adapter<QuestionListAdapter.ViewHolder>() {
+class QuestionListAdapter (val questionList: List<Question>): RecyclerView.Adapter<QuestionListAdapter.ViewHolder>() {
     var onItemClick: ((Question) -> Unit)? = null
 
     inner class ViewHolder(listQuestionView: View) : RecyclerView.ViewHolder(listQuestionView) {
@@ -21,11 +22,16 @@ class QuestionListAdapter (private val questionList: List<Question>): RecyclerVi
         val askDate: TextView = listQuestionView.findViewById(R.id.askDate)
         val lectureId: TextView = listQuestionView.findViewById(R.id.lectureId)
         val amountReply: TextView = listQuestionView.findViewById(R.id.amountReply)
+        private var questionContentView: ConstraintLayout = listQuestionView.findViewById(R.id.questionContentView)
         val questionContent: TextView = listQuestionView.findViewById(R.id.questionContent)
         val questionImage: ImageView = listQuestionView.findViewById(R.id.questionImage)
 
         init {
-            listQuestionView.setOnClickListener { onItemClick?.invoke(questionList[adapterPosition]) }
+            listQuestionView.setOnClickListener {
+                questionContentView = listQuestionView.findViewById(R.id.questionContentView) as ConstraintLayout
+                questionContentView.visibility = if (questionContentView.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+
+            }
         }
     }
     override fun onCreateViewHolder(
@@ -64,6 +70,7 @@ class QuestionListAdapter (private val questionList: List<Question>): RecyclerVi
         else{
             questionImage.visibility = View.VISIBLE
         }
+
     }
 
     override fun getItemCount(): Int {
