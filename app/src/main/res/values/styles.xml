@@ -6,4 +6,44 @@
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">16sp</item>
     </style>
+
+    <style name="MySwitch" parent="Theme.AppCompat.Light">
+        <!-- active thumb & track color (30% transparency) -->
+        <item name="colorControlActivated">@color/primary_color</item>
+        <!-- inactive thumb color -->
+        <item name="colorSwitchThumbNormal">@color/gray_150</item>
+        <!-- inactive track color -->
+        <item name="android:colorForeground">@color/gray_400</item>
+    </style>
+
+    <style name="FrequencyDayTime" parent="Theme.Yudemy">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/primary_text_color</item>
+        <item name="android:drawableTint">@color/primary_color</item>
+        <item name="lineHeight">22sp</item>
+    </style>
+
+    <style name="FrequencyTimeDetail" parent="Theme.Yudemy">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/gray_300</item>
+    </style>
+
+    <style name="MyEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textSize">14sp</item>
+        <item name="android:editTextColor">@color/primary_color</item>
+    </style>
+
+    <style name="MyButtonAcc" parent="Widget.AppCompat.Button">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/gray_500</item>
+    </style>
+
+    <style name="WarningCloseAccText" parent="Theme.Yudemy">
+        <item name="android:textColor">@color/red_400</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

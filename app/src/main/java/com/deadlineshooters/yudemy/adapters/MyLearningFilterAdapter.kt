@@ -1,4 +1,4 @@
-package com.deadlineshooters.yudemy.helpers
+package com.deadlineshooters.yudemy.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +17,7 @@ class MyLearningFilterAdapter(private val options: Array<String>): RecyclerView.
             }
         }
     }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyLearningFilterAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val context = parent.context
         val inflater = LayoutInflater.from(context)
         val courseView = inflater.inflate(R.layout.my_learning_filter_item, parent, false)

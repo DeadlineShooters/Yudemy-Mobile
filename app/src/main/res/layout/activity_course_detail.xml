@@ -128,7 +128,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
                     app:tint="@color/star_color"
-                    tools:srcCompat="@drawable/star_full" />
+                    android:src="@drawable/star_full" />
 
             </LinearLayout>
 
@@ -153,10 +153,10 @@
                 <ImageView
                     android:id="@+id/iv_exclamation"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="24dp"
                     android:layout_marginStart="5dp"
                     app:tint="@color/grey_800"
-                    tools:srcCompat="@drawable/ic_warning" />
+                    android:src="@drawable/ic_warning" />
 
                 <TextView
                     android:id="@+id/tv_createdDate"
