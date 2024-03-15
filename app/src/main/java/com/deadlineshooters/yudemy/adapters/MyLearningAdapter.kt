@@ -1,4 +1,4 @@
-package com.deadlineshooters.yudemy.helpers
+package com.deadlineshooters.yudemy.adapters
 
 import android.content.Context
 import android.graphics.Typeface
@@ -10,8 +10,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Course
-import com.deadlineshooters.yudemy.models.User
 
 class MyLearningAdapter(private val courses: List<Course>, private val userId: String): RecyclerView.Adapter<MyLearningAdapter.ViewHolder>() {
     var context: Context? = null
@@ -29,7 +29,7 @@ class MyLearningAdapter(private val courses: List<Course>, private val userId: S
             }
         }
     }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyLearningAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         this.context = parent.context
         val context = parent.context
         val inflater = LayoutInflater.from(context)

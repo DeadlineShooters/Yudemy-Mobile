@@ -26,6 +26,9 @@
             android:name=".activities.EmailInputActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.CourseLearningActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.BaseActivity"
               android:exported="false" />
  <activity
