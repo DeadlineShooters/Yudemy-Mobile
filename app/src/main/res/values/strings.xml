@@ -45,8 +45,9 @@
         libero justo consectetur ipsum, in mollis nisl ex sed nisl. Donec maximus ullamcorper
         sodales. Praesent bibendum rhoncus tellus nec feugiat. In a ornare nulla. Donec rhoncus
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
-        vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
+        vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim."
     </string>
+
     <string name="play_preview_video">play preview video</string>
     <string name="preview_this_course">Preview this course</string>
     <string name="buy_now">Buy now</string>
@@ -75,6 +76,7 @@
     <string name="start_course">Start course</string>
     <string name="search">Search</string>
     <string name="select_filter">Select filter</string>
+    <string name="ask_a_question">Ask a question</string>
     <string-array name="my_learning_filter">
         <item>Favorite courses</item>
         <item>All courses</item>
