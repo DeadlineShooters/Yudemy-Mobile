@@ -4,9 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.LinearLayout
@@ -123,8 +125,8 @@ class MyLearningFragment : Fragment() {
         searchView!!.setQuery("", false)
     }
 
-    private fun createFilterDialog(): BottomSheetDialog {
-        val dialog = BottomSheetDialog(requireContext())
+    private fun createFilterDialog(): BottomSheetDialog { //, R.style.MyTransparentBottomSheetDialogTheme
+        val dialog = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
         val bottomSheet = layoutInflater.inflate(R.layout.dialog_my_learning_filter, null)
         val rvFilters = bottomSheet.findViewById<RecyclerView>(R.id.rvFilters)
 
@@ -136,10 +138,6 @@ class MyLearningFragment : Fragment() {
         adapter.onItemClick = { filter ->
             // TODO: handle filter
             Log.i("Filter option click", filter)
-        }
-
-        dialog.setOnShowListener {
-            (bottomSheet.parent.parent as ViewGroup).background = ResourcesCompat.getDrawable(resources, R.color.dialog_background, null)
         }
 
         bottomSheet.findViewById<Button>(R.id.cancelBtn).setOnClickListener {

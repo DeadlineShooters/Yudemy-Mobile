@@ -25,6 +25,9 @@
             android:name=".activities.InstructorProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.AboutUsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ConfirmResetActivity"
             android:exported="false" />
         <activity

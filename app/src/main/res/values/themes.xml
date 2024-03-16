@@ -38,8 +38,15 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
-    <style name="MyTransparentBottomSheetDialogTheme" parent="Theme.AppCompat.Light">
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:colorBackground">@android:color/transparent</item>
+    <style name="ThemeOverlay.MyApp.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorPrimary">@color/gray_100</item>
+        <item name="colorSurface">@color/gray_100</item>
+        <item name="alertDialogStyle">@style/MaterialAlertDialog.App</item>
+        <item name="buttonBarPositiveButtonStyle">@style/MaterialAlertDialog.Button.Positive</item>
+        <item name="buttonBarNegativeButtonStyle">@style/MaterialAlertDialog.Button.Negative</item>
+    </style>
+
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
     </style>
 </resources>
