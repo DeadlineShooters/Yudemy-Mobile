@@ -1,11 +1,20 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.AboutUsActivity
+import com.deadlineshooters.yudemy.helpers.ImageViewHelper
+import com.deadlineshooters.yudemy.models.Image
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +31,17 @@ class AccountFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private lateinit var avatar: ImageView
+    private lateinit var email: TextView
+    private lateinit var navigateIns: TextView
+    private lateinit var learningReminders: TextView
+    private lateinit var accSecurity: TextView
+    private lateinit var closeAcc: TextView
+    private lateinit var aboutYudemy: TextView
+    private lateinit var signOut: TextView
+    private lateinit var editProfile: TextView
+    private lateinit var editImage: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -36,6 +56,68 @@ class AccountFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_account, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        avatar = view.findViewById(R.id.avatar)
+        email = view.findViewById(R.id.email)
+        navigateIns = view.findViewById(R.id.navigateIns)
+        learningReminders = view.findViewById(R.id.learningReminders)
+        accSecurity = view.findViewById(R.id.accSecurity)
+        closeAcc = view.findViewById(R.id.closeAcc)
+        aboutYudemy = view.findViewById(R.id.aboutUs)
+        signOut = view.findViewById(R.id.signOut)
+        editProfile = view.findViewById(R.id.editProfile)
+        editImage = view.findViewById(R.id.editImage)
+
+        learningReminders.setOnClickListener {
+            replaceFragment(LearningRemindersFragment())
+        }
+
+        accSecurity.setOnClickListener {
+            replaceFragment(AccountSecurityFragment())
+        }
+
+        closeAcc.setOnClickListener {
+            replaceFragment(CloseAccountFragment())
+        }
+
+        aboutYudemy.setOnClickListener {
+            val intent = Intent(context, AboutUsActivity::class.java)
+            startActivity(intent)
+        }
+
+        signOut.setOnClickListener {
+            showSignOutDialog()
+        }
+
+        editProfile.setOnClickListener {
+            replaceFragment(EditProfileFragment())
+        }
+
+        val imageUrl = "https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg"
+        ImageViewHelper().setImageViewFromUrl(Image(imageUrl, ""), avatar)
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        val fragmentManager = requireActivity().supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.frameLayout, fragment)
+        fragmentTransaction.commit()
+    }
+
+    private fun showSignOutDialog() {
+        MaterialAlertDialogBuilder(requireContext(),  R.style.ThemeOverlay_MyApp_MaterialAlertDialog)
+            .setMessage("Sign out from Yudemy?")
+            .setPositiveButton("Sign out") { dialog, which ->
+                // TODO: Implement sign out
+            }
+            .setNegativeButton("Cancel") { dialog, which ->
+                // Do something else.
+            }
+            .show()
     }
 
     companion object {

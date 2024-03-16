@@ -30,7 +30,8 @@ class StudentMainActivity : BaseActivity() {
                 }
 
                 R.id.search -> {
-                    replaceFragment(SearchFragment())
+//                    replaceFragment(SearchFragment())
+                    replaceFragment(QAFragment())
                 }
 
                 R.id.my_learning -> {

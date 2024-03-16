@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.EditProfileFragment">
+
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView34"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/public_profile"
+                android:textAlignment="center"
+                android:textAppearance="@style/TitleFragment"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cancelEditProfileBtn" />
+
+            <TextView
+                android:id="@+id/textView22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Add information about yourself!"
+                app:layout_constraintEnd_toEndOf="@+id/textView34"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="@+id/textView34"
+                app:layout_constraintTop_toBottomOf="@+id/textView34" />
+
+            <TextView
+                android:id="@+id/textView35"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Basic"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/textView34"
+                app:layout_constraintTop_toBottomOf="@+id/textView22" />
+
+            <EditText
+                android:id="@+id/instructorFullName"
+                android:layout_width="0dp"
+                android:layout_height="65dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/custom_edit_text"
+                android:ems="10"
+                android:inputType="text"
+                android:paddingStart="8dp"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="@+id/textView34"
+                app:layout_constraintStart_toStartOf="@+id/textView34"
+                app:layout_constraintTop_toBottomOf="@+id/textView35" />
+
+            <EditText
+                android:id="@+id/instructorHeadline"
+                android:layout_width="0dp"
+                android:layout_height="65dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/custom_edit_text"
+                android:ems="10"
+                android:inputType="text"
+                android:paddingStart="8dp"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="@+id/instructorFullName"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/instructorFullName"
+                app:layout_constraintTop_toBottomOf="@+id/instructorFullName" />
+
+            <TextView
+                android:id="@+id/textView36"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/headline_guideline"
+                android:textColor="#A8A8AA"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@+id/instructorFullName"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/instructorFullName"
+                app:layout_constraintTop_toBottomOf="@+id/instructorHeadline" />
+
+            <EditText
+                android:id="@+id/instructorBio"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/custom_edit_text"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:paddingStart="8dp"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/instructorHeadline"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/instructorHeadline"
+                app:layout_constraintTop_toBottomOf="@+id/textView36"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/saveEditProfileInstructorBtn"
+                android:layout_width="100dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"
+                android:background="#000000"
+                android:text="Save"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/instructorBio"
+                app:layout_constraintTop_toBottomOf="@+id/instructorBio" />
+
+            <TextView
+                android:id="@+id/cancelEditProfileBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="Cancel"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
