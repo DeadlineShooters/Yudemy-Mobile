@@ -1,7 +1,6 @@
 package com.deadlineshooters.yudemy.fragments
 
 import android.app.AlertDialog
-import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import androidx.fragment.app.Fragment
@@ -11,8 +10,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.activities.AboutUsActivity
-import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Instructor
 
@@ -63,7 +60,7 @@ class EditProfileFragment : Fragment() {
         instructorFullName = view.findViewById(R.id.instructorFullName)
         instructorHeadline = view.findViewById(R.id.instructorHeadline)
         instructorBio = view.findViewById(R.id.instructorBio)
-        cancelEditProfileBtn = view.findViewById(R.id.cancelEditProfileBtn)
+        cancelEditProfileBtn = view.findViewById(R.id.cancelEditImageBtn)
         saveEditProfileInstructorBtn = view.findViewById(R.id.saveEditProfileInstructorBtn)
 
         instructorFullName.text = "${dumpInst.firstName} ${dumpInst.lastName}"
@@ -83,7 +80,6 @@ class EditProfileFragment : Fragment() {
 
                 }
                 .setPositiveButton(Html.fromHtml("<font color='#FF0000'><b>Discard</b></font>")) { dialog, which ->
-//                    activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
                     replaceFragment(AccountFragment())
                 }
 

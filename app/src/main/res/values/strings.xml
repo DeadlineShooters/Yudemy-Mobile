@@ -160,4 +160,5 @@
     <string name="edit_image">Edit image</string>
     <string name="public_profile">Public profile</string>
     <string name="headline_guideline">Add a professional headline like, \"Instructor at Yudemy \" or \"Architect\".</string>
+    <string name="instructor_image">Photo</string>
 </resources>
