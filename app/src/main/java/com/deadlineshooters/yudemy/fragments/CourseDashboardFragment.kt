@@ -75,7 +75,9 @@ class CourseDashboardFragment : Fragment() {
         }
 
 
-        binding.ivCreateCourse.setOnClickListener{}
+        binding.ivCreateCourse.setOnClickListener{
+            replaceFragment(CourseUploadFragment())
+        }
 
         binding.btnCancel.setOnClickListener {
             binding.llToolbar.visibility = View.VISIBLE
@@ -91,6 +93,14 @@ class CourseDashboardFragment : Fragment() {
         val appCompatActivity = activity as AppCompatActivity?
         appCompatActivity?.setSupportActionBar(binding.toolbarFeedback)
 
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        val fragmentManager = requireActivity().supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.frameLayout, fragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
     }
 
 }

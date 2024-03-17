@@ -118,7 +118,7 @@
 
     <Button
         android:id="@+id/button"
-        style="@style/MyButtonAcc"
+        style="@style/MyBlackButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"

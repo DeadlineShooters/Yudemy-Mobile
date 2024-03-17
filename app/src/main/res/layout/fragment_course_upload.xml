@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.CourseUploadFragment" >
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_create_course"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <TextView
+            android:id="@+id/tv_create_course"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/create_course"
+            android:textAppearance="@style/MyToolbarTitle"
+            app:layout_constraintBottom_toBottomOf="@+id/toolbar_create_course"
+            app:layout_constraintEnd_toEndOf="@+id/toolbar_create_course"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_create_course">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp">
+
+            <TextView
+                android:id="@+id/tv_c_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/course_title"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/etCourseTitle"
+                style="@style/MyEditTextNoUnderline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:breakStrategy="simple"
+                android:ems="10"
+                android:hint="@string/insert_your_course_title"
+                android:inputType="text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tv_c_title"
+                app:layout_constraintTop_toBottomOf="@+id/tv_c_title" />
+
+            <TextView
+                android:id="@+id/tv_c_descr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/course_description"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/tvCourseTitleNote"
+                app:layout_constraintTop_toBottomOf="@+id/tvCourseTitleNote" />
+
+            <EditText
+                android:id="@+id/editTextTextMultiLine"
+                style="@style/MyEditTextNoUnderline"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="6dp"
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="@string/insert_your_course_description"
+                android:inputType="textMultiLine"
+                android:scrollbars="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_c_descr" />
+
+            <TextView
+                android:id="@+id/tvCourseTitleNote"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/course_title_note"
+                android:textColor="@color/gray_300"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="@+id/etCourseTitle"
+                app:layout_constraintStart_toStartOf="@+id/etCourseTitle"
+                app:layout_constraintTop_toBottomOf="@+id/etCourseTitle" />
+
+            <TextView
+                android:id="@+id/tvCourseDescrNote"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/course_description_note"
+                android:textColor="@color/gray_300"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/editTextTextMultiLine"
+                app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine" />
+
+            <TextView
+                android:id="@+id/tvCourseBasicInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/basic_info"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/tvCourseDescrNote"
+                app:layout_constraintTop_toBottomOf="@+id/tvCourseDescrNote" />
+
+            <androidx.gridlayout.widget.GridLayout
+                android:id="@+id/gridLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                app:columnCount="2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvCourseBasicInfo"
+                app:layout_constraintTop_toBottomOf="@+id/tvCourseBasicInfo">
+
+                <Spinner
+                    android:id="@+id/spinnerCourseLanguage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:padding="6dp"
+                    app:layout_column="0"
+                    app:layout_row="0" />
+
+                <Spinner
+                    android:id="@+id/spinnerCourseCate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="6dp" />
+            </androidx.gridlayout.widget.GridLayout>
+
+            <TextView
+                android:id="@+id/tvCourseImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/course_image"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/gridLayout"
+                app:layout_constraintTop_toBottomOf="@+id/gridLayout" />
+
+            <ImageView
+                android:id="@+id/courseImg"
+                android:layout_width="@dimen/course_image_width"
+                android:layout_height="@dimen/course_image_height"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/course_img_upload_placeholder"
+                app:layout_constraintStart_toStartOf="@+id/tvCourseImg"
+                app:layout_constraintTop_toBottomOf="@+id/tvCourseImg" />
+
+            <TextView
+                android:id="@+id/tvImgNote"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/course_image_note"
+                android:textColor="@color/gray_300"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/courseImg"
+                app:layout_constraintTop_toBottomOf="@+id/courseImg" />
+
+            <Button
+                android:id="@+id/btnUploadImg"
+                style="@style/MyBlackButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/upload_file"
+                android:textAllCaps="false"
+                app:layout_constraintStart_toStartOf="@+id/tvImgNote"
+                app:layout_constraintTop_toBottomOf="@+id/tvImgNote" />
+
+            <TextView
+                android:id="@+id/tvPromoVid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/promotional_video"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/gridLayout"
+                app:layout_constraintTop_toBottomOf="@+id/btnUploadImg" />
+
+            <VideoView
+                android:id="@+id/videoPromoView"
+                android:layout_width="@dimen/course_image_width"
+                android:layout_height="@dimen/course_image_height"
+                android:layout_marginTop="6dp"
+                android:visibility="invisible"
+                app:layout_constraintStart_toStartOf="@+id/tvPromoVid"
+                app:layout_constraintTop_toBottomOf="@id/tvPromoVid" />
+
+            <ImageView
+                android:id="@+id/thumbnailVidPromo"
+                android:layout_width="@dimen/course_image_width"
+                android:layout_height="@dimen/course_image_height"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/course_img_upload_placeholder"
+                app:layout_constraintStart_toStartOf="@+id/tvPromoVid"
+                app:layout_constraintTop_toBottomOf="@+id/tvPromoVid" />
+
+            <TextView
+                android:id="@+id/tvVidNote"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/course_promo_video_note"
+                android:textColor="@color/gray_300"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/courseImg"
+                app:layout_constraintTop_toBottomOf="@+id/videoPromoView" />
+
+            <Button
+                android:id="@+id/btnUploadVid"
+                style="@style/MyBlackButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/upload_file"
+                android:textAllCaps="false"
+                app:layout_constraintStart_toStartOf="@+id/tvImgNote"
+                app:layout_constraintTop_toBottomOf="@+id/tvVidNote" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
