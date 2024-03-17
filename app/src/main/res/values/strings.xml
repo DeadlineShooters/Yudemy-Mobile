@@ -94,6 +94,11 @@
         <item>Question I asked</item>
         <item>Question without responses</item>
     </string-array>
+    <string-array name="instructor_questions_filter">
+        <item>All questions</item>
+        <item>Questions without responses</item>
+        <item>Questions without instructors\' responses</item>
+    </string-array>
     <string name="learning_section_title">Section %d - %s</string>
     <string name="learning_lecture_detail">Video - %d:%d mins</string>
     <string name="about_this_course">About this course</string>

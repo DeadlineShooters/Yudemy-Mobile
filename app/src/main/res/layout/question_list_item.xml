@@ -79,7 +79,6 @@
         android:layout_width="290dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/questionTitle"
         app:layout_constraintTop_toBottomOf="@+id/questionTitle">
 

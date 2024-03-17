@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.QAFragment">
+    tools:context=".fragments.InstructorQAFragment">
 
     <TextView
-        android:id="@+id/qaCloseBtn"
+        android:id="@+id/qaInstructorCloseBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Q&amp;A"
+        android:text="Instructor Q&amp;A"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,37 +30,24 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/qaFilterBtn"
+        android:id="@+id/qaInstructorFilterBtn"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginStart="144dp"
+        android:layout_marginStart="96dp"
         android:background="@drawable/ic_filter_lines"
         app:layout_constraintBottom_toBottomOf="@+id/textView39"
         app:layout_constraintStart_toEndOf="@+id/textView39"
         app:layout_constraintTop_toTopOf="@+id/textView39"
         app:layout_constraintVertical_bias="1.0" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/addQuestionBtn"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/instructorQuestionListView"
         android:layout_width="360dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/ask_question_button"
-        android:text="@string/ask_a_question"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView39" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/questionListView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/addQuestionBtn"
-        app:layout_constraintStart_toStartOf="@+id/addQuestionBtn"
-        app:layout_constraintTop_toBottomOf="@+id/addQuestionBtn" />
 </androidx.constraintlayout.widget.ConstraintLayout>
