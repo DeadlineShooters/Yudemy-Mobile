@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.adapters.CourseListAdapter1
 import com.deadlineshooters.yudemy.adapters.CourseListAdapter2
 import com.deadlineshooters.yudemy.adapters.InstructorListAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentFeaturedCategoryBinding
@@ -66,6 +65,10 @@ class FeaturedCategoryFragment : Fragment() {
             binding.courseList.layoutManager = LinearLayoutManager(context)
             binding.courseList.adapter = adapter
         })
+
+        binding.backBtn.setOnClickListener {
+            activity?.supportFragmentManager?.popBackStack()
+        }
     }
 
     override fun onDestroyView() {
