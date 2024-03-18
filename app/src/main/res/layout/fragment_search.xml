@@ -23,10 +23,11 @@
             app:layout_constraintTop_toTopOf="@+id/searchView" android:visibility="visible" android:layout_marginEnd="16dp"/>
     <ListView
             android:layout_width="0dp"
-            android:layout_height="wrap_content" android:id="@+id/resultList"
+            android:layout_height="0dp" android:id="@+id/resultList"
             android:visibility="visible"
             app:layout_constraintTop_toBottomOf="@+id/searchView" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="16dp" android:background="@drawable/border_top"/>
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="16dp" android:background="@drawable/border_top"
+            app:layout_constraintBottom_toBottomOf="parent"/>
     <ScrollView
             android:layout_width="0dp"
             android:layout_height="0dp" app:layout_constraintStart_toStartOf="parent"
