@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
@@ -15,6 +16,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Yudemy"
         tools:targetApi="31">
+        <activity
+            android:name=".activities.PricingCourseDraftingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CreateCurriculumActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.QAActivity"
             android:exported="false" />

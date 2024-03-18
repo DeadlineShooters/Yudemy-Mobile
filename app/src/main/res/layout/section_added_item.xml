@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:background="@drawable/gray_box">
+
+    <TextView
+        android:id="@+id/tvSectionIdx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="Section 1:"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etSectionName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@null"
+        android:ems="10"
+        android:hint="@string/enter_a_title"
+        android:inputType="text"
+        app:layout_constraintBottom_toBottomOf="@+id/tvSectionIdx"
+        app:layout_constraintEnd_toStartOf="@+id/btnDeleteSection"
+        app:layout_constraintStart_toEndOf="@+id/tvSectionIdx"
+        app:layout_constraintTop_toTopOf="@+id/tvSectionIdx" />
+
+    <TextView
+        android:id="@+id/btnDeleteSection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:drawableStart="@drawable/baseline_close_24"
+        android:drawableTint="@color/primary_text_color"
+        app:layout_constraintBottom_toBottomOf="@+id/etSectionName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etSectionName" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/addedLectures"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="@+id/btnDeleteSection"
+        app:layout_constraintStart_toStartOf="@+id/tvSectionIdx"
+        app:layout_constraintTop_toBottomOf="@+id/etSectionName" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnAddLecture"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/white_box"
+        android:clickable="true"
+        android:drawableStart="@drawable/baseline_add_18"
+        android:minHeight="32dip"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:text="@string/lecture"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/addedLectures"
+        app:layout_constraintTop_toBottomOf="@+id/addedLectures" />
+</androidx.constraintlayout.widget.ConstraintLayout>

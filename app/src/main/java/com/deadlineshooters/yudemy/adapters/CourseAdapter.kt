@@ -18,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 
 public class CourseAdapter(private val context: CourseDashboardFragment, private val courseList: List<Course>) : RecyclerView.Adapter<CourseAdapter.ViewHolder>() {
     var listener: AdapterView.OnItemClickListener? = null
+    var onEditCourseClick: (() -> Unit)? = null
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val image_thumbnail: ImageView = itemView.findViewById(R.id.image_thumbnail)
@@ -51,7 +52,8 @@ public class CourseAdapter(private val context: CourseDashboardFragment, private
 
                 llEdit.setOnClickListener {
                     // TODO: Navigate to edit course
-                    Toast.makeText(context, "Edit clicked!", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(context, "Edit clicked!", Toast.LENGTH_SHORT).show()
+                    onEditCourseClick?.invoke()
                 }
 
                 llDelete.setOnClickListener {
