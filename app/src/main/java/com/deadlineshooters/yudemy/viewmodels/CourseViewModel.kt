@@ -1,7 +1,9 @@
 package com.deadlineshooters.yudemy.viewmodels
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
+import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Video
 import com.deadlineshooters.yudemy.repositories.CourseRepository
@@ -10,6 +12,8 @@ import com.deadlineshooters.yudemy.repositories.CourseRepository
 class CourseViewModel : ViewModel() {
     private val courseRepository = CourseRepository()
     private val cloudinaryHelper = CloudinaryHelper()
+    val courses: LiveData<List<Course>> = courseRepository.getCourses()
+
     fun addDummyCourse() {
 
         val imageFilePath = "/storage/emulated/0/Android/data/com.deadlineshooters.yudemy/files/DCIM/img_thumbnail.jpg"

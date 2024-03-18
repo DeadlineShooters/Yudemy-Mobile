@@ -30,7 +30,7 @@ class SplashActivity : AppCompatActivity() {
 //            } else {
                 // Start the Intro Activity
 
-                startActivity(Intent(this@SplashActivity, InstructorMainActivity::class.java))
+                startActivity(Intent(this@SplashActivity, StudentMainActivity::class.java))
 
 //            }
             finish() // Call this when your activity is done and should be closed.

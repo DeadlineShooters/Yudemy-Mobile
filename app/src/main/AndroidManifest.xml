@@ -38,14 +38,14 @@
             android:name=".activities.AboutUsActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ConfirmResetActivity"
-            android:exported="false" />
+                android:name=".activities.ConfirmResetActivity"
+                android:exported="false"/>
         <activity
-            android:name=".activities.ResetPasswordActivity"
-            android:exported="false" />
+                android:name=".activities.ResetPasswordActivity"
+                android:exported="false"/>
         <activity
-            android:name=".activities.PasswordInputActivity"
-            android:exported="false" />
+                android:name=".activities.PasswordInputActivity"
+                android:exported="false"/>
         <activity
             android:name=".activities.EmailInputActivity"
             android:exported="false" />
@@ -53,52 +53,58 @@
             android:name=".activities.CourseLearningActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.BaseActivity"
-            android:exported="false" />
+                android:name=".activities.BaseActivity"
+                android:exported="false"/>
         <activity
-            android:name=".activities.CourseRevenueAnalyticsActivity"
-            android:exported="false" />
+                android:name=".activities.CourseRevenueAnalyticsActivity"
+                android:exported="false"/>
         <activity
-            android:name=".activities.InstructorMainActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Yudemy.NoActionBar" />
+                android:name=".activities.EnrolledActivity"
+                android:exported="false"/>
         <activity
-            android:name=".activities.CourseDetailActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Yudemy.NoActionBar" /> <!-- <activity -->
+                android:name=".activities.FilterActivity"
+                android:exported="false"/>
+        <activity
+                android:name=".activities.InstructorMainActivity"
+                android:exported="false"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Yudemy.NoActionBar"/>
+        <activity
+                android:name=".activities.CourseDetailActivity"
+                android:exported="false"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Yudemy.NoActionBar"/> <!-- <activity -->
         <!-- android:name=".activities.BaseActivity" -->
         <!-- android:exported="false" /> -->
         <activity
-            android:name=".activities.SignUpWithEmailActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Yudemy.NoActionBar" />
+                android:name=".activities.SignUpWithEmailActivity"
+                android:exported="false"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Yudemy.NoActionBar"/>
         <activity
-            android:name=".activities.SignUpActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Yudemy.NoActionBar" />
+                android:name=".activities.SignUpActivity"
+                android:exported="false"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Yudemy.NoActionBar"/>
         <activity
-            android:name=".activities.SignInActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Yudemy.NoActionBar" />
+                android:name=".activities.SignInActivity"
+                android:exported="false"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Yudemy.NoActionBar"/>
         <activity
-            android:name=".activities.SplashActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Yudemy.NoActionBar">
+                android:name=".activities.SplashActivity"
+                android:exported="true"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Yudemy.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.StudentMainActivity"
-            android:exported="true" />
+                android:name=".activities.StudentMainActivity"
+                android:exported="true" />
     </application>
 
 </manifest>
