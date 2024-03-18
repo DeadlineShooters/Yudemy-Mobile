@@ -68,6 +68,8 @@ class CourseDraftingMenuFragment : Fragment() {
 //            startActivity(intent)
         }
         navPricing.setOnClickListener {
+            val intent = Intent(activity, PricingCourseDraftingActivity::class.java)
+            startActivity(intent)
         }
     }
 

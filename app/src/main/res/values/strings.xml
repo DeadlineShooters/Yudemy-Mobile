@@ -172,4 +172,12 @@
     <string name="set_a_price_for_your_course">Set a price for your course</string>
     <string name="currency">Currency</string>
     <string name="price">Price</string>
+    <string name="enter_price_here">Enter price here</string>
+    <string-array name="currency">
+        <item>USD</item>
+    </string-array>
+    <string-array name="pricing_type">
+        <item>Free</item>
+        <item>Paid</item>
+    </string-array>
 </resources>
