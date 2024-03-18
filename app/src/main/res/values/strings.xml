@@ -81,6 +81,24 @@
         <item>Favorite courses</item>
         <item>All courses</item>
     </string-array>
+    <string-array name="lectures_filter">
+        <item>All lectures</item>
+        <item>Current lecture</item>
+    </string-array>
+    <string-array name="sort_most_recent_filter">
+        <item>Sort by most recent</item>
+        <item>Sort by recommended</item>
+    </string-array>
+    <string-array name="questions_filter">
+        <item>All questions</item>
+        <item>Question I asked</item>
+        <item>Question without responses</item>
+    </string-array>
+    <string-array name="instructor_questions_filter">
+        <item>All questions</item>
+        <item>Questions without responses</item>
+        <item>Questions without instructors\' responses</item>
+    </string-array>
     <string name="learning_section_title">Section %d - %s</string>
     <string name="learning_lecture_detail">Video - %d:%d mins</string>
     <string name="about_this_course">About this course</string>
@@ -180,4 +198,10 @@
         <item>Free</item>
         <item>Paid</item>
     </string-array>
+    <string name="profile_settings">Profile settings</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="edit_image">Edit image</string>
+    <string name="public_profile">Public profile</string>
+    <string name="headline_guideline">Add a professional headline like, \"Instructor at Yudemy \" or \"Architect\".</string>
+    <string name="instructor_image">Photo</string>
 </resources>

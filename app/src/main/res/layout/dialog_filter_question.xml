@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/closeFilterBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:clickable="true"
+        android:text="Close"
+        app:layout_constraintBottom_toBottomOf="@+id/textView33"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView33" />
+
+    <TextView
+        android:id="@+id/textView33"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Filter Q&amp;A"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/resetFilterBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:text="Reset"
+        app:layout_constraintBottom_toBottomOf="@+id/textView33"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.752"
+        app:layout_constraintStart_toEndOf="@+id/textView33"
+        app:layout_constraintTop_toTopOf="@+id/textView33" />
+
+    <View
+        android:id="@+id/divider4"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="24dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView33" />
+
+    <TextView
+        android:id="@+id/lectureFilter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/filter_option_background"
+        android:clickable="true"
+        android:paddingStart="12dp"
+        android:paddingTop="4dp"
+        android:text="All lectures"
+        android:textAlignment="textStart"
+        android:textColor="#9B999D"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.516"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/divider4" />
+
+    <TextView
+        android:id="@+id/sortMostRecentFilter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/filter_option_background"
+        android:clickable="true"
+        android:paddingStart="12dp"
+        android:paddingTop="4dp"
+        android:text="Sort by most recent"
+        android:textAlignment="textStart"
+        android:textColor="#9B999D"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/lectureFilter"
+        app:layout_constraintStart_toStartOf="@+id/lectureFilter"
+        app:layout_constraintTop_toBottomOf="@+id/lectureFilter" />
+
+    <TextView
+        android:id="@+id/allQuestionsFilter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/filter_option_background"
+        android:clickable="true"
+        android:paddingStart="12dp"
+        android:paddingTop="4dp"
+        android:text="All questions"
+        android:textAlignment="textStart"
+        android:textColor="#9B999D"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/sortMostRecentFilter"
+        app:layout_constraintStart_toStartOf="@+id/sortMostRecentFilter"
+        app:layout_constraintTop_toBottomOf="@+id/sortMostRecentFilter" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/applyFilerBtn"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        android:background="#0A0A0C"
+        android:text="Apply filters"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/allQuestionsFilter"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/allQuestionsFilter" />
+</androidx.constraintlayout.widget.ConstraintLayout>

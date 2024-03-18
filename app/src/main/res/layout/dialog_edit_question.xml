@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/cancelAskBtn"
+        android:id="@+id/cancelEditBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -17,11 +17,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView31"
+        android:id="@+id/editQuestionHeadPage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="New Question"
+        android:text="Edit Question"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +29,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/submitQuestionBtn"
+        android:id="@+id/submitEditQuestionBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
@@ -38,25 +38,25 @@
         android:textColor="#908D90"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/cancelAskBtn"
+        app:layout_constraintBottom_toBottomOf="@+id/cancelEditBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.651"
-        app:layout_constraintStart_toEndOf="@+id/textView31"
-        app:layout_constraintTop_toTopOf="@+id/cancelAskBtn"
+        app:layout_constraintStart_toEndOf="@+id/editQuestionHeadPage"
+        app:layout_constraintTop_toTopOf="@+id/cancelEditBtn"
         app:layout_constraintVertical_bias="1.0" />
 
     <Spinner
-        android:id="@+id/lectureSpinner"
+        android:id="@+id/editLectureSpinner"
         android:layout_width="380dp"
         android:layout_height="47dp"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.516"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView31" />
+        app:layout_constraintTop_toBottomOf="@+id/editQuestionHeadPage" />
 
     <EditText
-        android:id="@+id/askQuestionTitle"
+        android:id="@+id/editQuestionTitle"
         android:layout_width="380dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -64,21 +64,21 @@
         android:hint="Question title"
         android:inputType="text"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/lectureSpinner"
-        app:layout_constraintStart_toStartOf="@+id/lectureSpinner"
-        app:layout_constraintTop_toBottomOf="@+id/lectureSpinner" />
+        app:layout_constraintEnd_toEndOf="@+id/editLectureSpinner"
+        app:layout_constraintStart_toStartOf="@+id/editLectureSpinner"
+        app:layout_constraintTop_toBottomOf="@+id/editLectureSpinner" />
 
     <EditText
-        android:id="@+id/askQuestionDetail"
+        android:id="@+id/editQuestionDetail"
         android:layout_width="380dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="Details"
         android:inputType="text"
-        app:layout_constraintEnd_toEndOf="@+id/askQuestionTitle"
-        app:layout_constraintStart_toStartOf="@+id/askQuestionTitle"
-        app:layout_constraintTop_toBottomOf="@+id/askQuestionTitle" />
+        app:layout_constraintEnd_toEndOf="@+id/editQuestionTitle"
+        app:layout_constraintStart_toStartOf="@+id/editQuestionTitle"
+        app:layout_constraintTop_toBottomOf="@+id/editQuestionTitle" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/editCameraBtn"
@@ -87,22 +87,22 @@
         android:layout_marginTop="44dp"
         android:background="@drawable/ic_camera"
         app:iconGravity="textStart"
-        app:layout_constraintStart_toStartOf="@+id/askQuestionDetail"
-        app:layout_constraintTop_toBottomOf="@+id/askQuestionDetail" />
+        app:layout_constraintStart_toStartOf="@+id/editQuestionDetail"
+        app:layout_constraintTop_toBottomOf="@+id/editQuestionDetail" />
 
     <HorizontalScrollView
-        android:id="@+id/questionImageView"
+        android:id="@+id/editQuestionImageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/askQuestionDetail"
+        app:layout_constraintEnd_toEndOf="@+id/editQuestionTitle"
         app:layout_constraintStart_toEndOf="@+id/editCameraBtn"
-        app:layout_constraintTop_toBottomOf="@+id/askQuestionDetail">
+        app:layout_constraintTop_toBottomOf="@+id/editQuestionDetail">
 
         <LinearLayout
-            android:id="@+id/questionImageContainer"
+            android:id="@+id/editQuestionImageContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" />
