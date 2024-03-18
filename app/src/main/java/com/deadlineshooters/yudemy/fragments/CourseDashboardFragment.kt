@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.deadlineshooters.yudemy.R
@@ -53,6 +54,10 @@ class CourseDashboardFragment : Fragment() {
         binding.rvCourses.adapter = courseAdapter
         binding.rvCourses.layoutManager = LinearLayoutManager(context)
 
+        courseAdapter.onEditCourseClick = {
+            replaceFragment(CourseDraftingMenuFragment())
+        }
+
         binding.ivFilter.setOnClickListener{
             val dialog = BottomSheetDialog(requireContext())
             val filterView = layoutInflater.inflate(R.layout.course_menu_bottom_sheet, null)
@@ -78,9 +83,7 @@ class CourseDashboardFragment : Fragment() {
 
 
         binding.ivCreateCourse.setOnClickListener{
-//            replaceFragment(CourseUploadFragment())
-            val intent = Intent(context, CreateCurriculumActivity::class.java)
-            startActivity(intent)
+            replaceFragment(CourseDraftingMenuFragment())
         }
 
         binding.btnCancel.setOnClickListener {
@@ -99,12 +102,11 @@ class CourseDashboardFragment : Fragment() {
 
     }
 
-//    private fun replaceFragment(fragment: Fragment) {
-//        val fragmentManager = requireActivity().supportFragmentManager
-//        val fragmentTransaction = fragmentManager.beginTransaction()
-//        fragmentTransaction.replace(R.id.frameLayout, fragment)
-//        fragmentTransaction.addToBackStack(null)
-//        fragmentTransaction.commit()
-//    }
-
+    private fun replaceFragment(fragment: Fragment) {
+        val fragmentManager = requireActivity().supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.frameLayout, fragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
+    }
 }

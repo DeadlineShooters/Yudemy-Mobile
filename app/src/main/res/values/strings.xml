@@ -165,4 +165,11 @@
     <string name="lecture">Lecture</string>
     <string name="section">Section</string>
     <string name="enter_a_title">Enter a title</string>
+    <string name="course_detail">Course detail</string>
+    <string name="save">Save</string>
+    <string name="course_landing_page">Course landing page</string>
+    <string name="pricing">Pricing</string>
+    <string name="set_a_price_for_your_course">Set a price for your course</string>
+    <string name="currency">Currency</string>
+    <string name="price">Price</string>
 </resources>
