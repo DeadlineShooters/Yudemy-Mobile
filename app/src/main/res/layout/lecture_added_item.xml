@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="3dp"
+    android:background="@drawable/white_box">
+
+    <TextView
+        android:id="@+id/tvLectureName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Lecture 1:"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etLectureName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@null"
+        android:ems="10"
+        android:hint="@string/enter_a_title"
+        android:inputType="text"
+        app:layout_constraintBottom_toBottomOf="@+id/tvLectureName"
+        app:layout_constraintEnd_toStartOf="@+id/btnDeleteLecture"
+        app:layout_constraintStart_toEndOf="@+id/tvLectureName"
+        app:layout_constraintTop_toTopOf="@+id/tvLectureName" />
+
+    <TextView
+        android:id="@+id/btnDeleteLecture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:drawableStart="@drawable/baseline_close_24"
+        android:drawableTint="@color/primary_text_color"
+        app:layout_constraintBottom_toBottomOf="@+id/etLectureName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etLectureName" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btnDeleteLecture"
+        app:layout_constraintStart_toStartOf="@+id/tvLectureName"
+        app:layout_constraintTop_toBottomOf="@+id/etLectureName">
+
+        <LinearLayout
+            android:id="@+id/uploadedLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnUploadLecture"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/thumbnailLecture"
+                android:layout_width="100dp"
+                android:layout_height="60dp"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/course_img_upload_placeholder"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/tvVidLen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnUploadLecture"
+            style="@style/MyBlackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:minWidth="60dip"
+            android:minHeight="20dip"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="@string/upload_file"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
