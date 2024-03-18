@@ -1,6 +1,7 @@
 package com.deadlineshooters.yudemy.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,9 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.CreateCurriculumActivity
 import com.deadlineshooters.yudemy.adapters.CourseAdapter
 import com.deadlineshooters.yudemy.adapters.FeedbackAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentCourseDashboardBinding
@@ -51,6 +54,10 @@ class CourseDashboardFragment : Fragment() {
         binding.rvCourses.adapter = courseAdapter
         binding.rvCourses.layoutManager = LinearLayoutManager(context)
 
+        courseAdapter.onEditCourseClick = {
+            replaceFragment(CourseDraftingMenuFragment())
+        }
+
         binding.ivFilter.setOnClickListener{
             val dialog = BottomSheetDialog(requireContext())
             val filterView = layoutInflater.inflate(R.layout.course_sort_bottom_sheet, null)
@@ -75,7 +82,9 @@ class CourseDashboardFragment : Fragment() {
         }
 
 
-        binding.ivCreateCourse.setOnClickListener{}
+        binding.ivCreateCourse.setOnClickListener{
+            replaceFragment(CourseDraftingMenuFragment())
+        }
 
         binding.btnCancel.setOnClickListener {
             binding.llToolbar.visibility = View.VISIBLE
@@ -93,4 +102,11 @@ class CourseDashboardFragment : Fragment() {
 
     }
 
+    private fun replaceFragment(fragment: Fragment) {
+        val fragmentManager = requireActivity().supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.frameLayout, fragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
+    }
 }

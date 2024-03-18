@@ -31,7 +31,7 @@
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
         <TextView
-            android:id="@+id/textView22"
+            android:id="@+id/textView37"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -51,8 +51,8 @@
             android:textColor="#17181A"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/textView22"
-            app:layout_constraintTop_toBottomOf="@+id/textView22" />
+            app:layout_constraintStart_toStartOf="@+id/textView37"
+            app:layout_constraintTop_toBottomOf="@+id/textView37" />
 
         <TextView
             android:id="@+id/textView26"

@@ -10,7 +10,7 @@ data class Reply(
     var _id: String,
     var replier: String, // id
     var questionId: String,
-    var images: Image,
+    var images: ArrayList<Image>,
     var content: String,
     var createdTime: String = "01/01/2003" // dd/mm/yyyy
 ) : Parcelable

@@ -21,6 +21,12 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Yudemy.NoActionBar" />
+  <activity
+            android:name=".activities.PricingCourseDraftingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CreateCurriculumActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.QAActivity"
             android:exported="false" />

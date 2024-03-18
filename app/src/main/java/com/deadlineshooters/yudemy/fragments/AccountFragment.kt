@@ -39,6 +39,8 @@ class AccountFragment : Fragment() {
     private lateinit var closeAcc: TextView
     private lateinit var aboutYudemy: TextView
     private lateinit var signOut: TextView
+    private lateinit var editProfile: TextView
+    private lateinit var editImage: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +69,8 @@ class AccountFragment : Fragment() {
         closeAcc = view.findViewById(R.id.closeAcc)
         aboutYudemy = view.findViewById(R.id.aboutUs)
         signOut = view.findViewById(R.id.signOut)
+        editProfile = view.findViewById(R.id.editProfile)
+        editImage = view.findViewById(R.id.editImage)
 
         learningReminders.setOnClickListener {
             replaceFragment(LearningRemindersFragment())
@@ -87,6 +91,14 @@ class AccountFragment : Fragment() {
 
         signOut.setOnClickListener {
             showSignOutDialog()
+        }
+
+        editProfile.setOnClickListener {
+            replaceFragment(EditProfileFragment())
+        }
+
+        editImage.setOnClickListener {
+            replaceFragment(EditImageFragment())
         }
 
         val imageUrl = "https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg"

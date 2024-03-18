@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <style android:name="NoUnderlineEditText">
+        <item android:name="android:paddingBottom">0dp</item>
+    </style>
+    <item>
+        <shape android:shape="rectangle">
+            <padding
+                android:top="12dp"
+                android:bottom="12dp"/>
+            <stroke android:color="#000000" android:width="2dp"/>
+        </shape>
+    </item>
+</layer-list>

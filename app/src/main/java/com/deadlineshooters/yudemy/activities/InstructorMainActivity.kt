@@ -9,6 +9,7 @@ import com.deadlineshooters.yudemy.fragments.AnalyticsFragment
 import com.deadlineshooters.yudemy.fragments.CourseDashboardFragment
 import com.deadlineshooters.yudemy.fragments.QAFragment
 import com.deadlineshooters.yudemy.fragments.FeedbackFragment
+import com.deadlineshooters.yudemy.fragments.InstructorQAFragment
 
 class InstructorMainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityInstructorMainBinding
@@ -27,7 +28,7 @@ class InstructorMainActivity : AppCompatActivity() {
                 }
 
                 R.id.qna -> {
-                    replaceFragment(QAFragment())
+                    replaceFragment(InstructorQAFragment())
                 }
 
                 R.id.analytics -> {

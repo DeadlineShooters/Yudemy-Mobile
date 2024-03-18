@@ -43,7 +43,7 @@
         app:layout_constraintTop_toBottomOf="@+id/etEmail" />
 
     <TextView
-        android:id="@+id/textView22"
+        android:id="@+id/textView37"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -62,9 +62,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="@string/done"
-        app:layout_constraintBottom_toBottomOf="@+id/textView22"
+        app:layout_constraintBottom_toBottomOf="@+id/textView37"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView22" />
+        app:layout_constraintTop_toTopOf="@+id/textView37" />
 
     <TextView
         android:id="@+id/textView23"
@@ -76,9 +76,9 @@
         android:text="@string/account_security_description"
         android:textAlignment="center"
         android:textColor="@color/gray_300"
-        app:layout_constraintEnd_toEndOf="@+id/textView22"
+        app:layout_constraintEnd_toEndOf="@+id/textView37"
         app:layout_constraintStart_toStartOf="@+id/doneAccSecurity"
-        app:layout_constraintTop_toBottomOf="@+id/textView22" />
+        app:layout_constraintTop_toBottomOf="@+id/textView37" />
 
     <TextView
         android:id="@+id/textView24"
@@ -87,7 +87,7 @@
         android:layout_marginTop="32dp"
         android:text="@string/email"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/textView22"
+        app:layout_constraintStart_toStartOf="@+id/textView37"
         app:layout_constraintTop_toBottomOf="@+id/textView23" />
 
     <EditText
@@ -118,7 +118,7 @@
 
     <Button
         android:id="@+id/button"
-        style="@style/MyButtonAcc"
+        style="@style/MyBlackButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"

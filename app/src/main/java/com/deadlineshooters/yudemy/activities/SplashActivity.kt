@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.fragments.InstructorQAFragment
+import com.deadlineshooters.yudemy.fragments.QAFragment
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +29,9 @@ class SplashActivity : AppCompatActivity() {
 //                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
 //            } else {
                 // Start the Intro Activity
-                startActivity(Intent(this@SplashActivity, StudentMainActivity::class.java))
+
+                startActivity(Intent(this@SplashActivity, SignInActivity::class.java))
+
 //            }
             finish() // Call this when your activity is done and should be closed.
         }, 2500) // Here we pass the delay time in milliSeconds after which the splash activity will disappear.
