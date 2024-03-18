@@ -166,7 +166,7 @@ class QAFragment : Fragment() {
         val imageContainer = when (state) {
             1 -> askQuestionDialog.findViewById(R.id.questionImageContainer)
             2 -> questionDetailDialog.findViewById(R.id.replyImageContainer)
-            3 -> askQuestionDialog.findViewById(R.id.editQuestionImageContainer)
+            3 -> editQuestionDialog.findViewById(R.id.editQuestionImageContainer)
             else -> LinearLayout(requireContext())
         }
 
@@ -287,6 +287,8 @@ class QAFragment : Fragment() {
 
         editQuestionBtn.setOnClickListener{
             editQuestionDialog = createEditQuestionDialog()
+//            askQuestionDialog = createAskQuestionDialog()
+
             state = 3
             editQuestionDialog.show()
         }
