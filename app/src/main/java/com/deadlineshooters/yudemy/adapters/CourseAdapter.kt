@@ -14,6 +14,7 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.CourseRevenueAnalyticsActivity
 import com.deadlineshooters.yudemy.activities.EditCourseLandingPageActivity
 import com.deadlineshooters.yudemy.fragments.CourseDashboardFragment
+import com.deadlineshooters.yudemy.fragments.CourseDraftingMenuFragment
 import com.deadlineshooters.yudemy.models.Course
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -54,8 +55,9 @@ public class CourseAdapter(private val context: CourseDashboardFragment, private
 
                 llEdit.setOnClickListener {
                     // TODO: Navigate to edit course
-//                    val intent = Intent(context, EditCourseLandingPageActivity::class.java)
-//                    context.startActivity(intent)
+                    onEditCourseClick?.invoke()
+
+                    dialog.dismiss()
                 }
 
                 llDelete.setOnClickListener {
