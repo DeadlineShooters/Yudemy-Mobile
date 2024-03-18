@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottomSheet"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
@@ -27,7 +27,7 @@
             android:paddingBottom="8dp"
             android:text="@string/select_filter"
             android:textAlignment="center"
-            android:textColor="@color/white"
+            android:textColor="@color/primary_text_color"
             android:textSize="12sp" />
 
         <View

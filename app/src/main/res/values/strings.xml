@@ -45,8 +45,9 @@
         libero justo consectetur ipsum, in mollis nisl ex sed nisl. Donec maximus ullamcorper
         sodales. Praesent bibendum rhoncus tellus nec feugiat. In a ornare nulla. Donec rhoncus
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
-        vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
+        vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim."
     </string>
+
     <string name="play_preview_video">play preview video</string>
     <string name="preview_this_course">Preview this course</string>
     <string name="buy_now">Buy now</string>
@@ -75,10 +76,70 @@
     <string name="start_course">Start course</string>
     <string name="search">Search</string>
     <string name="select_filter">Select filter</string>
+    <string name="ask_a_question">Ask a question</string>
     <string-array name="my_learning_filter">
         <item>Favorite courses</item>
         <item>All courses</item>
     </string-array>
-    <string name="title_activity_successfully_enroll">SuccessfullyEnrollActivity</string>
-    <string name="title_activity_student_main">StudentMainActivity</string>
+    <string name="learning_section_title">Section %d - %s</string>
+    <string name="learning_lecture_detail">Video - %d:%d mins</string>
+    <string name="about_this_course">About this course</string>
+    <string name="course_certificate">Course certificate</string>
+    <string name="q_a">Q&amp;A</string>
+    <string name="add_course_to_favorites">Add course to favorites</string>
+    <string name="switch_to_instructor_view">Switch to instructor view</string>
+    <string name="become_an_instructor">Become an instructor</string>
+    <string name="account_settings">Account settings</string>
+    <string name="learning_reminders">Learning reminders</string>
+    <string name="account_security">Account security</string>
+    <string name="close_account">Close account</string>
+    <string name="support">Support</string>
+    <string name="about_yudemy">About Yudemy</string>
+    <string name="sign_out">Sign out</string>
+    <string name="Yudemy_v1.0">Yudemy v1.0</string>
+    <string name="learning_reminder_description">Learning a little each day adds up. Research shows that students who make learning a habit are more likely to retain information and reach their goals</string>
+    <string name="learning_reminder_description1">Choose which day(s) you want to get a reminder</string>
+    <string name="learning_reminder_description2">Choose what time you want to learn</string>
+    <string name="learning_reminder_description3">Update or pause your reminders at any time</string>
+    <string name="allow_reminders">Allow reminders</string>
+    <string name="frequency">Frequency</string>
+    <string name="day">Day</string>
+    <string name="time">Time</string>
+    <string-array name="frequency_day">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
+    <string-array name="frequency_time">
+        <item>Morning</item>
+        <item>Mid-morning</item>
+        <item>Noon</item>
+        <item>Afternoon</item>
+        <item>Evening</item>
+        <item>Night</item>
+    </string-array>
+    <string-array name="frequency_time_detail">
+        <item>06:00</item>
+        <item>09:00</item>
+        <item>12:00</item>
+        <item>15:00</item>
+        <item>18:00</item>
+        <item>21:00</item>
+    </string-array>
+    <string name="done">Done</string>
+    <string name="account_security_description">Edit your account settings and change your password here.</string>
+    <string name="email">Email:</string>
+    <string name="password">Password:</string>
+    <string name="enter_current_password">Enter current password</string>
+    <string name="enter_new_password">Enter new password</string>
+    <string name="retype_new_password">Re-type new password</string>
+    <string name="change_password">Change password</string>
+    <string name="close_your_account_permanently">Close your account permanently</string>
+    <string name="close_account_warning">Warning: If you close your account, you will be unsubscribe from all your courses, and will lose access forever.</string>
+    <string name="about_yudemy_description">Yudemy is an online learning platform featuring 100+ video courses taught by expert instructors. Take courses in anything from programming languages like Python, and Java to personal development classes like design, drawing, writing and yoga. Join the more than 30 million students who are mastering new skills, advancing their careers, and exploring new hobbies on Udemy.</string>
+    <string name="NTVT">Team NTVT:</string>
 </resources>

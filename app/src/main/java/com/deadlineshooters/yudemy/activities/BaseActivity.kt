@@ -82,6 +82,24 @@ open class BaseActivity : AppCompatActivity() {
         )
         snackBar.show()
     }
+    fun Int.formatThousands(): String {
+        val regex = "(\\d)(?=(\\d{3})+\$)".toRegex()
+        return this.toString().replace(regex, "$1.")
+    }
 
+    fun Long.formatThousands(): String {
+        val regex = "(\\d)(?=(\\d{3})+\$)".toRegex()
+        return this.toString().replace(regex, "$1.")
+    }
+
+    fun Double.formatThousands(): String {
+        val regex = "(\\d)(?=(\\d{3})+\\.)".toRegex()
+        return this.toString().replace(regex, "$1.")
+    }
+
+    fun Float.formatThousands(): String {
+        val regex = "(\\d)(?=(\\d{3})+\\.)".toRegex()
+        return this.toString().replace(regex, "$1.")
+    }
 
 }

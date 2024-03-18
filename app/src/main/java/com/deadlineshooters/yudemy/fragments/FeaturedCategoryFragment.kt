@@ -8,8 +8,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.adapters.CourseListAdapter1
+import com.deadlineshooters.yudemy.adapters.CourseListAdapter2
 import com.deadlineshooters.yudemy.adapters.InstructorListAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentFeaturedCategoryBinding
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
@@ -59,7 +61,9 @@ class FeaturedCategoryFragment : Fragment() {
 
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-            val adapter = CourseListAdapter1(requireContext(), R.layout.course_list_item, courses)
+            val clonedCourses = List(10) { courses[0] }
+            val adapter = CourseListAdapter2(clonedCourses)
+            binding.courseList.layoutManager = LinearLayoutManager(context)
             binding.courseList.adapter = adapter
         })
     }

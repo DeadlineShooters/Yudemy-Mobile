@@ -7,6 +7,7 @@ import com.deadlineshooters.yudemy.databinding.ActivityMainBinding
 import com.deadlineshooters.yudemy.fragments.AccountFragment
 import com.deadlineshooters.yudemy.fragments.FeaturedFragment
 import com.deadlineshooters.yudemy.fragments.MyLearningFragment
+import com.deadlineshooters.yudemy.fragments.QAFragment
 import com.deadlineshooters.yudemy.fragments.SearchFragment
 import com.deadlineshooters.yudemy.fragments.WishlistFragment
 import com.google.firebase.firestore.ktx.firestore
