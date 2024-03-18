@@ -8,9 +8,19 @@
         tools:context=".fragments.FeaturedFragment"
         android:id="@+id/featuredFragment">
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".fragments.FeaturedFragment">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/selectedFilter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="featured fragment"
+            android:textSize="26sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_instructor" />
+
         <Button
                 android:id="@+id/btn_courseDetail"
                 android:layout_width="wrap_content"

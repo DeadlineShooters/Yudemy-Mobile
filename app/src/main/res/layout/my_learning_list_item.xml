@@ -12,11 +12,11 @@
         android:layout_marginTop="-2dp"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/linearLayout"
+        app:layout_constraintTop_toTopOf="@+id/filterContainer"
         tools:srcCompat="@tools:sample/avatars" />
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/filterContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

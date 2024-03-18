@@ -19,8 +19,8 @@ class CertificateActivity : AppCompatActivity() {
     private lateinit var finishDate: TextView
     private lateinit var courseLength: TextView
     private val dumpCertificate = Certificate("123", "13/03/2024", "123", "Data Structures & Algorithms Essentials using C++ (2022)", 97200,)
-    val originalFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    val newFormat = SimpleDateFormat("MMM, dd, yyyy", Locale.getDefault())
+    private val originalFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    private val newFormat = SimpleDateFormat("MMM, dd, yyyy", Locale.getDefault())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_certificate)
