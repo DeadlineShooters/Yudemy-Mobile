@@ -155,5 +155,14 @@
     <string name="course_image_note">Upload your course image here. Important guidelines: 750x422 pixels; .jpg, .jpeg,. gif, or .png. no text on the image</string>
     <string name="promotional_video">Promotional video</string>
     <string name="course_promo_video_note">Your promo video is a quick and compelling way for students to preview what they’ll learn in your course. Students considering your course are more likely to enroll if your promo video is well-made</string>
-
+    <string name="create_content">Create content</string>
+    <string name="curriculum">Curriculum</string>
+    <string name="curriculum_description">Start putting together your course by creating sections and lectures</string>
+    <string name="section_idx">Section %d:</string>
+    <string name="lecture_idx">Lecture %d:</string>
+    <string name="Replace">Replace</string>
+    <string name="video_duration">%d:%d</string>
+    <string name="lecture">Lecture</string>
+    <string name="section">Section</string>
+    <string name="enter_a_title">Enter a title</string>
 </resources>

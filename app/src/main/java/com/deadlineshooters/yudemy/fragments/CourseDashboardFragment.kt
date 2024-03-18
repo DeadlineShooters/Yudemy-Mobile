@@ -1,6 +1,7 @@
 package com.deadlineshooters.yudemy.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.CreateCurriculumActivity
 import com.deadlineshooters.yudemy.adapters.CourseAdapter
 import com.deadlineshooters.yudemy.adapters.FeedbackAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentCourseDashboardBinding
@@ -76,7 +78,9 @@ class CourseDashboardFragment : Fragment() {
 
 
         binding.ivCreateCourse.setOnClickListener{
-            replaceFragment(CourseUploadFragment())
+//            replaceFragment(CourseUploadFragment())
+            val intent = Intent(context, CreateCurriculumActivity::class.java)
+            startActivity(intent)
         }
 
         binding.btnCancel.setOnClickListener {
@@ -95,12 +99,12 @@ class CourseDashboardFragment : Fragment() {
 
     }
 
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentManager = requireActivity().supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayout, fragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
-    }
+//    private fun replaceFragment(fragment: Fragment) {
+//        val fragmentManager = requireActivity().supportFragmentManager
+//        val fragmentTransaction = fragmentManager.beginTransaction()
+//        fragmentTransaction.replace(R.id.frameLayout, fragment)
+//        fragmentTransaction.addToBackStack(null)
+//        fragmentTransaction.commit()
+//    }
 
 }
