@@ -70,6 +70,22 @@ class SearchFragment : Fragment() {
         topSearchList.layoutManager = layoutManager
         topSearchList.addItemDecoration(FeaturedFragment.SpaceItemDecoration(8))
 
+        topSearchAdapter.onItemClick = { category ->
+            courseViewModel = ViewModelProvider(this@SearchFragment).get(CourseViewModel::class.java)
+            courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
+                val clonedCourses = List(10) { courses[0] }
+                val resultAdapter = CourseListAdapter1(requireContext(), R.layout.course_list_item, clonedCourses)
+                binding.resultList.adapter = resultAdapter
+                binding.emptyFrame.visibility = View.GONE
+                binding.resultList.visibility = View.VISIBLE
+            })
+        }
+
+        binding.backBtn.setOnClickListener {
+            binding.emptyFrame.visibility = View.VISIBLE
+            binding.resultList.visibility = View.GONE
+        }
+
         val categoryList = binding.categoryList
         val categoryAdapter = CategoryAdapter3(categories)
         categoryList.adapter = categoryAdapter
@@ -77,6 +93,18 @@ class SearchFragment : Fragment() {
             override fun canScrollVertically() = false
         }
         categoryList.addItemDecoration(FeaturedFragment.SpaceItemDecoration(8))
+
+        categoryAdapter.onItemClick = { category ->
+            val fragment = FeaturedCategoryFragment()
+            val bundle = Bundle()
+            bundle.putString("category", category)
+            fragment.arguments = bundle
+            val fragmentManager = activity?.supportFragmentManager
+            val fragmentTransaction = fragmentManager?.beginTransaction()
+            fragmentTransaction?.addToBackStack(null)
+            fragmentTransaction?.replace(R.id.frameLayout, fragment)
+            fragmentTransaction?.commit()
+        }
 
         val searchView = binding.searchView
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)

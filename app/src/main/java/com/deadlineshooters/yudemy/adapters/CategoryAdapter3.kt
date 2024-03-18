@@ -10,6 +10,15 @@ import com.google.android.material.button.MaterialButton
 
 class CategoryAdapter3(private val categories: List<String>) :
     RecyclerView.Adapter<CategoryAdapter3.ViewHolder>() {
+    var onItemClick: ((String) -> Unit)? = null
+
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val textView: TextView = itemView.findViewById(R.id.textView)
+
+        init {
+            textView.setOnClickListener { onItemClick?.invoke(categories[bindingAdapterPosition]) }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.category_item_3, parent, false)
@@ -22,7 +31,5 @@ class CategoryAdapter3(private val categories: List<String>) :
 
     override fun getItemCount(): Int = categories.size
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textView: TextView = itemView.findViewById(R.id.textView)
-    }
+
 }

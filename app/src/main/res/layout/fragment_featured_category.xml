@@ -20,9 +20,10 @@
                 android:text="Category Name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/categoryName"
-                android:textSize="36sp" android:textStyle="bold" app:layout_constraintStart_toStartOf="parent"
+                android:textSize="36sp" android:textStyle="bold"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="16dp" android:layout_marginStart="16dp"/>
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"/>
         <TextView
                 android:text="Top instructors"
                 android:layout_width="wrap_content"
@@ -40,5 +41,10 @@
                 android:layout_height="wrap_content" app:layout_constraintTop_toBottomOf="@+id/textView7"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" android:id="@+id/courseList"/>
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" app:srcCompat="@drawable/back_button" app:layout_constraintTop_toTopOf="@+id/categoryName"
+                android:id="@+id/backBtn" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/categoryName" android:layout_marginStart="8dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

@@ -51,12 +51,24 @@ class WishlistFragment : Fragment() {
         binding.categoryList.layoutManager = LinearLayoutManager(context)
         binding.categoryList.addItemDecoration(FeaturedFragment.SpaceItemDecoration(8))
 
+        adapter.onItemClick = { category ->
+            val fragment = FeaturedCategoryFragment()
+            val bundle = Bundle()
+            bundle.putString("category", category)
+            fragment.arguments = bundle
+            val fragmentManager = activity?.supportFragmentManager
+            val fragmentTransaction = fragmentManager?.beginTransaction()
+            fragmentTransaction?.addToBackStack(null)
+            fragmentTransaction?.replace(R.id.frameLayout, fragment)
+            fragmentTransaction?.commit()
+        }
+
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
             val clonedCourses = List(10) { courses[0] }
             val wishListAdapter = CourseListAdapter1(requireContext(), R.layout.course_list_item, clonedCourses)
             binding.wishlistList.adapter = wishListAdapter
-            if (courses.isEmpty()) {
+            if (!courses.isEmpty()) {
                 binding.emptyFrame.visibility = View.VISIBLE
                 binding.wishlistList.visibility = View.GONE
             } else {
