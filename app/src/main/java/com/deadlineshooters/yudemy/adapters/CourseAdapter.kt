@@ -12,9 +12,12 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.CourseRevenueAnalyticsActivity
+import com.deadlineshooters.yudemy.activities.EditCourseLandingPageActivity
 import com.deadlineshooters.yudemy.fragments.CourseDashboardFragment
+import com.deadlineshooters.yudemy.fragments.CourseDraftingMenuFragment
 import com.deadlineshooters.yudemy.models.Course
 import com.google.android.material.bottomsheet.BottomSheetDialog
+
 
 public class CourseAdapter(private val context: CourseDashboardFragment, private val courseList: List<Course>) : RecyclerView.Adapter<CourseAdapter.ViewHolder>() {
     var listener: AdapterView.OnItemClickListener? = null
@@ -52,8 +55,9 @@ public class CourseAdapter(private val context: CourseDashboardFragment, private
 
                 llEdit.setOnClickListener {
                     // TODO: Navigate to edit course
-//                    Toast.makeText(context, "Edit clicked!", Toast.LENGTH_SHORT).show()
                     onEditCourseClick?.invoke()
+
+                    dialog.dismiss()
                 }
 
                 llDelete.setOnClickListener {

@@ -60,7 +60,7 @@ class CourseDashboardFragment : Fragment() {
 
         binding.ivFilter.setOnClickListener{
             val dialog = BottomSheetDialog(requireContext())
-            val filterView = layoutInflater.inflate(R.layout.course_menu_bottom_sheet, null)
+            val filterView = layoutInflater.inflate(R.layout.course_sort_bottom_sheet, null)
             dialog.setContentView(filterView)
 
             dialog.show()
