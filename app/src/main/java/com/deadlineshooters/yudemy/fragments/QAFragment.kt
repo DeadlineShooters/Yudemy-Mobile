@@ -25,9 +25,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.adapters.MyLearningFilterAdapter
 import com.deadlineshooters.yudemy.adapters.QuestionListAdapter
 import com.deadlineshooters.yudemy.adapters.ReplyListAdapter
-import com.deadlineshooters.yudemy.helpers.MyLearningFilterAdapter
 import com.deadlineshooters.yudemy.models.Question
 import com.deadlineshooters.yudemy.models.Reply
 import com.google.android.material.bottomsheet.BottomSheetDialog
