@@ -50,7 +50,6 @@ class InstructorQAFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private lateinit var qaInstructorCloseBtn: TextView
     private lateinit var qaInstructorFilterBtn: Button
     private lateinit var instructorQuestionListView: RecyclerView
     private lateinit var instructorFilterQuestionDialog: BottomSheetDialog
@@ -62,7 +61,16 @@ class InstructorQAFragment : Fragment() {
     private val dumpQuestion1 = Question("123", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
     private val dumpQuestion2 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
     private val dumpQuestion3 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-    private val dumpQuestionList = arrayListOf(dumpQuestion1, dumpQuestion2, dumpQuestion3)
+    private val dumpQuestion4 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
+    private val dumpQuestion5 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
+    private val dumpQuestion6 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
+    private val dumpQuestion7 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
+    private val dumpQuestion8 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
+    private val dumpQuestion9 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
+
+
+
+    private val dumpQuestionList = arrayListOf(dumpQuestion1, dumpQuestion2, dumpQuestion3, dumpQuestion4, dumpQuestion5, dumpQuestion6, dumpQuestion7, dumpQuestion8, dumpQuestion9)
 
     private var questionListAdapter = QuestionListAdapter(dumpQuestionList)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,12 +91,8 @@ class InstructorQAFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        qaInstructorCloseBtn = view.findViewById(R.id.qaInstructorCloseBtn)
         qaInstructorFilterBtn = view.findViewById(R.id.qaInstructorFilterBtn)
         instructorQuestionListView = view.findViewById(R.id.instructorQuestionListView)
-        qaInstructorCloseBtn.setOnClickListener {
-            //TODO: Close the fragment
-        }
 
         qaInstructorFilterBtn.setOnClickListener {
             instructorFilterQuestionDialog = createInstructorQuestionFilterDialog()
