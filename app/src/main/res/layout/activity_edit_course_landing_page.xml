@@ -14,18 +14,39 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/tv_toolbar"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:text="@string/course_landing_page"
-            android:fontFamily="@font/inter_bold"
-            android:textSize="25sp"
+            android:layout_height="wrap_content">
 
-            android:textColor="@color/primary_text_color"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tv_toolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/inter_bold"
+                android:gravity="center_vertical"
+                android:text="@string/course_landing_page"
+                android:textColor="@color/primary_text_color"
+
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/button_save"
+                style="@style/MyBlackButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/save"
+                android:textAllCaps="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     </androidx.appcompat.widget.Toolbar>
 
     <ScrollView
@@ -163,13 +184,17 @@
                             android:text="Upload your course image here."
                             android:textSize="15sp" />
 
+
                         <Button
                             android:id="@+id/button_uploadImage"
+                            style="@style/MyBlackButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Upload image" />
-
-
+                            android:layout_marginTop="6dp"
+                            android:text="@string/upload_file"
+                            android:textAllCaps="false"
+                            app:layout_constraintStart_toStartOf="@+id/tvImgNote"
+                            app:layout_constraintTop_toBottomOf="@+id/tvImgNote" />
                     </LinearLayout>
 
 

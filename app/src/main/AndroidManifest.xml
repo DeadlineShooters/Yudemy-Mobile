@@ -27,9 +27,7 @@
         <activity
             android:name=".activities.CreateCurriculumActivity"
             android:exported="false" />
-        <activity
-            android:name=".activities.QAActivity"
-            android:exported="false" />
+
         <activity
             android:name=".activities.CertificateActivity"
             android:exported="false" />
