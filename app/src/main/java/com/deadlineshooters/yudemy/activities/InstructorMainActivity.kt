@@ -5,11 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.ActivityInstructorMainBinding
-import com.deadlineshooters.yudemy.fragments.AnalyticsFragment
-import com.deadlineshooters.yudemy.fragments.CourseDashboardFragment
-import com.deadlineshooters.yudemy.fragments.QAFragment
-import com.deadlineshooters.yudemy.fragments.FeedbackFragment
-import com.deadlineshooters.yudemy.fragments.InstructorQAFragment
+import com.deadlineshooters.yudemy.fragments.*
 
 class InstructorMainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityInstructorMainBinding
@@ -37,6 +33,10 @@ class InstructorMainActivity : AppCompatActivity() {
 
                 R.id.reviews -> {
                     replaceFragment(FeedbackFragment())
+                }
+
+                R.id.account -> {
+                    replaceFragment(AccountFragment())
                 }
 
                 else -> {
