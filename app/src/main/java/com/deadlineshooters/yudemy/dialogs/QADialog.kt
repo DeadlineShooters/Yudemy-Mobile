@@ -1,4 +1,4 @@
-package com.deadlineshooters.yudemy.fragments
+package com.deadlineshooters.yudemy.dialogs
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -21,6 +21,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,20 +37,7 @@ import java.util.Date
 import java.util.Locale
 import kotlin.properties.Delegates
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [QAFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class QAFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class QADialog : DialogFragment() {
     private lateinit var qaCloseBtn: TextView
     private lateinit var qaFilterBtn: Button
     private lateinit var addQuestionBtn: Button
@@ -76,10 +64,7 @@ class QAFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        setStyle(STYLE_NORMAL, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
     }
 
     override fun onCreateView(
@@ -105,6 +90,7 @@ class QAFragment : Fragment() {
 
         qaCloseBtn.setOnClickListener {
             //TODO: Close the fragment
+            dismiss()
         }
 
         startForImagePickerResult = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia()) { uris ->
@@ -432,25 +418,5 @@ class QAFragment : Fragment() {
 
         dialog.setContentView(bottomSheet)
         return dialog
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment QAFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            QAFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }

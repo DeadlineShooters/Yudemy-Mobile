@@ -7,7 +7,6 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.ActivityInstructorMainBinding
 import com.deadlineshooters.yudemy.fragments.AnalyticsFragment
 import com.deadlineshooters.yudemy.fragments.CourseDashboardFragment
-import com.deadlineshooters.yudemy.fragments.QAFragment
 import com.deadlineshooters.yudemy.fragments.FeedbackFragment
 import com.deadlineshooters.yudemy.fragments.InstructorQAFragment
 

@@ -1,11 +1,13 @@
 package com.deadlineshooters.yudemy.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.dialogs.QADialog
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -19,6 +21,8 @@ private const val ARG_COURSE_ID = "courseId"
 class MoreLearningFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var courseId: String? = null
+    private lateinit var qa: TextView
+
     val title = "More"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +39,19 @@ class MoreLearningFragment : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_more_learning, container, false)
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        qa = view.findViewById(R.id.qa)
+
+        qa.setOnClickListener {
+            val qaDialog = QADialog()
+            qaDialog.show(parentFragmentManager, "QADialog")
+        }
+    }
+
+
+
 
     companion object {
         /**
