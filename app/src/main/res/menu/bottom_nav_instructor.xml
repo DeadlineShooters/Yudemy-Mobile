@@ -19,8 +19,7 @@
         android:icon="@drawable/ic_award_03"
         app:showAsAction="withText"/>
     <item android:title="Account"
-          android:id="@+id/account"
-          android:icon="@drawable/selector_account_icon"
-          app:showAsAction="withText"/>
+        android:id="@+id/account"
+        android:icon="@drawable/selector_account_icon"
+        app:showAsAction="withText"/>
 </menu>
-

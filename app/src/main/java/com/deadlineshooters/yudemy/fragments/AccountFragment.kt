@@ -119,7 +119,18 @@ class AccountFragment : Fragment() {
             replaceFragment(EditImageFragment())
         }
 
-        val imageUrl = "https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg"
+        navigateIns.setOnClickListener {
+            val curActivity = context
+
+            val intent =when (curActivity) {
+                is InstructorMainActivity -> Intent(context, StudentMainActivity::class.java)
+                is StudentMainActivity -> Intent(context, InstructorMainActivity::class.java)
+                else -> throw IllegalStateException("Unexpected activity: $curActivity")
+            }
+            startActivity(intent)
+        }
+        val imageUrl =
+            "https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg"
         ImageViewHelper().setImageViewFromUrl(Image(imageUrl, ""), avatar)
     }
 
@@ -131,7 +142,7 @@ class AccountFragment : Fragment() {
     }
 
     private fun showSignOutDialog() {
-        MaterialAlertDialogBuilder(requireContext(),  R.style.ThemeOverlay_MyApp_MaterialAlertDialog)
+        MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_MyApp_MaterialAlertDialog)
             .setMessage("Sign out from Yudemy?")
             .setPositiveButton("Sign out") { dialog, which ->
                 // TODO: Implement sign out
