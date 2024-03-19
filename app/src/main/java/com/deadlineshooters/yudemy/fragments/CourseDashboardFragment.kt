@@ -105,7 +105,7 @@ class CourseDashboardFragment : Fragment() {
     private fun replaceFragment(fragment: Fragment) {
         val fragmentManager = requireActivity().supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayout, fragment)
+        fragmentTransaction.replace(R.id.frameLayoutInstructor, fragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
