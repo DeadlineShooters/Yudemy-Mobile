@@ -74,6 +74,22 @@ class AccountFragment : Fragment() {
         editProfile = view.findViewById(R.id.editProfile)
         editImage = view.findViewById(R.id.editImage)
 
+        val currentActivity = requireActivity()
+        if (requireActivity() is InstructorMainActivity) {
+            navigateIns.setText("Switch to Student View")
+        } else {
+            navigateIns.setText("Switch to Instructor View")
+        }
+
+        navigateIns.setOnClickListener {
+            if (requireActivity() is InstructorMainActivity) {
+                startActivity(Intent(currentActivity, StudentMainActivity::class.java))
+            } else {
+                startActivity(Intent(currentActivity, InstructorMainActivity::class.java))
+            }
+        }
+
+
         learningReminders.setOnClickListener {
             replaceFragment(LearningRemindersFragment())
         }
