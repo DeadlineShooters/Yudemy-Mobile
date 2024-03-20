@@ -1,10 +1,8 @@
 package com.deadlineshooters.yudemy.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
@@ -12,9 +10,14 @@ import com.deadlineshooters.yudemy.models.Course
 
 class CourseListAdapter2(private val courses: List<Course>) :
     RecyclerView.Adapter<CourseListAdapter2.CourseViewHolder>() {
+    var onItemClick: ((Course) -> Unit)? = null
 
-    class CourseViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class CourseViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val courseName: TextView = view.findViewById(R.id.courseName)
+
+        init {
+            view.setOnClickListener { onItemClick?.invoke(courses[bindingAdapterPosition]) }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseViewHolder {
@@ -29,4 +32,3 @@ class CourseListAdapter2(private val courses: List<Course>) :
 
     override fun getItemCount() = courses.size
 }
-

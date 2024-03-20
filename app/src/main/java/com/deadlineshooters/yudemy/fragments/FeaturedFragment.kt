@@ -26,6 +26,7 @@ import com.deadlineshooters.yudemy.adapters.CategoryAdapter1
 import com.deadlineshooters.yudemy.adapters.CourseListAdapter1
 import com.deadlineshooters.yudemy.adapters.CourseListAdapter2
 import com.deadlineshooters.yudemy.databinding.FragmentFeaturedBinding
+import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 
 
@@ -125,6 +126,10 @@ class FeaturedFragment : Fragment() {
             val adapter = CourseListAdapter2(clonedCourses)
             binding.courseList.layoutManager = LinearLayoutManager(context)
             binding.courseList.adapter = adapter
+            adapter.onItemClick = {course ->
+                val intent = Intent(activity, CourseDetailActivity::class.java)
+                startActivity(intent)
+            }
         })
     }
 
