@@ -51,23 +51,23 @@ class FeaturedCategoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.categoryName.text = category
 
-        instructorViewModel = ViewModelProvider(this).get(InstructorViewModel::class.java)
-        instructorViewModel.instructors.observe(viewLifecycleOwner, Observer { instructors ->
-            val adapter = InstructorListAdapter(instructors)
-            binding.instructorList.adapter = adapter
-            binding.instructorList.layoutManager = GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
-        })
-
-        courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
-        courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-            val clonedCourses = List(10) { courses[0] }
-            val adapter = CourseListAdapter2(clonedCourses)
-            binding.courseList.layoutManager = LinearLayoutManager(context)
-            binding.courseList.adapter = adapter
-        })
-
+//        instructorViewModel = ViewModelProvider(this).get(InstructorViewModel::class.java)
+//        instructorViewModel.instructors.observe(viewLifecycleOwner, Observer { instructors ->
+//            val adapter = InstructorListAdapter(instructors)
+//            binding.instructorList.adapter = adapter
+//            binding.instructorList.layoutManager = GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
+//        })
+//
+//        courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
+//        courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
+//            val clonedCourses = List(10) { courses[0] }
+//            val adapter = CourseListAdapter2(clonedCourses)
+//            binding.courseList.layoutManager = LinearLayoutManager(context)
+//            binding.courseList.adapter = adapter
+//        })
+//
         binding.backBtn.setOnClickListener {
-            activity?.supportFragmentManager?.popBackStack()
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
 

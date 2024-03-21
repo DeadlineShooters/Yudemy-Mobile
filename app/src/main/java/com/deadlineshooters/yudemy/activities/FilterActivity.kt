@@ -3,12 +3,9 @@ package com.deadlineshooters.yudemy.activities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import android.widget.Filter
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.adapters.CheckboxAdapter
 import com.deadlineshooters.yudemy.databinding.ActivityFilterBinding
-import com.deadlineshooters.yudemy.databinding.ActivityMainBinding
 
 class FilterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFilterBinding

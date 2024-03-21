@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
-@Parcelize
+@kotlinx.parcelize.Parcelize
 data class FeedbackResponse(
     var instructorId: String = "",
     var content: String = "",

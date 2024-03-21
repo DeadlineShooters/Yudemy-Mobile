@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@Parcelize
+@kotlinx.parcelize.Parcelize
 data class Certificate(
     var _id: String = "",
     var createdDate: String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),

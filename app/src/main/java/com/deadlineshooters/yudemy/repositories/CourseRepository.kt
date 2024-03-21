@@ -8,7 +8,6 @@ import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Video
 import com.google.firebase.firestore.FirebaseFirestore
-import java.util.Date
 
 class CourseRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
@@ -48,23 +47,23 @@ class CourseRepository {
             }
     }
 
-    fun getCourses(): LiveData<List<Course>> {
-        val coursesLiveData = MutableLiveData<List<Course>>()
-
-        coursesCollection.addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                Log.w(TAG, "Listen failed.", e)
-                return@addSnapshotListener
-            }
-
-            if (snapshot != null && !snapshot.isEmpty) {
-                val courses = snapshot.documents.mapNotNull { it.toObject(Course::class.java) }
-                coursesLiveData.value = courses
-            } else {
-                Log.d(TAG, "Current data: null")
-            }
-        }
-
-        return coursesLiveData
-    }
+//    fun getCourses(): LiveData<List<Course>> {
+//        val coursesLiveData = MutableLiveData<List<Course>>()
+//
+//        coursesCollection.addSnapshotListener { snapshot, e ->
+//            if (e != null) {
+//                Log.w(TAG, "Listen failed.", e)
+//                return@addSnapshotListener
+//            }
+//
+//            if (snapshot != null && !snapshot.isEmpty) {
+//                val courses = snapshot.documents.mapNotNull { it.toObject(Course::class.java) }
+//                coursesLiveData.value = courses
+//            } else {
+//                Log.d(TAG, "Current data: null")
+//            }
+//        }
+//
+//        return coursesLiveData
+//    }
 }

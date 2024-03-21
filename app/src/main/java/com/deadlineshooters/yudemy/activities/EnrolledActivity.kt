@@ -26,12 +26,12 @@ class EnrolledActivity : AppCompatActivity() {
         binding = ActivityEnrolledBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
-        courseViewModel.courses.observe(this, Observer { courses ->
-            val clonedCourses = List(10) { courses[0] }
-            val courseListAdapter = CourseListAdapter2(clonedCourses)
-            binding.courseList.layoutManager = LinearLayoutManager(this)
-            binding.courseList.adapter = courseListAdapter
-        })
+//        courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
+//        courseViewModel.courses.observe(this, Observer { courses ->
+//            val clonedCourses = List(10) { courses[0] }
+//            val courseListAdapter = CourseListAdapter2(clonedCourses)
+//            binding.courseList.layoutManager = LinearLayoutManager(this)
+//            binding.courseList.adapter = courseListAdapter
+//        })
     }
 }

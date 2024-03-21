@@ -4,7 +4,7 @@ import android.os.Parcelable
 import com.google.firebase.Timestamp
 import kotlinx.android.parcel.Parcelize
 
-@Parcelize
+@kotlinx.parcelize.Parcelize
 data class UserLecture(
     var _id: String,
     var userId: String,

@@ -5,7 +5,7 @@ import java.util.*
 import kotlinx.android.parcel.Parcelize
 import kotlinx.parcelize.RawValue
 
-@Parcelize
+@kotlinx.parcelize.Parcelize
 data class Reply(
     var _id: String,
     var replier: String, // id

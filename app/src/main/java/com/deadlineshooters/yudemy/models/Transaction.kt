@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import kotlinx.parcelize.RawValue
 
-@Parcelize
+@kotlinx.parcelize.Parcelize
 data class Transaction(
     var _id: String,
     var senderId: String,

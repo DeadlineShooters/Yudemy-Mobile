@@ -12,7 +12,7 @@ import com.deadlineshooters.yudemy.repositories.CourseRepository
 class CourseViewModel : ViewModel() {
     private val courseRepository = CourseRepository()
     private val cloudinaryHelper = CloudinaryHelper()
-    val courses: LiveData<List<Course>> = courseRepository.getCourses()
+//    val courses: LiveData<List<Course>> = courseRepository.getCourses()
 
     fun addDummyCourse() {
 

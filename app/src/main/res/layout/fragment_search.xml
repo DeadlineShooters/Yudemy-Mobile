@@ -11,7 +11,7 @@
             android:layout_height="wrap_content" app:srcCompat="@drawable/back_button" android:id="@+id/backBtn" android:layout_weight="1"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="@+id/searchView"
             app:layout_constraintTop_toTopOf="@+id/searchView" android:layout_marginStart="8dp"/>
-    <SearchView
+    <androidx.appcompat.widget.SearchView
             android:layout_width="0dp"
             android:layout_height="48dp" android:id="@+id/searchView" android:queryHint="Search"
             android:background="@drawable/background_searchview"
@@ -20,7 +20,7 @@
             app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="16dp"
             app:layout_constraintEnd_toStartOf="@+id/filterBtn" android:layout_marginEnd="16dp" app:layout_constraintStart_toEndOf="@+id/backBtn"
             android:layout_marginStart="8dp">
-    </SearchView>
+    </androidx.appcompat.widget.SearchView>
     <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" app:srcCompat="@drawable/ic_filter"

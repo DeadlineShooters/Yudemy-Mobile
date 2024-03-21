@@ -12,34 +12,34 @@ class InstructorRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
     private val instructorsCollection = mFireStore.collection("lecturers")
 
-    fun addInstructor(instructor: Instructor) {
-        val documentReference = instructorsCollection.document()
-        instructor._id = documentReference.id
-        documentReference.set(instructor)
-            .addOnSuccessListener {
-                Log.d("Lecturer", "DocumentSnapshot successfully written!\n$instructor")
-            }
-            .addOnFailureListener {
-                    e -> Log.w("Lecturer", "Error writing document", e)
-            }
-    }
-    fun getInstructor(): LiveData<List<Instructor>> {
-        val instructorsLiveData = MutableLiveData<List<Instructor>>()
-
-        instructorsCollection.addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                Log.w(ContentValues.TAG, "Listen failed.", e)
-                return@addSnapshotListener
-            }
-
-            if (snapshot != null && !snapshot.isEmpty) {
-                val instructors = snapshot.documents.mapNotNull { it.toObject(Instructor::class.java) }
-                instructorsLiveData.value = instructors
-            } else {
-                Log.d(ContentValues.TAG, "Current data: null")
-            }
-        }
-
-        return instructorsLiveData
-    }
+//    fun addInstructor(instructor: Instructor) {
+//        val documentReference = instructorsCollection.document()
+//        instructor._id = documentReference.id
+//        documentReference.set(instructor)
+//            .addOnSuccessListener {
+//                Log.d("Lecturer", "DocumentSnapshot successfully written!\n$instructor")
+//            }
+//            .addOnFailureListener {
+//                    e -> Log.w("Lecturer", "Error writing document", e)
+//            }
+//    }
+//    fun getInstructor(): LiveData<List<Instructor>> {
+//        val instructorsLiveData = MutableLiveData<List<Instructor>>()
+//
+//        instructorsCollection.addSnapshotListener { snapshot, e ->
+//            if (e != null) {
+//                Log.w(ContentValues.TAG, "Listen failed.", e)
+//                return@addSnapshotListener
+//            }
+//
+//            if (snapshot != null && !snapshot.isEmpty) {
+//                val instructors = snapshot.documents.mapNotNull { it.toObject(Instructor::class.java) }
+//                instructorsLiveData.value = instructors
+//            } else {
+//                Log.d(ContentValues.TAG, "Current data: null")
+//            }
+//        }
+//
+//        return instructorsLiveData
+//    }
 }

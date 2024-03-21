@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@Parcelize
+@kotlinx.parcelize.Parcelize
 data class CourseFeedback(
     var _id: String = "",
     var courseId: String = "",

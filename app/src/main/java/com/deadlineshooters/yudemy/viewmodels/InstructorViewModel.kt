@@ -7,5 +7,5 @@ import com.deadlineshooters.yudemy.repositories.InstructorRepository
 
 class InstructorViewModel : ViewModel(){
     private val instructorRepository = InstructorRepository()
-    val instructors: LiveData<List<Instructor>> = instructorRepository.getInstructor()
+//    val instructors: LiveData<List<Instructor>> = instructorRepository.getInstructor()
 }

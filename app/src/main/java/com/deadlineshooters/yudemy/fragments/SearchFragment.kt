@@ -4,7 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.widget.SearchView
+import androidx.appcompat.widget.SearchView
+
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -71,14 +72,14 @@ class SearchFragment : Fragment() {
         topSearchList.addItemDecoration(FeaturedFragment.SpaceItemDecoration(8))
 
         topSearchAdapter.onItemClick = { category ->
-            courseViewModel = ViewModelProvider(this@SearchFragment).get(CourseViewModel::class.java)
-            courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-                val clonedCourses = List(10) { courses[0] }
-                val resultAdapter = CourseListAdapter1(requireContext(), R.layout.course_list_item, clonedCourses)
-                binding.resultList.adapter = resultAdapter
-                binding.emptyFrame.visibility = View.GONE
-                binding.resultList.visibility = View.VISIBLE
-            })
+//            courseViewModel = ViewModelProvider(this@SearchFragment).get(CourseViewModel::class.java)
+//            courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
+//                val clonedCourses = List(10) { courses[0] }
+//                val resultAdapter = CourseListAdapter1(requireContext(), R.layout.course_list_item, clonedCourses)
+//                binding.resultList.adapter = resultAdapter
+//                binding.emptyFrame.visibility = View.GONE
+//                binding.resultList.visibility = View.VISIBLE
+//            })
         }
 
         binding.backBtn.setOnClickListener {
@@ -110,14 +111,14 @@ class SearchFragment : Fragment() {
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                courseViewModel = ViewModelProvider(this@SearchFragment).get(CourseViewModel::class.java)
-                courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-                    val clonedCourses = List(10) { courses[0] }
-                    val resultAdapter = CourseListAdapter1(requireContext(), R.layout.course_list_item, clonedCourses)
-                    binding.resultList.adapter = resultAdapter
-                    binding.emptyFrame.visibility = View.GONE
-                    binding.resultList.visibility = View.VISIBLE
-                })
+//                courseViewModel = ViewModelProvider(this@SearchFragment).get(CourseViewModel::class.java)
+//                courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
+//                    val clonedCourses = List(10) { courses[0] }
+//                    val resultAdapter = CourseListAdapter1(requireContext(), R.layout.course_list_item, clonedCourses)
+//                    binding.resultList.adapter = resultAdapter
+//                    binding.emptyFrame.visibility = View.GONE
+//                    binding.resultList.visibility = View.VISIBLE
+//                })
                 return true
             }
 

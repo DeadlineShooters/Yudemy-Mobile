@@ -3,7 +3,7 @@ package com.deadlineshooters.yudemy.models
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
-@Parcelize
+@kotlinx.parcelize.Parcelize
 data class Video(
     override var secure_url: String = "",
     override var public_id: String = "",

@@ -16,7 +16,12 @@
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+
+        android:paddingVertical="14dp"
+        android:paddingHorizontal="7dp"
+
+        android:focusable="true" />
 
     <TextView
         android:id="@+id/textView32"
@@ -145,54 +150,67 @@
         android:id="@+id/divider3"
         android:layout_width="0dp"
         android:layout_height="1dp"
+        android:layout_marginBottom="10dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toTopOf="@+id/replyInput"
+        app:layout_constraintBottom_toTopOf="@+id/ll_reply"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/cameraBtn1"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="12dp"
-        android:background="@drawable/ic_camera"
-        app:layout_constraintBottom_toBottomOf="@+id/replyInput"
-        app:layout_constraintEnd_toStartOf="@+id/replyInput"
-        app:layout_constraintTop_toBottomOf="@+id/divider3" />
-
-    <EditText
-        android:id="@+id/replyInput"
-        android:layout_width="320dp"
+    <LinearLayout
+        android:id="@+id/ll_reply"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:ems="10"
-        android:hint="Write a reply"
-        android:inputType="text"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.483"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/sendBtn"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/ic_send"
-        app:layout_constraintBottom_toBottomOf="@+id/replyInput"
-        app:layout_constraintStart_toEndOf="@+id/replyInput"
-        app:layout_constraintTop_toBottomOf="@+id/divider3"
-        app:layout_constraintVertical_bias="0.509" />
+        <ImageView
+            android:id="@+id/cameraBtn1"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="12dp"
+            android:contentDescription="Take an image"
+            android:src="@drawable/ic_camera"
+            app:layout_constraintBottom_toBottomOf="@+id/replyInput"
+            app:layout_constraintEnd_toStartOf="@+id/replyInput"
+            app:layout_constraintTop_toBottomOf="@+id/divider3" />
+
+        <EditText
+            android:id="@+id/replyInput"
+            android:layout_width="320dp"
+            android:minHeight="48dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Write a reply"
+            android:inputType="text"
+           />
+
+        <ImageView
+            android:id="@+id/sendBtn"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="Send question"
+            android:src="@drawable/ic_send"
+            app:layout_constraintBottom_toBottomOf="@+id/replyInput"
+            app:layout_constraintStart_toEndOf="@+id/replyInput"
+            app:layout_constraintTop_toBottomOf="@+id/divider3"
+            app:layout_constraintVertical_bias="0.509" />
+    </LinearLayout>
+
 
     <HorizontalScrollView
         android:id="@+id/replyImageView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/replyInput"
+        app:layout_constraintBottom_toTopOf="@+id/ll_reply"
         app:layout_constraintEnd_toEndOf="@+id/replyListView"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/replyListView">
@@ -204,26 +222,29 @@
             android:orientation="horizontal" />
     </HorizontalScrollView>
 
-    <androidx.appcompat.widget.AppCompatButton
+    <ImageView
         android:id="@+id/deleteQuestionBtn"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="64dp"
-        android:background="@drawable/ic_trash_01"
+        android:src="@drawable/ic_trash_01"
         app:layout_constraintBottom_toBottomOf="@+id/textView32"
         app:layout_constraintStart_toEndOf="@+id/textView32"
-        app:layout_constraintTop_toTopOf="@+id/textView32" />
+        app:layout_constraintTop_toTopOf="@+id/textView32"
+        android:contentDescription="Delete question" />
 
     <TextView
         android:id="@+id/editQuestionBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
         android:clickable="true"
+        android:gravity="center"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
         android:text="Edit"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/deleteQuestionBtn"
-        app:layout_constraintStart_toEndOf="@+id/deleteQuestionBtn"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/deleteQuestionBtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
