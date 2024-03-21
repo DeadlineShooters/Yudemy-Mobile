@@ -10,6 +10,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.AboutUsActivity
+import com.deadlineshooters.yudemy.activities.InstructorMainActivity
+import com.deadlineshooters.yudemy.activities.StudentMainActivity
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Image
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -52,7 +54,7 @@ class AccountFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_account, container, false)
     }
 
@@ -69,6 +71,22 @@ class AccountFragment : Fragment() {
         signOut = view.findViewById(R.id.signOut)
         editProfile = view.findViewById(R.id.editProfile)
         editImage = view.findViewById(R.id.editImage)
+
+        val currentActivity = requireActivity()
+        if (requireActivity() is InstructorMainActivity) {
+            navigateIns.setText("Switch to Student View")
+        } else {
+            navigateIns.setText("Switch to Instructor View")
+        }
+
+        navigateIns.setOnClickListener {
+            if (requireActivity() is InstructorMainActivity) {
+                startActivity(Intent(currentActivity, StudentMainActivity::class.java))
+            } else {
+                startActivity(Intent(currentActivity, InstructorMainActivity::class.java))
+            }
+        }
+
 
         learningReminders.setOnClickListener {
             replaceFragment(LearningRemindersFragment())
@@ -99,7 +117,18 @@ class AccountFragment : Fragment() {
             replaceFragment(EditImageFragment())
         }
 
-        val imageUrl = "https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg"
+        navigateIns.setOnClickListener {
+            val curActivity = context
+
+            val intent =when (curActivity) {
+                is InstructorMainActivity -> Intent(context, StudentMainActivity::class.java)
+                is StudentMainActivity -> Intent(context, InstructorMainActivity::class.java)
+                else -> throw IllegalStateException("Unexpected activity: $curActivity")
+            }
+            startActivity(intent)
+        }
+        val imageUrl =
+            "https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg"
         ImageViewHelper().setImageViewFromUrl(Image(imageUrl, ""), avatar)
     }
 
@@ -111,7 +140,7 @@ class AccountFragment : Fragment() {
     }
 
     private fun showSignOutDialog() {
-        MaterialAlertDialogBuilder(requireContext(),  R.style.ThemeOverlay_MyApp_MaterialAlertDialog)
+        MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_MyApp_MaterialAlertDialog)
             .setMessage("Sign out from Yudemy?")
             .setPositiveButton("Sign out") { dialog, which ->
                 // TODO: Implement sign out

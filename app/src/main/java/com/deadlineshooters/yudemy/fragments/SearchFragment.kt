@@ -1,11 +1,24 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.view.*
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.FilterActivity
+import com.deadlineshooters.yudemy.adapters.CategoryAdapter1
+import com.deadlineshooters.yudemy.adapters.CategoryAdapter3
+import com.deadlineshooters.yudemy.adapters.CourseListAdapter1
+import com.deadlineshooters.yudemy.databinding.FragmentSearchBinding
+import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,25 +31,113 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class SearchFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var courseViewModel: CourseViewModel
+    private var _binding: FragmentSearchBinding? = null
+
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false)
+    ): View {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
     }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val categories = listOf(
+            "Development", "Business", "Office Productivity", "Design",
+            "Marketing", "Photography & Video", "Teaching & Academics",
+            "Finance & Accounting", "IT & Software", "Personal Development",
+            "Lifestyle", "Health & Fitness", "Music"
+        )
+
+        val topSearchList = binding.topSearchList
+        val topSearchAdapter = CategoryAdapter1(categories)
+        topSearchList.adapter = topSearchAdapter
+
+        // Set a FlexboxLayoutManager for wrapping content
+        var layoutManager = FlexboxLayoutManager(context)
+        layoutManager.flexDirection = FlexDirection.ROW
+        layoutManager.justifyContent = JustifyContent.FLEX_START
+        topSearchList.layoutManager = layoutManager
+        topSearchList.addItemDecoration(FeaturedFragment.SpaceItemDecoration(8))
+
+        topSearchAdapter.onItemClick = { category ->
+            courseViewModel = ViewModelProvider(this@SearchFragment).get(CourseViewModel::class.java)
+            courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
+//                val clonedCourses = List(10) { courses[0] }
+                val clonedCourses = List(1) { courses[0] }
+                val resultAdapter = CourseListAdapter1(requireContext(), R.layout.course_list_item, clonedCourses)
+                binding.resultList.adapter = resultAdapter
+                binding.emptyFrame.visibility = View.GONE
+                binding.resultList.visibility = View.VISIBLE
+            })
+        }
+
+        binding.backBtn.setOnClickListener {
+            binding.emptyFrame.visibility = View.VISIBLE
+            binding.resultList.visibility = View.GONE
+        }
+
+        val categoryList = binding.categoryList
+        val categoryAdapter = CategoryAdapter3(categories)
+        categoryList.adapter = categoryAdapter
+        categoryList.layoutManager = object : LinearLayoutManager(context) {
+            override fun canScrollVertically() = false
+        }
+        categoryList.addItemDecoration(FeaturedFragment.SpaceItemDecoration(8))
+
+        categoryAdapter.onItemClick = { category ->
+            val fragment = FeaturedCategoryFragment()
+            val bundle = Bundle()
+            bundle.putString("category", category)
+            fragment.arguments = bundle
+            val fragmentManager = activity?.supportFragmentManager
+            val fragmentTransaction = fragmentManager?.beginTransaction()
+            fragmentTransaction?.addToBackStack(null)
+            fragmentTransaction?.replace(R.id.frameLayout, fragment)
+            fragmentTransaction?.commit()
+        }
+
+        val searchView = binding.searchView
+        courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                courseViewModel = ViewModelProvider(this@SearchFragment).get(CourseViewModel::class.java)
+                courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
+                    val clonedCourses = List(1) { courses[0] }
+                    val resultAdapter = CourseListAdapter1(requireContext(), R.layout.course_list_item, clonedCourses)
+                    binding.resultList.adapter = resultAdapter
+                    binding.emptyFrame.visibility = View.GONE
+                    binding.resultList.visibility = View.VISIBLE
+                })
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                // The query text has changed
+                return true
+            }
+        })
+        binding.filterBtn.setOnClickListener {
+            val intent = Intent(context, FilterActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 
     companion object {
         /**

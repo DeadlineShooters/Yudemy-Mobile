@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+                                                       android:layout_height="match_parent" android:id="@+id/linearLayout3"
+                                                       android:layout_marginLeft="16dp" android:layout_marginRight="16dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="377dp"
+                android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="32dp"
+                android:id="@+id/constraintLayout4">
+
+            <ImageView
+                    android:layout_width="96dp"
+                    android:layout_height="96dp" app:srcCompat="@drawable/ic_launcher_background" android:id="@+id/imageView4"
+                    app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"/>
+            <TextView
+                    android:text="You are now enrolled in:"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/textView16"
+                    app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_bias="0.5"
+                    app:layout_constraintBottom_toTopOf="@+id/textView17" android:layout_marginStart="16dp"
+                    app:layout_constraintStart_toEndOf="@+id/imageView4" android:layout_marginTop="8dp"/>
+            <TextView
+                    android:text="Course Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/textView17"
+                    app:layout_constraintTop_toBottomOf="@+id/textView16" app:layout_constraintVertical_bias="0.5"
+                    app:layout_constraintBottom_toTopOf="@+id/textView18" app:layout_constraintStart_toStartOf="@+id/textView16"
+                    android:textStyle="bold"/>
+            <TextView
+                    android:text="Instructor Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/textView18"
+                    app:layout_constraintStart_toStartOf="@+id/textView16"
+                    app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintTop_toBottomOf="@+id/textView17"
+                    app:layout_constraintVertical_bias="0.5" android:layout_marginTop="16dp" android:textSize="12sp" android:textColor="#777"
+                    android:layout_marginBottom="8dp"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/button3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Get started"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
+                app:backgroundTint="#1c1d1f" android:background="#1c1d1f"/>
+
+        <TextView
+                android:text="Share this course"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/textView19"
+                android:textSize="14sp" android:textColor="#4c14c0"
+                android:textStyle="bold" app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/button3" android:layout_marginTop="24dp"/>
+        <TextView
+                android:text="Student also bought"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/textView20"
+                app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/textView19"
+                android:layout_marginTop="24dp" android:textStyle="bold" android:textSize="20sp"/>
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/textView20" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="8dp" android:id="@+id/courseList" android:scrollbars="none"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

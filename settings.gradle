@@ -15,4 +15,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Yudemy"
-include ':app'
+include ':app', ':are'
+

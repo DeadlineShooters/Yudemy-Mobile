@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.ActivityInstructorMainBinding
+import com.deadlineshooters.yudemy.fragments.AccountFragment
 import com.deadlineshooters.yudemy.fragments.AnalyticsFragment
 import com.deadlineshooters.yudemy.fragments.CourseDashboardFragment
 import com.deadlineshooters.yudemy.fragments.FeedbackFragment
@@ -38,6 +39,10 @@ class InstructorMainActivity : AppCompatActivity() {
                     replaceFragment(FeedbackFragment())
                 }
 
+                R.id.account -> {
+                    replaceFragment(AccountFragment())
+                }
+
                 else -> {
 
                 }
@@ -50,7 +55,7 @@ class InstructorMainActivity : AppCompatActivity() {
     private fun replaceFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayout, fragment)
+        fragmentTransaction.replace(R.id.frameLayoutInstructor, fragment)
         fragmentTransaction.commit()
     }
 }
