@@ -14,22 +14,22 @@ class CourseViewModel : ViewModel() {
     private val cloudinaryHelper = CloudinaryHelper()
     val courses: LiveData<List<Course>> = courseRepository.getCourses()
 
-    fun addDummyCourse() {
-
-        val imageFilePath = "/storage/emulated/0/Android/data/com.deadlineshooters.yudemy/files/DCIM/img_thumbnail.jpg"
-        val videoFilePath = "/storage/emulated/0/Android/data/com.deadlineshooters.yudemy/files/DCIM/2 - Thanks.mp4"
-
-        // Upload image
-        cloudinaryHelper.uploadMedia(imageFilePath) { img ->
-            // Handle the uploaded image
-            // Upload video
-            cloudinaryHelper.uploadMedia(videoFilePath, true) { vid ->
-                // Handle the uploaded video
-                // Generate dummy course and add it to the repository
-                val dummyCourse = courseRepository.generateDummyCourse(img as Image, vid as Video)
-                courseRepository.addCourse(dummyCourse)
-            }
-        }
-
-    }
+//    fun addDummyCourse() {
+//
+//        val imageFilePath = "/storage/emulated/0/Android/data/com.deadlineshooters.yudemy/files/DCIM/img_thumbnail.jpg"
+//        val videoFilePath = "/storage/emulated/0/Android/data/com.deadlineshooters.yudemy/files/DCIM/2 - Thanks.mp4"
+//
+//        // Upload image
+//        cloudinaryHelper.uploadMedia(imageFilePath) { img ->
+//            // Handle the uploaded image
+//            // Upload video
+//            cloudinaryHelper.uploadMedia(videoFilePath, true) { vid ->
+//                // Handle the uploaded video
+//                // Generate dummy course and add it to the repository
+//                val dummyCourse = courseRepository.generateDummyCourse(img as Image, vid as Video)
+//                courseRepository.addCourse(dummyCourse)
+//            }
+//        }
+//
+//    }
 }

@@ -122,7 +122,7 @@ class FeaturedFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-            val clonedCourses = List(10) { courses[0] }
+            val clonedCourses = List(1) { courses[0] }
             val adapter = CourseListAdapter2(clonedCourses)
             binding.courseList.layoutManager = LinearLayoutManager(context)
             binding.courseList.adapter = adapter

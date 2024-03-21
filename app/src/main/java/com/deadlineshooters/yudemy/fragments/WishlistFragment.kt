@@ -65,7 +65,7 @@ class WishlistFragment : Fragment() {
 
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-            val clonedCourses = List(10) { courses[0] }
+            val clonedCourses = List(1) { courses[0] }
             val wishListAdapter = CourseListAdapter1(requireContext(), R.layout.course_list_item, clonedCourses)
             binding.wishlistList.adapter = wishListAdapter
             if (!courses.isEmpty()) {
