@@ -24,8 +24,6 @@ class StudentMainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        val auth = Firebase.auth
-//        val user = auth.currentUser
 
         replaceFragment(FeaturedFragment())  // show Featured fragment firstly
 

@@ -125,7 +125,7 @@
         app:layout_constraintTop_toBottomOf="@+id/signUpBtn" />
 
     <TextView
-        android:id="@+id/signinHref"
+        android:id="@+id/signInHref"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"

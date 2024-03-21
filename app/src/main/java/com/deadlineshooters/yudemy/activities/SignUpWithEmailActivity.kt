@@ -38,7 +38,7 @@ class SignUpWithEmailActivity : AppCompatActivity() {
 //
 //        binding.toolbarSignUpWithEmailActivity.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     private var signUpBtn: Button? = null
-    private var signinHref: TextView? = null
+    private var signInHref: TextView? = null
     private var email: EditText? = null
     private var password: EditText? = null
     private var name: EditText? = null
@@ -48,13 +48,13 @@ class SignUpWithEmailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_sign_up_with_email)
 
         signUpBtn = findViewById(R.id.signUpBtn)
-        signinHref = findViewById(R.id.signinHref)
+        signInHref = findViewById(R.id.signInHref)
         name = findViewById(R.id.nameInput)
         email = findViewById(R.id.mailInput)
         password = findViewById(R.id.passInput)
         backBtn4 = findViewById(R.id.backBtn4)
 
-        signinHref!!.setOnClickListener{
+        signInHref!!.setOnClickListener{
             val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
         }
@@ -66,7 +66,7 @@ class SignUpWithEmailActivity : AppCompatActivity() {
         signUpBtn!!.setOnClickListener{
             AuthenticationRepository().createAccount(email!!.text.toString(), password!!.text.toString()){uid ->
                 if (uid != null){
-                    val newUser = User(uid, name!!.text.toString(), Image("",""), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), false, arrayListOf(), "", null)
+                    val newUser = User(name!!.text.toString(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), false, arrayListOf(), "", null)
                     UserRepository().addUser(newUser)
                     val intent = Intent(this, StudentMainActivity::class.java)
                     startActivity(intent)
