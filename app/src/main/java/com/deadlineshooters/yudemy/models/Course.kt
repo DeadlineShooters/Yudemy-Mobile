@@ -25,7 +25,7 @@ data class Course(
     var totalLength: Int = 0, // in seconds
     var totalQuiz: Int = 0,
     var thumbnail: Image = Image(),
-    var avgRating: Number = 0,
+    var avgRating: Double = 0.0,
     var status: Boolean = false,
     var createdDate: String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
     var totalRevenue: Number = 0.0

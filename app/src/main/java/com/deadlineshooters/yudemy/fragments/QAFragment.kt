@@ -213,10 +213,10 @@ class QAFragment : Fragment() {
     fun generateDummyData(): ArrayList<Question> {
         //TODO: get questions from database
         val questionList = ArrayList<Question>()
-        for(i in 1..20) {
-            val dumpQuestion = Question("123", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-            questionList.add(dumpQuestion)
-        }
+//        for(i in 1..20) {
+//            val dumpQuestion = Question("123", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
+//            questionList.add(dumpQuestion)
+//        }
         return questionList
     }
 

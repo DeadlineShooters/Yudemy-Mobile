@@ -39,3 +39,6 @@ obj/
 
 # Firebase
 google-services.json
+
+# vscode
+.vscode/settings.json

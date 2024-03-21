@@ -23,4 +23,3 @@
         android:icon="@drawable/selector_account_icon"
         app:showAsAction="withText"/>
 </menu>
-

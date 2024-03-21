@@ -2,6 +2,7 @@ package com.deadlineshooters.yudemy.fragments
 
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,10 +12,22 @@ import android.view.Window
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.CourseDetailActivity
+import com.deadlineshooters.yudemy.activities.EnrolledActivity
 import com.deadlineshooters.yudemy.activities.InstructorMainActivity
 import com.deadlineshooters.yudemy.activities.SignInActivity
+import com.deadlineshooters.yudemy.adapters.CategoryAdapter1
+import com.deadlineshooters.yudemy.adapters.CourseListAdapter1
+import com.deadlineshooters.yudemy.adapters.CourseListAdapter2
+import com.deadlineshooters.yudemy.databinding.FragmentFeaturedBinding
+import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 
 
 /**
@@ -22,21 +35,25 @@ import com.deadlineshooters.yudemy.activities.SignInActivity
  * Use the [FeaturedFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class FeaturedFragment : Fragment(), View.OnClickListener {
+class FeaturedFragment : Fragment() {
+    private lateinit var courseViewModel: CourseViewModel
+    private var _binding: FragmentFeaturedBinding? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
+        _binding = FragmentFeaturedBinding.inflate(inflater, container, false)
         val view = inflater.inflate(R.layout.fragment_featured, container, false)
 
-        view.findViewById<View>(R.id.btn_courseDetail).setOnClickListener(this)
+        binding.btnCourseDetail.setOnClickListener {
+            val intent = Intent(activity, CourseDetailActivity::class.java)
+            startActivity(intent)
+        }
 
         // test code for feedback popup
         val btnPopUpFeedback = view.findViewById<Button>(R.id.btn_popUpFeedback)
@@ -63,17 +80,77 @@ class FeaturedFragment : Fragment(), View.OnClickListener {
             startActivity(intent)
         }
 
+        binding.btnEnrolledCourse.setOnClickListener {
+            val intent = Intent(activity, EnrolledActivity::class.java)
+            startActivity(intent)
+        }
+        // Obtain a reference to the RecyclerView
+        val recyclerView = binding.categoryButtonList // Replace with your RecyclerView's ID
 
-        return view
+        // Create sample data for demonstration
+        val categories = listOf(
+            "Development", "Business", "Office Productivity", "Design",
+            "Marketing", "Photography & Video", "Teaching & Academics",
+            "Finance & Accounting", "IT & Software", "Personal Development",
+            "Lifestyle", "Health & Fitness", "Music"
+        )
+
+        // Create an instance of the CategoryAdapter
+        val adapter = CategoryAdapter1(categories)
+        adapter.onItemClick = { category ->
+            val fragment = FeaturedCategoryFragment()
+            val bundle = Bundle()
+            bundle.putString("category", category)
+            fragment.arguments = bundle
+            val fragmentManager = activity?.supportFragmentManager
+            val fragmentTransaction = fragmentManager?.beginTransaction()
+            fragmentTransaction?.addToBackStack(null)
+            fragmentTransaction?.replace(R.id.frameLayout, fragment)
+            fragmentTransaction?.commit()
+        }
+
+        // Set the adapter on the RecyclerView
+        recyclerView.adapter = adapter
+
+        // Set a horizontal LinearLayoutManager for horizontal scrolling
+        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL)
+        recyclerView.addItemDecoration(SpaceItemDecoration(8))
+        return binding.root
     }
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.btn_courseDetail -> {
-                // Start CourseDetailActivity
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
+        courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
+            val clonedCourses = List(1) { courses[0] }
+            val adapter = CourseListAdapter2(clonedCourses)
+            binding.courseList.layoutManager = LinearLayoutManager(context)
+            binding.courseList.adapter = adapter
+            adapter.onItemClick = {course ->
                 val intent = Intent(activity, CourseDetailActivity::class.java)
                 startActivity(intent)
             }
-        }
+        })
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    class SpaceItemDecoration(private val space: Int) : RecyclerView.ItemDecoration() {
+        override fun getItemOffsets(
+            outRect: Rect, view: View,
+            parent: RecyclerView, state: RecyclerView.State
+        ) {
+            outRect.left = space
+            outRect.right = space
+            outRect.bottom = space
+
+            // Add top margin only for the first item to avoid double space between items
+            if (parent.getChildLayoutPosition(view) == 0) {
+                outRect.top = space
+            }
+        }
+    }
 }

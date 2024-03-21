@@ -22,6 +22,7 @@ class StudentMainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         replaceFragment(FeaturedFragment())  // show Featured fragment firstly
 
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->
@@ -53,15 +54,13 @@ class StudentMainActivity : BaseActivity() {
             true
         }
 
-
-
-
     }
 
     private fun replaceFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frameLayout, fragment)
+        fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
 

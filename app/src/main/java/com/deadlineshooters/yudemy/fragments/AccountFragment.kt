@@ -56,7 +56,7 @@ class AccountFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_account, container, false)
     }
 
@@ -73,6 +73,22 @@ class AccountFragment : Fragment() {
         signOut = view.findViewById(R.id.signOut)
         editProfile = view.findViewById(R.id.editProfile)
         editImage = view.findViewById(R.id.editImage)
+
+        val currentActivity = requireActivity()
+        if (requireActivity() is InstructorMainActivity) {
+            navigateIns.setText("Switch to Student View")
+        } else {
+            navigateIns.setText("Switch to Instructor View")
+        }
+
+        navigateIns.setOnClickListener {
+            if (requireActivity() is InstructorMainActivity) {
+                startActivity(Intent(currentActivity, StudentMainActivity::class.java))
+            } else {
+                startActivity(Intent(currentActivity, InstructorMainActivity::class.java))
+            }
+        }
+
 
         learningReminders.setOnClickListener {
             replaceFragment(LearningRemindersFragment())
