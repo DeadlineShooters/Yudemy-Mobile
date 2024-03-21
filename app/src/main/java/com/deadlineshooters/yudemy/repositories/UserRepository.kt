@@ -10,6 +10,11 @@ class UserRepository {
 
     fun getUserData() : User{
         // for testing
-        return User("000", "Test", "Test")
+        return User("000", "Test")
+    }
+    fun addUser(user: User) {
+        mFireStore.collection("users")
+            .document(user.id)
+            .set(user)
     }
 }

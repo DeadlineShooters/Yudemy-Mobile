@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.AboutUsActivity
+import com.deadlineshooters.yudemy.activities.BaseActivity
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Image
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -41,6 +42,7 @@ class AccountFragment : Fragment() {
     private lateinit var signOut: TextView
     private lateinit var editProfile: TextView
     private lateinit var editImage: TextView
+    private val curUserEmail = BaseActivity().getCurrentUserEmail()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +73,8 @@ class AccountFragment : Fragment() {
         signOut = view.findViewById(R.id.signOut)
         editProfile = view.findViewById(R.id.editProfile)
         editImage = view.findViewById(R.id.editImage)
+
+        email.text = curUserEmail.toString()
 
         learningReminders.setOnClickListener {
             replaceFragment(LearningRemindersFragment())

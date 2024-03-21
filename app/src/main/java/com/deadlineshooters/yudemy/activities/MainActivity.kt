@@ -11,6 +11,8 @@ import com.deadlineshooters.yudemy.fragments.MyLearningFragment
 import com.deadlineshooters.yudemy.fragments.QAFragment
 import com.deadlineshooters.yudemy.fragments.SearchFragment
 import com.deadlineshooters.yudemy.fragments.WishlistFragment
+import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -22,6 +24,9 @@ class StudentMainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+//        val auth = Firebase.auth
+//        val user = auth.currentUser
+
         replaceFragment(FeaturedFragment())  // show Featured fragment firstly
 
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->

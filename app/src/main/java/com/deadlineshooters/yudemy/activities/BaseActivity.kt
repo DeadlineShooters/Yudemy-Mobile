@@ -67,6 +67,10 @@ open class BaseActivity : AppCompatActivity() {
         return FirebaseAuth.getInstance().currentUser!!.uid
     }
 
+    fun getCurrentUserEmail(): String {
+        return FirebaseAuth.getInstance().currentUser!!.email.toString()
+    }
+
     /**
      * message is the error message to show in the snackbar.
      */
