@@ -11,8 +11,6 @@ import com.deadlineshooters.yudemy.fragments.MyLearningFragment
 import com.deadlineshooters.yudemy.fragments.QAFragment
 import com.deadlineshooters.yudemy.fragments.SearchFragment
 import com.deadlineshooters.yudemy.fragments.WishlistFragment
-import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -24,7 +22,7 @@ class StudentMainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         replaceFragment(FeaturedFragment())  // show Featured fragment firstly
 
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->
@@ -56,15 +54,13 @@ class StudentMainActivity : BaseActivity() {
             true
         }
 
-
-
-
     }
 
     private fun replaceFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frameLayout, fragment)
+        fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
 

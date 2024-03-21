@@ -13,8 +13,10 @@ import android.widget.TextView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.AboutUsActivity
 import com.deadlineshooters.yudemy.activities.BaseActivity
+import com.deadlineshooters.yudemy.activities.SignInActivity
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Image
+import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 // TODO: Rename parameter arguments, choose names that match
@@ -121,6 +123,12 @@ class AccountFragment : Fragment() {
             .setMessage("Sign out from Yudemy?")
             .setPositiveButton("Sign out") { dialog, which ->
                 // TODO: Implement sign out
+                AuthenticationRepository().signOut { isSignedOut ->
+                    if (isSignedOut == true) {
+                        val intent = Intent(context, SignInActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
             }
             .setNegativeButton("Cancel") { dialog, which ->
                 // Do something else.

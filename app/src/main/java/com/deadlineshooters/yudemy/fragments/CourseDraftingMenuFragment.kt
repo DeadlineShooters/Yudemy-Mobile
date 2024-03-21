@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.CreateCurriculumActivity
+import com.deadlineshooters.yudemy.activities.EditCourseLandingPageActivity
 import com.deadlineshooters.yudemy.activities.PricingCourseDraftingActivity
 
 // TODO: Rename parameter arguments, choose names that match
@@ -64,8 +65,8 @@ class CourseDraftingMenuFragment : Fragment() {
             startActivity(intent)
         }
         navCourseLandingPage.setOnClickListener {
-//            val intent = Intent(activity, EditCourseLandingPageActivity::class.java)
-//            startActivity(intent)
+            val intent = Intent(activity, EditCourseLandingPageActivity::class.java)
+            startActivity(intent)
         }
         navPricing.setOnClickListener {
             val intent = Intent(activity, PricingCourseDraftingActivity::class.java)

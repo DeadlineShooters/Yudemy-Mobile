@@ -178,7 +178,7 @@ class QAFragment : Fragment() {
         val imageContainer = when (state) {
             1 -> askQuestionDialog.findViewById(R.id.questionImageContainer)
             2 -> questionDetailDialog.findViewById(R.id.replyImageContainer)
-            3 -> askQuestionDialog.findViewById(R.id.editQuestionImageContainer)
+            3 -> editQuestionDialog.findViewById(R.id.editQuestionImageContainer)
             else -> LinearLayout(requireContext())
         }
 
@@ -213,10 +213,10 @@ class QAFragment : Fragment() {
     fun generateDummyData(): ArrayList<Question> {
         //TODO: get questions from database
         val questionList = ArrayList<Question>()
-        for(i in 1..20) {
-            val dumpQuestion = Question("123", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-            questionList.add(dumpQuestion)
-        }
+//        for(i in 1..20) {
+//            val dumpQuestion = Question("123", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
+//            questionList.add(dumpQuestion)
+//        }
         return questionList
     }
 
@@ -299,6 +299,8 @@ class QAFragment : Fragment() {
 
         editQuestionBtn.setOnClickListener{
             editQuestionDialog = createEditQuestionDialog()
+//            askQuestionDialog = createAskQuestionDialog()
+
             state = 3
             editQuestionDialog.show()
         }

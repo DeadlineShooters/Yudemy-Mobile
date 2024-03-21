@@ -31,7 +31,7 @@ class CloudinaryHelper {
                 override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
                     Log.d("cloudinary", "Uploaded media successfully\n$resultData")
                     var result  = if (isVideo) {
-                        Video(resultData?.get("secure_url").toString(), resultData?.get("public_id").toString(), resultData?.get("resource_type").toString(), resultData?.get("duration") as Number)
+                        Video(resultData?.get("secure_url").toString(), resultData?.get("public_id").toString(), resultData?.get("resource_type").toString(), resultData?.get("duration") as Double)
                     } else {
                         Image(resultData?.get("secure_url").toString(), resultData?.get("public_id").toString())
                     }

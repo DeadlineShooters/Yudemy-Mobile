@@ -33,5 +33,13 @@ class AuthenticationRepository {
             }
     }
 
+    fun signOut(callback: (Boolean?) -> Unit){
+        auth.signOut()
+        if(auth.currentUser == null){
+            callback(true)
+        } else {
+            callback(false)
+        }
+    }
 
 }
