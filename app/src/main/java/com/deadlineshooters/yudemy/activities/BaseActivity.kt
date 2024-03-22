@@ -64,7 +64,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun getCurrentUserID(): String {
-        return FirebaseAuth.getInstance().currentUser!!.uid
+        return FirebaseAuth.getInstance().currentUser!!.uid.toString()
     }
 
     fun getCurrentUserEmail(): String {

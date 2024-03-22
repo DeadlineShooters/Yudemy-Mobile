@@ -13,7 +13,9 @@ import android.widget.TextView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.AboutUsActivity
 import com.deadlineshooters.yudemy.activities.BaseActivity
+import com.deadlineshooters.yudemy.activities.InstructorMainActivity
 import com.deadlineshooters.yudemy.activities.SignInActivity
+import com.deadlineshooters.yudemy.activities.StudentMainActivity
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
@@ -77,6 +79,23 @@ class AccountFragment : Fragment() {
         editImage = view.findViewById(R.id.editImage)
 
         email.text = curUserEmail.toString()
+
+        if (requireActivity() is InstructorMainActivity) {
+            navigateIns.text = "Switch to Student View"
+        } else {
+            navigateIns.text = "Switch to Instructor View"
+        }
+
+        navigateIns.setOnClickListener {
+            val curActivity = context
+
+            val intent =when (curActivity) {
+                is InstructorMainActivity -> Intent(context, StudentMainActivity::class.java)
+                is StudentMainActivity -> Intent(context, InstructorMainActivity::class.java)
+                else -> throw IllegalStateException("Unexpected activity: $curActivity")
+            }
+            startActivity(intent)
+        }
 
         learningReminders.setOnClickListener {
             replaceFragment(LearningRemindersFragment())
