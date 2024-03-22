@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.fragments.InstructorQAFragment
-import com.deadlineshooters.yudemy.fragments.QAFragment
 import com.google.firebase.auth.FirebaseAuth
 
 class SplashActivity : AppCompatActivity() {
