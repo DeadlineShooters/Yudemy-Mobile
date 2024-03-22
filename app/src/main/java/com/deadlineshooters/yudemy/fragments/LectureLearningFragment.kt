@@ -5,11 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.adapters.CourseLearningAdapter
+import com.deadlineshooters.yudemy.databinding.FragmentCourseDashboardBinding
+import com.deadlineshooters.yudemy.databinding.FragmentLectureLearningBinding
 import com.deadlineshooters.yudemy.models.Section
+import com.deadlineshooters.yudemy.viewmodels.SectionViewModel
 import java.util.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
@@ -26,6 +30,9 @@ class LectureLearningFragment : Fragment() {
     private var courseId: String? = null
     private lateinit var rvSections: RecyclerView
 
+    private lateinit var binding: FragmentLectureLearningBinding
+    private val sectionViewModel: SectionViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -38,7 +45,12 @@ class LectureLearningFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_lecture_learning, container, false)
+//        return inflater.inflate(R.layout.fragment_lecture_learning, container, false)
+        binding = FragmentLectureLearningBinding.inflate(inflater, container, false)
+
+        sectionViewModel.getSectionsCourseLearning("")
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,12 +58,13 @@ class LectureLearningFragment : Fragment() {
 
         rvSections = view.findViewById(R.id.rvSections)
 
-        val courseLearningAdapter = CourseLearningAdapter(createDummyData(), "userId")
-        rvSections.adapter = courseLearningAdapter
-        rvSections.layoutManager = LinearLayoutManager(activity)
-
-        courseLearningAdapter.onItemClick = { userLecture ->
-            // TODO: open lecture
+        sectionViewModel.sectionsCourseLearning.observe(viewLifecycleOwner) {
+            val courseLearningAdapter = CourseLearningAdapter(it, "pQ7PAicEnDck3dBL8uIGZgKcUXM2")
+            rvSections.adapter = courseLearningAdapter
+            rvSections.layoutManager = LinearLayoutManager(activity)
+            courseLearningAdapter.onItemClick = { userLecture ->
+                // TODO: open lecture
+            }
         }
     }
 

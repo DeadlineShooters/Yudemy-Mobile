@@ -8,7 +8,6 @@ import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Video
 import com.google.firebase.firestore.FirebaseFirestore
-import java.util.Date
 
 class CourseRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
@@ -66,5 +65,23 @@ class CourseRepository {
         }
 
         return coursesLiveData
+    }
+
+    fun getSectionIdListOfCourse(courseId: String): List<String>? {
+        var sectionList: List<String>? = listOf()
+        coursesCollection.document(courseId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    sectionList = document.data?.get("sectionList") as List<String>
+                } else {
+                    Log.d(TAG, "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents: ", exception)
+                sectionList = null
+            }
+        return sectionList
     }
 }

@@ -8,5 +8,4 @@ data class Section(
     var _id: String = "",
     var title: String = "",
     var index: Int = 0,
-
 ) : Parcelable

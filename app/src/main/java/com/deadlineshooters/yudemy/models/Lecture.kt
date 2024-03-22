@@ -9,7 +9,6 @@ data class Lecture(
     var sectionId: String, // ObjectId
     var content: Video,
     var name: String,
-    var type: String,
     var index: Int
 ) : Parcelable
 

@@ -13,13 +13,20 @@ import com.deadlineshooters.yudemy.models.UserLecture
 import com.google.firebase.Timestamp
 import java.util.ArrayList
 
+
 class CourseLearningAdapter(private val sections: List<Section>, private val userId: String): RecyclerView.Adapter<CourseLearningAdapter.ViewHolder>() {
     lateinit var context: Context
-    lateinit var lectureLearningAdapter: LectureLearningAdapter
+//    lateinit var lectureLearningAdapter: LectureLearningAdapter
     var onItemClick: ((UserLecture) -> Unit)? = null
     inner class ViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
         val sectionTitle: TextView = listItemView.findViewById(R.id.sectionTitle)
         val lectureList: RecyclerView = listItemView.findViewById(R.id.lectureList)
+        var lectureLearningAdapter = LectureLearningAdapter(ArrayList<UserLecture>())
+        init {
+            lectureLearningAdapter.onItemClick = {
+                onItemClick?.invoke(it)
+            }
+        }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
@@ -35,19 +42,15 @@ class CourseLearningAdapter(private val sections: List<Section>, private val use
 
         holder.sectionTitle.text = context.resources.getString(R.string.learning_section_title, section.index, section.title)
         // TODO: get lecture list of this user
-        lectureLearningAdapter = LectureLearningAdapter(createDummyData())
-        holder.lectureList.adapter = lectureLearningAdapter
+//        lectureLearningAdapter = LectureLearningAdapter(createDummyData())
+        holder.lectureList.adapter = holder.lectureLearningAdapter
         holder.lectureList.layoutManager = LinearLayoutManager(holder.itemView.context)
-
-        lectureLearningAdapter.onItemClick = {
-            onItemClick?.invoke(it)
-        }
     }
 
     fun createDummyData(): ArrayList<UserLecture> {
         val lectures = ArrayList<UserLecture>()
         for(i in 1..5) {
-            val l = UserLecture("1", "Introduction", "This is the introduction", 0, Timestamp.now())
+            val l = UserLecture("1", "Introduction", "This is the introduction", false)
             l._id = i.toString()
             lectures.add(l)
         }
