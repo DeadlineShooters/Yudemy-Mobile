@@ -101,6 +101,7 @@ class MyLearningFragment : Fragment() {
         view.findViewById<Button>(R.id.filterBtn).setOnClickListener {
             filterDialog!!.show()
         }
+
     }
 
     private fun showSearchAction() {

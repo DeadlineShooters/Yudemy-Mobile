@@ -1,7 +1,6 @@
 package com.deadlineshooters.yudemy.fragments
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,17 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.activities.CreateCurriculumActivity
 import com.deadlineshooters.yudemy.adapters.CourseAdapter
-import com.deadlineshooters.yudemy.adapters.FeedbackAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentCourseDashboardBinding
-import com.deadlineshooters.yudemy.databinding.FragmentFeedbackBinding
 import com.deadlineshooters.yudemy.models.Course
-import com.deadlineshooters.yudemy.models.CourseFeedback
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
