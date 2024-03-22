@@ -1,16 +1,13 @@
 package com.deadlineshooters.yudemy.fragments
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.activities.InstructorMainActivity
-import com.deadlineshooters.yudemy.databinding.ActivityMainBinding
-import com.deadlineshooters.yudemy.databinding.FragmentAnalyticsBinding
-import com.deadlineshooters.yudemy.databinding.FragmentMoreLearningBinding
+import com.deadlineshooters.yudemy.dialogs.QADialog
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,9 +21,9 @@ private const val ARG_COURSE_ID = "courseId"
 class MoreLearningFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var courseId: String? = null
-    val title = "More"
-    private lateinit var binding: FragmentMoreLearningBinding
+    private lateinit var qa: TextView
 
+    val title = "More"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,22 +35,23 @@ class MoreLearningFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-
-        binding = FragmentMoreLearningBinding.inflate(inflater, container, false)
-
-
-        return binding.root
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_more_learning, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        qa = view.findViewById(R.id.qa)
 
-        binding.qa.setOnClickListener{
-            replaceFragment(QAFragment())
-
+        qa.setOnClickListener {
+            val qaDialog = QADialog()
+            qaDialog.show(parentFragmentManager, "QADialog")
         }
     }
+
+
+
 
     companion object {
         /**
@@ -71,13 +69,5 @@ class MoreLearningFragment : Fragment() {
                     putString(ARG_COURSE_ID, courseId)
                 }
             }
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentManager = requireActivity().supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayout, fragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
     }
 }
