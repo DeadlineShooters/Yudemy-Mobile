@@ -74,7 +74,7 @@ android {
 
 dependencies {
     // Import the Firebase BoM: manage all the firebase libraries' versions
-    implementation platform('com.google.firebase:firebase-bom:32.7.1')
+    implementation platform("com.google.firebase:firebase-bom:32.8.0")
 
     implementation 'androidx.core:core-ktx:1.8.0'  // Only this version works. Do not change!!!
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -98,20 +98,24 @@ dependencies {
     // For example, add the dependencies for Firebase Authentication and Cloud Firestore
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
-    implementation 'com.google.firebase:firebase-analytics-ktx:21.5.1'
+    implementation 'com.google.firebase:firebase-analytics-ktx:21.6.1'
     implementation 'com.google.firebase:firebase-storage:20.3.0'
+    implementation("com.google.firebase:firebase-analytics")
+    implementation "com.google.firebase:firebase-auth-ktx"
+
 
     implementation 'com.cloudinary:cloudinary-android:2.6.1'
     implementation 'com.github.Dhaval2404:ImagePicker:2.1'  // Choose a single image: https://github.com/Dhaval2404/ImagePicker
     implementation "androidx.activity:activity-ktx:1.2.3"  // Only this version works. Do not change!!!
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.gms:play-services-auth:19.2.0'
+    implementation 'com.google.android.gms:play-services-auth:21.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
-    implementation "com.google.android.gms:play-services-location:21.2.0"
+    implementation "com.google.android.gms:play-services-location:21.0.0"
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     implementation 'com.github.dhaval2404:imagepicker:2.1'
     implementation "androidx.fragment:fragment-ktx:1.3.3"
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation "androidx.compose.runtime:runtime:1.4.3"
+
 
 }
