@@ -1,11 +1,14 @@
 package com.deadlineshooters.yudemy.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
@@ -13,7 +16,10 @@ import com.deadlineshooters.yudemy.adapters.CourseLearningAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentCourseDashboardBinding
 import com.deadlineshooters.yudemy.databinding.FragmentLectureLearningBinding
 import com.deadlineshooters.yudemy.models.Section
+import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
+import com.deadlineshooters.yudemy.viewmodels.LectureViewModel
 import com.deadlineshooters.yudemy.viewmodels.SectionViewModel
+import com.deadlineshooters.yudemy.viewmodels.UserLectureViewModel
 import java.util.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
@@ -27,17 +33,25 @@ private const val ARG_COURSE_ID = "courseId"
  */
 class LectureLearningFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var courseId: String? = null
+    private var courseId: String = ""
     private lateinit var rvSections: RecyclerView
 
     private lateinit var binding: FragmentLectureLearningBinding
-    private val sectionViewModel: SectionViewModel by viewModels()
+    private lateinit var sectionViewModel: SectionViewModel
+    private lateinit var userLectureViewModel: UserLectureViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            courseId = it.getString(ARG_COURSE_ID)
+//            courseId = it.getString(ARG_COURSE_ID)
+            courseId = "2tNxr8j5FosEueZrL3wH"
         }
+
+        sectionViewModel = ViewModelProvider(this)[SectionViewModel::class.java]
+        sectionViewModel.getSectionsCourseLearning(courseId)
+
+        userLectureViewModel = ViewModelProvider(this)[UserLectureViewModel::class.java]
+        userLectureViewModel.getUserLecturesByCourse("pQ7PAicEnDck3dBL8uIGZgKcUXM2", courseId)
     }
 
     override fun onCreateView(
@@ -45,10 +59,7 @@ class LectureLearningFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_lecture_learning, container, false)
         binding = FragmentLectureLearningBinding.inflate(inflater, container, false)
-
-        sectionViewModel.getSectionsCourseLearning("")
 
         return binding.root
     }
@@ -58,14 +69,16 @@ class LectureLearningFragment : Fragment() {
 
         rvSections = view.findViewById(R.id.rvSections)
 
-        sectionViewModel.sectionsCourseLearning.observe(viewLifecycleOwner) {
-            val courseLearningAdapter = CourseLearningAdapter(it, "pQ7PAicEnDck3dBL8uIGZgKcUXM2")
-            rvSections.adapter = courseLearningAdapter
-            rvSections.layoutManager = LinearLayoutManager(activity)
-            courseLearningAdapter.onItemClick = { userLecture ->
-                // TODO: open lecture
-            }
-        }
+        sectionViewModel.sectionsCourseLearning.observe(viewLifecycleOwner, Observer { sectionList ->
+            userLectureViewModel.userLectures.observe(viewLifecycleOwner, Observer { userLectures ->
+                val courseLearningAdapter = CourseLearningAdapter(sectionList, userLectures)
+                rvSections.adapter = courseLearningAdapter
+                rvSections.layoutManager = LinearLayoutManager(activity)
+                courseLearningAdapter.onItemClick = { userLecture ->
+                    Log.d("LectureLearningFragment", "User Lecture: $userLecture")
+                }
+            })
+        })
     }
 
     fun createDummyData(): ArrayList<Section> {
@@ -87,7 +100,7 @@ class LectureLearningFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(courseId: String?) =
+        fun newInstance(courseId: String) =
             LectureLearningFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_COURSE_ID, courseId)

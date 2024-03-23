@@ -8,25 +8,21 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.models.Lecture
 import com.deadlineshooters.yudemy.models.Section
 import com.deadlineshooters.yudemy.models.UserLecture
-import com.google.firebase.Timestamp
-import java.util.ArrayList
+import kotlin.collections.ArrayList
 
-
-class CourseLearningAdapter(private val sections: List<Section>, private val userId: String): RecyclerView.Adapter<CourseLearningAdapter.ViewHolder>() {
+class CourseLearningAdapter(private val sections: List<Section>, private val lectures: ArrayList<ArrayList<Map<Lecture, Boolean>>>): RecyclerView.Adapter<CourseLearningAdapter.ViewHolder>() {
     lateinit var context: Context
-//    lateinit var lectureLearningAdapter: LectureLearningAdapter
-    var onItemClick: ((UserLecture) -> Unit)? = null
+    var onItemClick: ((Lecture) -> Unit)? = null
+
+    private var selectedSection: Int = 0
+    private var selectedLecture: Int = 0
+
     inner class ViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
         val sectionTitle: TextView = listItemView.findViewById(R.id.sectionTitle)
         val lectureList: RecyclerView = listItemView.findViewById(R.id.lectureList)
-        var lectureLearningAdapter = LectureLearningAdapter(ArrayList<UserLecture>())
-        init {
-            lectureLearningAdapter.onItemClick = {
-                onItemClick?.invoke(it)
-            }
-        }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
@@ -41,9 +37,25 @@ class CourseLearningAdapter(private val sections: List<Section>, private val use
         val section: Section = sections[position]
 
         holder.sectionTitle.text = context.resources.getString(R.string.learning_section_title, section.index, section.title)
-        // TODO: get lecture list of this user
-//        lectureLearningAdapter = LectureLearningAdapter(createDummyData())
-        holder.lectureList.adapter = holder.lectureLearningAdapter
+
+        val lectureLearningAdapter = LectureLearningAdapter(lectures[position])
+        lectureLearningAdapter.onItemClick = { lecturePosition, lecture ->
+            selectedSection = position
+            selectedLecture = lecturePosition
+            notifyDataSetChanged()
+
+            onItemClick?.invoke(lecture)
+        }
+        if(selectedSection != position) {
+            lectureLearningAdapter.selectedLecture = -1
+            lectureLearningAdapter.notifyDataSetChanged()
+        }
+        else {
+            lectureLearningAdapter.selectedLecture = selectedLecture
+            lectureLearningAdapter.notifyDataSetChanged()
+        }
+
+        holder.lectureList.adapter = lectureLearningAdapter
         holder.lectureList.layoutManager = LinearLayoutManager(holder.itemView.context)
     }
 
