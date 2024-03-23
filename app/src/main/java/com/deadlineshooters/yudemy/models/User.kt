@@ -1,9 +1,11 @@
 package com.deadlineshooters.yudemy.models
 import android.os.Parcelable
+import com.google.firebase.firestore.DocumentId
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class User(
+    @DocumentId
     var id: String = "",
     var firstName: String = "",
     var lastName: String = "",

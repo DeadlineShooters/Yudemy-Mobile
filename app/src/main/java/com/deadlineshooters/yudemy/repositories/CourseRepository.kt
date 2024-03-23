@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
+import com.deadlineshooters.yudemy.models.Section
 import com.deadlineshooters.yudemy.models.Video
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -67,21 +68,18 @@ class CourseRepository {
         return coursesLiveData
     }
 
-    fun getSectionIdListOfCourse(courseId: String): List<String>? {
-        var sectionList: List<String>? = listOf()
-        coursesCollection.document(courseId)
+    fun getCourseById(courseId: String, callback: (Course?) -> Unit) {
+        var course: Course?
+        coursesCollection
+            .document(courseId)
             .get()
             .addOnSuccessListener { document ->
-                if (document != null) {
-                    sectionList = document.data?.get("sectionList") as List<String>
-                } else {
-                    Log.d(TAG, "No such document")
-                }
+                course = document?.toObject(Course::class.java)
+                callback(course)
             }
             .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents: ", exception)
-                sectionList = null
+                Log.w("Firestore", "Error getting documents: ", exception)
+                callback(null)
             }
-        return sectionList
     }
 }

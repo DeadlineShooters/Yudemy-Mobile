@@ -1,6 +1,7 @@
 package com.deadlineshooters.yudemy.viewmodels
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
 import com.deadlineshooters.yudemy.models.Course
@@ -13,6 +14,9 @@ class CourseViewModel : ViewModel() {
     private val courseRepository = CourseRepository()
     private val cloudinaryHelper = CloudinaryHelper()
     val courses: LiveData<List<Course>> = courseRepository.getCourses()
+
+    private val _learningCourse = MutableLiveData<Course?>()
+    val learningCourse: LiveData<Course?> = _learningCourse
 
 //    fun addDummyCourse() {
 //
@@ -32,4 +36,10 @@ class CourseViewModel : ViewModel() {
 //        }
 //
 //    }
+
+    fun getLearningCourse(courseId: String) {
+        courseRepository.getCourseById(courseId) {
+            _learningCourse.value = it
+        }
+    }
 }
