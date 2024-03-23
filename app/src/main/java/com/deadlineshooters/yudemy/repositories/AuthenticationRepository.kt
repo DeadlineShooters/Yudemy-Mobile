@@ -47,18 +47,18 @@ class AuthenticationRepository {
         }
     }
 
-    fun firebaseAuthWithGoogle(idToken: String, callback: (String?) -> Unit) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener() { task ->
-                if (task.isSuccessful) {
-                    val user = auth.currentUser
-                    val uId = user?.uid
-                    callback(uId)
-                } else {
-                    callback(null)
-                }
-            }
-    }
+//    fun firebaseAuthWithGoogle(idToken: String, callback: (String?) -> Unit) {
+//        val credential = GoogleAuthProvider.getCredential(idToken, null)
+//        auth.signInWithCredential(credential)
+//            .addOnCompleteListener() { task ->
+//                if (task.isSuccessful) {
+//                    val user = auth.currentUser
+//                    val uId = user?.uid
+//                    callback(uId)
+//                } else {
+//                    callback(null)
+//                }
+//            }
+//    }
 
 }
