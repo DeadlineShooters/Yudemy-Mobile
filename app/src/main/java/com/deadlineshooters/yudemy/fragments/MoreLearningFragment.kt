@@ -1,12 +1,17 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.databinding.FragmentAnalyticsBinding
+import com.deadlineshooters.yudemy.databinding.FragmentMoreLearningBinding
 import com.deadlineshooters.yudemy.dialogs.QADialog
 
 // TODO: Rename parameter arguments, choose names that match
@@ -22,6 +27,8 @@ class MoreLearningFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var courseId: String? = null
     private lateinit var qa: TextView
+    private lateinit var binding: FragmentMoreLearningBinding
+
 
     val title = "More"
 
@@ -35,9 +42,26 @@ class MoreLearningFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_more_learning, container, false)
+        binding = FragmentMoreLearningBinding.inflate(inflater, container, false)
+
+        binding.tvLeaveRating.setOnClickListener {
+            val dialog = Dialog(requireContext())
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setCancelable(true)
+            dialog.setContentView(R.layout.course_feedback_popup_layout)
+
+
+            val closeButton = dialog.findViewById<ImageView>(R.id.iv_exit)
+            closeButton.setOnClickListener {
+                // Handle close button click here
+                dialog.dismiss()
+            }
+
+            dialog.show()
+        }
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,6 +72,8 @@ class MoreLearningFragment : Fragment() {
             val qaDialog = QADialog()
             qaDialog.show(parentFragmentManager, "QADialog")
         }
+
+
     }
 
 

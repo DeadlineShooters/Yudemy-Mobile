@@ -11,74 +11,50 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/selectedFilter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="featured fragment"
-            android:textSize="26sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_instructor" />
 
-        <Button
-                android:id="@+id/btn_courseDetail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Go to course detail"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_popUpFeedback" />
 
-        <Button
-                android:id="@+id/btn_instructor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Instructor"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_courseDetail"/>
-
-        <Button
-                android:id="@+id/btn_enrolledCourse"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Successfully enroll course"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_instructor"/>
-        <Button
-                android:id="@+id/btn_popUpFeedback"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Leave a rating"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
         <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" android:id="@+id/constraintLayout"
-                app:layout_constraintTop_toBottomOf="@+id/btn_enrolledCourse" android:layout_marginTop="32dp">
+            android:id="@+id/constraintLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
 
             <TextView
-                    android:text="Career goal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/careerGoal"
-                    android:textColor="#777"
-                    app:layout_constraintTop_toBottomOf="@+id/welcomeLine"
-                    app:layout_constraintStart_toStartOf="@+id/welcomeLine"
-            />
+                android:id="@+id/careerGoal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Career goal"
+                android:textColor="#777"
+                app:layout_constraintStart_toStartOf="@+id/welcomeLine"
+                app:layout_constraintTop_toBottomOf="@+id/welcomeLine" />
+
             <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/welcomeLine"
-                    android:textStyle="bold" android:textSize="16sp"
-                    android:text="Welcome, User" app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.5" app:layout_constraintBottom_toTopOf="@+id/careerGoal"
-                    app:layout_constraintStart_toEndOf="@+id/imageView3" android:layout_marginStart="16dp" android:layout_marginBottom="8dp"
-            />
+                android:id="@+id/welcomeLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="Welcome, User"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/careerGoal"
+                app:layout_constraintStart_toEndOf="@+id/imageView3"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5" />
+
             <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp" app:srcCompat="@drawable/ic_user_vect" android:id="@+id/imageView3"
-                    app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" android:layout_marginStart="16dp"/>
+                android:id="@+id/imageView3"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_user_vect" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
