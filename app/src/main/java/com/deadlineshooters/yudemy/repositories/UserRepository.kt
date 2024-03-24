@@ -39,5 +39,97 @@ class UserRepository {
             }
     }
 
+    fun addToWishlist(courseId: String, callback: (Boolean) -> Unit) {
+        val uid = mAuth.currentUser?.uid
+        userCollection
+            .document(uid!!)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val wishlist = document.get("wishList") as MutableList<String>
+                    if (!wishlist.contains(courseId)) {
+                        wishlist.add(courseId)
+                        userCollection.document(uid).update("wishList", wishlist)
+                            .addOnSuccessListener {
+                                callback(true)
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.d("Firestore", "update failed with ", exception)
+                                callback(false)
+                            }
+                    } else {
+                        callback(false)
+                    }
+                } else {
+                    Log.d("Firestore", "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("Firestore", "get failed with ", exception)
+                callback(false)
+            }
+    }
+
+    fun removeFromWishlist(courseId: String, callback: (Boolean) -> Unit) {
+        val uid = mAuth.currentUser?.uid
+        userCollection
+            .document(uid!!)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val wishlist = document.get("wishList") as MutableList<String>
+                    if (wishlist.contains(courseId)) {
+                        wishlist.remove(courseId)
+                        userCollection.document(uid).update("wishList", wishlist)
+                            .addOnSuccessListener {
+                                callback(true)
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.d("Firestore", "update failed with ", exception)
+                                callback(false)
+                            }
+                    } else {
+                        callback(false)
+                    }
+                } else {
+                    Log.d("Firestore", "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("Firestore", "get failed with ", exception)
+                callback(false)
+            }
+    }
+
+    fun addToCourseList(courseId: String, callback: (Boolean) -> Unit) {
+        val uid = mAuth.currentUser?.uid
+        userCollection
+            .document(uid!!)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val courseList = document.get("courseList") as MutableList<String>
+                    if (!courseList.contains(courseId)) {
+                        courseList.add(courseId)
+                        userCollection.document(uid).update("courseList", courseList)
+                            .addOnSuccessListener {
+                                callback(true)
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.d("Firestore", "update failed with ", exception)
+                                callback(false)
+                            }
+                    } else {
+                        callback(false)
+                    }
+                } else {
+                    Log.d("Firestore", "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("Firestore", "get failed with ", exception)
+                callback(false)
+            }
+    }
 
 }

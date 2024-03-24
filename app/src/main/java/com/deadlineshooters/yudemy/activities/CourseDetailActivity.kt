@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.ActivityCourseDetailBinding
+import com.deadlineshooters.yudemy.repositories.UserRepository
 import vn.momo.momo_partner.AppMoMoLib
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -17,10 +18,12 @@ class CourseDetailActivity : AppCompatActivity() {
     private data class PendingPaymentRequest(val orderID: String)
 
     private lateinit var binding: ActivityCourseDetailBinding
+
+    private val userRepository = UserRepository()
+
     private var amount = ""
     private val fee = "0"
     private var environment = 1 //developer default
-
     private val merchantName = "Udemy"
     private val merchantCode = "CGV19072017"
     private val merchantNameLabel = "Nhà cung cấp"
@@ -50,6 +53,16 @@ class CourseDetailActivity : AppCompatActivity() {
 
         binding.btnBuy.setOnClickListener {
             requestPayment(Date().time.toString())
+        }
+
+        binding.btnWishlist.setOnClickListener {
+            if (binding.btnWishlist.text == "Add to wishlist") {
+                // userRepository.addToWishlist(courseID)
+                binding.btnWishlist.text = "Wishlisted"
+            } else {
+                // userRepository.removeFromWishlist(courseID)
+                binding.btnWishlist.text = "Add to wishlist"
+            }
         }
 
     }
@@ -127,7 +140,7 @@ class CourseDetailActivity : AppCompatActivity() {
 
     private fun handlePaymentSuccess(token: String?, phoneNumber: String?) {
         Log.d("message", "success")
-
+        // userRepository.addToCourseList(courseID)
         startActivity(Intent(this@CourseDetailActivity, StudentMainActivity::class.java))
     }
 
