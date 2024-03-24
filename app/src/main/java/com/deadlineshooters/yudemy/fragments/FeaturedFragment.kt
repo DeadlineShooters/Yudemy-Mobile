@@ -121,9 +121,10 @@ class FeaturedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
+        courseViewModel.refreshCourses()
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-            val clonedCourses = List(1) { courses[0] }
-            val adapter = CourseListAdapter2(clonedCourses)
+//            val clonedCourses = List(1) { courses[0] }
+            val adapter = CourseListAdapter2(courses)
             binding.courseList.layoutManager = LinearLayoutManager(context)
             binding.courseList.adapter = adapter
             adapter.onItemClick = {course ->

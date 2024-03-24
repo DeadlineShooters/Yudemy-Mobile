@@ -7,12 +7,17 @@ import androidx.lifecycle.MutableLiveData
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Video
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 import java.util.Date
 
 class CourseRepository {
+    private val userRepository = UserRepository()
     private val mFireStore = FirebaseFirestore.getInstance()
     private val coursesCollection = mFireStore.collection("courses")
+    private val auth = FirebaseAuth.getInstance()
 
     fun generateDummyCourse(img: Image, vid: Video): Course {
         return Course(
@@ -48,23 +53,42 @@ class CourseRepository {
             }
     }
 
-    fun getCourses(): LiveData<List<Course>> {
-        val coursesLiveData = MutableLiveData<List<Course>>()
 
-        coursesCollection.addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                Log.w(TAG, "Listen failed.", e)
-                return@addSnapshotListener
-            }
-
-            if (snapshot != null && !snapshot.isEmpty) {
-                val courses = snapshot.documents.mapNotNull { it.toObject(Course::class.java) }
-                coursesLiveData.value = courses
+    fun getCourses(): Task<List<Course>> {
+        val task = coursesCollection.get()
+        return task.continueWith { task ->
+            if (task.isSuccessful) {
+                val result = task.result
+                result?.map { document ->
+                    document.toObject(Course::class.java)
+                } ?: emptyList()
             } else {
-                Log.d(TAG, "Current data: null")
+                emptyList()
             }
         }
-
-        return coursesLiveData
     }
+
+    fun getWishlist(callback: (List<Course>) -> Unit) {
+        val courses = mutableListOf<Course>()
+
+        userRepository.getWishlistID { wishlistID ->
+            for (courseId in wishlistID) {
+                coursesCollection.document(courseId).get().addOnSuccessListener { courseDocument ->
+                    if (courseDocument != null) {
+                        val course = courseDocument.toObject(Course::class.java)!!
+                        courses.add(course)
+                        if (courses.size == wishlistID.size) {
+                            callback(courses) // Pass the courses to the callback function
+                        }
+                    } else {
+                        Log.d("Firestore", "No such document")
+                    }
+                }.addOnFailureListener { exception ->
+                    Log.d("Firestore", "get failed with ", exception)
+                }
+            }
+        }
+    }
+
+
 }
