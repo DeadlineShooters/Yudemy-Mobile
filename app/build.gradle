@@ -71,7 +71,6 @@ android {
 }
 
 
-
 dependencies {
     // Import the Firebase BoM: manage all the firebase libraries' versions
     implementation platform('com.google.firebase:firebase-bom:32.7.1')
@@ -114,4 +113,5 @@ dependencies {
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation "androidx.compose.runtime:runtime:1.4.3"
 
+    implementation 'com.github.momo-wallet:mobile-sdk:1.0.7'
 }
