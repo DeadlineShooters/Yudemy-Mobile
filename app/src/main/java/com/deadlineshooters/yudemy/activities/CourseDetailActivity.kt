@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.ActivityCourseDetailBinding
+import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.repositories.UserRepository
 import vn.momo.momo_partner.AppMoMoLib
 import java.text.DecimalFormat
@@ -20,6 +21,7 @@ class CourseDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCourseDetailBinding
 
     private val userRepository = UserRepository()
+    private lateinit var course: Course
 
     private var amount = ""
     private val fee = "0"
@@ -35,6 +37,9 @@ class CourseDetailActivity : AppCompatActivity() {
         binding = ActivityCourseDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupActionBar()
+
+        course = intent.getParcelableExtra<Course>("course") ?: Course()
+
         AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT); // AppMoMoLib.ENVIRONMENT.PRODUCTION
 
         description += binding.tvTitle.text
@@ -57,10 +62,10 @@ class CourseDetailActivity : AppCompatActivity() {
 
         binding.btnWishlist.setOnClickListener {
             if (binding.btnWishlist.text == "Add to wishlist") {
-                // userRepository.addToWishlist(courseID)
+                userRepository.addToWishlist(course.id) {}
                 binding.btnWishlist.text = "Wishlisted"
             } else {
-                // userRepository.removeFromWishlist(courseID)
+                userRepository.removeFromWishlist(course.id) {}
                 binding.btnWishlist.text = "Add to wishlist"
             }
         }
@@ -140,7 +145,7 @@ class CourseDetailActivity : AppCompatActivity() {
 
     private fun handlePaymentSuccess(token: String?, phoneNumber: String?) {
         Log.d("message", "success")
-        // userRepository.addToCourseList(courseID)
+        userRepository.addToCourseList(course.id) {}
         startActivity(Intent(this@CourseDetailActivity, StudentMainActivity::class.java))
     }
 
@@ -148,5 +153,14 @@ class CourseDetailActivity : AppCompatActivity() {
         Log.d("message", message)
     }
 
-
+    override fun onResume() {
+        super.onResume()
+        userRepository.isInWishlist(course.id) { isInWishlist ->
+            if (isInWishlist) {
+                binding.btnWishlist.text = "Wishlisted"
+            } else {
+                binding.btnWishlist.text = "Add to wishlist"
+            }
+        }
+    }
 }

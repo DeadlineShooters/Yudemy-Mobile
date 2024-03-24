@@ -101,6 +101,29 @@ class UserRepository {
             }
     }
 
+    fun isInWishlist(courseId: String, callback: (Boolean) -> Unit) {
+        val uid = mAuth.currentUser?.uid
+        userCollection
+            .document(uid!!)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val wishlist = document.get("wishList") as MutableList<String>
+                    if (wishlist.contains(courseId)) {
+                        callback(true)
+                    } else {
+                        callback(false)
+                    }
+                } else {
+                    Log.d("Firestore", "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("Firestore", "get failed with ", exception)
+                callback(false)
+            }
+    }
+
     fun addToCourseList(courseId: String, callback: (Boolean) -> Unit) {
         val uid = mAuth.currentUser?.uid
         userCollection

@@ -123,12 +123,12 @@ class FeaturedFragment : Fragment() {
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.refreshCourses()
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-//            val clonedCourses = List(1) { courses[0] }
             val adapter = CourseListAdapter2(courses)
             binding.courseList.layoutManager = LinearLayoutManager(context)
             binding.courseList.adapter = adapter
             adapter.onItemClick = {course ->
                 val intent = Intent(activity, CourseDetailActivity::class.java)
+                intent.putExtra("course", course)
                 startActivity(intent)
             }
         })

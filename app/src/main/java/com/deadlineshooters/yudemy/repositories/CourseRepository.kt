@@ -60,13 +60,16 @@ class CourseRepository {
             if (task.isSuccessful) {
                 val result = task.result
                 result?.map { document ->
-                    document.toObject(Course::class.java)
+                    val course = document.toObject(Course::class.java)
+                    course.id = document.id
+                    course
                 } ?: emptyList()
             } else {
                 emptyList()
             }
         }
     }
+
 
     fun getWishlist(callback: (List<Course>) -> Unit) {
         val courses = mutableListOf<Course>()
@@ -76,6 +79,7 @@ class CourseRepository {
                 coursesCollection.document(courseId).get().addOnSuccessListener { courseDocument ->
                     if (courseDocument != null) {
                         val course = courseDocument.toObject(Course::class.java)!!
+                        course.id = courseDocument.id
                         courses.add(course)
                         if (courses.size == wishlistID.size) {
                             callback(courses) // Pass the courses to the callback function
