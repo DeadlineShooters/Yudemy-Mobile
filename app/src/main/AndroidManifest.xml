@@ -29,10 +29,6 @@
         <activity
             android:name=".activities.CreateCurriculumActivity"
             android:exported="false" />
-
-        <activity
-            android:name=".activities.CertificateActivity"
-            android:exported="false" />
         <activity
             android:name=".activities.InstructorProfileActivity"
             android:exported="false" />

@@ -37,7 +37,7 @@ import java.util.Date
 import java.util.Locale
 import kotlin.properties.Delegates
 
-class QADialog : DialogFragment() {
+class QADialog(private val courseId: String) : DialogFragment() {
     private lateinit var qaCloseBtn: TextView
     private lateinit var qaFilterBtn: Button
     private lateinit var addQuestionBtn: Button
@@ -89,7 +89,6 @@ class QADialog : DialogFragment() {
 
 
         qaCloseBtn.setOnClickListener {
-            //TODO: Close the fragment
             dismiss()
         }
 
@@ -100,7 +99,7 @@ class QADialog : DialogFragment() {
                     addImageView(uri)
                 }
             } else {
-                Log.d("PhotoPicker", "No media selected")
+                Log.d("PhotoPicker",     "No media selected")
             }
         }
 

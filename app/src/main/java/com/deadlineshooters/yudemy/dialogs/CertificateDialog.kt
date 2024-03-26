@@ -1,18 +1,21 @@
-package com.deadlineshooters.yudemy.activities
+package com.deadlineshooters.yudemy.dialogs
 
-import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.fragment.app.DialogFragment
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.models.Certificate
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class CertificateActivity : AppCompatActivity() {
-    private lateinit var closeBtn: Button
+class CertificateDialog(private val courseId: String) : DialogFragment() {
+    private lateinit var closeBtn: TextView
     private lateinit var certificateCourseName: TextView
     private lateinit var courseInstructors: TextView
     private lateinit var studentName: TextView
@@ -21,16 +24,27 @@ class CertificateActivity : AppCompatActivity() {
     private val dumpCertificate = Certificate("123", "13/03/2024", "123", "Data Structures & Algorithms Essentials using C++ (2022)", 97200,)
     private val originalFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val newFormat = SimpleDateFormat("MMM, dd, yyyy", Locale.getDefault())
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_certificate)
+        setStyle(STYLE_NORMAL, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
+    }
 
-        closeBtn = findViewById(R.id.closeBtn)
-        certificateCourseName = findViewById(R.id.certificateCourseName)
-        courseInstructors = findViewById(R.id.courseInstructors)
-        studentName = findViewById(R.id.studentName)
-        finishDate = findViewById(R.id.finishDate)
-        courseLength = findViewById(R.id.courseLength)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.activity_certificate, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        closeBtn = view.findViewById(R.id.closeBtn)
+        certificateCourseName = view.findViewById(R.id.certificateCourseName)
+        courseInstructors = view.findViewById(R.id.courseInstructors)
+        studentName = view.findViewById(R.id.studentName)
+        finishDate = view.findViewById(R.id.finishDate)
+        courseLength = view.findViewById(R.id.courseLength)
 
         certificateCourseName.text = dumpCertificate.title
         courseInstructors.text = "Prateek Narang"
@@ -52,7 +66,8 @@ class CertificateActivity : AppCompatActivity() {
         courseLength.text = formattedLength
 
         closeBtn.setOnClickListener {
-            //TODO: Close the activity
+//            dismiss()
+            Log.d("CourseId", courseId)
         }
     }
 }
