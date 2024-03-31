@@ -9,13 +9,18 @@ import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Video
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.tasks.await
+
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 class CourseRepository {
+    private val userRepository = UserRepository()
     private val mFireStore = FirebaseFirestore.getInstance()
     private val coursesCollection = mFireStore.collection("courses")
+    private val auth = FirebaseAuth.getInstance()
 
     fun generateDummyCourse(img: Image, vid: Video): Course {
         return Course(
@@ -75,7 +80,28 @@ class CourseRepository {
         }
     }
 
+     fun getWishlist(callback: (List<Course>) -> Unit) {
+        val courses = mutableListOf<Course>()
 
+        userRepository.getWishlistID { wishlistID ->
+            for (courseId in wishlistID) {
+                coursesCollection.document(courseId).get().addOnSuccessListener { courseDocument ->
+                    if (courseDocument != null) {
+                        val course = courseDocument.toObject(Course::class.java)!!
+                        course.id = courseDocument.id
+                        courses.add(course)
+                        if (courses.size == wishlistID.size) {
+                            callback(courses) // Pass the courses to the callback function
+                        }
+                    } else {
+                        Log.d("Firestore", "No such document")
+                    }
+                }.addOnFailureListener { exception ->
+                    Log.d("Firestore", "get failed with ", exception)
+                }
+            }
+        }
+    }
 
 
 }

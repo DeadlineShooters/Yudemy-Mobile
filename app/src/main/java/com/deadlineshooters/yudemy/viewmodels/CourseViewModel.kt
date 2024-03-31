@@ -38,6 +38,12 @@ class CourseViewModel : ViewModel() {
 
     }
 
+     fun refreshWishlist() {
+        courseRepository.getWishlist {courses ->
+            _wishlist.value = courses
+        }
+
+    }
 
 //    fun addDummyCourse() {
 //

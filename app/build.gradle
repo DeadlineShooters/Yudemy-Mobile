@@ -77,7 +77,6 @@ android {
 }
 
 
-
 dependencies {
     // Import the Firebase BoM: manage all the firebase libraries' versions
     implementation platform('com.google.firebase:firebase-bom:32.8.0')
@@ -123,4 +122,5 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
 
+    implementation 'com.github.momo-wallet:mobile-sdk:1.0.7'
 }
