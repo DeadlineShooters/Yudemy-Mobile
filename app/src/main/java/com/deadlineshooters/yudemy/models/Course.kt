@@ -1,13 +1,11 @@
 package com.deadlineshooters.yudemy.models
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
-import kotlinx.parcelize.RawValue
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@Parcelize
+@kotlinx.parcelize.Parcelize
 data class Course(
     var id: String = "",
     var name: String = "",

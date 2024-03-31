@@ -83,8 +83,10 @@ class UserRepository {
             .set(user)
     }
 
-    fun getCurrentUserID(): String {
-        return FirebaseAuth.getInstance().currentUser!!.uid.toString()
+    companion object {
+        fun getCurrentUserID(): String {
+            return FirebaseAuth.getInstance().currentUser!!.uid.toString()
+        }
     }
 
 }

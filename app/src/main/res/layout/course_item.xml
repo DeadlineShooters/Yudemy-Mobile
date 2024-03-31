@@ -73,16 +73,31 @@
 
                 android:textSize="12sp" />
 
-            <TextView
-                android:id="@+id/tv_price_courseItem"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="19dp"
-                android:layout_below="@id/ll_title"
-                android:layout_marginStart="11dp"
-                android:layout_marginTop="-1dp"
-                android:layout_toEndOf="@id/tv_status"
-                android:text="$199.99"
-                android:textSize="13sp" />
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_price_courseItem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="19dp"
+                    android:layout_marginStart="11dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:maxWidth="100dp"
+                    android:layout_below="@id/ll_title"
+                    android:text="19999999999999999"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tv_moneySign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="19dp"
+                    android:layout_marginStart="5dp"
+                    android:text="đ"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -96,6 +111,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/ll_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/ll_status_price"
@@ -120,6 +136,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_dot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/ll_title"
@@ -132,12 +149,25 @@
             <TextView
                 android:id="@+id/tv_totalEarning"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_below="@id/ll_title"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="-1dp"
                 android:layout_toEndOf="@id/tv_status"
-                android:text="$30.89"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:maxWidth="100dp"
+                android:text="30089999998899"
+                android:textSize="13sp" />
+            <TextView
+                android:id="@+id/tv_sign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ll_title"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="-1dp"
+                android:layout_toEndOf="@id/tv_status"
+                android:text="đ"
                 android:textSize="13sp" />
 
             <TextView

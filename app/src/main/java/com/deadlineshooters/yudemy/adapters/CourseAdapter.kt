@@ -10,18 +10,26 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.CourseRevenueAnalyticsActivity
 import com.deadlineshooters.yudemy.activities.EditCourseLandingPageActivity
 import com.deadlineshooters.yudemy.fragments.CourseDashboardFragment
 import com.deadlineshooters.yudemy.fragments.CourseDraftingMenuFragment
+import com.deadlineshooters.yudemy.helpers.StringUtils
 import com.deadlineshooters.yudemy.models.Course
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
-public class CourseAdapter(private val context: CourseDashboardFragment, private val courseList: List<Course>) : RecyclerView.Adapter<CourseAdapter.ViewHolder>() {
+public class CourseAdapter(private val context: CourseDashboardFragment, private var courseList: List<Course>) : RecyclerView.Adapter<CourseAdapter.ViewHolder>() {
     var listener: AdapterView.OnItemClickListener? = null
     var onEditCourseClick: (() -> Unit)? = null
+
+    fun updateCourses(newCourses: List<Course>) {
+        courseList = newCourses
+
+        notifyDataSetChanged()
+    }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val image_thumbnail: ImageView = itemView.findViewById(R.id.image_thumbnail)
@@ -31,6 +39,8 @@ public class CourseAdapter(private val context: CourseDashboardFragment, private
          val tv_rating: TextView = itemView.findViewById(R.id.tv_rating)
          val tv_totalEarning: TextView = itemView.findViewById(R.id.tv_totalEarning)
         val ivDot: ImageView = itemView.findViewById(R.id.iv_dot)
+        val ll_rating: LinearLayout = itemView.findViewById(R.id.ll_rating)
+        val tv_dot: TextView = itemView.findViewById(R.id.tv_dot)
 
         override fun onClick(v: View?) {
             val position = bindingAdapterPosition
@@ -84,14 +94,35 @@ public class CourseAdapter(private val context: CourseDashboardFragment, private
         val course = courseList[position]
 
         // TODO: Fetch real data
+        Glide.with(holder.itemView.context)
+            .load(course.thumbnail.secure_url)
+            .placeholder(R.drawable.placeholder)
+            .into(holder.image_thumbnail)
 
-        // TODO 1: Delete dummy data
-        holder.image_thumbnail.setImageResource(R.drawable.ic_launcher_background)
-        holder.text_video_title.text = "Node.js Absolute Beginner Guide - Learn Node From Scratch"
-        holder.tv_status.text = "LIVE"
-        holder.tv_price.text = "\$199.99"
-        holder.tv_rating.text = "4.74"
-        holder.tv_totalEarning.text = "$30.89"
+        holder.text_video_title.text = course.name
+        if (course.status == true) {
+            holder.tv_status.text = "LIVE"
+            holder.ll_rating.visibility = View.VISIBLE
+            holder.tv_dot.visibility = View.VISIBLE
+        } else {
+            holder.tv_status.text = "DRAFT"
+            holder.ll_rating.visibility = View.GONE
+            holder.tv_dot.visibility = View.GONE
+        }
+        holder.tv_price.text = if (course.price % 1 == 0.0) {
+            course.price.toInt().toString()
+        } else {
+            course.price.toString()
+        }
+        holder.tv_rating.text = course.avgRating.toString()
+        holder.tv_totalEarning.text = StringUtils.trimDecimalZero(course.totalRevenue.toString())
+//        // TODO 1: Delete dummy data
+//        holder.image_thumbnail.setImageResource(R.drawable.ic_launcher_background)
+//        holder.text_video_title.text = "Node.js Absolute Beginner Guide - Learn Node From Scratch"
+//        holder.tv_status.text = "LIVE"
+//        holder.tv_price.text = "\$199.99"
+//        holder.tv_rating.text = "4.74"
+//        holder.tv_totalEarning.text = "$30.89"
     }
 
     override fun getItemCount(): Int {

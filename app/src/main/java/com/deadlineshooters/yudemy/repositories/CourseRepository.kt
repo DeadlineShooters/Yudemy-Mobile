@@ -7,8 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Video
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 class CourseRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
@@ -48,23 +51,31 @@ class CourseRepository {
             }
     }
 
-    fun getCourses(): LiveData<List<Course>> {
-        val coursesLiveData = MutableLiveData<List<Course>>()
-
-        coursesCollection.addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                Log.w(TAG, "Listen failed.", e)
-                return@addSnapshotListener
-            }
-
-            if (snapshot != null && !snapshot.isEmpty) {
-                val courses = snapshot.documents.mapNotNull { it.toObject(Course::class.java) }
-                coursesLiveData.value = courses
-            } else {
-                Log.d(TAG, "Current data: null")
-            }
+    fun getCourses(instructorId: String? = null, sortByNewest: Boolean = true): Task<List<Course>> {
+        val task = if (instructorId != null) {
+            coursesCollection.whereEqualTo("instructor", instructorId).get()
+        } else {
+            coursesCollection.get()
         }
 
-        return coursesLiveData
+        return task.continueWith { task ->
+            if (task.isSuccessful) {
+                val result = task.result
+                val courses = result?.map { document ->
+                    val course = document.toObject(Course::class.java)
+                    course.id = document.id
+                    course
+                } ?: emptyList()
+
+                val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                courses.sortedWith(compareBy { sdf.parse(it.createdDate) }).let { if (sortByNewest) it.reversed() else it }
+            } else {
+                emptyList()
+            }
+        }
     }
+
+
+
+
 }

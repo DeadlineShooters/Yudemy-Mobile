@@ -92,7 +92,20 @@
 
                     >
 
-                    <EditText
+                    <AutoCompleteTextView
+                        android:id="@+id/search_bar"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:singleLine="true"
+                        android:background="@drawable/search_bar_background"
+                        android:drawableStart="@drawable/ic_search_outline"
+                        android:drawablePadding="8dp"
+                        android:hint="@string/search_for_feedback"
+                        android:imeOptions="actionSearch"
+                        android:padding="10dp"
+                        android:textColorHint="@android:color/darker_gray" />
+                   <!-- <EditText
                         android:id="@+id/search_bar"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -106,7 +119,7 @@
                         android:imeOptions="actionSearch"
                         android:padding="12dp"
                         android:textColorHint="@android:color/darker_gray" />
-
+-->
                     <TextView
                         android:id="@+id/btn_cancel"
                         android:layout_width="wrap_content"

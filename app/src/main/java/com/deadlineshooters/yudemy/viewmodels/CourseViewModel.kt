@@ -1,6 +1,8 @@
 package com.deadlineshooters.yudemy.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
 import com.deadlineshooters.yudemy.models.Course
@@ -10,9 +12,32 @@ import com.deadlineshooters.yudemy.repositories.CourseRepository
 
 
 class CourseViewModel : ViewModel() {
-    private val courseRepository = CourseRepository()
     private val cloudinaryHelper = CloudinaryHelper()
-    val courses: LiveData<List<Course>> = courseRepository.getCourses()
+    private val courseRepository = CourseRepository()
+
+    private val _courses = MutableLiveData<List<Course>>()
+    val courses: LiveData<List<Course>> = _courses
+
+    private val _wishlist = MutableLiveData<List<Course>>()
+    val wishlist: LiveData<List<Course>> = _wishlist
+
+    fun refreshCourses(userId: String? = null, sortByNewest: Boolean = true) {
+        val task = if (userId != null) {
+            courseRepository.getCourses(userId, sortByNewest)
+        } else {
+            courseRepository.getCourses(sortByNewest = sortByNewest)
+        }
+
+        task.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                _courses.value = task.result
+            } else {
+                Log.d(this.javaClass.simpleName, "Failed to get courses: ${task.exception}")
+            }
+        }
+
+    }
+
 
 //    fun addDummyCourse() {
 //

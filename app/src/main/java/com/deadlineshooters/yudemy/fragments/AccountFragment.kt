@@ -165,9 +165,9 @@ class AccountFragment : Fragment() {
     fun setUserData(user: User) {
         if (requireActivity() is StudentMainActivity) {
             if (user.instructor != null)
-                navigateIns.text = "Switch to Instructor View"
+                navigateIns.text = "Switch to instructor view"
             else
-                navigateIns.text = "Become an Instructor"
+                navigateIns.text = "Become an instructor"
 
         }
 
