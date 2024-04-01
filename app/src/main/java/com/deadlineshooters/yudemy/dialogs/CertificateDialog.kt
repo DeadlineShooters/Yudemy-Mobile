@@ -49,7 +49,7 @@ import java.util.Date
 import java.util.Locale
 import kotlin.properties.Delegates
 
-class CertificateDialog : DialogFragment() {
+class CertificateDialog(private val courseId: String) : DialogFragment() {
     private lateinit var closeBtn: Button
     private lateinit var certificateCourseName: TextView
     private lateinit var courseInstructors: TextView
@@ -70,8 +70,8 @@ class CertificateDialog : DialogFragment() {
         instructorViewModel = ViewModelProvider(this)[InstructorViewModel::class.java]
         userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
 
-        certificateViewModel.getCertificate(BaseActivity().getCurrentUserID(), "2tNxr8j5FosEueZrL3wH")
-        instructorViewModel.getInstructorByCourse("2tNxr8j5FosEueZrL3wH")
+        certificateViewModel.getCertificate(BaseActivity().getCurrentUserID(), courseId)
+        instructorViewModel.getInstructorByCourse(courseId)
         userViewModel.getCurUser()
     }
 
