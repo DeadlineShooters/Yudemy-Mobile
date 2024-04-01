@@ -20,4 +20,10 @@ class InstructorViewModel : ViewModel(){
             _instructor.value = it
         }
     }
+
+    fun getInstructorById(instructorId: String) {
+        instructorRepository.getInstructorById(instructorId) {
+            _instructor.value = it
+        }
+    }
 }

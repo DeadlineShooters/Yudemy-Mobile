@@ -57,6 +57,11 @@ class InstructorRepository {
                 }
             }
         }
+    }
 
+    fun getInstructorById(instructorId: String, callbacks: (User) -> Unit){
+        instructorCollection.document(instructorId).get().addOnSuccessListener { document ->
+            callbacks(document.toObject(User::class.java)!!)
+        }
     }
 }

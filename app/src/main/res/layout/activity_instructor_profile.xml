@@ -8,23 +8,24 @@
 
 
     <ScrollView
-        android:layout_width="409dp"
-        android:layout_height="729dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="409dp"
-            android:layout_height="729dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/backBtn5"
+                android:id="@+id/backBtn6"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="16dp"
@@ -34,7 +35,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView20"
+                android:id="@+id/textView40"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -52,8 +53,8 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="24dp"
                 app:cardCornerRadius="1000dp"
-                app:layout_constraintStart_toStartOf="@+id/backBtn5"
-                app:layout_constraintTop_toBottomOf="@+id/backBtn5">
+                app:layout_constraintStart_toStartOf="@+id/backBtn6"
+                app:layout_constraintTop_toBottomOf="@+id/backBtn6">
 
                 <ImageView
                     android:id="@+id/instructorImage"

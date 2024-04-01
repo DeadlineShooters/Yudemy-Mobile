@@ -17,6 +17,7 @@ import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.repositories.UserRepository
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
+import com.deadlineshooters.yudemy.viewmodels.InstructorViewModel
 import com.deadlineshooters.yudemy.viewmodels.LectureViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -30,7 +31,7 @@ open class BaseActivity : AppCompatActivity() {
     private lateinit var mProgressDialog : Dialog
     private lateinit var binding: DialogProgressBinding
     open lateinit var courseViewModel: CourseViewModel
-    open lateinit var instructorViewModel: LectureViewModel
+    open lateinit var instructorViewModel: InstructorViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

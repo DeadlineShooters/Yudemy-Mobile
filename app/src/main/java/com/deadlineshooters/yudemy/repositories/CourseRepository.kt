@@ -1,5 +1,6 @@
 package com.deadlineshooters.yudemy.repositories
 
+import android.content.ComponentCallbacks
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -66,5 +67,29 @@ class CourseRepository {
         }
 
         return coursesLiveData
+    }
+
+    fun getTop3InstructorCourseList(instructorId: String, callbacks:(List<Course>) -> Unit) {
+        coursesCollection.whereEqualTo("instructor", instructorId).limit(3).get()
+            .addOnSuccessListener { documents ->
+                val courses = documents.mapNotNull { it.toObject(Course::class.java) }
+                callbacks(courses)
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents: ", exception)
+                callbacks(emptyList())
+            }
+    }
+
+    fun getInstructorCourseList(instructorId: String, callbacks:(List<Course>) -> Unit) {
+        coursesCollection.whereEqualTo("instructor", instructorId).get()
+            .addOnSuccessListener { documents ->
+                val courses = documents.mapNotNull { it.toObject(Course::class.java) }
+                callbacks(courses)
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents: ", exception)
+                callbacks(emptyList())
+            }
     }
 }

@@ -1,5 +1,6 @@
 package com.deadlineshooters.yudemy.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +19,11 @@ class CourseDetailActivity : AppCompatActivity() {
 
         setupActionBar()
 
-
+        binding.btnViewProfile.setOnClickListener {
+            val intent = Intent(this, InstructorProfileActivity::class.java)
+            intent.putExtra("instructorId", "hfhbhaxDyUfPTSnSe0Mel5Z708k2")
+            startActivity(intent)
+        }
     }
 
     private fun setupActionBar() {
