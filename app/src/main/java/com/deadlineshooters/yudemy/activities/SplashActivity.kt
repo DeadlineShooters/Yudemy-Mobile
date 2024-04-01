@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import com.deadlineshooters.yudemy.R
+import com.google.firebase.auth.FirebaseAuth
 
 class SplashActivity : AppCompatActivity() {
+    private val mAuth = FirebaseAuth.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
@@ -27,9 +29,17 @@ class SplashActivity : AppCompatActivity() {
 //                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
 //            } else {
                 // Start the Intro Activity
-
+//                startActivity(Intent(this@SplashActivity, SignInActivity::class.java))
+//            if(BaseActivity().getCurrentUserID()()){
+//                startActivity(Intent(this@SplashActivity, SignInActivity::class.java))
+//            } else{
+//                startActivity(Intent(this@SplashActivity, StudentMainActivity::class.java))
+//            }
+            if(mAuth.currentUser == null){
+                startActivity(Intent(this@SplashActivity, SignInActivity::class.java))
+            } else{
                 startActivity(Intent(this@SplashActivity, StudentMainActivity::class.java))
-
+            }
 //            }
             finish() // Call this when your activity is done and should be closed.
         }, 2500) // Here we pass the delay time in milliSeconds after which the splash activity will disappear.

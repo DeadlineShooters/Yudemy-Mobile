@@ -5,13 +5,17 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
+import org.w3c.dom.Text
 
 class PasswordInputActivity : AppCompatActivity() {
     private var email: TextView? = null
     private var forgotHref: TextView? = null
     private var signinBtn: Button? = null
     private var backBtn1: Button? = null
+    private var password: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +26,7 @@ class PasswordInputActivity : AppCompatActivity() {
         email?.text = intent.getStringExtra("email")
         signinBtn = findViewById(R.id.signinBtn)
         backBtn1 = findViewById(R.id.backBtn1)
+        password = findViewById(R.id.passwordInput)
 
         forgotHref!!.setOnClickListener {
             val intent = Intent(this, ResetPasswordActivity::class.java)
@@ -29,11 +34,16 @@ class PasswordInputActivity : AppCompatActivity() {
         }
 
         signinBtn!!.setOnClickListener{
-            val intent = Intent(this, SignInActivity::class.java)
-            startActivity(intent);
-            //TODO: Check password from database
+            AuthenticationRepository().logInWithEmail(email?.text.toString(), password!!.text.toString()) {uid ->
+                if (uid != null) {
+                    val intent = Intent(this, StudentMainActivity::class.java)
+                    startActivity(intent)
+                }
+                else {
+                    Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
-
         backBtn1!!.setOnClickListener {
             finish()
         }
