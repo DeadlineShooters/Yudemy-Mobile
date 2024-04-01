@@ -1,17 +1,29 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.MediaController
+import android.widget.VideoView
+import androidx.annotation.OptIn
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.SimpleExoPlayer
+import androidx.media3.ui.PlayerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.CourseLearningActivity
 import com.deadlineshooters.yudemy.adapters.CourseLearningAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentCourseDashboardBinding
 import com.deadlineshooters.yudemy.databinding.FragmentLectureLearningBinding
@@ -34,11 +46,12 @@ private const val ARG_COURSE_ID = "courseId"
 class LectureLearningFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var courseId: String = ""
-    private lateinit var rvSections: RecyclerView
 
     private lateinit var binding: FragmentLectureLearningBinding
     private lateinit var sectionViewModel: SectionViewModel
     private lateinit var userLectureViewModel: UserLectureViewModel
+
+    private lateinit var videoView: PlayerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,18 +77,34 @@ class LectureLearningFragment : Fragment() {
         return binding.root
     }
 
+    @OptIn(UnstableApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        rvSections = view.findViewById(R.id.rvSections)
+        // Set video view
+        videoView = (activity as CourseLearningActivity).getVideoView()
 
+        val exoPlayer = ExoPlayer.Builder(requireContext())
+            .setSeekBackIncrementMs(5000)
+            .setSeekForwardIncrementMs(10000)
+            .build()
+
+        videoView.player = exoPlayer
+        videoView.keepScreenOn = true
+
+        // Show the sections and lectures
         sectionViewModel.sectionsCourseLearning.observe(viewLifecycleOwner, Observer { sectionList ->
             userLectureViewModel.userLectures.observe(viewLifecycleOwner, Observer { userLectures ->
                 val courseLearningAdapter = CourseLearningAdapter(sectionList, userLectures)
-                rvSections.adapter = courseLearningAdapter
-                rvSections.layoutManager = LinearLayoutManager(activity)
+                binding.rvSections.adapter = courseLearningAdapter
+                binding.rvSections.layoutManager = LinearLayoutManager(activity)
                 courseLearningAdapter.onItemClick = { userLecture ->
                     Log.d("LectureLearningFragment", "User Lecture: $userLecture")
+
+                    val mediaItem = MediaItem.fromUri(Uri.parse("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"))
+                    exoPlayer.setMediaItem(mediaItem)
+                    exoPlayer.prepare()
+                    exoPlayer.play()
                 }
             })
         })

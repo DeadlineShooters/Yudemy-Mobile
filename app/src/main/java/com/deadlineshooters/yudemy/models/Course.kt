@@ -2,13 +2,11 @@ package com.deadlineshooters.yudemy.models
 
 import android.os.Parcelable
 import com.google.firebase.firestore.DocumentId
-import kotlinx.android.parcel.Parcelize
-import kotlinx.parcelize.RawValue
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@Parcelize
+@kotlinx.parcelize.Parcelize
 data class Course(
     @DocumentId
     var id: String = "",
@@ -27,6 +25,7 @@ data class Course(
     var totalLength: Int = 0, // in seconds
     var totalQuiz: Int = 0,
     var thumbnail: Image = Image(),
+    var totalRatings: Int = 0,
     var avgRating: Double = 0.0,
     var status: Boolean = false,
     var createdDate: String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
