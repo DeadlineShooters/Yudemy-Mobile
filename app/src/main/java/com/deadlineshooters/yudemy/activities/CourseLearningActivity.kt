@@ -99,15 +99,11 @@ class CourseLearningActivity : AppCompatActivity() {
         }
     }
 
-//    fun getVideoView(): VideoView {
-//        return binding.videoView
-//    }
-
     fun getVideoView(): PlayerView {
         return binding.videoView
     }
 
-    fun getBtnToggleFullScreen(): ImageView {
-        return findViewById(R.id.bt_fullscreen)
+    fun getBtnMuteAudio(): ImageView {
+        return findViewById(R.id.audio_mute)
     }
 }

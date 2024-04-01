@@ -1,38 +1,28 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.content.ComponentName
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.MediaController
-import android.widget.VideoView
+import android.widget.ImageView
 import androidx.annotation.OptIn
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.SimpleExoPlayer
 import androidx.media3.ui.PlayerView
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.CourseLearningActivity
 import com.deadlineshooters.yudemy.adapters.CourseLearningAdapter
-import com.deadlineshooters.yudemy.databinding.FragmentCourseDashboardBinding
 import com.deadlineshooters.yudemy.databinding.FragmentLectureLearningBinding
-import com.deadlineshooters.yudemy.models.Section
-import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
-import com.deadlineshooters.yudemy.viewmodels.LectureViewModel
 import com.deadlineshooters.yudemy.viewmodels.SectionViewModel
 import com.deadlineshooters.yudemy.viewmodels.UserLectureViewModel
-import java.util.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -52,6 +42,7 @@ class LectureLearningFragment : Fragment() {
     private lateinit var userLectureViewModel: UserLectureViewModel
 
     private lateinit var videoView: PlayerView
+    private lateinit var btnMuteAudio: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,8 +80,16 @@ class LectureLearningFragment : Fragment() {
             .setSeekForwardIncrementMs(10000)
             .build()
 
+        exoPlayer.volume = 1f
+
         videoView.player = exoPlayer
         videoView.keepScreenOn = true
+
+        btnMuteAudio = (activity as CourseLearningActivity).getBtnMuteAudio()
+        btnMuteAudio.setOnClickListener {
+            exoPlayer.volume = if (exoPlayer.volume == 0f) 1f else 0f
+            btnMuteAudio.setImageResource(if (exoPlayer.volume == 0f) R.drawable.ic_volume_off_fill else R.drawable.ic_volume_up)
+        }
 
         // Show the sections and lectures
         sectionViewModel.sectionsCourseLearning.observe(viewLifecycleOwner, Observer { sectionList ->
@@ -98,25 +97,23 @@ class LectureLearningFragment : Fragment() {
                 val courseLearningAdapter = CourseLearningAdapter(sectionList, userLectures)
                 binding.rvSections.adapter = courseLearningAdapter
                 binding.rvSections.layoutManager = LinearLayoutManager(activity)
+
+                var mediaItem = MediaItem.fromUri(Uri.parse("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+                exoPlayer.setMediaItem(mediaItem)
+                exoPlayer.prepare()
+                exoPlayer.play()
+
                 courseLearningAdapter.onItemClick = { userLecture ->
                     Log.d("LectureLearningFragment", "User Lecture: $userLecture")
 
-                    val mediaItem = MediaItem.fromUri(Uri.parse("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"))
+                    mediaItem = MediaItem.fromUri(Uri.parse("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+
                     exoPlayer.setMediaItem(mediaItem)
                     exoPlayer.prepare()
                     exoPlayer.play()
                 }
             })
         })
-    }
-
-    fun createDummyData(): ArrayList<Section> {
-        val sections = ArrayList<Section>()
-        for(i in 1..5) {
-            val l = Section("1", "Introduction", 1)
-            sections.add(l)
-        }
-        return sections
     }
 
     companion object {
