@@ -1,5 +1,7 @@
 package com.deadlineshooters.yudemy.repositories
 
+import android.content.ComponentCallbacks
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.deadlineshooters.yudemy.activities.SignUpActivity
 import com.deadlineshooters.yudemy.models.User
@@ -17,5 +19,16 @@ class UserRepository {
         mFireStore.collection("users")
             .document(mAuth.currentUser!!.uid)
             .set(user)
+    }
+
+    fun getCurUser(callbacks: (User) -> Unit){
+        mFireStore.collection("users")
+            .document(mAuth.currentUser!!.uid)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    callbacks(document.toObject(User::class.java)!!)
+                }
+            }
     }
 }
