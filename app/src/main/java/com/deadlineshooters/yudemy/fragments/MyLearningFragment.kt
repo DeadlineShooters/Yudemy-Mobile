@@ -151,7 +151,7 @@ class MyLearningFragment : Fragment() {
 
     fun generateDummyData(): ArrayList<Course> {
         val courses = ArrayList<Course>()
-        for(i in 1..5) {
+        for(i in 1..10) {
             val c = Course(
                 name = "Graph Theory Algorithms for Competitive Programming (2022) $i",
                 instructor = "34349",

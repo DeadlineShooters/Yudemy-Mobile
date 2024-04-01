@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.dialogs.CertificateDialog
 import com.deadlineshooters.yudemy.dialogs.QADialog
 
 // TODO: Rename parameter arguments, choose names that match
@@ -24,7 +23,6 @@ class MoreLearningFragment : Fragment() {
     private var courseId: String? = null
     private lateinit var qa: TextView
     private lateinit var certificate: TextView
-
 
     val title = "More"
 
@@ -58,6 +56,7 @@ class MoreLearningFragment : Fragment() {
             certificateDialog.show(parentFragmentManager, "CertificateDialog")
         }
     }
+
 
 
 

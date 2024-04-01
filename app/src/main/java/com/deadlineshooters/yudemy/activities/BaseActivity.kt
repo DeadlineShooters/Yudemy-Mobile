@@ -14,6 +14,8 @@ import com.deadlineshooters.yudemy.BuildConfig
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.DialogProgressBinding
 import com.deadlineshooters.yudemy.models.Image
+import com.deadlineshooters.yudemy.models.User
+import com.deadlineshooters.yudemy.repositories.UserRepository
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.deadlineshooters.yudemy.viewmodels.LectureViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -64,12 +66,20 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun getCurrentUserID(): String {
-        return FirebaseAuth.getInstance().currentUser!!.uid.toString()
+        return FirebaseAuth.getInstance().currentUser!!.uid
     }
 
     fun getCurrentUserEmail(): String {
         return FirebaseAuth.getInstance().currentUser!!.email.toString()
     }
+
+//    fun getCurUser(): User {
+//        return curUser
+//    }
+//
+//    fun setCurrentUser(user: User) {
+//        curUser = user
+//    }
 
     /**
      * message is the error message to show in the snackbar.
