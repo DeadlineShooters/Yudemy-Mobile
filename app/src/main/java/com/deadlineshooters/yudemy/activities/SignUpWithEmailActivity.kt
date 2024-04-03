@@ -9,6 +9,7 @@ import android.widget.TextView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.ActivitySignUpWithEmailBinding
 import com.deadlineshooters.yudemy.models.Image
+import com.deadlineshooters.yudemy.models.Instructor
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
 import com.deadlineshooters.yudemy.repositories.UserRepository
@@ -66,7 +67,7 @@ class SignUpWithEmailActivity : AppCompatActivity() {
         signUpBtn!!.setOnClickListener{
             AuthenticationRepository().createAccount(email!!.text.toString(), password!!.text.toString()){uid ->
                 if (uid != null){
-                    val newUser = User(name!!.text.toString(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), false, "", null)
+                    val newUser = User(name!!.text.toString(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), false, "", Instructor("", 0, 0, "", Image("",""), "", ""))
                     UserRepository().addUser(newUser)
                     val intent = Intent(this, StudentMainActivity::class.java)
                     startActivity(intent)

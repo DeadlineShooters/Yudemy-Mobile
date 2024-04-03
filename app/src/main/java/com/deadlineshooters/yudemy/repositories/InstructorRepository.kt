@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
 import com.deadlineshooters.yudemy.models.Instructor
 import com.deadlineshooters.yudemy.models.User
 import com.google.firebase.firestore.FirebaseFirestore
@@ -62,6 +63,33 @@ class InstructorRepository {
     fun getInstructorById(instructorId: String, callbacks: (User) -> Unit){
         instructorCollection.document(instructorId).get().addOnSuccessListener { document ->
             callbacks(document.toObject(User::class.java)!!)
+        }
+    }
+
+    fun modifyInstructorProfile(instructorId: String, fullName: String, headLine: String, bio: String, callbacks: (User) -> Unit){
+        instructorCollection.document(instructorId).update(
+            "fullName" , fullName,
+            "instructor.headline", headLine,
+            "instructor.bio", bio
+        ).addOnSuccessListener {
+            getInstructorById(instructorId){
+                callbacks(it)
+            }
+        }.addOnFailureListener {
+            Log.w(ContentValues.TAG, "Error updating document", it)
+        }
+    }
+
+    fun updateInstructorImage(instructorId: String, pubicId: String, secureUrl: String, callbacks: (User) -> Unit){
+        instructorCollection.document(instructorId).update(
+            "instructor.image.public_id", pubicId,
+            "instructor.image.secure_url", secureUrl
+        ).addOnSuccessListener {
+            getInstructorById(instructorId){
+                callbacks(it)
+            }
+        }.addOnFailureListener {
+            Log.w(ContentValues.TAG, "Error updating document", it)
         }
     }
 }

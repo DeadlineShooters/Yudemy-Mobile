@@ -26,4 +26,16 @@ class InstructorViewModel : ViewModel(){
             _instructor.value = it
         }
     }
+
+    fun modifyInstructorProfile(instructorId: String, fullName: String, headline: String, bio: String){
+        instructorRepository.modifyInstructorProfile(instructorId, fullName, headline, bio){
+            _instructor.value = it
+        }
+    }
+
+    fun updateInstructorImage(instructorId: String, publicId: String, secureUrl: String){
+        instructorRepository.updateInstructorImage(instructorId, publicId, secureUrl){
+            _instructor.value = it
+        }
+    }
 }

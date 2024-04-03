@@ -70,7 +70,40 @@ class CloudinaryHelper {
     }
 
 
+    fun uploadToCloudinary(filepath: String, callback: (Image?) -> Unit) {
+        Log.d("cloudinary", BuildConfig.UPLOAD_PRESET)
 
+        MediaManager.get().upload(filepath)
+            .unsigned(BuildConfig.UPLOAD_PRESET)
+            .option("folder", Constants.CLOUDINARY_FOLDER)
+            .callback(object : UploadCallback {
+                override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
+                    val secureUrl = resultData?.get("secure_url").toString()
+                    val publicId = resultData?.get("public_id").toString()
+                    val image = Image(secureUrl, publicId)
+                    callback(image) // Truyền kết quả đến hàm gọi lại
+                }
+
+                override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
+                    val progress = bytes.toDouble() / totalBytes
+                    // Xử lý tiến trình nếu cần
+                }
+
+                override fun onReschedule(requestId: String?, error: ErrorInfo?) {
+                    Log.d("cloudinary", "Task rescheduled")
+                }
+
+                override fun onError(requestId: String?, error: ErrorInfo?) {
+                    Log.d("cloudinary", "Task Not successful: $error")
+                    // Xử lý lỗi nếu cần
+                    callback(null) // Truyền null để báo lỗi
+                }
+
+                override fun onStart(requestId: String?) {
+                    Log.d("cloudinary", "Start")
+                }
+            }).dispatch()
+    }
 
 
 }

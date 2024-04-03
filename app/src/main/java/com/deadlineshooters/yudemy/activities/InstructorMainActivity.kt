@@ -11,7 +11,7 @@ import com.deadlineshooters.yudemy.fragments.CourseDashboardFragment
 import com.deadlineshooters.yudemy.fragments.FeedbackFragment
 import com.deadlineshooters.yudemy.fragments.InstructorQAFragment
 
-class InstructorMainActivity : AppCompatActivity() {
+class InstructorMainActivity : BaseActivity() {
     private lateinit var binding: ActivityInstructorMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +40,7 @@ class InstructorMainActivity : AppCompatActivity() {
                 }
 
                 R.id.account -> {
-                    replaceFragment(AccountFragment())
+                    replaceFragment(AccountFragment.newInstance(true, this.getCurrentUserID()))
                 }
 
                 else -> {
