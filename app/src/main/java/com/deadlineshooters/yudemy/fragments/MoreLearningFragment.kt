@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.FragmentMoreLearningBinding
+import com.deadlineshooters.yudemy.dialogs.CertificateDialog
 import com.deadlineshooters.yudemy.dialogs.QADialog
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -34,6 +35,7 @@ class MoreLearningFragment : Fragment() {
     private lateinit var binding: FragmentMoreLearningBinding
     private lateinit var aboutDialog: BottomSheetDialog
     private lateinit var courseViewModel: CourseViewModel
+    private lateinit var certificate: TextView
 
     val title = "More"
 
@@ -60,10 +62,14 @@ class MoreLearningFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         qa = view.findViewById(R.id.qa)
-
+        certificate = view.findViewById(R.id.certificate)
         qa.setOnClickListener {
             val qaDialog = QADialog()
             qaDialog.show(parentFragmentManager, "QADialog")
+        }
+        certificate.setOnClickListener {
+            val certificateDialog = CertificateDialog()
+            certificateDialog.show(parentFragmentManager, "CertificateDialog")
         }
 
         aboutDialog = createAboutDialog()

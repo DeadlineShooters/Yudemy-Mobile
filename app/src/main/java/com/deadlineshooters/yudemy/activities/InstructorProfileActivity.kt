@@ -12,6 +12,7 @@ import com.deadlineshooters.yudemy.adapters.InstructorCourseListAdapter
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Instructor
+import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.models.Video
 
 class InstructorProfileActivity : BaseActivity() {
@@ -26,7 +27,7 @@ class InstructorProfileActivity : BaseActivity() {
             "I also teach local night classes and run a somewhat popular web development tutorial YouTube channel named LearnWebCode.\n\n" +
             "I'm a front-end developer, designer, and educator. I've been building user interfaces for over a decade for the world's largest brands, international technology leaders, and national political campaigns.\n\n" +
             "I'm fortunate to enjoy the development work I do, but my true passion is helping people learn."
-    private val dumpInst = Instructor("123", "Brad", "Schiff", "Web developer", 72087, 247011,dumpBio, Image("secure_url", "public_id"), "walletId", "walletName")
+    private val dumpInst = User("Brad Schiff", arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(),false, arrayListOf(), "",Instructor("Web developer", 72087, 247011,dumpBio, Image("secure_url", "public_id"), "walletId", "walletName"))
     private var isExpanded = true
 //    private val dumpCourse1 = Course("123", "Become a Web Developer: 2024 Bootcamp", "Brad Schiff", 1000, "Become a full-stack web developer with just one course. HTML, CSS, Javascript, Node, React, MongoDB and more!", "Become a full-stack web developer with just one course. HTML, CSS, Javascript, Node, React, MongoDB and more!", 199.99, arrayListOf("Introduction", "HTML", "CSS", "Javascript", "Node", "React", "MongoDB", "Final Project"), Video("secure_url", "public_id"), "English", "Web Development", 100, 8, 10000, 10, Image("secure_url", "public_id"), 4.8, true, "12/12/2021", 100000)
 //    private val dumpCourse2 = Course("124", "Let's Learn Laravel: A Guided Path For Beginners", "Brad Schiff", 1000, "Become a full-stack web developer with just one course. HTML, CSS, Javascript, Node, React, MongoDB and more!", "Become a full-stack web developer with just one course. HTML, CSS, Javascript, Node, React, MongoDB and more!", 199.99, arrayListOf("Introduction", "HTML", "CSS", "Javascript", "Node", "React", "MongoDB", "Final Project"), Video("secure_url", "public_id"), "English", "Web Development", 100, 8, 10000, 10, Image("secure_url", "public_id"), 4.8, true, "12/12/2021", 100000)
@@ -55,11 +56,11 @@ class InstructorProfileActivity : BaseActivity() {
         instructorCoursesView = findViewById(R.id.instructorCoursesView)
         seeAllBtn = findViewById(R.id.seeAllBtn)
 
-        instructorName.text = "${dumpInst.firstName} ${dumpInst.lastName}"
-        instructorHeadline.text = dumpInst.headline
-        instructorTotalStudents.text = dumpInst.totalStudents.formatThousands()
-        instructorTotalReviews.text = dumpInst.totalReviews.formatThousands()
-        instructorBio.text = dumpInst.bio
+        instructorName.text = dumpInst.fullName
+        instructorHeadline.text = dumpInst.instructor!!.headline
+        instructorTotalStudents.text = dumpInst.instructor!!.totalStudents.formatThousands()
+        instructorTotalReviews.text = dumpInst.instructor!!.totalReviews.formatThousands()
+        instructorBio.text = dumpInst.instructor!!.bio
 
         showMoreBtn.setOnClickListener{
             if(isExpanded){

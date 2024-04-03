@@ -77,20 +77,21 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordBg"
-        android:layout_width="384dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:hint="Password (8+ characters)"
         android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/mailInput"
+        app:layout_constraintStart_toStartOf="@+id/mailInput"
         app:layout_constraintTop_toBottomOf="@+id/mailInput"
         app:passwordToggleEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passInput"
-            android:layout_width="384dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="textPassword"
             android:ems="10"
             app:layout_constraintBottom_toBottomOf="@+id/passwordBg"
             app:layout_constraintEnd_toEndOf="@+id/passwordBg"
@@ -124,7 +125,7 @@
         app:layout_constraintTop_toBottomOf="@+id/signUpBtn" />
 
     <TextView
-        android:id="@+id/signinHref"
+        android:id="@+id/signInHref"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"

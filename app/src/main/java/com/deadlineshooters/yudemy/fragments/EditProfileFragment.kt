@@ -12,6 +12,7 @@ import android.widget.TextView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Instructor
+import com.deadlineshooters.yudemy.models.User
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -53,7 +54,7 @@ class EditProfileFragment : Fragment() {
             "I also teach local night classes and run a somewhat popular web development tutorial YouTube channel named LearnWebCode.\n\n" +
             "I'm a front-end developer, designer, and educator. I've been building user interfaces for over a decade for the world's largest brands, international technology leaders, and national political campaigns.\n\n" +
             "I'm fortunate to enjoy the development work I do, but my true passion is helping people learn."
-    private val dumpInst = Instructor("123", "Brad", "Schiff", "Web developer", 72087, 247011,dumpBio, Image("secure_url", "public_id"), "walletId", "walletName")
+    private val dumpInst = User("Brad Schiff", arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(),false, arrayListOf(), "",Instructor("Web developer", 72087, 247011,dumpBio, Image("secure_url", "public_id"), "walletId", "walletName"))
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -63,9 +64,9 @@ class EditProfileFragment : Fragment() {
         cancelEditProfileBtn = view.findViewById(R.id.cancelEditImageBtn)
         saveEditProfileInstructorBtn = view.findViewById(R.id.saveEditProfileInstructorBtn)
 
-        instructorFullName.text = "${dumpInst.firstName} ${dumpInst.lastName}"
-        instructorHeadline.text = dumpInst.headline
-        instructorBio.text = dumpInst.bio
+        instructorFullName.text = dumpInst.fullName
+        instructorHeadline.text = dumpInst.instructor!!.headline
+        instructorBio.text = dumpInst.instructor!!.bio
 
         saveEditProfileInstructorBtn.setOnClickListener {
             //TODO: Save the edited profile
