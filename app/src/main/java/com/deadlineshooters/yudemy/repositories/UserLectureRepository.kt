@@ -10,7 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class UserLectureRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
-    private val userLectureCollection = mFireStore.collection("userLectures")
+    private val userLectureCollection = mFireStore.collection("user_lectures")
 
     fun checkLectureFinished(userId: String, lectureId: String, callback: (Boolean) -> Unit) {
         Log.d("Firestore", "start checkLectureFinished $userId $lectureId")

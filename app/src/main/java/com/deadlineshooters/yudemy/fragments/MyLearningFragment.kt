@@ -14,6 +14,8 @@ import android.widget.SearchView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +26,7 @@ import com.deadlineshooters.yudemy.adapters.BottomSheetDialogAdapter
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Video
+import com.deadlineshooters.yudemy.viewmodels.UserViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
@@ -45,12 +48,16 @@ class MyLearningFragment : Fragment() {
     private var rvCourses: RecyclerView? = null
     private var filterDialog: BottomSheetDialog? = null
 
+    private lateinit var userViewModel: UserViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        userViewModel.getUserCourses()
     }
 
     override fun onCreateView(
@@ -68,18 +75,21 @@ class MyLearningFragment : Fragment() {
         rvCourses = view.findViewById(R.id.rvCourses)
         filterDialog =createFilterDialog()
 
-        val courses = generateDummyData() // TODO: get user's courses from database
+        userViewModel.mylearningCourses.observe(viewLifecycleOwner, Observer { courses ->
+            userViewModel.myCoursesProgress.observe(viewLifecycleOwner, Observer { progresses ->
+                val adapter = MyLearningAdapter(courses, progresses)
+                rvCourses!!.adapter = adapter
+                rvCourses!!.layoutManager = LinearLayoutManager(activity)
+                adapter.onItemClick = { course, instructorName ->
+                    // TODO: open course learning
+                    val intent = Intent(activity, CourseLearningActivity::class.java)
+                    intent.putExtra("courseId", course.id)
+                    startActivity(intent)
+                }
+            })
+        })
+//        val courses = generateDummyData() // TODO: get user's courses from database
 //        val userId = (activity as BaseActivity).getCurrentUserID() TODO: get current user id
-        val adapter = MyLearningAdapter(courses, "userId")
-        rvCourses!!.adapter = adapter
-        rvCourses!!.layoutManager = LinearLayoutManager(activity)
-        adapter.onItemClick = { course ->
-            // TODO: open course learning
-
-            val intent = Intent(activity, CourseLearningActivity::class.java)
-            intent.putExtra("courseId", course.id)
-            startActivity(intent)
-        }
 
         // Click to search icon
         view.findViewById<Button>(R.id.searchBtn).setOnClickListener {
@@ -98,7 +108,6 @@ class MyLearningFragment : Fragment() {
         view.findViewById<Button>(R.id.filterBtn).setOnClickListener {
             filterDialog!!.show()
         }
-
     }
 
     private fun showSearchAction() {

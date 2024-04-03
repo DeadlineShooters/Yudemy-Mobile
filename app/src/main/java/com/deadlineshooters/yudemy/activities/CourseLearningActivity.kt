@@ -38,8 +38,8 @@ class CourseLearningActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val intent = intent
-//        val courseId = intent.getStringExtra("courseId")// TODO: Uncomment this line
-        val courseId = "2tNxr8j5FosEueZrL3wH"
+        val courseId = intent.getStringExtra("courseId")// TODO: Uncomment this line
+//        val courseId = "2tNxr8j5FosEueZrL3wH"
 
         courseViewModel = ViewModelProvider(this)[CourseViewModel::class.java]
         courseViewModel.getLearningCourse(courseId!!)
@@ -55,7 +55,7 @@ class CourseLearningActivity : AppCompatActivity() {
             })
         })
 
-        val fragments = listOf(LectureLearningFragment.newInstance(courseId!!), MoreLearningFragment.newInstance(courseId))
+        val fragments = listOf(LectureLearningFragment.newInstance(courseId), MoreLearningFragment.newInstance(courseId))
         courseLearningTabsAdapter = TabsAdapter(fragments, supportFragmentManager, lifecycle)
         binding.mViewPager.adapter = courseLearningTabsAdapter
 
