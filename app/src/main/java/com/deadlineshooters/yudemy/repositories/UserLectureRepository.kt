@@ -96,4 +96,20 @@ class UserLectureRepository {
                 callback(list)
             }
     }
+
+    fun markLecture(userId: String, lectureId: String, isCompleted: Boolean) {
+        userLectureCollection
+            .whereEqualTo("userId", userId)
+            .whereEqualTo("lectureId", lectureId)
+            .get()
+            .addOnSuccessListener { documents ->
+                for(document in documents) {
+                    document.reference.update("finished", isCompleted)
+                    Log.d("Firestore", "DocumentSnapshot successfully updated!")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore", "Error getting documents: ", exception)
+            }
+    }
 }

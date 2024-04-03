@@ -7,6 +7,8 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
+import androidx.activity.OnBackPressedDispatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -96,6 +98,10 @@ class CourseLearningActivity : AppCompatActivity() {
                 ).toInt()
                 binding.videoView.layoutParams.height = height
             }
+        }
+
+        findViewById<TextView>(R.id.btnBackFromPlayer).setOnClickListener {
+            finish()
         }
     }
 

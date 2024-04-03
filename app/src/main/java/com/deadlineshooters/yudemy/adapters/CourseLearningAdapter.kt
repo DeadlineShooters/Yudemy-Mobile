@@ -1,5 +1,6 @@
 package com.deadlineshooters.yudemy.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -10,15 +11,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.models.Lecture
 import com.deadlineshooters.yudemy.models.Section
-import com.deadlineshooters.yudemy.models.UserLecture
 import kotlin.collections.ArrayList
 
 class CourseLearningAdapter(private val sections: List<Section>, private val lectures: ArrayList<ArrayList<Map<Lecture, Boolean>>>): RecyclerView.Adapter<CourseLearningAdapter.ViewHolder>() {
     lateinit var context: Context
-    var onItemClick: ((Lecture) -> Unit)? = null
+
+    var onItemClick: ((Map<Lecture, Boolean>, Int, Int) -> Unit)? = null
+    var onLongPress: ((Map<Lecture, Boolean>, Int, Int) -> Unit)? = null
 
     private var selectedSection: Int = 0
     private var selectedLecture: Int = 0
+
+    private val lectureAdapters = mutableListOf<LectureLearningAdapter>()
+    private var currentAdapter: LectureLearningAdapter? = null
 
     inner class ViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
         val sectionTitle: TextView = listItemView.findViewById(R.id.sectionTitle)
@@ -33,39 +38,47 @@ class CourseLearningAdapter(private val sections: List<Section>, private val lec
     override fun getItemCount(): Int {
         return sections.size
     }
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val section: Section = sections[position]
 
         holder.sectionTitle.text = context.resources.getString(R.string.learning_section_title, section.index, section.title)
 
         val lectureLearningAdapter = LectureLearningAdapter(lectures[position])
+        lectureAdapters.add(lectureLearningAdapter)
+
+        if(currentAdapter == null) {
+            currentAdapter = lectureLearningAdapter
+        }
+
         lectureLearningAdapter.onItemClick = { lecturePosition, lecture ->
             selectedSection = position
             selectedLecture = lecturePosition
-            notifyDataSetChanged()
 
-            onItemClick?.invoke(lecture)
-        }
-        if(selectedSection != position) {
-            lectureLearningAdapter.selectedLecture = -1
+            currentAdapter?.selectedLecture = -1
+            lectureLearningAdapter.selectedLecture = lecturePosition
+
             lectureLearningAdapter.notifyDataSetChanged()
+            currentAdapter?.notifyDataSetChanged()
+
+            currentAdapter = lectureLearningAdapter
+
+            onItemClick?.invoke(lecture, selectedSection, selectedLecture)
         }
-        else {
+
+        lectureLearningAdapter.onLongPress = { lecturePosition, userLecture ->
+            onLongPress?.invoke(userLecture, position, lecturePosition)
+        }
+
+        if(selectedSection == position) {
             lectureLearningAdapter.selectedLecture = selectedLecture
-            lectureLearningAdapter.notifyDataSetChanged()
+            lectureLearningAdapter.notifyItemChanged(selectedLecture)
         }
 
         holder.lectureList.adapter = lectureLearningAdapter
         holder.lectureList.layoutManager = LinearLayoutManager(holder.itemView.context)
     }
 
-    fun createDummyData(): ArrayList<UserLecture> {
-        val lectures = ArrayList<UserLecture>()
-        for(i in 1..5) {
-            val l = UserLecture("1", "Introduction", "This is the introduction", false)
-            l._id = i.toString()
-            lectures.add(l)
-        }
-        return lectures
+    fun notifyLectureMarked(sectionIdx: Int, lectureIdx: Int) {
+        lectureAdapters[sectionIdx].notifyItemChanged(lectureIdx)
     }
 }

@@ -17,4 +17,11 @@ class UserLectureViewModel : ViewModel() {
             _userLectures.value = lectures
         }
     }
+
+    fun markLecture(userId: String, lectureId: String, isFinished: Boolean, sectionIdx: Int, lectureIdx: Int) {
+        userLectureRepository.markLecture(userId, lectureId, isFinished)
+        _userLectures.value?.get(sectionIdx)?.get(lectureIdx)?.values?.first()?.let {
+            _userLectures.value?.get(sectionIdx)?.set(lectureIdx, mapOf(_userLectures.value?.get(sectionIdx)?.get(lectureIdx)?.keys?.first()!! to isFinished))
+        }
+    }
 }

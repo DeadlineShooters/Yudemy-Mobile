@@ -13,7 +13,9 @@ import com.deadlineshooters.yudemy.models.Lecture
 
 class LectureLearningAdapter(var lectures: List<Map<Lecture, Boolean>>): RecyclerView.Adapter<LectureLearningAdapter.ViewHolder>() {
     private lateinit var context: Context
-    var onItemClick: ((Int, Lecture) -> Unit)? = null
+
+    var onItemClick: ((Int, Map<Lecture, Boolean>) -> Unit)? = null
+    var onLongPress: ((Int, Map<Lecture, Boolean>) -> Unit)? = null
     var selectedLecture: Int = -1
 
     inner class ViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
@@ -23,7 +25,12 @@ class LectureLearningAdapter(var lectures: List<Map<Lecture, Boolean>>): Recycle
 
         init {
             itemView.setOnClickListener {
-                onItemClick?.invoke(bindingAdapterPosition, lectures[bindingAdapterPosition].keys.first())
+                onItemClick?.invoke(bindingAdapterPosition, lectures[bindingAdapterPosition])
+            }
+
+            itemView.setOnLongClickListener {
+                onLongPress?.invoke(bindingAdapterPosition, lectures[bindingAdapterPosition])
+                true
             }
         }
     }
@@ -37,13 +44,12 @@ class LectureLearningAdapter(var lectures: List<Map<Lecture, Boolean>>): Recycle
         return lectures.size
     }
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-//        val lecture = lectures[position]
         val lecture = lectures[position].keys.first()
         val isFinished = lectures[position].values.first()
         // TODO: get lecture details
         holder.index.text = lecture.index.toString()
 
-        if(isFinished)
+        if(!isFinished)
             holder.name.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
         else
             holder.name.setCompoundDrawablesWithIntrinsicBounds(ResourcesCompat.getDrawable(context.resources, R.drawable.ic_checkbox_circle, null), null, null, null)

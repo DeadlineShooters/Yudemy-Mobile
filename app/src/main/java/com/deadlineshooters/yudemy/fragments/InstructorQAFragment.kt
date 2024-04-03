@@ -1,37 +1,31 @@
 package com.deadlineshooters.yudemy.fragments
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.net.Uri
 import android.os.Bundle
-import android.text.Html
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.Spinner
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.adapters.MyLearningFilterAdapter
+import com.deadlineshooters.yudemy.adapters.BottomSheetDialogAdapter
 import com.deadlineshooters.yudemy.adapters.QuestionListAdapter
 import com.deadlineshooters.yudemy.adapters.ReplyListAdapter
 import com.deadlineshooters.yudemy.models.Question
 import com.deadlineshooters.yudemy.models.Reply
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import org.checkerframework.common.subtyping.qual.Bottom
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -123,15 +117,15 @@ class InstructorQAFragment : Fragment() {
 
     private fun createInstructorQuestionFilterDialog(): BottomSheetDialog { //, R.style.MyTransparentBottomSheetDialogTheme
         val dialog = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
-        val bottomSheet = layoutInflater.inflate(R.layout.dialog_my_learning_filter, null)
+        val bottomSheet = layoutInflater.inflate(R.layout.dialog_bottom_sheet, null)
         val rvFilters = bottomSheet.findViewById<RecyclerView>(R.id.rvFilters)
 
-        val adapter = MyLearningFilterAdapter(resources.getStringArray(R.array.instructor_questions_filter))
+        val adapter = BottomSheetDialogAdapter(resources.getStringArray(R.array.instructor_questions_filter).toCollection(ArrayList()))
         rvFilters!!.adapter = adapter
         rvFilters.layoutManager = LinearLayoutManager(activity)
         val itemDecoration: RecyclerView.ItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         rvFilters.addItemDecoration(itemDecoration)
-        adapter.onItemClick = { filter ->
+        adapter.onItemClick = { filter, filterIdx ->
             // TODO: handle filter
             Log.i("Filter option click", filter)
         }
