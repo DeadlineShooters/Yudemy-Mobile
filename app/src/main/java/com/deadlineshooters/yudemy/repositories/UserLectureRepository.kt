@@ -6,11 +6,13 @@ import com.deadlineshooters.yudemy.models.Lecture
 import com.deadlineshooters.yudemy.models.Video
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class UserLectureRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
     private val userLectureCollection = mFireStore.collection("user_lectures")
+    private val mAuth = FirebaseAuth.getInstance()
 
     fun checkLectureFinished(userId: String, lectureId: String, callback: (Boolean) -> Unit) {
         Log.d("Firestore", "start checkLectureFinished $userId $lectureId")
@@ -68,7 +70,9 @@ class UserLectureRepository {
             }
     }
 
-    fun getUserLecturesByCourse(userId: String, courseId: String, callback: (ArrayList<ArrayList<Map<Lecture, Boolean>>>) -> Unit) {
+    fun getUserLecturesByCourse(courseId: String, callback: (ArrayList<ArrayList<Map<Lecture, Boolean>>>) -> Unit) {
+        val userId = mAuth.currentUser!!.uid
+
         val list: ArrayList<ArrayList<Map<Lecture, Boolean>>> = arrayListOf()
 
         mFireStore.collection("courses").document(courseId)
@@ -97,15 +101,14 @@ class UserLectureRepository {
             }
     }
 
-    fun markLecture(userId: String, lectureId: String, isCompleted: Boolean) {
+    fun markLecture(lectureId: String, isCompleted: Boolean) {
         userLectureCollection
-            .whereEqualTo("userId", userId)
+            .whereEqualTo("userId", mAuth.currentUser!!.uid)
             .whereEqualTo("lectureId", lectureId)
             .get()
             .addOnSuccessListener { documents ->
                 for(document in documents) {
                     document.reference.update("finished", isCompleted)
-                    Log.d("Firestore", "DocumentSnapshot successfully updated!")
                 }
             }
             .addOnFailureListener { exception ->
