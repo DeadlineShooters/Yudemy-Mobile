@@ -7,9 +7,8 @@ import kotlinx.android.parcel.Parcelize
 data class User(
     @DocumentId
     var id: String = "",
-    var firstName: String = "",
-    var lastName: String = "",
-    var avatar: Image = Image(),
+    var fullName: String = "",
+//    var avatar: Image = Image(),
     var courseList: ArrayList<String> = arrayListOf(),
     var wishList: ArrayList<String> = arrayListOf(),
     var favoriteCourses: ArrayList<String> = arrayListOf(),
