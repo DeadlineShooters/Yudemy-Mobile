@@ -66,4 +66,19 @@ class UserRepository {
                 }
             }
     }
+
+    fun getUserFavoriteCourseIds(callback: (ArrayList<String>) -> Unit) {
+        userCollection
+            .document(mAuth.currentUser!!.uid)
+            .get()
+            .addOnSuccessListener { document ->
+                if(document != null) {
+                    val listCourse = document.data?.get("favoriteCourses") as ArrayList<String>
+                    callback(listCourse)
+                }
+                else {
+                    Log.d("Firestore", "No such document")
+                }
+            }
+    }
 }

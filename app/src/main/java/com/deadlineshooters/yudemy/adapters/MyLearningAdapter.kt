@@ -67,4 +67,17 @@ class MyLearningAdapter(var courses: ArrayList<Map<Course, String>>, var progres
             }
         }
     }
+
+    fun filterFavoriteCourses(favoriteCourseIds: ArrayList<String>) {
+        courses = courses.filter { course ->
+            favoriteCourseIds.contains(course.keys.first().id)
+        } as ArrayList<Map<Course, String>>
+        notifyDataSetChanged()
+    }
+
+    fun refreshCourses(courses: ArrayList<Map<Course, String>>, progresses: ArrayList<Int>) {
+        this.courses = courses
+        this.progresses = progresses
+        notifyDataSetChanged()
+    }
 }

@@ -26,6 +26,8 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.CourseLearningActivity
 import com.deadlineshooters.yudemy.adapters.MyLearningAdapter
 import com.deadlineshooters.yudemy.adapters.BottomSheetDialogAdapter
+import com.deadlineshooters.yudemy.databinding.FragmentLectureLearningBinding
+import com.deadlineshooters.yudemy.databinding.FragmentMyLearningBinding
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.viewmodels.CourseProgressViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -45,9 +47,10 @@ class MyLearningFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private var searchView: SearchView? = null
-    private var rvCourses: RecyclerView? = null
+
     private var filterDialog: BottomSheetDialog? = null
+
+    private lateinit var binding: FragmentMyLearningBinding
 
     private lateinit var courseProgressViewModel: CourseProgressViewModel
 
@@ -72,15 +75,14 @@ class MyLearningFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        binding = FragmentMyLearningBinding.inflate(inflater, container, false)
 
-        return inflater.inflate(R.layout.fragment_my_learning, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        searchView = view.findViewById(R.id.searchView)
-        rvCourses = view.findViewById(R.id.rvCourses)
         filterDialog = createFilterDialog()
 
         courseProgressViewModel.combinedData.observe(viewLifecycleOwner, Observer { (courses, progresses) ->
@@ -92,11 +94,9 @@ class MyLearningFragment : Fragment() {
             myLearningAdapter.notifyDataSetChanged()
         })
 
-        rvCourses!!.adapter = myLearningAdapter
-        rvCourses!!.layoutManager = LinearLayoutManager(activity)
+        binding.rvCourses.adapter = myLearningAdapter
+        binding.rvCourses.layoutManager = LinearLayoutManager(activity)
         myLearningAdapter.onItemClick = { position, course, instructorName, progress ->
-            Log.d("MyLearningFragment", "onItemClick: $position, $course, $instructorName, $progress")
-
             selectedCourseIdx = position
             selectedCourse = course
 
@@ -115,7 +115,7 @@ class MyLearningFragment : Fragment() {
             hideSearchAction()
         }
 
-        rvCourses!!.setOnTouchListener { v, event ->
+        binding.rvCourses.setOnTouchListener { v, event ->
             hideSearchAction()
             false
         }
@@ -143,25 +143,25 @@ class MyLearningFragment : Fragment() {
         requireView().findViewById<TextView>(R.id.frmTitle).visibility = View.GONE
         requireView().findViewById<LinearLayout>(R.id.actionLayout).visibility = View.GONE
         requireView().findViewById<ConstraintLayout>(R.id.searchLayout).visibility = View.VISIBLE
-        val layoutParams = rvCourses!!.layoutParams as ConstraintLayout.LayoutParams
+        val layoutParams = binding.rvCourses.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.topToBottom = R.id.searchLayout
         // focus search view and show keyboard
-        searchView!!.requestFocus()
+        binding.searchView.requestFocus()
         val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(searchView, 0)
+        imm.showSoftInput(binding.searchView, 0)
     }
 
     private fun hideSearchAction() {
         requireView().findViewById<TextView>(R.id.frmTitle).visibility = View.VISIBLE
         requireView().findViewById<LinearLayout>(R.id.actionLayout).visibility = View.VISIBLE
         requireView().findViewById<ConstraintLayout>(R.id.searchLayout).visibility = View.GONE
-        val layoutParams = rvCourses!!.layoutParams as ConstraintLayout.LayoutParams
+        val layoutParams = binding.rvCourses.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.topToBottom = R.id.frmTitle
         // clear text in search view
-        searchView!!.setQuery("", false)
+        binding.searchView.setQuery("", false)
     }
 
-    private fun createFilterDialog(): BottomSheetDialog { //, R.style.MyTransparentBottomSheetDialogTheme
+    private fun createFilterDialog(): BottomSheetDialog {
         val dialog = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
         val bottomSheet = layoutInflater.inflate(R.layout.dialog_bottom_sheet, null)
         val rvFilters = bottomSheet.findViewById<RecyclerView>(R.id.rvFilters)
@@ -172,8 +172,15 @@ class MyLearningFragment : Fragment() {
         val itemDecoration: RecyclerView.ItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         rvFilters.addItemDecoration(itemDecoration)
         adapter.onItemClick = { filter, filterIdx ->
-            // TODO: handle filter
-            Log.i("Filter option click", filter)
+            if(filterIdx == 0) {
+                courseProgressViewModel.getUserFavoriteCourseIds()
+                binding.frmTitle.text = resources.getStringArray(R.array.my_learning_filter)[filterIdx]
+            }
+            else {
+                courseProgressViewModel.getUserCourses()
+                binding.frmTitle.text = resources.getString(R.string.my_learning)
+            }
+            dialog.dismiss()
         }
 
         bottomSheet.findViewById<Button>(R.id.cancelBtn).setOnClickListener {
