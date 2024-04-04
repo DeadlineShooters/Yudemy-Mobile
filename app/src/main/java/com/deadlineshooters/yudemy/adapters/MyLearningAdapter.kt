@@ -69,9 +69,16 @@ class MyLearningAdapter(var courses: ArrayList<Map<Course, String>>, var progres
     }
 
     fun filterFavoriteCourses(favoriteCourseIds: ArrayList<String>) {
-        courses = courses.filter { course ->
-            favoriteCourseIds.contains(course.keys.first().id)
-        } as ArrayList<Map<Course, String>>
+        val tmpCourses = arrayListOf<Map<Course, String>>()
+        val tmpProgress = arrayListOf<Int>()
+        courses.forEachIndexed { index, course ->
+            if(course.keys.first().id in favoriteCourseIds) {
+                tmpCourses.add(course)
+                tmpProgress.add(progresses[index])
+            }
+        }
+        courses = tmpCourses
+        progresses = tmpProgress
         notifyDataSetChanged()
     }
 

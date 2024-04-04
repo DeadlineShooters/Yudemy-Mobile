@@ -59,6 +59,11 @@ class MyLearningFragment : Fragment() {
 
     private lateinit var myLearningAdapter: MyLearningAdapter
 
+    private var filterIdx = 0
+    private var searchQuery = ""
+
+    private var updatedCourse: Course? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -86,12 +91,12 @@ class MyLearningFragment : Fragment() {
         filterDialog = createFilterDialog()
 
         courseProgressViewModel.combinedData.observe(viewLifecycleOwner, Observer { (courses, progresses) ->
-            Log.d("MyLearningFragment", "observe change: $courses, $progresses")
-
-            myLearningAdapter.courses = courses
-            myLearningAdapter.progresses = progresses as ArrayList<Int>
-
-            myLearningAdapter.notifyDataSetChanged()
+            myLearningAdapter.refreshCourses(courses, progresses as ArrayList<Int>)
+            if(filterIdx == 0) {
+                courseProgressViewModel.myFavoriteCourseIds.observe(viewLifecycleOwner, Observer { courseIds ->
+                    myLearningAdapter.filterFavoriteCourses(courseIds)
+                })
+            }
         })
 
         binding.rvCourses.adapter = myLearningAdapter
@@ -133,6 +138,7 @@ class MyLearningFragment : Fragment() {
             val isUpdateProgress = data!!.getBooleanExtra("isUpdateProgress", true)
             if(isUpdateProgress) {
                 courseProgressViewModel.refreshCourseProgress(selectedCourseIdx, selectedCourse!!)
+                updatedCourse = selectedCourse
             }
         }
         else
@@ -174,10 +180,14 @@ class MyLearningFragment : Fragment() {
         adapter.onItemClick = { filter, filterIdx ->
             if(filterIdx == 0) {
                 courseProgressViewModel.getUserFavoriteCourseIds()
+                courseProgressViewModel.myFavoriteCourseIds.observe(viewLifecycleOwner, Observer { courseIds ->
+                    myLearningAdapter.filterFavoriteCourses(courseIds)
+                })
+
                 binding.frmTitle.text = resources.getStringArray(R.array.my_learning_filter)[filterIdx]
             }
             else {
-                courseProgressViewModel.getUserCourses()
+                myLearningAdapter.refreshCourses(courseProgressViewModel.mylearningCourses.value!!, courseProgressViewModel.myCoursesProgress.value!! as ArrayList<Int>)
                 binding.frmTitle.text = resources.getString(R.string.my_learning)
             }
             dialog.dismiss()

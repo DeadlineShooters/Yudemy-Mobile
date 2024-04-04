@@ -18,6 +18,9 @@ class CourseProgressViewModel: ViewModel() {
     private val _myCoursesProgress = MutableLiveData<ArrayList<Number>>()
     val myCoursesProgress: LiveData<ArrayList<Number>> = _myCoursesProgress
 
+    private val _myFavoriteCourseIds = MutableLiveData<ArrayList<String>>()
+    val myFavoriteCourseIds: LiveData<ArrayList<String>> = _myFavoriteCourseIds
+
     val combinedData = MediatorLiveData<Pair<ArrayList<Map<Course, String>>, ArrayList<Number>>>().apply {
         addSource(mylearningCourses) { courses ->
             value = Pair(courses, myCoursesProgress.value ?: arrayListOf())
@@ -36,18 +39,7 @@ class CourseProgressViewModel: ViewModel() {
 
     fun getUserFavoriteCourseIds() {
         UserRepository().getUserFavoriteCourseIds { courseIds ->
-            _mylearningCourses.value?.let { courses ->
-                val tmpCourses = arrayListOf<Map<Course, String>>()
-                val tmpProgress = arrayListOf<Number>()
-                courses.forEachIndexed { index, course ->
-                    if(course.keys.first().id in courseIds) {
-                        tmpCourses.add(course)
-                        tmpProgress.add(_myCoursesProgress.value?.get(index) ?: 0)
-                    }
-                }
-                _mylearningCourses.value = tmpCourses
-                _myCoursesProgress.value = tmpProgress
-            }
+            _myFavoriteCourseIds.value = courseIds
         }
     }
 
