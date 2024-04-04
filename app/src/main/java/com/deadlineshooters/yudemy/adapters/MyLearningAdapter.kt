@@ -41,7 +41,8 @@ class MyLearningAdapter(var courses: ArrayList<Map<Course, String>>, var progres
     }
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val course: Course = courses[position].keys.first()
-        ImageViewHelper().setImageViewFromUrl(course.thumbnail, holder.thumbnailView)
+        if(course.thumbnail.secure_url != "")
+            ImageViewHelper().setImageViewFromUrl(course.thumbnail, holder.thumbnailView)
         holder.name.text = course.name
         holder.lecturer.text = courses[position].values.first()
         when(val progress = progresses[position]) {
@@ -85,6 +86,20 @@ class MyLearningAdapter(var courses: ArrayList<Map<Course, String>>, var progres
     fun refreshCourses(courses: ArrayList<Map<Course, String>>, progresses: ArrayList<Int>) {
         this.courses = courses
         this.progresses = progresses
+        notifyDataSetChanged()
+    }
+
+    fun searchCourses(query: String) {
+        val tmpCourses = arrayListOf<Map<Course, String>>()
+        val tmpProgress = arrayListOf<Int>()
+        courses.forEachIndexed { index, course ->
+            if(course.keys.first().name.contains(query, true)) {
+                tmpCourses.add(course)
+                tmpProgress.add(progresses[index])
+            }
+        }
+        courses = tmpCourses
+        progresses = tmpProgress
         notifyDataSetChanged()
     }
 }

@@ -209,4 +209,5 @@
     <string name="mark_as_complete">Mark as complete</string>
     <string name="mark_as_incomplete">Mark as incomplete</string>
     <string name="qa_for_lecture">Q&amp;A for lecture</string>
+    <string name="no_matching_courses">No matching courses</string>
 </resources>

@@ -97,6 +97,9 @@ class MyLearningFragment : Fragment() {
                     myLearningAdapter.filterFavoriteCourses(courseIds)
                 })
             }
+            if(searchQuery != "") {
+                myLearningAdapter.searchCourses(searchQuery)
+            }
         })
 
         binding.rvCourses.adapter = myLearningAdapter
@@ -115,13 +118,36 @@ class MyLearningFragment : Fragment() {
         // Click to search icon
         view.findViewById<Button>(R.id.searchBtn).setOnClickListener {
             showSearchAction()
+
+            binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    searchQuery = query!!
+                    refreshSearchList()
+
+                    myLearningAdapter.searchCourses(searchQuery)
+                    if(myLearningAdapter.courses.isEmpty()) {
+                        binding.noResultLayout.visibility = View.VISIBLE
+                    }
+                    else {
+                        binding.noResultLayout.visibility = View.GONE
+                    }
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    return false
+                }
+            })
         }
         view.findViewById<TextView>(R.id.tvCancel).setOnClickListener {
+            searchQuery = ""
+            refreshSearchList()
             hideSearchAction()
         }
 
         binding.rvCourses.setOnTouchListener { v, event ->
-            hideSearchAction()
+            if(searchQuery == "")
+                hideSearchAction()
             false
         }
 
@@ -199,6 +225,14 @@ class MyLearningFragment : Fragment() {
 
         dialog.setContentView(bottomSheet)
         return dialog
+    }
+
+    fun refreshSearchList() {
+        if(filterIdx == 0 && courseProgressViewModel.myFavoriteCourseIds.value != null) {
+            myLearningAdapter.filterFavoriteCourses(courseProgressViewModel.myFavoriteCourseIds.value!!)
+        }
+        else
+            myLearningAdapter.refreshCourses(courseProgressViewModel.mylearningCourses.value!!, courseProgressViewModel.myCoursesProgress.value!! as ArrayList<Int>)
     }
 
     companion object {
