@@ -13,9 +13,9 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Course
 
-class MyLearningAdapter(private val courses: ArrayList<Map<Course, String>>, private val progresses: ArrayList<Int>): RecyclerView.Adapter<MyLearningAdapter.ViewHolder>() {
+class MyLearningAdapter(var courses: ArrayList<Map<Course, String>>, var progresses: ArrayList<Int>): RecyclerView.Adapter<MyLearningAdapter.ViewHolder>() {
     var context: Context? = null
-    var onItemClick: ((Course, String) -> Unit)? = null
+    var onItemClick: ((Int, Course, String, Number) -> Unit)? = null
     inner class ViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
         val thumbnailView: ImageView = listItemView.findViewById(R.id.thumbnail)
         val name: TextView = listItemView.findViewById(R.id.name)
@@ -25,7 +25,7 @@ class MyLearningAdapter(private val courses: ArrayList<Map<Course, String>>, pri
 
         init {
             listItemView.setOnClickListener {
-                onItemClick?.invoke(courses[bindingAdapterPosition].keys.first(), courses[bindingAdapterPosition].values.first())
+                onItemClick?.invoke(bindingAdapterPosition, courses[bindingAdapterPosition].keys.first(), courses[bindingAdapterPosition].values.first(), progresses[bindingAdapterPosition])
             }
         }
     }
@@ -44,8 +44,7 @@ class MyLearningAdapter(private val courses: ArrayList<Map<Course, String>>, pri
         ImageViewHelper().setImageViewFromUrl(course.thumbnail, holder.thumbnailView)
         holder.name.text = course.name
         holder.lecturer.text = courses[position].values.first()
-        val progress = progresses[position]
-        when(progress) {
+        when(val progress = progresses[position]) {
             0 -> {
                 holder.progressBar.visibility = View.GONE
                 holder.progressText.text = context?.resources?.getString(R.string.start_course)
@@ -53,12 +52,18 @@ class MyLearningAdapter(private val courses: ArrayList<Map<Course, String>>, pri
                 holder.progressText.setTextColor(context?.resources?.getColor(R.color.primary_color, null)!!)
             }
             100 -> {
+                holder.progressBar.visibility = View.GONE
                 holder.progressBar.progress = progress
                 holder.progressText.text = context?.resources?.getString(R.string.completed)
+                holder.progressText.setTypeface(null, Typeface.BOLD)
+                holder.progressText.setTextColor(context?.resources?.getColor(R.color.primary_color, null)!!)
             }
             else -> {
+                holder.progressBar.visibility = View.VISIBLE
                 holder.progressBar.progress = progress
                 holder.progressText.text = context?.resources?.getString(R.string.progress_complete, progress)
+                holder.progressText.setTypeface(null, Typeface.NORMAL)
+                holder.progressText.setTextColor(context?.resources?.getColor(R.color.primary_text_color, null)!!)
             }
         }
     }

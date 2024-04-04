@@ -29,7 +29,7 @@ class UserRepository {
      *
      * @return A callback function that takes a list of courses and instructors and a list of progress
      */
-    fun getUserCourses(callback: (ArrayList<Map<Course, String>>, ArrayList<Int>) -> Unit) {
+    fun getUserCourses(callback: (ArrayList<Map<Course, String>>, ArrayList<Number>) -> Unit) {
         userCollection
             .document(mAuth.currentUser!!.uid)
             .get()
@@ -57,7 +57,7 @@ class UserRepository {
                         .addOnSuccessListener { courses ->
                             Tasks.whenAllSuccess<Int>(progressTasks)
                                 .addOnSuccessListener { progresses ->
-                                    callback(courses as ArrayList<Map<Course, String>>, progresses as ArrayList<Int>)
+                                    callback(courses as ArrayList<Map<Course, String>>, progresses as ArrayList<Number>)
                                 }
                         }
                 }

@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
@@ -28,14 +29,20 @@ import com.deadlineshooters.yudemy.adapters.BottomSheetDialogAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentLectureLearningBinding
 import com.deadlineshooters.yudemy.dialogs.QADialog
 import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.models.CourseProgress
 import com.deadlineshooters.yudemy.models.Lecture
+import com.deadlineshooters.yudemy.models.Section
+import com.deadlineshooters.yudemy.repositories.CourseProgressRepository
+import com.deadlineshooters.yudemy.viewmodels.CourseProgressViewModel
 import com.deadlineshooters.yudemy.viewmodels.SectionViewModel
 import com.deadlineshooters.yudemy.viewmodels.UserLectureViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlin.math.roundToInt
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_COURSE = "course"
+private const val ARG_PROGRESS = "progress"
 
 /**
  * A simple [Fragment] subclass.
@@ -47,8 +54,8 @@ class LectureLearningFragment : Fragment() {
     private var course: Course? = null
 
     private lateinit var binding: FragmentLectureLearningBinding
-    private lateinit var sectionViewModel: SectionViewModel
     private lateinit var userLectureViewModel: UserLectureViewModel
+    private lateinit var courseProgressViewModel: CourseProgressViewModel
 
     private lateinit var videoView: PlayerView
     private lateinit var btnMuteAudio: ImageView
@@ -60,6 +67,8 @@ class LectureLearningFragment : Fragment() {
 
     private var courseLearningAdapter: CourseLearningAdapter? = null
 
+    private var numLectures = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -70,11 +79,10 @@ class LectureLearningFragment : Fragment() {
             }
         }
 
-        sectionViewModel = ViewModelProvider(this)[SectionViewModel::class.java]
-        sectionViewModel.getSectionsCourseLearning(course!!.id)
-
         userLectureViewModel = ViewModelProvider(this)[UserLectureViewModel::class.java]
-        userLectureViewModel.getUserLecturesByCourse(course!!.id)
+        userLectureViewModel.getLectureLearningData(course!!.id)
+
+        courseProgressViewModel = ViewModelProvider(this)[CourseProgressViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -105,6 +113,7 @@ class LectureLearningFragment : Fragment() {
                     // Mark the lecture as completed
                     if(currentLecture != null && !currentLecture!!.values.first()) {
                         userLectureViewModel.markLecture(currentLecture!!.keys.first()._id, true, currentSectionIdx, currentLectureIdx)
+                        updateProgress()
                         courseLearningAdapter?.notifyLectureMarked(currentSectionIdx, currentLectureIdx)
                     }
                 }
@@ -122,8 +131,9 @@ class LectureLearningFragment : Fragment() {
         }
 
         // Show the sections and lectures
-        sectionViewModel.sectionsCourseLearning.observe(viewLifecycleOwner, Observer { sectionList ->
-            userLectureViewModel.userLectures.observe(viewLifecycleOwner, Observer { userLectures ->
+        userLectureViewModel.combinedData.observe(viewLifecycleOwner, Observer { (sectionList, userLectures) ->
+                numLectures = userLectures.flatten().size
+
                 courseLearningAdapter = CourseLearningAdapter(sectionList, userLectures)
                 binding.rvSections.adapter = courseLearningAdapter
                 binding.rvSections.layoutManager = LinearLayoutManager(activity)
@@ -154,7 +164,7 @@ class LectureLearningFragment : Fragment() {
                     createActionsDialog(userLecture, sectionIdx, lectureIdx).show()
                 }
             })
-        })
+//        })
     }
 
     private fun createActionsDialog(userLecture: Map<Lecture, Boolean>, sectionIdx: Int, lectureIdx: Int): BottomSheetDialog {
@@ -177,6 +187,7 @@ class LectureLearningFragment : Fragment() {
         adapter.onItemClick = { filter, filterIdx ->
             if(filterIdx == 0) {
                 userLectureViewModel.markLecture(userLecture.keys.first()._id, !userLecture.values.first(), sectionIdx, lectureIdx)
+                updateProgress(!userLecture.values.first())
                 courseLearningAdapter?.notifyLectureMarked(sectionIdx, lectureIdx)
                 dialog.dismiss()
             }
@@ -195,6 +206,11 @@ class LectureLearningFragment : Fragment() {
         return dialog
     }
 
+    private fun updateProgress(isComplete: Boolean = true) {
+        if(numLectures != 0)
+            (activity as CourseLearningActivity).updateProgress(isComplete, numLectures)
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -209,6 +225,7 @@ class LectureLearningFragment : Fragment() {
             LectureLearningFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_COURSE, course)
+//                    putInt(ARG_PROGRESS, progress)
                 }
             }
     }

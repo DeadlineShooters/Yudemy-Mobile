@@ -15,7 +15,6 @@ class UserLectureRepository {
     private val mAuth = FirebaseAuth.getInstance()
 
     fun checkLectureFinished(userId: String, lectureId: String, callback: (Boolean) -> Unit) {
-        Log.d("Firestore", "start checkLectureFinished $userId $lectureId")
         var isFinished = false
         userLectureCollection
             .whereEqualTo("userId", userId)
@@ -26,6 +25,7 @@ class UserLectureRepository {
                 for(document in documents) {
                     isFinished = document.data["finished"] as Boolean
                 }
+                Log.d("LectureLearningFragment", "repo checkFinished: $isFinished")
                 callback(isFinished)
             }
             .addOnFailureListener { exception ->
@@ -61,6 +61,7 @@ class UserLectureRepository {
                 }
                 Tasks.whenAllSuccess<Map<Lecture, Boolean>>(tasks)
                     .addOnSuccessListener { lectures ->
+                        Log.d("LectureLearningFragment", "repo getUserLecturesBySection: $lectures")
                         callback(lectures as ArrayList<Map<Lecture, Boolean>>)
                     }
             }
@@ -89,6 +90,7 @@ class UserLectureRepository {
                     }
                     Tasks.whenAllSuccess<ArrayList<Lecture>>(tasks)
                         .addOnSuccessListener { lectures ->
+                            Log.d("LectureLearningFragment", "repo getUserLecturesByCourse: $lectures")
                             callback(lectures as ArrayList<ArrayList<Map<Lecture, Boolean>>>)
                         }
                 } else {

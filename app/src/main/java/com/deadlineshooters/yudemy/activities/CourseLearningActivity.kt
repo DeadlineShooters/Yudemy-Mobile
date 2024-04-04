@@ -1,8 +1,11 @@
 package com.deadlineshooters.yudemy.activities
 
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +13,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.media3.ui.PlayerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.adapters.TabsAdapter
@@ -17,7 +21,9 @@ import com.deadlineshooters.yudemy.databinding.ActivityCourseLearningBinding
 import com.deadlineshooters.yudemy.fragments.LectureLearningFragment
 import com.deadlineshooters.yudemy.fragments.MoreLearningFragment
 import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.viewmodels.CourseProgressViewModel
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlin.math.roundToInt
 
 
 class CourseLearningActivity : AppCompatActivity() {
@@ -28,21 +34,28 @@ class CourseLearningActivity : AppCompatActivity() {
 
     private lateinit var learningCourse: Course
     private lateinit var instructorName: String
+    private var progress: Int = 0
+
+    private lateinit var courseProgressViewModel: CourseProgressViewModel
+
+    private var isUpdateProgress = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCourseLearningBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val intent = intent
+        courseProgressViewModel = ViewModelProvider(this)[CourseProgressViewModel::class.java]
 
+        val intent = intent
         learningCourse = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra("course", Course::class.java)!!
         } else {
             intent.getParcelableExtra("course")!!
         }
-
         instructorName = intent.getStringExtra("instructorName") ?: ""
+        progress = intent.getIntExtra("progress", 0)
+        Log.d("CourseLearningActivity", "onCreate: $progress")
 
         binding.courseLearningTitle.text = learningCourse.name
         binding.courseLearningIns.text = instructorName
@@ -93,6 +106,9 @@ class CourseLearningActivity : AppCompatActivity() {
         }
 
         findViewById<TextView>(R.id.btnBackFromPlayer).setOnClickListener {
+            val intent = Intent()
+            intent.putExtra("isUpdateProgress", isUpdateProgress)
+            setResult(Activity.RESULT_OK, intent)
             finish()
         }
     }
@@ -103,5 +119,16 @@ class CourseLearningActivity : AppCompatActivity() {
 
     fun getBtnMuteAudio(): ImageView {
         return findViewById(R.id.audio_mute)
+    }
+
+    fun updateProgress(isComplete: Boolean, numLectures: Int) {
+        isUpdateProgress = true
+        Log.d("CourseLearningActivity", "updateProgress: $progress, $isComplete, $numLectures")
+        val numCompleteLectures = (progress * numLectures / 100).toDouble().roundToInt()
+        val newProgress = ((numCompleteLectures + (if (isComplete) 1 else -1)) * 100 / numLectures).toDouble().roundToInt()
+        if(newProgress != progress) {
+            this.progress = newProgress
+            courseProgressViewModel.updateCourseProgress(learningCourse.id, newProgress)
+        }
     }
 }

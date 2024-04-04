@@ -10,5 +10,5 @@ data class CourseProgress(
     var _id: String = "",
     var courseId: String = "",
     var userId: String = "",
-    var percentCompleted: Number = 0
+    var percentCompleted: Int = 0
 ): Parcelable

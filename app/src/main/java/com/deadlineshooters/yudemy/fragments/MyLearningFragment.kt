@@ -1,5 +1,6 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +13,8 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -23,7 +26,8 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.CourseLearningActivity
 import com.deadlineshooters.yudemy.adapters.MyLearningAdapter
 import com.deadlineshooters.yudemy.adapters.BottomSheetDialogAdapter
-import com.deadlineshooters.yudemy.viewmodels.UserViewModel
+import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.viewmodels.CourseProgressViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
@@ -45,7 +49,12 @@ class MyLearningFragment : Fragment() {
     private var rvCourses: RecyclerView? = null
     private var filterDialog: BottomSheetDialog? = null
 
-    private lateinit var userViewModel: UserViewModel
+    private lateinit var courseProgressViewModel: CourseProgressViewModel
+
+    private var selectedCourseIdx: Int = 0
+    private var selectedCourse: Course? = null
+
+    private lateinit var myLearningAdapter: MyLearningAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,8 +62,10 @@ class MyLearningFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
-        userViewModel.getUserCourses()
+        courseProgressViewModel = ViewModelProvider(this)[CourseProgressViewModel::class.java]
+        courseProgressViewModel.getUserCourses()
+
+        myLearningAdapter = MyLearningAdapter(arrayListOf(), arrayListOf())
     }
 
     override fun onCreateView(
@@ -70,21 +81,31 @@ class MyLearningFragment : Fragment() {
 
         searchView = view.findViewById(R.id.searchView)
         rvCourses = view.findViewById(R.id.rvCourses)
-        filterDialog =createFilterDialog()
+        filterDialog = createFilterDialog()
 
-        userViewModel.mylearningCourses.observe(viewLifecycleOwner, Observer { courses ->
-            userViewModel.myCoursesProgress.observe(viewLifecycleOwner, Observer { progresses ->
-                val adapter = MyLearningAdapter(courses, progresses)
-                rvCourses!!.adapter = adapter
-                rvCourses!!.layoutManager = LinearLayoutManager(activity)
-                adapter.onItemClick = { course, instructorName ->
-                    val intent = Intent(activity, CourseLearningActivity::class.java)
-                    intent.putExtra("course", course)
-                    intent.putExtra("instructorName", instructorName)
-                    startActivity(intent)
-                }
-            })
+        courseProgressViewModel.combinedData.observe(viewLifecycleOwner, Observer { (courses, progresses) ->
+            Log.d("MyLearningFragment", "observe change: $courses, $progresses")
+
+            myLearningAdapter.courses = courses
+            myLearningAdapter.progresses = progresses as ArrayList<Int>
+
+            myLearningAdapter.notifyDataSetChanged()
         })
+
+        rvCourses!!.adapter = myLearningAdapter
+        rvCourses!!.layoutManager = LinearLayoutManager(activity)
+        myLearningAdapter.onItemClick = { position, course, instructorName, progress ->
+            Log.d("MyLearningFragment", "onItemClick: $position, $course, $instructorName, $progress")
+
+            selectedCourseIdx = position
+            selectedCourse = course
+
+            val intent = Intent(activity, CourseLearningActivity::class.java)
+            intent.putExtra("course", course)
+            intent.putExtra("instructorName", instructorName)
+            intent.putExtra("progress", Math.toIntExact(progress.toLong()))
+            startForResult.launch(intent)
+        }
 
         // Click to search icon
         view.findViewById<Button>(R.id.searchBtn).setOnClickListener {
@@ -103,6 +124,19 @@ class MyLearningFragment : Fragment() {
         view.findViewById<Button>(R.id.filterBtn).setOnClickListener {
             filterDialog!!.show()
         }
+    }
+
+    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+
+            val isUpdateProgress = data!!.getBooleanExtra("isUpdateProgress", true)
+            if(isUpdateProgress) {
+                courseProgressViewModel.refreshCourseProgress(selectedCourseIdx, selectedCourse!!)
+            }
+        }
+        else
+            Log.d("LectureLearningFragment", "onActivityResult: canceled")
     }
 
     private fun showSearchAction() {

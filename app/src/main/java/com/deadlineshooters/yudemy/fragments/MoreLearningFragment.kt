@@ -35,7 +35,6 @@ class MoreLearningFragment : Fragment() {
     private lateinit var qa: TextView
     private lateinit var binding: FragmentMoreLearningBinding
     private lateinit var aboutDialog: BottomSheetDialog
-    private lateinit var courseViewModel: CourseViewModel
     private lateinit var certificate: TextView
 
     val title = "More"
@@ -43,8 +42,6 @@ class MoreLearningFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-//            courseId = it.getString(ARG_COURSE_ID) TODO: Uncomment this line
-//            courseId = "2tNxr8j5FosEueZrL3wH"
             arguments?.let {
                 course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     it.getParcelable(ARG_COURSE, Course::class.java)
@@ -53,8 +50,6 @@ class MoreLearningFragment : Fragment() {
                 }
             }
         }
-
-        courseViewModel = ViewModelProvider(requireActivity())[CourseViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -85,10 +80,6 @@ class MoreLearningFragment : Fragment() {
             aboutDialog.show()
 
             aboutDialog.findViewById<TextView>(R.id.contentAboutCourse)!!.text = course!!.description
-
-//            courseViewModel.learningCourse.observe(viewLifecycleOwner, Observer{
-//                aboutDialog.findViewById<TextView>(R.id.contentAboutCourse)!!.text = it?.description
-//            })
         }
     }
 
