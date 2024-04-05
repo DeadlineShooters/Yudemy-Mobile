@@ -53,20 +53,29 @@ class CourseRepository {
             }
     }
 
+    fun getCourses(callback: (List<Course>) -> Unit) {
+        val courses = mutableListOf<Course>()
 
-    fun getCourses(): Task<List<Course>> {
-        val task = coursesCollection.get()
-        return task.continueWith { task ->
-            if (task.isSuccessful) {
-                val result = task.result
-                result?.map { document ->
+        coursesCollection.get().addOnSuccessListener { courseDocument ->
+            if (courseDocument != null) {
+                var fetchedCourses = 0
+                for (document in courseDocument) {
                     val course = document.toObject(Course::class.java)
                     course.id = document.id
-                    course
-                } ?: emptyList()
+                    userRepository.getUser(course.instructor) { user ->
+                        course.instructor = user.fullName
+                        courses.add(course)
+                        fetchedCourses++
+                        if (fetchedCourses == courseDocument.size()) {
+                            callback(courses)
+                        }
+                    }
+                }
             } else {
-                emptyList()
+                Log.d("Firestore", "No such document")
             }
+        }.addOnFailureListener { exception ->
+            Log.d("Firestore", "get failed with ", exception)
         }
     }
 
@@ -75,14 +84,19 @@ class CourseRepository {
         val courses = mutableListOf<Course>()
 
         userRepository.getWishlistID { wishlistID ->
+            var fetchedCourses = 0
             for (courseId in wishlistID) {
                 coursesCollection.document(courseId).get().addOnSuccessListener { courseDocument ->
                     if (courseDocument != null) {
                         val course = courseDocument.toObject(Course::class.java)!!
                         course.id = courseDocument.id
-                        courses.add(course)
-                        if (courses.size == wishlistID.size) {
-                            callback(courses) // Pass the courses to the callback function
+                        userRepository.getUser(course.instructor) { user ->
+                            course.instructor = user.fullName
+                            courses.add(course)
+                            fetchedCourses++
+                            if (fetchedCourses == wishlistID.size) {
+                                callback(courses)// Pass the courses to the callback function
+                            }
                         }
                     } else {
                         Log.d("Firestore", "No such document")

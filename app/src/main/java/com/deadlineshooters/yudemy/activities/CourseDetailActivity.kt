@@ -3,14 +3,19 @@ package com.deadlineshooters.yudemy.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.ActivityCourseDetailBinding
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.repositories.UserRepository
+import com.deadlineshooters.yudemy.utils.PaymentsUtil
+import com.deadlineshooters.yudemy.viewmodels.CheckoutViewModel
+import com.google.android.gms.common.api.CommonStatusCodes
+import com.google.android.gms.wallet.button.ButtonConstants
+import com.google.android.gms.wallet.button.ButtonOptions
+import com.google.android.gms.wallet.contract.TaskResultContracts
 import vn.momo.momo_partner.AppMoMoLib
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
 import java.util.*
 
@@ -32,6 +37,23 @@ class CourseDetailActivity : AppCompatActivity() {
     private var description = "Thanh toán khóa học "
     private var pendingPaymentRequest: PendingPaymentRequest? = null
 
+    private val paymentDataLauncher =
+        registerForActivityResult(TaskResultContracts.GetPaymentDataResult()) { taskResult ->
+            when (taskResult.status.statusCode) {
+                CommonStatusCodes.SUCCESS -> {
+                    taskResult.result!!.let {
+                        Log.i("Google Pay result:", it.toJson())
+                        model.setPaymentData(it)
+                    }
+                }
+                //CommonStatusCodes.CANCELED -> The user canceled
+                //AutoResolveHelper.RESULT_ERROR -> The API returned an error (it.status: Status)
+                //CommonStatusCodes.INTERNAL_ERROR -> Handle other unexpected errors
+            }
+        }
+
+    private val model: CheckoutViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCourseDetailBinding.inflate(layoutInflater)
@@ -46,14 +68,20 @@ class CourseDetailActivity : AppCompatActivity() {
         amount = binding.tvPrice.text.toString()
 
         val currencyFormat = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
-        binding.tvPrice.text = "${currencyFormat.format(amount.toInt())}"
+        binding.tvPrice.text = currencyFormat.format(amount.toInt())
 
-        if (environment == 0) {
-            AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEBUG);
-        } else if (environment == 1) {
-            AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT);
-        } else if (environment == 2) {
-            AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.PRODUCTION);
+        when (environment) {
+            0 -> {
+                AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEBUG);
+            }
+
+            1 -> {
+                AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT);
+            }
+
+            2 -> {
+                AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.PRODUCTION);
+            }
         }
 
         binding.btnBuy.setOnClickListener {
@@ -69,6 +97,16 @@ class CourseDetailActivity : AppCompatActivity() {
                 binding.btnWishlist.text = "Add to wishlist"
             }
         }
+
+        val googlePayButton = binding.googlePayButton
+
+        googlePayButton.initialize(
+            ButtonOptions.newBuilder()
+                .setButtonType(ButtonConstants.ButtonType.PLAIN)
+                .setCornerRadius(8)
+                .setAllowedPaymentMethods(PaymentsUtil.allowedPaymentMethods.toString()).build()
+        )
+        googlePayButton.setOnClickListener { requestPayment() }
 
     }
 
@@ -162,5 +200,10 @@ class CourseDetailActivity : AppCompatActivity() {
                 binding.btnWishlist.text = "Add to wishlist"
             }
         }
+    }
+
+    private fun requestPayment() {
+        val task = model.getLoadPaymentDataTask(priceCents = 1299000L)
+        task.addOnCompleteListener(paymentDataLauncher::launch)
     }
 }

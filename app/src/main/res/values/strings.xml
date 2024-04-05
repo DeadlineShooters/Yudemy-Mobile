@@ -50,7 +50,7 @@
 
     <string name="play_preview_video">play preview video</string>
     <string name="preview_this_course">Preview this course</string>
-    <string name="buy_now">Buy now</string>
+    <string name="buy_now">MoMo</string>
     <string name="show_more">Show more</string>
     <string name="description">Description</string>
     <string name="view_profile">View profile</string>
@@ -217,4 +217,5 @@
     <string name="public_profile">Public profile</string>
     <string name="headline_guideline">Add a professional headline like, \"Instructor at Yudemy \" or \"Architect\".</string>
     <string name="instructor_image">Photo</string>
+    <string name="payments_show_name" translatable="false">Successfully received payment data for %s!</string>
 </resources>

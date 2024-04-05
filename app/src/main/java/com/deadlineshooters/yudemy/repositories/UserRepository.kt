@@ -22,6 +22,24 @@ class UserRepository {
             .set(user)
     }
 
+    fun getUser(userId: String, callback: (User) -> Unit) {
+        userCollection
+            .document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val user = document.toObject(User::class.java)!!
+                    callback(user)
+                } else {
+                    Log.d("Firestore", "No such document")
+                }
+            }.addOnFailureListener { exception ->
+                Log.d("Firestore", "get failed with ", exception)
+            }
+    }
+
+
+
     fun getWishlistID(callback: (List<String>) -> Unit) {
         val uid = mAuth.currentUser?.uid
         userCollection

@@ -21,17 +21,13 @@ class CourseViewModel : ViewModel() {
     val wishlist: LiveData<List<Course>> = _wishlist
 
     fun refreshCourses() {
-        courseRepository.getCourses().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                _courses.value = task.result
-            } else {
-                println("Failed to get courses: ${task.exception}")
-            }
+        courseRepository.getCourses { courses ->
+            _courses.value = courses
         }
     }
 
     fun refreshWishlist() {
-        courseRepository.getWishlist {courses ->
+        courseRepository.getWishlist { courses ->
             _wishlist.value = courses
         }
 
