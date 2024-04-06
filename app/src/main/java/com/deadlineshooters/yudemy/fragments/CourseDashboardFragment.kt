@@ -63,9 +63,6 @@ class CourseDashboardFragment : Fragment() {
             binding.rvCourses.adapter = courseAdapter
             binding.rvCourses.layoutManager = LinearLayoutManager(context)
 
-            courseAdapter.onEditCourseClick = {
-                replaceFragment(CourseDraftingMenuFragment())
-            }
 
         })
 
@@ -196,12 +193,20 @@ class CourseDashboardFragment : Fragment() {
 
     }
 
-    private fun replaceFragment(fragment: Fragment) {
+
+    fun replaceFragment(fragment: Fragment, course: Course? = null) {
+        val bundle = Bundle()
+        if (course != null) {
+            bundle.putParcelable("course", course)
+            fragment.arguments = bundle
+        }
+
         val fragmentManager = requireActivity().supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frameLayoutInstructor, fragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
+
 
 }

@@ -6,10 +6,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
+import com.deadlineshooters.yudemy.models.Section
 import com.deadlineshooters.yudemy.models.Video
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.coroutines.tasks.await
 
 import java.text.SimpleDateFormat
@@ -102,6 +105,31 @@ class CourseRepository {
             }
         }
     }
+
+    fun getSectionsWithLectures(courseId: String): Task<List<Section>> {
+        val courseTask = mFireStore.collection("courses").document(courseId).get()
+
+        return courseTask.continueWithTask { task ->
+            val course = task.result!!.toObject(Course::class.java)
+            val sections = mutableListOf<Section>()
+            val tasks = mutableListOf<Task<*>>()
+
+            for (sectionId in course!!.sectionList) {
+                val sectionTask = mFireStore.collection("sections").document(sectionId).get()
+                tasks.add(sectionTask)
+            }
+
+            Tasks.whenAllComplete(tasks).continueWith { _ ->
+                for (task in tasks) {
+                    val section = (task.result as DocumentSnapshot).toObject(Section::class.java)
+                    section?._id = (task.result as DocumentSnapshot).id
+                    sections.add(section!!)
+                }
+                sections
+            }
+        }
+    }
+
 
 
 }

@@ -19,12 +19,19 @@ import com.deadlineshooters.yudemy.fragments.CourseDraftingMenuFragment
 import com.deadlineshooters.yudemy.helpers.StringUtils
 import com.deadlineshooters.yudemy.models.Course
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import java.text.NumberFormat
+import java.util.Locale
 
 
-public class CourseAdapter(private val context: CourseDashboardFragment, private var courseList: List<Course>) : RecyclerView.Adapter<CourseAdapter.ViewHolder>() {
+public class CourseAdapter(private val fragmentContext: CourseDashboardFragment, private var courseList: List<Course>) : RecyclerView.Adapter<CourseAdapter.ViewHolder>() {
     var listener: AdapterView.OnItemClickListener? = null
     var onEditCourseClick: (() -> Unit)? = null
+    val currencyFormat = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
 
+
+    fun getCourseAt(position: Int): Course {
+        return courseList[position]
+    }
     fun updateCourses(newCourses: List<Course>) {
         courseList = newCourses
 
@@ -64,8 +71,8 @@ public class CourseAdapter(private val context: CourseDashboardFragment, private
                 val llRevenueAnalytics = filterView.findViewById<LinearLayout>(R.id.ll_revenueAnalytics)
 
                 llEdit.setOnClickListener {
-                    // TODO: Navigate to edit course
-                    onEditCourseClick?.invoke()
+                    val course = courseList[bindingAdapterPosition]
+                    fragmentContext.replaceFragment(CourseDraftingMenuFragment(), course)
 
                     dialog.dismiss()
                 }
@@ -85,7 +92,7 @@ public class CourseAdapter(private val context: CourseDashboardFragment, private
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val inflater = LayoutInflater.from(context.context)
+        val inflater = LayoutInflater.from(fragmentContext.context)
         val view = inflater.inflate(R.layout.course_item, parent, false)
         return ViewHolder(view)
     }
@@ -109,13 +116,11 @@ public class CourseAdapter(private val context: CourseDashboardFragment, private
             holder.ll_rating.visibility = View.GONE
             holder.tv_dot.visibility = View.GONE
         }
-        holder.tv_price.text = if (course.price % 1 == 0.0) {
-            course.price.toInt().toString()
-        } else {
-            course.price.toString()
-        }
+        holder.tv_price.text = currencyFormat.format(course.price.toInt())
+
+
         holder.tv_rating.text = course.avgRating.toString()
-        holder.tv_totalEarning.text = StringUtils.trimDecimalZero(course.totalRevenue.toString())
+        holder.tv_totalEarning.text = currencyFormat.format(course.totalRevenue.toInt())
 //        // TODO 1: Delete dummy data
 //        holder.image_thumbnail.setImageResource(R.drawable.ic_launcher_background)
 //        holder.text_video_title.text = "Node.js Absolute Beginner Guide - Learn Node From Scratch"

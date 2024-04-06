@@ -2,7 +2,6 @@ package com.deadlineshooters.yudemy.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,8 +20,6 @@ import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
 import com.deadlineshooters.yudemy.repositories.UserRepository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -85,7 +82,7 @@ class AccountFragment : Fragment() {
         email.text = curUserEmail.toString()
 
         if (requireActivity() is InstructorMainActivity) {
-            navigateIns.text = "Switch to Student View"
+            navigateIns.text = "Switch to student view"
         }
 
         navigateIns.setOnClickListener {
@@ -97,7 +94,7 @@ class AccountFragment : Fragment() {
                 else -> throw IllegalStateException("Unexpected activity: $curActivity")
             }
 
-            userRepository.initInstructor()
+            userRepository.becomeInstructor()
             startActivity(intent)
         }
 

@@ -218,4 +218,14 @@
     <string name="headline_guideline">Add a professional headline like, \"Instructor at Yudemy \" or \"Architect\".</string>
     <string name="instructor_image">Photo</string>
     <string name="leave_a_rating">Leave a rating</string>
+
+    <string name="course_figures">(%1$d ratings) %2$d students</string>
+    <string name="created_date">Created date %s</string>
+    <string name="curriculum_overview">%1$d sections • %2$d lectures • %3$dh %4$dm total length</string>
+
+<!--    Course Detail Activity-->
+    <string name="instructor_reviews">%d Reviews</string>
+    <string name="instructor_students">%d Students</string>
+    <string name="section_title">Section %1$d - %2$s</string>
+
 </resources>

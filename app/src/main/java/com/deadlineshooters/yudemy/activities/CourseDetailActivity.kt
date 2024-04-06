@@ -1,16 +1,26 @@
 package com.deadlineshooters.yudemy.activities
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.adapters.CourseAdapter
+import com.deadlineshooters.yudemy.adapters.DetailSectionAdapter
 import com.deadlineshooters.yudemy.databinding.ActivityCourseDetailBinding
+import com.deadlineshooters.yudemy.fragments.CourseDraftingMenuFragment
+import com.deadlineshooters.yudemy.helpers.StringUtils
 import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.repositories.UserRepository
+import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import vn.momo.momo_partner.AppMoMoLib
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
 import java.util.*
 
@@ -31,14 +41,22 @@ class CourseDetailActivity : AppCompatActivity() {
     private val merchantNameLabel = "Nhà cung cấp"
     private var description = "Thanh toán khóa học "
     private var pendingPaymentRequest: PendingPaymentRequest? = null
+    private lateinit var sectionAdapter: DetailSectionAdapter
+    private lateinit var courseViewModel : CourseViewModel
 
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCourseDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupActionBar()
 
-        course = intent.getParcelableExtra<Course>("course") ?: Course()
+        course = intent.getParcelableExtra("course", Course::class.java) ?: Course()
+        courseViewModel = ViewModelProvider(this)[CourseViewModel::class.java]
+
+        populateCourseDetails(course)
+        courseViewModel.refreshSections(course.id)
 
         AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT); // AppMoMoLib.ENVIRONMENT.PRODUCTION
 
@@ -46,7 +64,7 @@ class CourseDetailActivity : AppCompatActivity() {
         amount = binding.tvPrice.text.toString()
 
         val currencyFormat = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
-        binding.tvPrice.text = "${currencyFormat.format(amount.toInt())}"
+        binding.tvPrice.text = currencyFormat.format(amount.toInt())
 
         if (environment == 0) {
             AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEBUG);
@@ -70,8 +88,59 @@ class CourseDetailActivity : AppCompatActivity() {
             }
         }
 
+
+        courseViewModel.sectionsWithLectures.observe(this
+        ) { sectionsWithLectures ->
+            sectionAdapter = DetailSectionAdapter(sectionsWithLectures)
+
+            binding.rvSections.adapter = sectionAdapter
+            binding.rvSections.layoutManager = LinearLayoutManager(this)
+
+
+        }
+
+
     }
 
+    private fun populateCourseDetails(course: Course) {
+        binding.tvTitle.text = course.name
+
+        binding.tvIntro.text = course.introduction
+
+        Glide.with(this)
+            .load(course.thumbnail.secure_url)
+            .into(binding.ivThumbnail)
+
+        binding.tvRating.text = course.avgRating.toString()
+        val figuresText = getString(R.string.course_figures, course.totalRatings, course.totalStudents)
+        binding.tvFigures.text = figuresText
+        binding.tvCreatedDate.text = getString(R.string.created_date, course.createdDate)
+        binding.tvPrice.text = StringUtils.trimDecimalZero(course.price.toString())
+
+        val totalLengthHours = course.totalLength / 3600
+        val totalLengthMinutes = (course.totalLength % 3600) / 60
+        val curriculumOverviewText = getString(R.string.curriculum_overview, course.totalSection, course.totalLecture, totalLengthHours, totalLengthMinutes)
+        binding.tvCurriculumOverview.text = curriculumOverviewText
+
+        // TODO: inject the curriculum
+        binding.tvDesc.text = course.description
+
+        userRepository.loadInstructorData(this, course.instructor)
+
+
+    }
+    fun setInstructor(ins : User) {
+        binding.tvNameInstructor.text = ins.fullName
+        binding.tvHeadline.text = ins.instructor!!.headline
+        binding.tvReviews.text = getString(R.string.instructor_reviews, ins.instructor!!.totalReviews)
+        binding.tvStudents.text = getString(R.string.instructor_students, ins.instructor!!.totalStudents)
+
+        binding.btnViewProfile.setOnClickListener{
+            val intent = Intent(this, InstructorProfileActivity::class.java)
+            intent.putExtra("instructor", ins)
+            startActivity(intent)
+        }
+    }
     private fun setupActionBar() {
 
         setSupportActionBar(binding.toolbarSignUpActivity)

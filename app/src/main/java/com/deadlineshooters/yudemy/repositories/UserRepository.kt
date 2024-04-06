@@ -1,17 +1,13 @@
 package com.deadlineshooters.yudemy.repositories
 
-import android.app.Activity
-import android.util.Log
 import com.deadlineshooters.yudemy.fragments.AccountFragment
 import com.deadlineshooters.yudemy.models.Instructor
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
-import com.deadlineshooters.yudemy.activities.SignUpActivity
+import com.deadlineshooters.yudemy.activities.CourseDetailActivity
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.utils.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.tasks.await
 
 class UserRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
@@ -46,7 +42,28 @@ class UserRepository {
             }
     }
 
-    fun initInstructor() {
+    fun loadInstructorData(context: Any, instructorId: String) {
+        val documentReference = usersCollection.document(instructorId)
+
+        documentReference.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    Log.d(this.javaClass.simpleName, "DocumentSnapshot data: ${document.data}")
+                    val instructor = document.toObject(User::class.java)!!
+
+                    when (context) {
+                        is CourseDetailActivity -> {
+                            context.setInstructor(instructor)
+                        }
+                    }
+
+                } else {
+                    Log.d(this.javaClass.simpleName, "No such document")
+                }
+            }
+    }
+
+    fun becomeInstructor() {
         val userRef = usersCollection.document(getCurrentUserID())
 
         userRef.get().addOnSuccessListener { document ->
@@ -92,6 +109,7 @@ class UserRepository {
             return FirebaseAuth.getInstance().currentUser!!.uid.toString()
         }
     }
+
     fun getWishlistID(callback: (List<String>) -> Unit) {
         val uid = mAuth.currentUser?.uid
         userCollection

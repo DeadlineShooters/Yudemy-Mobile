@@ -6,17 +6,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
 import com.deadlineshooters.yudemy.models.Course
-import com.deadlineshooters.yudemy.models.Image
-import com.deadlineshooters.yudemy.models.Video
+import com.deadlineshooters.yudemy.models.SectionWithLectures
 import com.deadlineshooters.yudemy.repositories.CourseRepository
+import com.deadlineshooters.yudemy.repositories.SectionRepository
 
 
 class CourseViewModel : ViewModel() {
     private val cloudinaryHelper = CloudinaryHelper()
     private val courseRepository = CourseRepository()
+    private val sectionRepository = SectionRepository()
 
     private val _courses = MutableLiveData<List<Course>>()
     val courses: LiveData<List<Course>> = _courses
+
+    private val _sectionsWithLectures = MutableLiveData<List<SectionWithLectures>>()
+    val sectionsWithLectures: LiveData<List<SectionWithLectures>> = _sectionsWithLectures
 
     private val _wishlist = MutableLiveData<List<Course>>()
     val wishlist: LiveData<List<Course>> = _wishlist
@@ -45,6 +49,17 @@ class CourseViewModel : ViewModel() {
 
     }
 
+    fun refreshSections(courseId: String) {
+        val task = sectionRepository.getSectionsWithLectures(courseId)
+
+        task.addOnCompleteListener{ task ->
+            if (task.isSuccessful) {
+                _sectionsWithLectures.value = task.result
+            } else {
+                Log.d(this.javaClass.simpleName, "Failed to get sections with lectures: ${task.exception}")
+            }
+        }
+    }
 //    fun addDummyCourse() {
 //
 //        val imageFilePath = "/storage/emulated/0/Android/data/com.deadlineshooters.yudemy/files/DCIM/img_thumbnail.jpg"

@@ -31,8 +31,10 @@
         android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_sign_up_activity">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_sign_up_activity"
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -97,7 +99,7 @@
                 android:textSize="30sp" />
 
             <TextView
-                android:id="@+id/tv_description"
+                android:id="@+id/tv_intro"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
@@ -127,8 +129,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
-                    app:tint="@color/star_color"
-                    android:src="@drawable/star_full" />
+                    android:src="@drawable/star_full"
+                    app:tint="@color/star_color" />
 
             </LinearLayout>
 
@@ -155,8 +157,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"
                     android:layout_marginStart="5dp"
-                    app:tint="@color/grey_800"
-                    android:src="@drawable/ic_warning" />
+                    android:src="@drawable/ic_warning"
+                    app:tint="@color/grey_800" />
 
                 <TextView
                     android:id="@+id/tv_createdDate"
@@ -170,14 +172,14 @@
             </LinearLayout>
 
             <TextView
-                    android:id="@+id/tv_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:fontFamily="@font/inter_bold"
-                    android:text="1299000"
-                    android:textColor="@color/black"
-                    android:textSize="35sp"/>
+                android:id="@+id/tv_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="1.299.000 đ"
+                android:textColor="@color/black"
+                android:textSize="35sp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_buy"
@@ -219,125 +221,89 @@
                 android:text="5 sections • 53 lectures • 5h 31m total length"
                 android:textSize="16dp" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_sections"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
-                android:gravity="center_vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_toolbar" />
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:gravity="center_vertical"-->
 
-                android:orientation="horizontal">
+<!--                android:orientation="horizontal">-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Section 1 - Getting started"
-                    android:textSize="16dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:text="Section 1 - Getting started"-->
+<!--                    android:textSize="16dp"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
 
-                <!--  <ImageView
-                      android:id="@+id/iv_minus"
-                      android:layout_width="wrap_content"
-                      android:layout_height="match_parent"
-                      app:layout_constraintBottom_toBottomOf="parent"
-                      app:layout_constraintEnd_toEndOf="parent"
-                      app:layout_constraintTop_toTopOf="parent"
-                      tools:srcCompat="@drawable/ic_minus" />-->
-            </androidx.constraintlayout.widget.ConstraintLayout>
+<!--                &lt;!&ndash;  <ImageView-->
+<!--                      android:id="@+id/iv_minus"-->
+<!--                      android:layout_width="wrap_content"-->
+<!--                      android:layout_height="match_parent"-->
+<!--                      app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                      app:layout_constraintEnd_toEndOf="parent"-->
+<!--                      app:layout_constraintTop_toTopOf="parent"-->
+<!--                      tools:srcCompat="@drawable/ic_minus" />&ndash;&gt;-->
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:padding="15dp"
-                    android:text="1"
-                    android:textColor="@color/black"
-                    android:textSize="18dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:gravity="center_horizontal"-->
+<!--                android:orientation="horizontal">-->
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginEnd="10dp"-->
+<!--                    android:padding="15dp"-->
+<!--                    android:text="1"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="18dp"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="Introduction to the course"
-                        android:textColor="@color/black"
-                        android:textSize="20dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="vertical">-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="04:29"
-                        android:textSize="14dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </LinearLayout>
-            </LinearLayout>
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:text="Introduction to the course"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:textSize="20dp"-->
+<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent" />-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal">
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:text="04:29"-->
+<!--                        android:textSize="14dp"-->
+<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent" />-->
+<!--                </LinearLayout>-->
+<!--            </LinearLayout>-->
 
-                <TextView
-                    android:id="@+id/tv_lecture2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:padding="15dp"
-                    android:text="2"
-                    android:textColor="@color/black"
-                    android:textSize="18dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tv_lectureName2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="Introduction to Logstash"
-                        android:textColor="@color/black"
-                        android:textSize="20dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tv_lectureDuration2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="04:32"
-                        android:textSize="14dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </LinearLayout>
-            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_desc_text"
@@ -360,14 +326,14 @@
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
-<!--            <TextView-->
-<!--                android:id="@+id/tv_showMoreDesc"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:fontFamily="@font/inter_bold"-->
-<!--                android:text="@string/show_more"-->
-<!--                android:textColor="@color/design_default_color_primary"-->
-<!--                android:textSize="18sp" />-->
+            <!--            <TextView-->
+            <!--                android:id="@+id/tv_showMoreDesc"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:fontFamily="@font/inter_bold"-->
+            <!--                android:text="@string/show_more"-->
+            <!--                android:textColor="@color/design_default_color_primary"-->
+            <!--                android:textSize="18sp" />-->
 
             <TextView
                 android:id="@+id/tv_instructor"
@@ -467,8 +433,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="20dp"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -682,14 +648,15 @@
                     android:orientation="horizontal">
 
                     <RatingBar
+                        style="?android:attr/ratingBarStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:numStars="5"
                         android:rating="4"
-                        android:theme="@style/RatingBar"
-                        style="?android:attr/ratingBarStyleSmall"
-                        android:stepSize="1" />
+                        android:stepSize="1"
+                        android:theme="@style/RatingBar" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -727,14 +694,15 @@
                     android:orientation="horizontal">
 
                     <RatingBar
+                        style="?android:attr/ratingBarStyleSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:numStars="5"
                         android:rating="5"
-                        android:theme="@style/RatingBar"
-                        style="?android:attr/ratingBarStyleSmall"
-                        android:stepSize="1" />
+                        android:stepSize="1"
+                        android:theme="@style/RatingBar" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

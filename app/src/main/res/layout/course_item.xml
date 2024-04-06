@@ -89,13 +89,7 @@
                     android:layout_below="@id/ll_title"
                     android:text="19999999999999999"
                     android:textSize="13sp" />
-                <TextView
-                    android:id="@+id/tv_moneySign"
-                    android:layout_width="wrap_content"
-                    android:layout_height="19dp"
-                    android:layout_marginStart="5dp"
-                    android:text="đ"
-                    android:textSize="13sp" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -159,16 +153,7 @@
                 android:maxWidth="100dp"
                 android:text="30089999998899"
                 android:textSize="13sp" />
-            <TextView
-                android:id="@+id/tv_sign"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/ll_title"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="-1dp"
-                android:layout_toEndOf="@id/tv_status"
-                android:text="đ"
-                android:textSize="13sp" />
+
 
             <TextView
                 android:id="@+id/tv_totalEarningText"

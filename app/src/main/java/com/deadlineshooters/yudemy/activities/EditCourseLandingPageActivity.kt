@@ -2,6 +2,7 @@ package com.deadlineshooters.yudemy.activities
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,16 +11,20 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.ActivityEditCourseLandingPageBinding
+import com.deadlineshooters.yudemy.models.Course
 import com.github.dhaval2404.imagepicker.ImagePicker
 
 class EditCourseLandingPageActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditCourseLandingPageBinding
+    private lateinit var course : Course
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -43,6 +48,9 @@ class EditCourseLandingPageActivity : AppCompatActivity() {
                     startForProfileImageResult.launch(intent)
                 }
         }
+
+        course = intent.getParcelableExtra("course", Course::class.java) ?: Course()
+
 
     }
 

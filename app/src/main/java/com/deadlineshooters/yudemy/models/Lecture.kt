@@ -5,11 +5,11 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Lecture(
-    var _id: String,
-    var sectionId: String, // ObjectId
-    var content: Video,
-    var name: String,
-    var type: String,
-    var index: Int
+    var _id: String = "",
+    var sectionId: String = "", // ObjectId
+    var content: Video = Video(),
+    var name: String = "",
+    var type: String = "video",
+    var index: Int = 0
 ) : Parcelable
 

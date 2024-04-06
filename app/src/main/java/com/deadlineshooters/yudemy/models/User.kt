@@ -15,10 +15,8 @@ data class User(
     var reminderDays: ArrayList<Int> = arrayListOf(),
     var reminderTimes: ArrayList<Int> = arrayListOf(),
     var reminderNotification: Boolean = false,
-    var certificateList: ArrayList<String> = arrayListOf(),
     var fcmToken: String = "",
     var instructor: Instructor? = null
 ) : Parcelable{
     @get:Exclude var id: String = ""
 }
-

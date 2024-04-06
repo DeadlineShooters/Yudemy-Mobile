@@ -9,5 +9,12 @@ class StringUtils {
                 input
             }
         }
+
+        fun secondsToMinuteSecondFormat(seconds: Double): String {
+            val minutes = (seconds / 60).toInt()
+            val remainingSeconds = (seconds % 60).toInt()
+            return String.format("%d:%02d", minutes, remainingSeconds)
+        }
+
     }
 }
