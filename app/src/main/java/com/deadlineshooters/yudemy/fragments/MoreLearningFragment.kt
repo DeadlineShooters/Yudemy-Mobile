@@ -1,8 +1,8 @@
 package com.deadlineshooters.yudemy.fragments
 
 import android.content.res.Resources
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,14 +15,13 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.FragmentMoreLearningBinding
 import com.deadlineshooters.yudemy.dialogs.CertificateDialog
 import com.deadlineshooters.yudemy.dialogs.QADialog
-import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_COURSE = "course"
+private const val ARG_COURSE_ID = "courseId"
 
 /**
  * A simple [Fragment] subclass.
@@ -31,10 +30,11 @@ private const val ARG_COURSE = "course"
  */
 class MoreLearningFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var course: Course? = null
+    private var courseId: String? = null
     private lateinit var qa: TextView
     private lateinit var binding: FragmentMoreLearningBinding
     private lateinit var aboutDialog: BottomSheetDialog
+    private lateinit var courseViewModel: CourseViewModel
     private lateinit var certificate: TextView
 
     val title = "More"
@@ -42,14 +42,11 @@ class MoreLearningFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            arguments?.let {
-                course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    it.getParcelable(ARG_COURSE, Course::class.java)
-                } else {
-                    it.getParcelable(ARG_COURSE)
-                }
-            }
+//            courseId = it.getString(ARG_COURSE_ID) TODO: Uncomment this line
+            courseId = "2tNxr8j5FosEueZrL3wH"
         }
+
+        courseViewModel = ViewModelProvider(requireActivity())[CourseViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -79,7 +76,9 @@ class MoreLearningFragment : Fragment() {
         binding.navAbout.setOnClickListener {
             aboutDialog.show()
 
-            aboutDialog.findViewById<TextView>(R.id.contentAboutCourse)!!.text = course!!.description
+            courseViewModel.learningCourse.observe(viewLifecycleOwner, Observer{
+                aboutDialog.findViewById<TextView>(R.id.contentAboutCourse)!!.text = it?.description
+            })
         }
     }
 
@@ -113,10 +112,10 @@ class MoreLearningFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(course: Course) =
+        fun newInstance(courseId: String?) =
             MoreLearningFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(ARG_COURSE, course)
+                    putString(ARG_COURSE_ID, courseId)
                 }
             }
     }

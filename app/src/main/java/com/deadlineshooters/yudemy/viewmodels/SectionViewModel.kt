@@ -11,4 +11,13 @@ import com.deadlineshooters.yudemy.repositories.SectionRepository
 
 class SectionViewModel : ViewModel() {
     private val sectionRepository = SectionRepository()
+
+    private var _sectionsCourseLearning = MutableLiveData<ArrayList<Section>>()
+    val sectionsCourseLearning: LiveData<ArrayList<Section>> = _sectionsCourseLearning
+
+    fun getSectionsCourseLearning(courseId: String) {
+        sectionRepository.getSectionsOfCourse(courseId) { sections ->
+            _sectionsCourseLearning.value = sections
+        }
+    }
 }
