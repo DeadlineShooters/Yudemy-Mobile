@@ -227,5 +227,6 @@
     <string name="instructor_reviews">%d Reviews</string>
     <string name="instructor_students">%d Students</string>
     <string name="section_title">Section %1$d - %2$s</string>
+    <string name="insert_subtitle">Insert your course subtitle</string>
 
 </resources>

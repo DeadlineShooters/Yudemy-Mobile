@@ -174,8 +174,12 @@ class CourseDashboardFragment : Fragment() {
             courseViewModel.refreshCourses(UserRepository.getCurrentUserID(), sortNewest)
 
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
 
+        courseViewModel.refreshCourses(UserRepository.getCurrentUserID())
     }
 
     fun updateAutoCompleteTextView(newCourses: List<Course>) {
