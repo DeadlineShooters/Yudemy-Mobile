@@ -1,22 +1,12 @@
 package com.deadlineshooters.yudemy.repositories
 
-import android.content.ContentValues.TAG
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.deadlineshooters.yudemy.models.Course
-import com.deadlineshooters.yudemy.models.Image
-import com.deadlineshooters.yudemy.models.Section
-import com.deadlineshooters.yudemy.models.Video
 import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
-import kotlinx.coroutines.tasks.await
 
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 class CourseRepository {

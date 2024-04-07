@@ -64,6 +64,7 @@ class LectureLearningFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
 //            courseId = it.getString(ARG_COURSE_ID)
+            // TODO: remove the below and retrieve courseId from argument
             courseId = "2tNxr8j5FosEueZrL3wH"
         }
 

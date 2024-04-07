@@ -30,9 +30,9 @@ class CourseViewModel : ViewModel() {
 
     fun refreshCourses(userId: String? = null, sortByNewest: Boolean = true) {
         val task = if (userId != null) {
-            courseRepository.getCourses(userId, sortByNewest)
+            courseRepository.getCoursesByInstructor(userId, sortByNewest)
         } else {
-            courseRepository.getCourses(sortByNewest = sortByNewest)
+            courseRepository.getCoursesByInstructor(sortByNewest = sortByNewest)
         }
 
         task.addOnCompleteListener { task ->
