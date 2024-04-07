@@ -13,9 +13,9 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Course
 
-class MyLearningAdapter(var courses: ArrayList<Map<Course, String>>, var progresses: ArrayList<Int>): RecyclerView.Adapter<MyLearningAdapter.ViewHolder>() {
+class MyLearningAdapter(private val courses: List<Course>, private val userId: String): RecyclerView.Adapter<MyLearningAdapter.ViewHolder>() {
     var context: Context? = null
-    var onItemClick: ((Int, Course, String, Number) -> Unit)? = null
+    var onItemClick: ((Course) -> Unit)? = null
     inner class ViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
         val thumbnailView: ImageView = listItemView.findViewById(R.id.thumbnail)
         val name: TextView = listItemView.findViewById(R.id.name)
@@ -25,7 +25,7 @@ class MyLearningAdapter(var courses: ArrayList<Map<Course, String>>, var progres
 
         init {
             listItemView.setOnClickListener {
-                onItemClick?.invoke(bindingAdapterPosition, courses[bindingAdapterPosition].keys.first(), courses[bindingAdapterPosition].values.first(), progresses[bindingAdapterPosition])
+                onItemClick?.invoke(courses[absoluteAdapterPosition])
             }
         }
     }
@@ -40,12 +40,12 @@ class MyLearningAdapter(var courses: ArrayList<Map<Course, String>>, var progres
         return courses.size
     }
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val course: Course = courses[position].keys.first()
-        if(course.thumbnail.secure_url != "")
-            ImageViewHelper().setImageViewFromUrl(course.thumbnail, holder.thumbnailView)
+        val course: Course = courses[position]
+        ImageViewHelper().setImageViewFromUrl(course.thumbnail, holder.thumbnailView)
         holder.name.text = course.name
-        holder.lecturer.text = courses[position].values.first()
-        when(val progress = progresses[position]) {
+        holder.lecturer.text = course.instructor
+        val progress = 30 // TODO: calculate progress of user
+        when(progress) {
             0 -> {
                 holder.progressBar.visibility = View.GONE
                 holder.progressText.text = context?.resources?.getString(R.string.start_course)
@@ -53,53 +53,13 @@ class MyLearningAdapter(var courses: ArrayList<Map<Course, String>>, var progres
                 holder.progressText.setTextColor(context?.resources?.getColor(R.color.primary_color, null)!!)
             }
             100 -> {
-                holder.progressBar.visibility = View.GONE
                 holder.progressBar.progress = progress
                 holder.progressText.text = context?.resources?.getString(R.string.completed)
-                holder.progressText.setTypeface(null, Typeface.BOLD)
-                holder.progressText.setTextColor(context?.resources?.getColor(R.color.primary_color, null)!!)
             }
             else -> {
-                holder.progressBar.visibility = View.VISIBLE
                 holder.progressBar.progress = progress
                 holder.progressText.text = context?.resources?.getString(R.string.progress_complete, progress)
-                holder.progressText.setTypeface(null, Typeface.NORMAL)
-                holder.progressText.setTextColor(context?.resources?.getColor(R.color.primary_text_color, null)!!)
             }
         }
-    }
-
-    fun filterFavoriteCourses(favoriteCourseIds: ArrayList<String>) {
-        val tmpCourses = arrayListOf<Map<Course, String>>()
-        val tmpProgress = arrayListOf<Int>()
-        courses.forEachIndexed { index, course ->
-            if(course.keys.first().id in favoriteCourseIds) {
-                tmpCourses.add(course)
-                tmpProgress.add(progresses[index])
-            }
-        }
-        courses = tmpCourses
-        progresses = tmpProgress
-        notifyDataSetChanged()
-    }
-
-    fun refreshCourses(courses: ArrayList<Map<Course, String>>, progresses: ArrayList<Int>) {
-        this.courses = courses
-        this.progresses = progresses
-        notifyDataSetChanged()
-    }
-
-    fun searchCourses(query: String) {
-        val tmpCourses = arrayListOf<Map<Course, String>>()
-        val tmpProgress = arrayListOf<Int>()
-        courses.forEachIndexed { index, course ->
-            if(course.keys.first().name.contains(query, true)) {
-                tmpCourses.add(course)
-                tmpProgress.add(progresses[index])
-            }
-        }
-        courses = tmpCourses
-        progresses = tmpProgress
-        notifyDataSetChanged()
     }
 }

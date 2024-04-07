@@ -1,19 +1,15 @@
 package com.deadlineshooters.yudemy.repositories
 
-import android.util.Log
+import androidx.lifecycle.MutableLiveData
+import com.deadlineshooters.yudemy.activities.SignUpActivity
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.User
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.TaskCompletionSource
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class UserRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
     private val mAuth = FirebaseAuth.getInstance()
-    private val userCollection = mFireStore.collection("users")
-
     fun getUserData() : User{
         // for testing
         return User("Test")
