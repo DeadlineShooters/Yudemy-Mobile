@@ -43,4 +43,17 @@ class InstructorRepository {
 
         return instructorsLiveData
     }
+
+    fun getInstructorNameById(instructorId: String, callback: (String?) -> Unit) {
+        mFireStore.collection("users")
+            .document(instructorId)
+            .get()
+            .addOnSuccessListener { document ->
+                callback(document?.get("fullName") as String?)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore", "Error getting documents: ", exception)
+                callback(null)
+            }
+    }
 }

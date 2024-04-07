@@ -6,9 +6,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
+import com.deadlineshooters.yudemy.models.Section
 import com.deadlineshooters.yudemy.models.Video
 import com.google.firebase.firestore.FirebaseFirestore
-import java.util.Date
 
 class CourseRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
@@ -66,5 +66,20 @@ class CourseRepository {
         }
 
         return coursesLiveData
+    }
+
+    fun getCourseById(courseId: String, callback: (Course?) -> Unit) {
+        var course: Course?
+        coursesCollection
+            .document(courseId)
+            .get()
+            .addOnSuccessListener { document ->
+                course = document?.toObject(Course::class.java)
+                callback(course)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore", "Error getting documents: ", exception)
+                callback(null)
+            }
     }
 }
