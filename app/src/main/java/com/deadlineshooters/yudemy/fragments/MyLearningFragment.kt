@@ -1,6 +1,5 @@
 package com.deadlineshooters.yudemy.fragments
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -13,12 +12,8 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.TextView
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,10 +21,9 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.CourseLearningActivity
 import com.deadlineshooters.yudemy.adapters.MyLearningAdapter
 import com.deadlineshooters.yudemy.adapters.BottomSheetDialogAdapter
-import com.deadlineshooters.yudemy.databinding.FragmentLectureLearningBinding
-import com.deadlineshooters.yudemy.databinding.FragmentMyLearningBinding
 import com.deadlineshooters.yudemy.models.Course
-import com.deadlineshooters.yudemy.viewmodels.CourseProgressViewModel
+import com.deadlineshooters.yudemy.models.Image
+import com.deadlineshooters.yudemy.models.Video
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
@@ -47,22 +41,9 @@ class MyLearningFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-
+    private var searchView: SearchView? = null
+    private var rvCourses: RecyclerView? = null
     private var filterDialog: BottomSheetDialog? = null
-
-    private lateinit var binding: FragmentMyLearningBinding
-
-    private lateinit var courseProgressViewModel: CourseProgressViewModel
-
-    private var selectedCourseIdx: Int = 0
-    private var selectedCourse: Course? = null
-
-    private lateinit var myLearningAdapter: MyLearningAdapter
-
-    private var filterIdx = 0
-    private var searchQuery = ""
-
-    private var updatedCourse: Course? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,84 +51,46 @@ class MyLearningFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-        courseProgressViewModel = ViewModelProvider(this)[CourseProgressViewModel::class.java]
-        courseProgressViewModel.getUserCourses()
-
-        myLearningAdapter = MyLearningAdapter(arrayListOf(), arrayListOf())
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentMyLearningBinding.inflate(inflater, container, false)
 
-        return binding.root
+        return inflater.inflate(R.layout.fragment_my_learning, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        filterDialog = createFilterDialog()
+        searchView = view.findViewById(R.id.searchView)
+        rvCourses = view.findViewById(R.id.rvCourses)
+        filterDialog =createFilterDialog()
 
-        courseProgressViewModel.combinedData.observe(viewLifecycleOwner, Observer { (courses, progresses) ->
-            myLearningAdapter.refreshCourses(courses, progresses as ArrayList<Int>)
-            if(filterIdx == 0) {
-                courseProgressViewModel.myFavoriteCourseIds.observe(viewLifecycleOwner, Observer { courseIds ->
-                    myLearningAdapter.filterFavoriteCourses(courseIds)
-                })
-            }
-            if(searchQuery != "") {
-                myLearningAdapter.searchCourses(searchQuery)
-            }
-        })
-
-        binding.rvCourses.adapter = myLearningAdapter
-        binding.rvCourses.layoutManager = LinearLayoutManager(activity)
-        myLearningAdapter.onItemClick = { position, course, instructorName, progress ->
-            selectedCourseIdx = position
-            selectedCourse = course
+        val courses = generateDummyData() // TODO: get user's courses from database
+//        val userId = (activity as BaseActivity).getCurrentUserID() TODO: get current user id
+        val adapter = MyLearningAdapter(courses, "userId")
+        rvCourses!!.adapter = adapter
+        rvCourses!!.layoutManager = LinearLayoutManager(activity)
+        adapter.onItemClick = { course ->
+            // TODO: open course learning
 
             val intent = Intent(activity, CourseLearningActivity::class.java)
-            intent.putExtra("course", course)
-            intent.putExtra("instructorName", instructorName)
-            intent.putExtra("progress", Math.toIntExact(progress.toLong()))
-            startForResult.launch(intent)
+            intent.putExtra("courseId", course.id)
+            startActivity(intent)
         }
 
         // Click to search icon
         view.findViewById<Button>(R.id.searchBtn).setOnClickListener {
             showSearchAction()
-
-            binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    searchQuery = query!!
-                    refreshSearchList()
-
-                    myLearningAdapter.searchCourses(searchQuery)
-                    if(myLearningAdapter.courses.isEmpty()) {
-                        binding.noResultLayout.visibility = View.VISIBLE
-                    }
-                    else {
-                        binding.noResultLayout.visibility = View.GONE
-                    }
-                    return false
-                }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    return false
-                }
-            })
         }
         view.findViewById<TextView>(R.id.tvCancel).setOnClickListener {
-            searchQuery = ""
-            refreshSearchList()
             hideSearchAction()
         }
 
-        binding.rvCourses.setOnTouchListener { v, event ->
-            if(searchQuery == "")
-                hideSearchAction()
+        rvCourses!!.setOnTouchListener { v, event ->
+            hideSearchAction()
             false
         }
 
@@ -155,45 +98,32 @@ class MyLearningFragment : Fragment() {
         view.findViewById<Button>(R.id.filterBtn).setOnClickListener {
             filterDialog!!.show()
         }
-    }
 
-    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-
-            val isUpdateProgress = data!!.getBooleanExtra("isUpdateProgress", true)
-            if(isUpdateProgress) {
-                courseProgressViewModel.refreshCourseProgress(selectedCourseIdx, selectedCourse!!)
-                updatedCourse = selectedCourse
-            }
-        }
-        else
-            Log.d("LectureLearningFragment", "onActivityResult: canceled")
     }
 
     private fun showSearchAction() {
         requireView().findViewById<TextView>(R.id.frmTitle).visibility = View.GONE
         requireView().findViewById<LinearLayout>(R.id.actionLayout).visibility = View.GONE
         requireView().findViewById<ConstraintLayout>(R.id.searchLayout).visibility = View.VISIBLE
-        val layoutParams = binding.rvCourses.layoutParams as ConstraintLayout.LayoutParams
+        val layoutParams = rvCourses!!.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.topToBottom = R.id.searchLayout
         // focus search view and show keyboard
-        binding.searchView.requestFocus()
+        searchView!!.requestFocus()
         val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(binding.searchView, 0)
+        imm.showSoftInput(searchView, 0)
     }
 
     private fun hideSearchAction() {
         requireView().findViewById<TextView>(R.id.frmTitle).visibility = View.VISIBLE
         requireView().findViewById<LinearLayout>(R.id.actionLayout).visibility = View.VISIBLE
         requireView().findViewById<ConstraintLayout>(R.id.searchLayout).visibility = View.GONE
-        val layoutParams = binding.rvCourses.layoutParams as ConstraintLayout.LayoutParams
+        val layoutParams = rvCourses!!.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.topToBottom = R.id.frmTitle
         // clear text in search view
-        binding.searchView.setQuery("", false)
+        searchView!!.setQuery("", false)
     }
 
-    private fun createFilterDialog(): BottomSheetDialog {
+    private fun createFilterDialog(): BottomSheetDialog { //, R.style.MyTransparentBottomSheetDialogTheme
         val dialog = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
         val bottomSheet = layoutInflater.inflate(R.layout.dialog_bottom_sheet, null)
         val rvFilters = bottomSheet.findViewById<RecyclerView>(R.id.rvFilters)
@@ -204,19 +134,8 @@ class MyLearningFragment : Fragment() {
         val itemDecoration: RecyclerView.ItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         rvFilters.addItemDecoration(itemDecoration)
         adapter.onItemClick = { filter, filterIdx ->
-            if(filterIdx == 0) {
-                courseProgressViewModel.getUserFavoriteCourseIds()
-                courseProgressViewModel.myFavoriteCourseIds.observe(viewLifecycleOwner, Observer { courseIds ->
-                    myLearningAdapter.filterFavoriteCourses(courseIds)
-                })
-
-                binding.frmTitle.text = resources.getStringArray(R.array.my_learning_filter)[filterIdx]
-            }
-            else {
-                myLearningAdapter.refreshCourses(courseProgressViewModel.mylearningCourses.value!!, courseProgressViewModel.myCoursesProgress.value!! as ArrayList<Int>)
-                binding.frmTitle.text = resources.getString(R.string.my_learning)
-            }
-            dialog.dismiss()
+            // TODO: handle filter
+            Log.i("Filter option click", filter)
         }
 
         bottomSheet.findViewById<Button>(R.id.cancelBtn).setOnClickListener {
@@ -227,12 +146,32 @@ class MyLearningFragment : Fragment() {
         return dialog
     }
 
-    fun refreshSearchList() {
-        if(filterIdx == 0 && courseProgressViewModel.myFavoriteCourseIds.value != null) {
-            myLearningAdapter.filterFavoriteCourses(courseProgressViewModel.myFavoriteCourseIds.value!!)
+    fun generateDummyData(): ArrayList<Course> {
+        val courses = ArrayList<Course>()
+        for(i in 1..20) {
+            val c = Course(
+                name = "Graph Theory Algorithms for Competitive Programming (2022) $i",
+                instructor = "34349",
+                totalStudents = 0,
+                introduction = "Learn Graphs Algorithms in Computer Science & Mathematics, theory + hands-on coding and ace Competitive Coding problems!",
+                description = "Welcome to Graph Algorithms for Competitive Coding - the most detailed Specialisation in Graph Theory for Competitive Programmers, Software Engineers & Computer Science students!\n" +
+                        "\n" +
+                        "\n" +
+                        "Graphs is quite an important topic for software engineers, both for academics & online competitions and for solving real life challenges. Graph algorithms form the very fundamentals of many popular applications like - Google Maps, social media apps like Facebook, Instagram, Quora, LinkedIn, Computer Vision applications such as image segmentation, resolving dependencies while compile time, vehicle routing problems in supply chain and many more. This course provides a detailed overview of Graph Theory algorithms in computer science, along with hands on implementation of all the algorithms in C++. Not just that you will get 80+ competitive coding questions, to practice & test your skills! \n" +
+                        "\n" +
+                        "This comprehensive course is taught by Prateek Narang & Apaar Kamal, who are Software Engineers at Google and have taught over thousands of students in competitive programming over last 5+ years. This course is worth thousands of dollars, but Coding Minutes is providing you this course to you at a fraction of its original cost! This is action oriented course, we not just delve into theory but focus on the practical aspects by building implementing algorithms & solving problems. With over 95+ high quality video lectures, easy to understand explanations this is one of the most detailed and robust course for Graph Algorithms ever created.\n" +
+                        "\n" +
+                        "Course starts very basics with how to store and represent graphs on a computer, and then dives into popular algorithms & techniques for problem solving. The course is divided into two parts.",
+                price = 1499000.0,
+                promotionalVideo = Video(),
+                language = "ylTlDABgESXAzOHGyAxR", // English
+                category = "hJqfxq5tTYVFsw69Mts9",
+                thumbnail = Image("https://img-c.udemycdn.com/course/480x270/927356_8108_7.jpg", "") // replace with your dummy image
+            )
+            c.id = "course$i"
+            courses.add(c)
         }
-        else
-            myLearningAdapter.refreshCourses(courseProgressViewModel.mylearningCourses.value!!, courseProgressViewModel.myCoursesProgress.value!! as ArrayList<Int>)
+        return courses
     }
 
     companion object {
