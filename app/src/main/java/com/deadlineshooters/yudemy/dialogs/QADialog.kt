@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +25,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.adapters.MyLearningFilterAdapter
+import com.deadlineshooters.yudemy.adapters.BottomSheetDialogAdapter
 import com.deadlineshooters.yudemy.adapters.QuestionListAdapter
 import com.deadlineshooters.yudemy.adapters.ReplyListAdapter
 import com.deadlineshooters.yudemy.models.Question
@@ -384,17 +383,17 @@ class QADialog : DialogFragment() {
 
     private fun createQuestionFilterDialog(view: TextView, state: Int): BottomSheetDialog {
         val dialog = BottomSheetDialog(requireContext(), android.R.style.Theme_Material_Light)
-        val bottomSheet = layoutInflater.inflate(R.layout.dialog_my_learning_filter, null)
-        var adapter: MyLearningFilterAdapter? = null
+        val bottomSheet = layoutInflater.inflate(R.layout.dialog_bottom_sheet, null)
+        var adapter: BottomSheetDialogAdapter? = null
         when (state) {
             1 -> {
-                adapter = MyLearningFilterAdapter(resources.getStringArray(R.array.lectures_filter))
+                adapter = BottomSheetDialogAdapter(resources.getStringArray(R.array.lectures_filter).toCollection(ArrayList()))
             }
             2 -> {
-                adapter = MyLearningFilterAdapter(resources.getStringArray(R.array.sort_most_recent_filter))
+                adapter = BottomSheetDialogAdapter(resources.getStringArray(R.array.sort_most_recent_filter).toCollection(ArrayList()))
             }
             3 -> {
-                adapter = MyLearningFilterAdapter(resources.getStringArray(R.array.questions_filter))
+                adapter = BottomSheetDialogAdapter(resources.getStringArray(R.array.questions_filter).toCollection(ArrayList()))
             }
         }
         val rvFilters = bottomSheet.findViewById<RecyclerView>(R.id.rvFilters)
@@ -403,7 +402,7 @@ class QADialog : DialogFragment() {
         rvFilters.layoutManager = LinearLayoutManager(activity)
         val itemDecoration: RecyclerView.ItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         rvFilters.addItemDecoration(itemDecoration)
-        adapter?.onItemClick = { filter ->
+        adapter?.onItemClick = { filter, filterIdx ->
             // TODO: handle filter
             Log.i("Filter option click", filter)
             view.text = filter

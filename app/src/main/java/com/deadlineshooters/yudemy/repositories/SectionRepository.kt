@@ -8,14 +8,18 @@ import com.deadlineshooters.yudemy.models.SectionWithLectures
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentSnapshot
+import android.content.ContentValues
+import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.firestore.FirebaseFirestore
 
 class SectionRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
+    private val sectionCollection = mFireStore.collection("sections")
+
     private val lectureRepository = LectureRepository()
 
     fun getSectionsWithLectures(courseId: String): Task<List<SectionWithLectures>> {
-        val courseTask = mFireStore.collection("courses").document(courseId).get()
+        val courseTask = sectionCollection.document(courseId).get()
         val tasks = mutableListOf<Task<*>>()
         val lectureTasks = mutableListOf<Task<*>>()
 
@@ -25,7 +29,7 @@ class SectionRepository {
 
 
             for (sectionId in course!!.sectionList) {
-                val sectionTask = mFireStore.collection("sections").document(sectionId).get()
+                val sectionTask = sectionCollection.document(sectionId).get()
                 tasks.add(sectionTask)
             }
 
@@ -61,4 +65,49 @@ class SectionRepository {
 
 
 
+    fun getSectionDetailById(sectionId: String, callback: (Section?) -> Unit) {
+        var section: Section?
+        sectionCollection
+            .document(sectionId)
+            .get()
+            .addOnSuccessListener { document ->
+                section = document?.toObject(Section::class.java)
+                callback(section)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore", "Error getting documents: ", exception)
+                callback(null)
+            }
+    }
+
+    fun getSectionsOfCourse(courseId: String, callback: (ArrayList<Section>) -> Unit) {
+        val sectionList: ArrayList<Section> = arrayListOf()
+
+        mFireStore.collection("courses").document(courseId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val idList = document.data?.get("sectionList") as ArrayList<String>
+                    val sectionRepository = SectionRepository()
+                    val tasks = idList.map { id ->
+                        val task = TaskCompletionSource<Section>()
+                        sectionRepository.getSectionDetailById(id) { section ->
+                            section?.let { task.setResult(section) }
+                        }
+                        task.task
+                    }
+                    Tasks.whenAllSuccess<Section>(tasks)
+                        .addOnSuccessListener { sections ->
+                            callback(sections as ArrayList<Section>)
+                        }
+                } else {
+                    Log.d("Firestore", "No such document")
+                    callback(sectionList)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore", "Error getting documents: ", exception)
+                callback(sectionList)
+            }
+    }
 }

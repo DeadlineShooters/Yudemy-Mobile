@@ -1,19 +1,27 @@
 package com.deadlineshooters.yudemy.fragments
 
 import android.app.Dialog
+import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.FragmentAnalyticsBinding
 import com.deadlineshooters.yudemy.databinding.FragmentMoreLearningBinding
 import com.deadlineshooters.yudemy.dialogs.CertificateDialog
 import com.deadlineshooters.yudemy.dialogs.QADialog
+import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,7 +37,8 @@ class MoreLearningFragment : Fragment() {
     private var courseId: String? = null
     private lateinit var qa: TextView
     private lateinit var binding: FragmentMoreLearningBinding
-
+    private lateinit var aboutDialog: BottomSheetDialog
+    private lateinit var courseViewModel: CourseViewModel
     private lateinit var certificate: TextView
 
     val title = "More"
@@ -37,8 +46,11 @@ class MoreLearningFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            courseId = it.getString(ARG_COURSE_ID)
+//            courseId = it.getString(ARG_COURSE_ID) TODO: Uncomment this line
+            courseId = "2tNxr8j5FosEueZrL3wH"
         }
+
+        courseViewModel = ViewModelProvider(requireActivity())[CourseViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -78,9 +90,35 @@ class MoreLearningFragment : Fragment() {
             val certificateDialog = CertificateDialog()
             certificateDialog.show(parentFragmentManager, "CertificateDialog")
         }
+
+        aboutDialog = createAboutDialog()
+        binding.navAbout.setOnClickListener {
+            aboutDialog.show()
+
+            courseViewModel.learningCourse.observe(viewLifecycleOwner, Observer{
+                aboutDialog.findViewById<TextView>(R.id.contentAboutCourse)!!.text = it?.description
+            })
+        }
     }
 
+    private fun createAboutDialog(): BottomSheetDialog {
+        val dialog = BottomSheetDialog(requireContext(), R.style.StandardBottomSheetDialog)
+        val bottomSheet = layoutInflater.inflate(R.layout.dialog_about_this_course, null)
 
+        bottomSheet.findViewById<TextView>(R.id.closeDialogAbout).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setContentView(bottomSheet)
+        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+        val layout = dialog.findViewById<CoordinatorLayout>(R.id.aboutBottomSheetLayout)
+        if (layout != null) {
+            layout.minimumHeight = Resources.getSystem().displayMetrics.heightPixels
+        }
+
+        return dialog
+    }
 
 
     companion object {

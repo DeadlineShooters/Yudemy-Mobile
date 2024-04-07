@@ -38,7 +38,7 @@ class CourseRepository {
             }
     }
 
-    fun getCourses(instructorId: String? = null, sortByNewest: Boolean = true): Task<List<Course>> {
+    fun getCoursesByInstructor(instructorId: String? = null, sortByNewest: Boolean = true): Task<List<Course>> {
         val task = if (instructorId != null) {
             coursesCollection.whereEqualTo("instructor", instructorId).get()
         } else {
@@ -106,4 +106,18 @@ class CourseRepository {
 
 
 
+    fun getCourseById(courseId: String, callback: (Course?) -> Unit) {
+        var course: Course?
+        coursesCollection
+            .document(courseId)
+            .get()
+            .addOnSuccessListener { document ->
+                course = document?.toObject(Course::class.java)
+                callback(course)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore", "Error getting documents: ", exception)
+                callback(null)
+            }
+    }
 }

@@ -54,8 +54,10 @@
                 android:name=".activities.EmailInputActivity"
                 android:exported="false"/>
         <activity
-                android:name=".activities.CourseLearningActivity"
-                android:exported="false"/>
+            android:name=".activities.CourseLearningActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
+            android:configChanges="orientation|screenSize|screenLayout"
+            android:exported="false" />
         <activity
                 android:name=".activities.BaseActivity"
                 android:exported="false"/>

@@ -100,7 +100,7 @@
         <item>Questions without instructors\' responses</item>
     </string-array>
     <string name="learning_section_title">Section %d - %s</string>
-    <string name="learning_lecture_detail">Video - %d:%d mins</string>
+    <string name="learning_lecture_detail">%s - %s min</string>
     <string name="about_this_course">About this course</string>
     <string name="course_certificate">Course certificate</string>
     <string name="q_a">Q&amp;A</string>
@@ -229,4 +229,7 @@
     <string name="section_title">Section %1$d - %2$s</string>
     <string name="insert_subtitle">Insert your course subtitle</string>
 
+    <string name="mark_as_complete">Mark as complete</string>
+    <string name="mark_as_incomplete">Mark as incomplete</string>
+    <string name="qa_for_lecture">Q&amp;A for lecture</string>
 </resources>

@@ -4,6 +4,9 @@ import com.deadlineshooters.yudemy.fragments.AccountFragment
 import com.deadlineshooters.yudemy.models.Instructor
 import android.util.Log
 import com.deadlineshooters.yudemy.activities.CourseDetailActivity
+import androidx.lifecycle.MutableLiveData
+import com.deadlineshooters.yudemy.activities.SignUpActivity
+import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.utils.Constants
 import com.google.firebase.auth.FirebaseAuth

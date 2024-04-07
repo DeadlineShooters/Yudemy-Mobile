@@ -19,6 +19,9 @@ class CourseViewModel : ViewModel() {
     private val _courses = MutableLiveData<List<Course>>()
     val courses: LiveData<List<Course>> = _courses
 
+      private val _learningCourse = MutableLiveData<Course?>()
+    val learningCourse: LiveData<Course?> = _learningCourse
+
     private val _sectionsWithLectures = MutableLiveData<List<SectionWithLectures>>()
     val sectionsWithLectures: LiveData<List<SectionWithLectures>> = _sectionsWithLectures
 
@@ -78,4 +81,10 @@ class CourseViewModel : ViewModel() {
 //        }
 //
 //    }
+
+    fun getLearningCourse(courseId: String) {
+        courseRepository.getCourseById(courseId) {
+            _learningCourse.value = it
+        }
+    }
 }

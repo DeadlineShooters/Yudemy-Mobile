@@ -83,4 +83,19 @@
         <item name="android:textColor">@color/primary_text_color</item>
         <item name="android:fontFamily">@font/inter_bold</item>
     </style>
+
+    <style name="StandardBottomSheetStyle" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="backgroundTint">@color/white</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.StandardBottomSheet</item>
+    </style>
+
+    <style name="ShapeAppearance.StandardBottomSheet" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
+
+    <style name="ClickableView">
+        <item name="colorControlHighlight">@android:color/darker_gray</item>
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
+    </style>
 </resources>

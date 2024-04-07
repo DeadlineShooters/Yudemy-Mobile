@@ -4,18 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.CourseLearningActivity
 import com.deadlineshooters.yudemy.adapters.MyLearningAdapter
-import com.deadlineshooters.yudemy.adapters.MyLearningFilterAdapter
+import com.deadlineshooters.yudemy.adapters.BottomSheetDialogAdapter
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Video
@@ -128,15 +125,15 @@ class MyLearningFragment : Fragment() {
 
     private fun createFilterDialog(): BottomSheetDialog { //, R.style.MyTransparentBottomSheetDialogTheme
         val dialog = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
-        val bottomSheet = layoutInflater.inflate(R.layout.dialog_my_learning_filter, null)
+        val bottomSheet = layoutInflater.inflate(R.layout.dialog_bottom_sheet, null)
         val rvFilters = bottomSheet.findViewById<RecyclerView>(R.id.rvFilters)
 
-        val adapter = MyLearningFilterAdapter(resources.getStringArray(R.array.my_learning_filter))
+        val adapter = BottomSheetDialogAdapter(resources.getStringArray(R.array.my_learning_filter).toCollection(ArrayList()))
         rvFilters!!.adapter = adapter
         rvFilters.layoutManager = LinearLayoutManager(activity)
         val itemDecoration: RecyclerView.ItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         rvFilters.addItemDecoration(itemDecoration)
-        adapter.onItemClick = { filter ->
+        adapter.onItemClick = { filter, filterIdx ->
             // TODO: handle filter
             Log.i("Filter option click", filter)
         }
