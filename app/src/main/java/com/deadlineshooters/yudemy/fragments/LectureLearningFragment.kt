@@ -72,7 +72,7 @@ class LectureLearningFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            course = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 it.getParcelable(ARG_COURSE, Course::class.java)
             } else {
                 it.getParcelable(ARG_COURSE)
@@ -109,12 +109,20 @@ class LectureLearningFragment : Fragment() {
 
         exoPlayer!!.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
-                if(playbackState == Player.STATE_ENDED) {
+                if (playbackState == Player.STATE_ENDED) {
                     // Mark the lecture as completed
-                    if(currentLecture != null && !currentLecture!!.values.first()) {
-                        userLectureViewModel.markLecture(currentLecture!!.keys.first()._id, true, currentSectionIdx, currentLectureIdx)
+                    if (currentLecture != null && !currentLecture!!.values.first()) {
+                        userLectureViewModel.markLecture(
+                            currentLecture!!.keys.first()._id,
+                            true,
+                            currentSectionIdx,
+                            currentLectureIdx
+                        )
                         updateProgress()
-                        courseLearningAdapter?.notifyLectureMarked(currentSectionIdx, currentLectureIdx)
+                        courseLearningAdapter?.notifyLectureMarked(
+                            currentSectionIdx,
+                            currentLectureIdx
+                        )
                     }
                 }
             }
@@ -131,67 +139,82 @@ class LectureLearningFragment : Fragment() {
         }
 
         // Show the sections and lectures
-        userLectureViewModel.combinedData.observe(viewLifecycleOwner, Observer { (sectionList, userLectures) ->
+        userLectureViewModel.combinedData.observe(
+            viewLifecycleOwner,
+            Observer { (sectionList, userLectures) ->
                 numLectures = userLectures.flatten().size
 
                 courseLearningAdapter = CourseLearningAdapter(sectionList, userLectures)
                 binding.rvSections.adapter = courseLearningAdapter
                 binding.rvSections.layoutManager = LinearLayoutManager(activity)
 
-                currentLecture = userLectures[0][0]
+                if (userLectures.isNotEmpty() && userLectures[0].isNotEmpty()) {
+                    currentLecture = userLectures[0][0]
 
-                var vidPath = currentLecture!!.keys.first().content.secure_url
+                    var vidPath = currentLecture!!.keys.first().content.secure_url
 
-                var mediaItem = MediaItem.fromUri(Uri.parse(vidPath))
-                exoPlayer!!.setMediaItem(mediaItem)
-                exoPlayer!!.prepare()
-                exoPlayer!!.play()
-
-                courseLearningAdapter!!.onItemClick = { userLecture, sectionIdx, lectureIdx ->
-                    currentLecture = userLecture
-                    currentSectionIdx = sectionIdx
-                    currentLectureIdx = lectureIdx
-
-                    vidPath = userLecture.keys.first().content.secure_url
-                    mediaItem = MediaItem.fromUri(Uri.parse(vidPath))
-
+                    var mediaItem = MediaItem.fromUri(Uri.parse(vidPath))
                     exoPlayer!!.setMediaItem(mediaItem)
                     exoPlayer!!.prepare()
                     exoPlayer!!.play()
-                }
 
-                courseLearningAdapter!!.onLongPress = { userLecture, sectionIdx, lectureIdx ->
-                    createActionsDialog(userLecture, sectionIdx, lectureIdx).show()
+                    courseLearningAdapter!!.onItemClick = { userLecture, sectionIdx, lectureIdx ->
+                        currentLecture = userLecture
+                        currentSectionIdx = sectionIdx
+                        currentLectureIdx = lectureIdx
+
+                        vidPath = userLecture.keys.first().content.secure_url
+                        mediaItem = MediaItem.fromUri(Uri.parse(vidPath))
+
+                        exoPlayer!!.setMediaItem(mediaItem)
+                        exoPlayer!!.prepare()
+                        exoPlayer!!.play()
+                    }
+
+                    courseLearningAdapter!!.onLongPress = { userLecture, sectionIdx, lectureIdx ->
+                        createActionsDialog(userLecture, sectionIdx, lectureIdx).show()
+                    }
+                } else {
+                    // TODO: handle empty lectures or sections
                 }
             })
 //        })
     }
 
-    private fun createActionsDialog(userLecture: Map<Lecture, Boolean>, sectionIdx: Int, lectureIdx: Int): BottomSheetDialog {
+    private fun createActionsDialog(
+        userLecture: Map<Lecture, Boolean>,
+        sectionIdx: Int,
+        lectureIdx: Int
+    ): BottomSheetDialog {
         val dialog = BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
         val bottomSheet = layoutInflater.inflate(R.layout.dialog_bottom_sheet, null)
         val rvActions = bottomSheet.findViewById<RecyclerView>(R.id.rvFilters)
         bottomSheet.findViewById<TextView>(R.id.tvDialogOptions).visibility = View.GONE
 
         val options = if (userLecture.values.first())
-                        arrayListOf(resources.getString(R.string.mark_as_incomplete))
-                    else
-                        arrayListOf(resources.getString(R.string.mark_as_complete))
+            arrayListOf(resources.getString(R.string.mark_as_incomplete))
+        else
+            arrayListOf(resources.getString(R.string.mark_as_complete))
 
         options.add(resources.getString(R.string.qa_for_lecture))
         val adapter = BottomSheetDialogAdapter(options)
         rvActions!!.adapter = adapter
         rvActions.layoutManager = LinearLayoutManager(activity)
-        val itemDecoration: RecyclerView.ItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+        val itemDecoration: RecyclerView.ItemDecoration =
+            DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         rvActions.addItemDecoration(itemDecoration)
         adapter.onItemClick = { filter, filterIdx ->
-            if(filterIdx == 0) {
-                userLectureViewModel.markLecture(userLecture.keys.first()._id, !userLecture.values.first(), sectionIdx, lectureIdx)
+            if (filterIdx == 0) {
+                userLectureViewModel.markLecture(
+                    userLecture.keys.first()._id,
+                    !userLecture.values.first(),
+                    sectionIdx,
+                    lectureIdx
+                )
                 updateProgress(!userLecture.values.first())
                 courseLearningAdapter?.notifyLectureMarked(sectionIdx, lectureIdx)
                 dialog.dismiss()
-            }
-            else if(filterIdx == 1) {
+            } else if (filterIdx == 1) {
                 val qaDialog = QADialog()
                 qaDialog.show(parentFragmentManager, "QADialog")
                 dialog.dismiss()
@@ -207,7 +230,7 @@ class LectureLearningFragment : Fragment() {
     }
 
     private fun updateProgress(isComplete: Boolean = true) {
-        if(numLectures != 0)
+        if (numLectures != 0)
             (activity as CourseLearningActivity).updateProgress(isComplete, numLectures)
     }
 
@@ -233,8 +256,8 @@ class LectureLearningFragment : Fragment() {
     override fun onPause() {
         super.onPause()
 
-        if(exoPlayer!!.isPlaying) {
-            if(exoPlayer != null) {
+        if (exoPlayer!!.isPlaying) {
+            if (exoPlayer != null) {
                 exoPlayer!!.playWhenReady = false
             }
         }

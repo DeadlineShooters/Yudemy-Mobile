@@ -87,7 +87,14 @@ class SectionRepository {
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    val idList = document.data?.get("sectionList") as ArrayList<String>
+                    val data = document.data?.get("sectionList")
+                    val idList = if (data != null) {
+                        data as ArrayList<String>
+                    } else {
+                        // data is null
+                        ArrayList<String>()
+                    }
+
                     val sectionRepository = SectionRepository()
                     val tasks = idList.map { id ->
                         val task = TaskCompletionSource<Section>()
@@ -98,7 +105,7 @@ class SectionRepository {
                     }
                     Tasks.whenAllSuccess<Section>(tasks)
                         .addOnSuccessListener { sections ->
-                            callback(sections as ArrayList<Section>)
+                            callback(ArrayList(sections))
                         }
                 } else {
                     Log.d("Firestore", "No such document")
