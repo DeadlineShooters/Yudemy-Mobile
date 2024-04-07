@@ -81,10 +81,4 @@ class CourseViewModel : ViewModel() {
 //        }
 //
 //    }
-
-    fun getLearningCourse(courseId: String) {
-        courseRepository.getCourseById(courseId) {
-            _learningCourse.value = it
-        }
-    }
 }

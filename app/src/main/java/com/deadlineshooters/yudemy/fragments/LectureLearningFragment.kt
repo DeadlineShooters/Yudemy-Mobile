@@ -1,6 +1,7 @@
 package com.deadlineshooters.yudemy.fragments
 
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -27,14 +28,21 @@ import com.deadlineshooters.yudemy.adapters.CourseLearningAdapter
 import com.deadlineshooters.yudemy.adapters.BottomSheetDialogAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentLectureLearningBinding
 import com.deadlineshooters.yudemy.dialogs.QADialog
+import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.models.CourseProgress
 import com.deadlineshooters.yudemy.models.Lecture
+import com.deadlineshooters.yudemy.models.Section
+import com.deadlineshooters.yudemy.repositories.CourseProgressRepository
+import com.deadlineshooters.yudemy.viewmodels.CourseProgressViewModel
 import com.deadlineshooters.yudemy.viewmodels.SectionViewModel
 import com.deadlineshooters.yudemy.viewmodels.UserLectureViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlin.math.roundToInt
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_COURSE_ID = "courseId"
+private const val ARG_COURSE = "course"
+private const val ARG_PROGRESS = "progress"
 
 /**
  * A simple [Fragment] subclass.
@@ -43,36 +51,38 @@ private const val ARG_COURSE_ID = "courseId"
  */
 class LectureLearningFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var courseId: String = ""
+    private var course: Course? = null
 
     private lateinit var binding: FragmentLectureLearningBinding
-    private lateinit var sectionViewModel: SectionViewModel
     private lateinit var userLectureViewModel: UserLectureViewModel
+    private lateinit var courseProgressViewModel: CourseProgressViewModel
 
     private lateinit var videoView: PlayerView
     private lateinit var btnMuteAudio: ImageView
     private var exoPlayer: ExoPlayer? = null
 
-//    private var currentLecture: Lecture? = null
     private var currentLecture: Map<Lecture, Boolean>? = null
     private var currentSectionIdx: Int = 0
     private var currentLectureIdx: Int = 0
 
     private var courseLearningAdapter: CourseLearningAdapter? = null
 
+    private var numLectures = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-//            courseId = it.getString(ARG_COURSE_ID)
-            // TODO: remove the below and retrieve courseId from argument
-            courseId = "2tNxr8j5FosEueZrL3wH"
+            course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                it.getParcelable(ARG_COURSE, Course::class.java)
+            } else {
+                it.getParcelable(ARG_COURSE)
+            }
         }
 
-        sectionViewModel = ViewModelProvider(this)[SectionViewModel::class.java]
-        sectionViewModel.getSectionsCourseLearning(courseId)
-
         userLectureViewModel = ViewModelProvider(this)[UserLectureViewModel::class.java]
-        userLectureViewModel.getUserLecturesByCourse("pQ7PAicEnDck3dBL8uIGZgKcUXM2", courseId)
+        userLectureViewModel.getLectureLearningData(course!!.id)
+
+        courseProgressViewModel = ViewModelProvider(this)[CourseProgressViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -102,7 +112,8 @@ class LectureLearningFragment : Fragment() {
                 if(playbackState == Player.STATE_ENDED) {
                     // Mark the lecture as completed
                     if(currentLecture != null && !currentLecture!!.values.first()) {
-                        userLectureViewModel.markLecture("pQ7PAicEnDck3dBL8uIGZgKcUXM2", currentLecture!!.keys.first()._id, true, currentSectionIdx, currentLectureIdx)
+                        userLectureViewModel.markLecture(currentLecture!!.keys.first()._id, true, currentSectionIdx, currentLectureIdx)
+                        updateProgress()
                         courseLearningAdapter?.notifyLectureMarked(currentSectionIdx, currentLectureIdx)
                     }
                 }
@@ -120,15 +131,18 @@ class LectureLearningFragment : Fragment() {
         }
 
         // Show the sections and lectures
-        sectionViewModel.sectionsCourseLearning.observe(viewLifecycleOwner, Observer { sectionList ->
-            userLectureViewModel.userLectures.observe(viewLifecycleOwner, Observer { userLectures ->
+        userLectureViewModel.combinedData.observe(viewLifecycleOwner, Observer { (sectionList, userLectures) ->
+                numLectures = userLectures.flatten().size
+
                 courseLearningAdapter = CourseLearningAdapter(sectionList, userLectures)
                 binding.rvSections.adapter = courseLearningAdapter
                 binding.rvSections.layoutManager = LinearLayoutManager(activity)
 
                 currentLecture = userLectures[0][0]
 
-                var mediaItem = MediaItem.fromUri(Uri.parse("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+                var vidPath = currentLecture!!.keys.first().content.secure_url
+
+                var mediaItem = MediaItem.fromUri(Uri.parse(vidPath))
                 exoPlayer!!.setMediaItem(mediaItem)
                 exoPlayer!!.prepare()
                 exoPlayer!!.play()
@@ -138,7 +152,8 @@ class LectureLearningFragment : Fragment() {
                     currentSectionIdx = sectionIdx
                     currentLectureIdx = lectureIdx
 
-                    mediaItem = MediaItem.fromUri(Uri.parse("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+                    vidPath = userLecture.keys.first().content.secure_url
+                    mediaItem = MediaItem.fromUri(Uri.parse(vidPath))
 
                     exoPlayer!!.setMediaItem(mediaItem)
                     exoPlayer!!.prepare()
@@ -149,7 +164,7 @@ class LectureLearningFragment : Fragment() {
                     createActionsDialog(userLecture, sectionIdx, lectureIdx).show()
                 }
             })
-        })
+//        })
     }
 
     private fun createActionsDialog(userLecture: Map<Lecture, Boolean>, sectionIdx: Int, lectureIdx: Int): BottomSheetDialog {
@@ -171,7 +186,8 @@ class LectureLearningFragment : Fragment() {
         rvActions.addItemDecoration(itemDecoration)
         adapter.onItemClick = { filter, filterIdx ->
             if(filterIdx == 0) {
-                userLectureViewModel.markLecture("pQ7PAicEnDck3dBL8uIGZgKcUXM2", userLecture.keys.first()._id, !userLecture.values.first(), sectionIdx, lectureIdx)
+                userLectureViewModel.markLecture(userLecture.keys.first()._id, !userLecture.values.first(), sectionIdx, lectureIdx)
+                updateProgress(!userLecture.values.first())
                 courseLearningAdapter?.notifyLectureMarked(sectionIdx, lectureIdx)
                 dialog.dismiss()
             }
@@ -190,6 +206,11 @@ class LectureLearningFragment : Fragment() {
         return dialog
     }
 
+    private fun updateProgress(isComplete: Boolean = true) {
+        if(numLectures != 0)
+            (activity as CourseLearningActivity).updateProgress(isComplete, numLectures)
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -200,11 +221,35 @@ class LectureLearningFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(courseId: String) =
+        fun newInstance(course: Course) =
             LectureLearningFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_COURSE_ID, courseId)
+                    putParcelable(ARG_COURSE, course)
+//                    putInt(ARG_PROGRESS, progress)
                 }
             }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        if(exoPlayer!!.isPlaying) {
+            if(exoPlayer != null) {
+                exoPlayer!!.playWhenReady = false
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        releasePlayer()
+        super.onDestroy()
+    }
+
+    private fun releasePlayer() {
+        if (exoPlayer != null) {
+            exoPlayer!!.stop();
+            exoPlayer!!.release();
+            exoPlayer = null;
+        }
     }
 }
