@@ -35,7 +35,14 @@ class UserRepository {
             .get()
             .addOnSuccessListener { document ->
                 if(document != null) {
-                    val listCourse = document.data?.get("courseList") as ArrayList<String>
+                    val data = document.data?.get("courseList")
+                    val listCourse = if (data is ArrayList<*>) {
+                        data as ArrayList<String>
+                    } else {
+                        // data is null or an empty list
+                        ArrayList<String>()
+                    }
+
                     val progressTasks: ArrayList<Task<Number>> = arrayListOf()
                     val tasks = listCourse.map { courseId ->
                         val task = TaskCompletionSource<Map<Course, String>>()
@@ -57,7 +64,7 @@ class UserRepository {
                         .addOnSuccessListener { courses ->
                             Tasks.whenAllSuccess<Int>(progressTasks)
                                 .addOnSuccessListener { progresses ->
-                                    callback(courses as ArrayList<Map<Course, String>>, progresses as ArrayList<Number>)
+                                    callback(ArrayList(courses), ArrayList(progresses))
                                 }
                         }
                 }
