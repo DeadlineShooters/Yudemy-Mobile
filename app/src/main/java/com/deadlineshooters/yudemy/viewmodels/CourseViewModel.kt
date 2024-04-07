@@ -15,9 +15,6 @@ class CourseViewModel : ViewModel() {
     private val cloudinaryHelper = CloudinaryHelper()
     val courses: LiveData<List<Course>> = courseRepository.getCourses()
 
-    private val _learningCourse = MutableLiveData<Course?>()
-    val learningCourse: LiveData<Course?> = _learningCourse
-
 //    fun addDummyCourse() {
 //
 //        val imageFilePath = "/storage/emulated/0/Android/data/com.deadlineshooters.yudemy/files/DCIM/img_thumbnail.jpg"
@@ -36,10 +33,4 @@ class CourseViewModel : ViewModel() {
 //        }
 //
 //    }
-
-    fun getLearningCourse(courseId: String) {
-        courseRepository.getCourseById(courseId) {
-            _learningCourse.value = it
-        }
-    }
 }
