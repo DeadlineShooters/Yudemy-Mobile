@@ -13,6 +13,11 @@ interface FeedbackCallback {
     fun onSuccess()
     fun onFailure(e: Exception)
 }
+
+interface FeedbackUpdateListener {
+    fun onFeedbackUpdated(feedback: CourseFeedback)
+}
+
 class CourseFeedbackRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
     private val feedbackCollection = mFireStore.collection(Constants.COURSE_FEEDBACK)
@@ -21,7 +26,6 @@ class CourseFeedbackRepository {
         // If the feedback doesn't have an id, create a new document and get its ID
         val feedbackRef = if (oldRating == null) {
             val newDoc = feedbackCollection.document()
-            feedback.id = newDoc.id
 
             // update rating
             course.totalRatings += 1
@@ -39,7 +43,7 @@ class CourseFeedbackRepository {
         } else {
             // Otherwise, get a reference to the existing document
             course.avgRating = ((course.avgRating * course.totalRatings) - oldRating.rating + feedback.rating.toDouble()) / course.totalRatings
-            feedbackCollection.document(feedback.id)
+            feedbackCollection.document(oldRating.id)
         }
 
         // Set the feedback to the document, creating it if it doesn't exist or updating it if it does
@@ -115,5 +119,28 @@ class CourseFeedbackRepository {
             }
     }
 
+//    fun listenForFeedbackUpdates(courseId: String, userId: String, listener: FeedbackUpdateListener) {
+//        feedbackCollection
+//            .whereEqualTo("courseId", courseId)
+//            .whereEqualTo("userId", userId)
+//            .addSnapshotListener { snapshots, e ->
+//                if (e != null) {
+//                    Log.w(this.javaClass.simpleName, "Listen failed.", e)
+//                    return@addSnapshotListener
+//                }
+//
+//                if (snapshots != null && !snapshots.isEmpty) {
+//                    Log.d(this.javaClass.simpleName, "Current data: ${snapshots.documents}")
+//
+//                    // Update the feedback
+//                    val updatedFeedback = snapshots.documents[0].toObject(CourseFeedback::class.java)
+//                    if (updatedFeedback != null) {
+//                        listener.onFeedbackUpdated(updatedFeedback)
+//                    }
+//                } else {
+//                    Log.d(this.javaClass.simpleName, "Current data: null")
+//                }
+//            }
+//    }
 
 }
