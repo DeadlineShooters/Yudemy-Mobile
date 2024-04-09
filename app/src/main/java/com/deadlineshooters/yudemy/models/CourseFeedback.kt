@@ -9,11 +9,11 @@ import java.util.Locale
 
 @Parcelize
 data class CourseFeedback(
-    var _id: String = "",
+    var id: String = "",
     var courseId: String = "",
     var userId: String = "",
     var feedback: String = "",
-    var rating: Number = 5,
+    var rating: Int = 5,
     var createdDatetime: String = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault()).format(
         Date()
     ),
