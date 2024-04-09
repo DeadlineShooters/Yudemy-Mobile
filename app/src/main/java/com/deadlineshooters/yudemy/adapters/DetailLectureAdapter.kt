@@ -1,5 +1,6 @@
 package com.deadlineshooters.yudemy.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,8 @@ class DetailLectureAdapter(private val lectureList: List<Lecture>) : RecyclerVie
 
     override fun onBindViewHolder(holder: LectureViewHolder, position: Int) {
         val currentItem = lectureList[position]
+        Log.d(this.javaClass.simpleName, currentItem.name)
+
         holder.lectureNumber.text = currentItem.index.toString()
         holder.lectureTitle.text = currentItem.name
         holder.lectureDuration.text = StringUtils.secondsToMinuteSecondFormat(currentItem.content.duration)

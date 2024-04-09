@@ -89,17 +89,6 @@ class MoreLearningFragment : Fragment() {
         binding = FragmentMoreLearningBinding.inflate(inflater, container, false)
 
         setupDialog()
-//
-//        // Listen for changes in the feedback document and update
-//        courseFeedbackRepo.listenForFeedbackUpdates(
-//            course!!.id,
-//            UserRepository.getCurrentUserID(),
-//            object :
-//                FeedbackUpdateListener {
-//                override fun onFeedbackUpdated(feedback: CourseFeedback) {
-//                    updateUIWithFeedback(feedback)
-//                }
-//            })
 
         // Get feedback for course and user
 

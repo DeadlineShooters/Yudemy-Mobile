@@ -9,17 +9,19 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentSnapshot
 import android.content.ContentValues
+import com.deadlineshooters.yudemy.utils.Constants
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.firestore.FirebaseFirestore
 
 class SectionRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
     private val sectionCollection = mFireStore.collection("sections")
+    private val coursesCollection = mFireStore.collection(Constants.COURSES)
 
     private val lectureRepository = LectureRepository()
 
     fun getSectionsWithLectures(courseId: String): Task<List<SectionWithLectures>> {
-        val courseTask = sectionCollection.document(courseId).get()
+        val courseTask = coursesCollection.document(courseId).get()
         val tasks = mutableListOf<Task<*>>()
         val lectureTasks = mutableListOf<Task<*>>()
 

@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.CourseFeedback
+import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.utils.Constants
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -21,6 +22,7 @@ interface FeedbackUpdateListener {
 class CourseFeedbackRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
     private val feedbackCollection = mFireStore.collection(Constants.COURSE_FEEDBACK)
+    private val usersCollection = mFireStore.collection(Constants.USERS)
 
     fun saveFeedback(oldRating : CourseFeedback?, course: Course, feedback: CourseFeedback, callback: FeedbackCallback) {
         // If the feedback doesn't have an id, create a new document and get its ID
@@ -115,32 +117,19 @@ class CourseFeedbackRepository {
                 callback(feedbackList)
             }
             .addOnFailureListener { e ->
-                Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                Log.e(this.javaClass.simpleName, "Can't get latest course feedback: $e")
+
             }
     }
 
-//    fun listenForFeedbackUpdates(courseId: String, userId: String, listener: FeedbackUpdateListener) {
-//        feedbackCollection
-//            .whereEqualTo("courseId", courseId)
-//            .whereEqualTo("userId", userId)
-//            .addSnapshotListener { snapshots, e ->
-//                if (e != null) {
-//                    Log.w(this.javaClass.simpleName, "Listen failed.", e)
-//                    return@addSnapshotListener
-//                }
-//
-//                if (snapshots != null && !snapshots.isEmpty) {
-//                    Log.d(this.javaClass.simpleName, "Current data: ${snapshots.documents}")
-//
-//                    // Update the feedback
-//                    val updatedFeedback = snapshots.documents[0].toObject(CourseFeedback::class.java)
-//                    if (updatedFeedback != null) {
-//                        listener.onFeedbackUpdated(updatedFeedback)
-//                    }
-//                } else {
-//                    Log.d(this.javaClass.simpleName, "Current data: null")
-//                }
-//            }
-//    }
-
+    fun getUserFullName(userId: String, callback: (String) -> Unit) {
+        usersCollection.document(userId).get().addOnSuccessListener { document ->
+            if (document != null) {
+                val user = document.toObject(User::class.java)
+                callback(user?.fullName ?: "")
+            } else {
+                callback("")
+            }
+        }
+    }
 }
