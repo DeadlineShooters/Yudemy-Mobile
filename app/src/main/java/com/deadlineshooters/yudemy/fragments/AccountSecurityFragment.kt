@@ -46,10 +46,7 @@ class AccountSecurityFragment : Fragment() {
 
         done = view.findViewById(R.id.doneAccSecurity)
         done.setOnClickListener {
-            val fragmentManager = requireActivity().supportFragmentManager
-            val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.frameLayout, AccountFragment())
-            fragmentTransaction.commit()
+            requireActivity().supportFragmentManager.popBackStack()
         }
     }
 

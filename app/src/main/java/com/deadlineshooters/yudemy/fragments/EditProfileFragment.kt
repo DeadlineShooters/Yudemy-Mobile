@@ -81,7 +81,7 @@ class EditProfileFragment : Fragment() {
 
                 }
                 .setPositiveButton(Html.fromHtml("<font color='#FF0000'><b>Discard</b></font>")) { dialog, which ->
-                    replaceFragment(AccountFragment())
+                    requireActivity().supportFragmentManager.popBackStack()
                 }
 
             val dialog: AlertDialog = builder.create()
@@ -89,12 +89,6 @@ class EditProfileFragment : Fragment() {
         }
     }
 
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentManager = requireActivity().supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayout, fragment)
-        fragmentTransaction.commit()
-    }
     companion object {
         /**
          * Use this factory method to create a new instance of

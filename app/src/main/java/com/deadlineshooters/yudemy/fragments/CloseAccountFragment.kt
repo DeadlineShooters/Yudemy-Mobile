@@ -58,10 +58,7 @@ class CloseAccountFragment : Fragment() {
         warningText.text = mSpannableString
 
         done.setOnClickListener {
-            val fragmentManager = requireActivity().supportFragmentManager
-            val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.frameLayout, AccountFragment())
-            fragmentTransaction.commit()
+            requireActivity().supportFragmentManager.popBackStack()
         }
 
         closeAccBtn.setOnClickListener {

@@ -58,7 +58,7 @@ class EditImageFragment : Fragment() {
         saveInstructorImageBtn = view.findViewById(R.id.saveInstructorImageBtn)
 
         cancelEditImageBtn.setOnClickListener {
-            replaceFragment(AccountFragment())
+            requireActivity().supportFragmentManager.popBackStack()
         }
         ImageViewHelper().setImageViewFromUrl(Image(dumpImage, ""), editedImage)
 
@@ -73,13 +73,6 @@ class EditImageFragment : Fragment() {
             //TODO: update image into database
         }
 
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentManager = requireActivity().supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayout, fragment)
-        fragmentTransaction.commit()
     }
 
     companion object {
