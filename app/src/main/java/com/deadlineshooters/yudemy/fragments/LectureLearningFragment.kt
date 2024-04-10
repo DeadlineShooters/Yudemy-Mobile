@@ -192,7 +192,7 @@ class LectureLearningFragment : Fragment() {
                 dialog.dismiss()
             }
             else if(filterIdx == 1) {
-                val qaDialog = QADialog()
+                    val qaDialog = QADialog(course!!.id)
                 qaDialog.show(parentFragmentManager, "QADialog")
                 dialog.dismiss()
             }
