@@ -19,4 +19,10 @@ class ReplyViewModel : ViewModel() {
             _replies.value = it
         }
     }
+
+    fun addNewReply(reply: Reply) {
+        replyRepository.addNewReply(reply) {
+            _replies.value = it
+        }
+    }
 }

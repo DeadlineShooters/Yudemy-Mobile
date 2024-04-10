@@ -36,6 +36,7 @@ import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Question
+import com.deadlineshooters.yudemy.models.Reply
 import com.deadlineshooters.yudemy.viewmodels.LectureViewModel
 import com.deadlineshooters.yudemy.viewmodels.QuestionViewModel
 import com.deadlineshooters.yudemy.viewmodels.ReplyViewModel
@@ -193,7 +194,7 @@ class QADialog(private val courseId: String) : DialogFragment() {
     private fun addImageView(uri: Uri) {
         val imageContainer = when (state) {
             1 -> askQuestionDialog.findViewById(R.id.questionImageContainer)
-            2 -> questionDetailDialog.findViewById(R.id.replyImageContainer)
+            2 -> questionDetailDialog.findViewById(R.id.repImageContainer)
             3 -> editQuestionDialog.findViewById(R.id.editQuestionImageContainer)
             else -> LinearLayout(requireContext())
         }
@@ -249,6 +250,8 @@ class QADialog(private val courseId: String) : DialogFragment() {
         val deleteQuestionBtn = sheet.findViewById<Button>(R.id.deleteQuestionBtn)
         val editQuestionBtn = sheet.findViewById<TextView>(R.id.editQuestionBtn)
         val questionDetailImageContainer = sheet.findViewById<LinearLayout>(R.id.questionDetailImageContainer)
+        val repImageContainer = sheet.findViewById<LinearLayout>(R.id.repImageContainer)
+        val replyContent = sheet.findViewById<TextView>(R.id.replyInput)
 
         lateinit var replyListAdapter: ReplyListAdapter
         val userViewModel: UserViewModel = UserViewModel()
@@ -303,6 +306,23 @@ class QADialog(private val courseId: String) : DialogFragment() {
 
         sendBtn.setOnClickListener{
             //TODO: Submit reply to database
+            val reply = replyContent.text.toString()
+            if(imageList.isNotEmpty()){
+                CloudinaryHelper().uploadImageListToCloudinary(imageList){
+                    val rep = Reply("", BaseActivity().getCurrentUserID(), question._id , it, reply , originalFormat.format(Date()))
+                    replyViewModel.addNewReply(rep)
+                    imageList.clear()
+                    replyContent.text = ""
+                    repImageContainer.removeAllViews()
+                    replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
+                }
+            } else{
+                val rep = Reply("", BaseActivity().getCurrentUserID(), question._id , ArrayList(), reply , originalFormat.format(Date()))
+                replyViewModel.addNewReply(rep)
+                replyContent.text = ""
+                replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
+            }
+
         }
 
         if(BaseActivity().getCurrentUserID() != question.asker){

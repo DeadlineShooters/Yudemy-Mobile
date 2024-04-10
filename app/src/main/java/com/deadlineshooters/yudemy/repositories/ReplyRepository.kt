@@ -22,4 +22,16 @@ class ReplyRepository {
                 callback(ArrayList())
             }
     }
+
+    fun addNewReply(reply: Reply, callback: (ArrayList<Reply>) -> Unit) {
+        repliesCollection.add(reply)
+            .addOnSuccessListener {
+                getReplyListByQuestionId(reply.questionId) {
+                    callback(it)
+                }
+            }
+            .addOnFailureListener {
+                callback(ArrayList())
+            }
+    }
 }
