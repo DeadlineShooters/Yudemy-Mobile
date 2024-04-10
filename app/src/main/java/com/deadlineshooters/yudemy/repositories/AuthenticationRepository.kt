@@ -1,5 +1,6 @@
 package com.deadlineshooters.yudemy.repositories
 
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import javax.security.auth.callback.Callback
 
@@ -42,4 +43,28 @@ class AuthenticationRepository {
         }
     }
 
+    fun changePassword(newPassword: String, callback: (Boolean?) -> Unit){
+        auth.currentUser?.updatePassword(newPassword)
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    callback(true)
+                } else {
+                    callback(false)
+                }
+            }
+    }
+
+    fun checkPassword(password: String, callback: (Boolean?) -> Unit){
+        val user = auth.currentUser
+
+        val credential = user?.email?.let { EmailAuthProvider.getCredential(it, password) }
+        user?.reauthenticate(credential!!)
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    callback(true)
+                } else {
+                    callback(false)
+                }
+            }
+    }
 }
