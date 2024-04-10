@@ -67,4 +67,15 @@ class AuthenticationRepository {
                 }
             }
     }
+
+    fun closeAccount(callback: (Boolean, String?) -> Unit) {
+        val userId = auth.currentUser?.uid
+        auth.currentUser?.delete()?.addOnCompleteListener {
+            if (it.isSuccessful) {
+                callback(true, userId)
+            } else {
+                callback(false, null)
+            }
+        }
+    }
 }

@@ -210,4 +210,7 @@
     <string name="mark_as_incomplete">Mark as incomplete</string>
     <string name="qa_for_lecture">Q&amp;A for lecture</string>
     <string name="no_matching_courses">No matching courses</string>
+    <string name="close_your_account">Close your account?</string>
+    <string name="close_account_confirm_mess">Are you sure you want to close your account?</string>
+    <string name="enter_your_password">Enter your password</string>
 </resources>

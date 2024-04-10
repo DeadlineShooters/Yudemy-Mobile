@@ -81,4 +81,10 @@ class UserRepository {
                 }
             }
     }
+
+    fun deleteUser(userId: String) {
+        mFireStore.collection("users")
+            .document(userId)
+            .delete()
+    }
 }

@@ -1,5 +1,7 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.TextAppearanceSpan
@@ -9,7 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.SignInActivity
+import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
+import com.deadlineshooters.yudemy.repositories.UserRepository
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -63,7 +69,49 @@ class CloseAccountFragment : Fragment() {
 
         closeAccBtn.setOnClickListener {
             // TODO: handle close account
+            createConfirmCloseAccountDialog()
         }
+    }
+
+    private fun createConfirmCloseAccountDialog() {
+        val builder = AlertDialog.Builder(context)
+
+        val dialogView = requireActivity().layoutInflater.inflate(R.layout.dialog_close_account_confirm, null)
+        builder.setView(dialogView)
+
+        val dialog = builder.create()
+
+        dialogView.findViewById<Button>(R.id.cancelCloseAccConfirmBtn).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogView.findViewById<Button>(R.id.closeAccConfirmBtn).setOnClickListener {
+            val edittextPassword = dialogView.findViewById<TextView>(R.id.etConfirmPwCloseAcc)
+            if(edittextPassword.text.isEmpty()){
+                edittextPassword.error = "Please enter your password"
+                return@setOnClickListener
+            }
+            val password = edittextPassword.text.toString()
+            AuthenticationRepository().checkPassword(password) { isCorrect ->
+                if (isCorrect == true) {
+                    AuthenticationRepository().closeAccount { isComplete, userId ->
+                        if (isComplete) {
+                            UserRepository().deleteUser(userId!!)
+                            dialog.dismiss()
+                            Toast.makeText(context, "Account closed successfully", Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(context, SignInActivity::class.java))
+                        }
+                        else
+                            Toast.makeText(context, "Failed to close account", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                else {
+                    Toast.makeText(context, "Incorrect password", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        dialog.show()
     }
 
     companion object {
