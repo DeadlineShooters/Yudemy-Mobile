@@ -24,9 +24,7 @@ class CertificateRepository {
 //                callback(ArrayList())
 //            }
 //    }
-    public fun getCertificate(userId: String, courseId: String, callback: (Certificate?) -> Unit){
-        Log.d("CertificateDialog", userId)
-        Log.d("CertificateDialog", courseId)
+    fun getCertificate(userId: String, courseId: String, callback: (Certificate?) -> Unit){
         certificateCollection.whereEqualTo("userId", userId).whereEqualTo("courseId", courseId)
         .get().addOnSuccessListener { result ->
             if(result.isEmpty){
@@ -39,6 +37,16 @@ class CertificateRepository {
         }
         .addOnFailureListener { exception ->
             callback(null)
+        }
+    }
+
+    fun addCertificate(userId: String, courseId: String, certificate: Certificate, callback: (Certificate) -> Unit){
+        getCertificate(userId, courseId){
+            if(it == null){
+                certificateCollection.add(certificate).addOnSuccessListener {
+                    callback(certificate)
+                }
+            }
         }
     }
 }

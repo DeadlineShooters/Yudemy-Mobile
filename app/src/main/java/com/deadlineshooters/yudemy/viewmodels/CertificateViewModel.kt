@@ -17,4 +17,10 @@ class CertificateViewModel : ViewModel() {
         }
     }
 
+    fun addCertificate(userId: String, courseId: String, certificate: Certificate) {
+        certificateRepository.addCertificate(userId, courseId, certificate){
+            _certificate.value = it
+        }
+    }
+
 }

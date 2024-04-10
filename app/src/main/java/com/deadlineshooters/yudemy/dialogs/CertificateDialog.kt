@@ -30,7 +30,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.BaseActivity
 import com.deadlineshooters.yudemy.adapters.CourseListAdapter1
-import com.deadlineshooters.yudemy.adapters.MyLearningFilterAdapter
 import com.deadlineshooters.yudemy.adapters.QuestionListAdapter
 import com.deadlineshooters.yudemy.adapters.ReplyListAdapter
 import com.deadlineshooters.yudemy.models.Certificate
@@ -94,7 +93,6 @@ class CertificateDialog(private val courseId: String) : DialogFragment() {
         courseLength = view.findViewById(R.id.courseLength)
 
         certificateViewModel.certificate.observe(viewLifecycleOwner, Observer {certificate ->
-            Log.d("Certificate", certificate.toString())
             certificateCourseName.text = certificate.title
 
             instructorViewModel.instructor.observe(viewLifecycleOwner, Observer {instructor ->
@@ -103,7 +101,6 @@ class CertificateDialog(private val courseId: String) : DialogFragment() {
 
             userViewModel.userData.observe(viewLifecycleOwner, Observer {user ->
                 studentName.text = user.fullName
-                Log.d("Certificate", "Cur user: $user")
             })
 
 //            studentName.text = UserRepository().getCurUser().fullName
