@@ -28,6 +28,7 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.adapters.MyLearningFilterAdapter
 import com.deadlineshooters.yudemy.adapters.QuestionListAdapter
 import com.deadlineshooters.yudemy.adapters.ReplyListAdapter
+import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Question
 import com.deadlineshooters.yudemy.models.Reply
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -72,7 +73,7 @@ class InstructorQAFragment : Fragment() {
 
     private val dumpQuestionList = arrayListOf(dumpQuestion1, dumpQuestion2, dumpQuestion3, dumpQuestion4, dumpQuestion5, dumpQuestion6, dumpQuestion7, dumpQuestion8, dumpQuestion9)
 
-    private var questionListAdapter = QuestionListAdapter(dumpQuestionList)
+    private var questionListAdapter = QuestionListAdapter(dumpQuestionList, this)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -99,7 +100,7 @@ class InstructorQAFragment : Fragment() {
             instructorFilterQuestionDialog.show()
         }
 
-        questionListAdapter = QuestionListAdapter(dumpQuestionList)
+        questionListAdapter = QuestionListAdapter(dumpQuestionList, this)
         instructorQuestionListView.adapter = questionListAdapter
         instructorQuestionListView.layoutManager = LinearLayoutManager(requireContext())
 
@@ -185,12 +186,12 @@ class InstructorQAFragment : Fragment() {
         val questionDetailLectureId = sheet.findViewById<TextView>(R.id.questionDetailLectureId)
         val questionDetailContentView = sheet.findViewById<ConstraintLayout>(R.id.questionDetailContentView)
         val questionDetailContent = sheet.findViewById<TextView>(R.id.questionDetailContent)
-        val questionDetailImage = sheet.findViewById<ImageView>(R.id.questionDetailImage)
         val replyListView = sheet.findViewById<RecyclerView>(R.id.replyListView)
         val cameraBtn1 = sheet.findViewById<Button>(R.id.cameraBtn1)
         val sendBtn = sheet.findViewById<Button>(R.id.sendBtn)
         val deleteQuestionBtn = sheet.findViewById<Button>(R.id.deleteQuestionBtn)
         val editQuestionBtn = sheet.findViewById<TextView>(R.id.editQuestionBtn)
+        val questionDetailImageContainer = sheet.findViewById<LinearLayout>(R.id.questionDetailImageContainer)
 
         val dumpReply1 = Reply("John Doe", "Brad Schiff", "123", arrayListOf(), "I think you should do this I think you should do this I think you should do this", "14/03/2024")
         val dumpReply2 = Reply("John Doe", "Brad Schiff", "123", arrayListOf(), "I think you should do this", "14/03/2024")
@@ -206,15 +207,23 @@ class InstructorQAFragment : Fragment() {
 
         questionDetailLectureId.text = question.lectureId
         questionDetailContent.text = question.details
-        if(question.images.isEmpty()){
-            questionDetailImage.visibility = View.GONE
-        }
-        else {
-            questionDetailImage.visibility = View.VISIBLE
+        for (imageUrl in question.images) {
+            Log.d("QuestionListAdapter", question.images.toString())
+            val imageView = ImageView(questionDetailContentView.context)
+            imageView.layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                350
+            )
+
+//            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+            imageView.adjustViewBounds = true
+            imageView.setPadding(0, 0, 16, 16)
+            ImageViewHelper().setImageViewFromUrl(imageUrl, imageView)
+            questionDetailImageContainer.addView(imageView)
         }
 
 
-        val replyListAdapter = ReplyListAdapter(dumpReplyList)
+        val replyListAdapter = ReplyListAdapter(dumpReplyList, this)
         replyListView.adapter = replyListAdapter
         replyListView.layoutManager = LinearLayoutManager(requireContext())
 

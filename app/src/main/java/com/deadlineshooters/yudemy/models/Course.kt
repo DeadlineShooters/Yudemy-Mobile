@@ -1,8 +1,6 @@
 package com.deadlineshooters.yudemy.models
 
 import android.os.Parcelable
-import com.deadlineshooters.yudemy.models.Image
-import com.deadlineshooters.yudemy.models.Video
 
 import java.text.SimpleDateFormat
 import java.util.Date

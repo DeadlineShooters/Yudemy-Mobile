@@ -1,8 +1,11 @@
 package com.deadlineshooters.yudemy.activities
 
 import android.app.Dialog
+import android.content.Context
+import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -21,6 +24,12 @@ import com.deadlineshooters.yudemy.viewmodels.InstructorViewModel
 import com.deadlineshooters.yudemy.viewmodels.LectureViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 open class BaseActivity : AppCompatActivity() {
@@ -115,6 +124,24 @@ open class BaseActivity : AppCompatActivity() {
     fun Float.formatThousands(): String {
         val regex = "(\\d)(?=(\\d{3})+\\.)".toRegex()
         return this.toString().replace(regex, "$1.")
+    }
+
+    fun saveBitmapToFile(bitmap: Bitmap, context: Context): String? {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val fileName = "JPEG_$timeStamp.jpg"
+        val directory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val file = File(directory, fileName)
+
+        return try {
+            val fileOutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
+            fileOutputStream.flush()
+            fileOutputStream.close()
+            file.absolutePath
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
     }
 
 }

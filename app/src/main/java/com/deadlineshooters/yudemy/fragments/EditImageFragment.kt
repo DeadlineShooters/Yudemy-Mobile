@@ -1,11 +1,7 @@
 package com.deadlineshooters.yudemy.fragments
 
-import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.os.Environment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,12 +22,6 @@ import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.viewmodels.InstructorViewModel
 import com.deadlineshooters.yudemy.viewmodels.UserViewModel
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -101,7 +91,7 @@ class EditImageFragment : Fragment() {
         saveInstructorImageBtn.setOnClickListener {
             editedImage.drawable?.let { drawable ->
                 val bitmap = (drawable as BitmapDrawable).bitmap
-                val filepath = saveBitmapToFile(bitmap, requireContext())
+                val filepath = BaseActivity().saveBitmapToFile(bitmap, requireContext())
 
                 if (filepath != null) {
                     CloudinaryHelper().uploadToCloudinary(filepath) { image ->
@@ -128,23 +118,6 @@ class EditImageFragment : Fragment() {
         fragmentTransaction.commit()
     }
 
-    private fun saveBitmapToFile(bitmap: Bitmap, context: Context): String? {
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val fileName = "JPEG_$timeStamp.jpg"
-        val directory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val file = File(directory, fileName)
-
-        return try {
-            val fileOutputStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
-            fileOutputStream.flush()
-            fileOutputStream.close()
-            file.absolutePath
-        } catch (e: IOException) {
-            e.printStackTrace()
-            null
-        }
-    }
     companion object {
         /**
          * Use this factory method to create a new instance of

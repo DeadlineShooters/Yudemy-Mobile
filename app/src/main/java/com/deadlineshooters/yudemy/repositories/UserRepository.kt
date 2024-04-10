@@ -31,4 +31,15 @@ class UserRepository {
                 }
             }
     }
+
+    fun getUserById(userId: String, callbacks: (User) -> Unit){
+        mFireStore.collection("users")
+            .document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    callbacks(document.toObject(User::class.java)!!)
+                }
+            }
+    }
 }

@@ -19,7 +19,6 @@ import com.deadlineshooters.yudemy.activities.StudentMainActivity
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
-import com.deadlineshooters.yudemy.repositories.UserRepository
 import com.deadlineshooters.yudemy.viewmodels.UserViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 

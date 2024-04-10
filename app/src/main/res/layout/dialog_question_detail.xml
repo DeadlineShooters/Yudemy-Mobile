@@ -10,19 +10,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="16dp"
         android:clickable="true"
         android:text="Back"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/textView32" />
 
     <TextView
         android:id="@+id/textView32"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="40dp"
         android:text="Question"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -94,11 +93,12 @@
 
     <TextView
         android:id="@+id/questionDetailLectureId"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="TextView"
         android:textColor="#777477"
+        app:layout_constraintEnd_toEndOf="@+id/questionDetailContentView"
         app:layout_constraintStart_toEndOf="@+id/questionDetailAskDate"
         app:layout_constraintTop_toTopOf="@+id/questionDetailAskDate" />
 
@@ -119,18 +119,26 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/questionDetailImage"
-            android:layout_width="290dp"
-            android:layout_height="163dp"
-            android:layout_marginTop="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
+        <HorizontalScrollView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/questionDetailContent"
-            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <LinearLayout
+                android:id="@+id/questionDetailImageContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:gravity="start"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </HorizontalScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/replyListView"

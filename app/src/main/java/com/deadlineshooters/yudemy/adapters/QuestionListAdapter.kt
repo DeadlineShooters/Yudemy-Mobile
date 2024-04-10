@@ -1,24 +1,37 @@
 package com.deadlineshooters.yudemy.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RatingBar
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Question
+import com.deadlineshooters.yudemy.viewmodels.InstructorViewModel
+import com.deadlineshooters.yudemy.viewmodels.LectureViewModel
+import com.deadlineshooters.yudemy.viewmodels.ReplyViewModel
+import com.deadlineshooters.yudemy.viewmodels.UserViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class QuestionListAdapter (val questionList: List<Question>): RecyclerView.Adapter<QuestionListAdapter.ViewHolder>() {
+class QuestionListAdapter (val questionList: ArrayList<Question>, private val lifecycleOwner: LifecycleOwner): RecyclerView.Adapter<QuestionListAdapter.ViewHolder>() {
     var onItemClick: ((Question) -> Unit)? = null
     private val originalFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val newFormat = SimpleDateFormat("dd, MMM, yyyy", Locale.getDefault())
+    private lateinit var userViewModel: UserViewModel
+    private lateinit var lectureViewModel: LectureViewModel
+    private lateinit var replyViewModel: ReplyViewModel
 
     inner class ViewHolder(listQuestionView: View) : RecyclerView.ViewHolder(listQuestionView) {
         val askerImage: ImageView = listQuestionView.findViewById(R.id.askerImage)
@@ -29,7 +42,7 @@ class QuestionListAdapter (val questionList: List<Question>): RecyclerView.Adapt
         val amountReply: TextView = listQuestionView.findViewById(R.id.amountReply)
         val questionContentView: ConstraintLayout = listQuestionView.findViewById(R.id.questionContentView)
         val questionContent: TextView = listQuestionView.findViewById(R.id.questionContent)
-        val questionImage: ImageView = listQuestionView.findViewById(R.id.questionImage)
+        val questionImageContainer: LinearLayout = listQuestionView.findViewById(R.id.questionImageContainer)
 
         init {
             listQuestionView.setOnClickListener {
@@ -44,41 +57,67 @@ class QuestionListAdapter (val questionList: List<Question>): RecyclerView.Adapt
         val context = parent.context
         val inflater = LayoutInflater.from(context)
         val courseView = inflater.inflate(R.layout.question_list_item, parent, false)
+        userViewModel = UserViewModel()
+        lectureViewModel = LectureViewModel()
+        replyViewModel = ReplyViewModel()
         return ViewHolder(courseView)
     }
 
     override fun onBindViewHolder(holder: QuestionListAdapter.ViewHolder, position: Int) {
         val question: Question = questionList[position]
-
-
-        val askerImage = holder.askerImage
         val questionTitle = holder.questionTitle
         val askerName = holder.askerName
         val askDate = holder.askDate
         val lectureId = holder.lectureId
         val amountReply = holder.amountReply
         val questionContent = holder.questionContent
-        val questionImage = holder.questionImage
+        val questionContentView = holder.questionContentView
+        val questionImageContainer = holder.questionImageContainer
 
         questionTitle.text = question.title
-        askerName.text = question.asker
+
+        userViewModel.getUserById(question.asker)
+        lectureViewModel.getLectureById(question.lectureId)
+        replyViewModel.getRepliesByQuestionId(question._id)
+
+        userViewModel.userData.observe(lifecycleOwner, Observer { it ->
+            askerName.text = it.fullName
+        })
+
 
         val date: Date = originalFormat.parse(question.createdTime) ?: Date()
         val formattedDate: String = newFormat.format(date)
         askDate.text = formattedDate
 
         lectureId.text = question.lectureId
-        amountReply.text = "No Replies"
+        lectureViewModel.lecture.observe(lifecycleOwner, Observer { it ->
+            lectureId.text = it.name
+        })
+
+        replyViewModel.replies.observe(lifecycleOwner, Observer { it ->
+            if(it.size == 0) amountReply.text = "No Replies"
+            else{
+                amountReply.text = "${it.size} Replies"
+            }
+        })
+
         questionContent.text = question.details
 
-        if(question.images.isEmpty()){
-            questionImage.visibility = View.GONE
-        }
-        else{
-            questionImage.visibility = View.VISIBLE
-        }
 
+        for (imageUrl in question.images) {
+            Log.d("QuestionListAdapter", question.images.toString())
+            val imageView = ImageView(questionContentView.context)
+            imageView.layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                350
+            )
+            imageView.adjustViewBounds = true
+            imageView.setPadding(0, 0, 16, 16)
+            ImageViewHelper().setImageViewFromUrl(imageUrl, imageView)
+            questionImageContainer.addView(imageView)
+        }
     }
+
 
     override fun getItemCount(): Int {
         return questionList.size

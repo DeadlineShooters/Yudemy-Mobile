@@ -48,7 +48,9 @@ class MoreLearningFragment : Fragment() {
         certificate = view.findViewById(R.id.certificate)
 
         qa.setOnClickListener {
-            val qaDialog = QADialog(courseId!!)
+//            val qaDialog = QADialog(courseId!!)
+//            qaDialog.show(parentFragmentManager, "QADialog")
+            val qaDialog = QADialog("2tNxr8j5FosEueZrL3wH")
             qaDialog.show(parentFragmentManager, "QADialog")
         }
 

@@ -1,14 +1,10 @@
 package com.deadlineshooters.yudemy.helpers
 
-import android.net.Uri
 import android.util.Log
-import android.webkit.MimeTypeMap
-import android.widget.Toast
 import com.cloudinary.Cloudinary
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
-import com.cloudinary.android.policy.UploadPolicy
 import com.cloudinary.utils.ObjectUtils
 import com.deadlineshooters.yudemy.BuildConfig
 import com.deadlineshooters.yudemy.models.Image
@@ -105,5 +101,29 @@ class CloudinaryHelper {
             }).dispatch()
     }
 
+//    CloudinaryHelper().uploadToCloudinary(image) { image ->
+////                    if(image != null){
+////                        val imageUrl = image.secure_url
+////                        val publicId = image.public_id
+////                        val image = Image(publicId, imageUrl)
+////                        Log.d("Image", image.toString())
+////                        imageArray.add(image)
+////                    }
+////                }
 
+    fun uploadImageListToCloudinary(imageList: ArrayList<String>, callback: (ArrayList<Image>) -> Unit) {
+        val resultList = ArrayList<Image>()
+        var count = 0
+        for (image in imageList) {
+            uploadToCloudinary(image) {
+                if (it != null) {
+                    resultList.add(it)
+                }
+                count++
+                if (count == imageList.size) {
+                    callback(resultList)
+                }
+            }
+        }
+    }
 }

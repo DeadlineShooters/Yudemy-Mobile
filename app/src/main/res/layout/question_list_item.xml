@@ -55,11 +55,12 @@
 
     <TextView
         android:id="@+id/lectureId"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="TextView"
         android:textColor="#777477"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/askDate"
         app:layout_constraintTop_toTopOf="@+id/askDate" />
 
@@ -90,16 +91,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/questionImage"
-            android:layout_width="290dp"
-            android:layout_height="163dp"
-            android:layout_marginTop="12dp"
+        <HorizontalScrollView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/questionContent"
-            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+            app:layout_constraintTop_toBottomOf="@id/questionContent">
+
+            <LinearLayout
+                android:id="@+id/questionImageContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:gravity="start"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="@id/questionContent">
+
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

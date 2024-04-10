@@ -36,4 +36,10 @@ class UserViewModel : ViewModel() {
             _userData.value = it
         }
     }
+
+    fun getUserById(userId: String){
+        userRepository.getUserById(userId) {
+            _userData.value = it
+        }
+    }
 }

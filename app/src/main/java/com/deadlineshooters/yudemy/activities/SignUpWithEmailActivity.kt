@@ -7,13 +7,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.databinding.ActivitySignUpWithEmailBinding
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Instructor
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
 import com.deadlineshooters.yudemy.repositories.UserRepository
-import com.google.api.Authentication
 
 class SignUpWithEmailActivity : AppCompatActivity() {
 //    private lateinit var binding: ActivitySignUpWithEmailBinding
