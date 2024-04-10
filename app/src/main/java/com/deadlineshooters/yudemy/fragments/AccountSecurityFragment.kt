@@ -59,7 +59,11 @@ class AccountSecurityFragment : Fragment() {
         binding.etEmail.setText((activity as BaseActivity).getCurrentUserEmail())
 
         binding.btnChangePw.setOnClickListener {
-            Log.d("AccountSecurityFragment", "${binding.passwordInputRetype.text} - ${binding.passwordInputNew.text}")
+            if(binding.passwordInputCurr.text?.isEmpty() == true || binding.passwordInputNew.text?.isEmpty() == true || binding.passwordInputRetype.text?.isEmpty() == true){
+                Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             if (binding.passwordInputRetype.text.toString() != binding.passwordInputNew.text.toString()) {
                 binding.passwordInputRetype.error = "Passwords do not match"
                 return@setOnClickListener
