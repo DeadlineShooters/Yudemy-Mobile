@@ -7,20 +7,20 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 
-class MyLearningFilterAdapter(private val options: Array<String>): RecyclerView.Adapter<MyLearningFilterAdapter.ViewHolder>() {
-    var onItemClick: ((String) -> Unit)? = null
+class BottomSheetDialogAdapter(private val options: ArrayList<String>): RecyclerView.Adapter<BottomSheetDialogAdapter.ViewHolder>() {
+    var onItemClick: ((String, Int) -> Unit)? = null
     inner class ViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
         val option = listItemView.findViewById<TextView>(R.id.filterOption)
         init {
             listItemView.setOnClickListener {
-                onItemClick?.invoke(options[absoluteAdapterPosition])
+                onItemClick?.invoke(options[bindingAdapterPosition], bindingAdapterPosition)
             }
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val context = parent.context
         val inflater = LayoutInflater.from(context)
-        val courseView = inflater.inflate(R.layout.my_learning_filter_item, parent, false)
+        val courseView = inflater.inflate(R.layout.bottom_sheet_dialog_item, parent, false)
         return ViewHolder(courseView)
     }
     override fun getItemCount(): Int {

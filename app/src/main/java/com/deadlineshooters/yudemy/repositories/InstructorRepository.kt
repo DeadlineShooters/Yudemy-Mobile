@@ -1,11 +1,9 @@
 package com.deadlineshooters.yudemy.repositories
 
-import android.content.ComponentCallbacks
 import android.content.ContentValues
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
 import com.deadlineshooters.yudemy.models.Instructor
 import com.deadlineshooters.yudemy.models.User
 import com.google.firebase.firestore.FirebaseFirestore
@@ -91,5 +89,17 @@ class InstructorRepository {
         }.addOnFailureListener {
             Log.w(ContentValues.TAG, "Error updating document", it)
         }
+    }
+
+    fun getInstructorNameById(instructorId: String, callback: (String?) -> Unit) {
+        instructorCollection.document(instructorId)
+            .get()
+            .addOnSuccessListener { document ->
+                callback(document?.get("fullName") as String?)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore", "Error getting documents: ", exception)
+                callback(null)
+            }
     }
 }

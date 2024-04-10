@@ -5,9 +5,10 @@ import com.google.firebase.firestore.DocumentId
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Section(
+data class CourseProgress(
     @DocumentId
     var _id: String = "",
-    var title: String = "",
-    var index: Int = 0,
-) : Parcelable
+    var courseId: String = "",
+    var userId: String = "",
+    var percentCompleted: Int = 0
+): Parcelable

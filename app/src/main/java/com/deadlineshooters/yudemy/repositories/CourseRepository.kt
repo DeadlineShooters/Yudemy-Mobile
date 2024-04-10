@@ -1,6 +1,5 @@
 package com.deadlineshooters.yudemy.repositories
 
-import android.content.ComponentCallbacks
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -90,6 +89,21 @@ class CourseRepository {
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents: ", exception)
                 callbacks(emptyList())
+            }
+    }
+
+    fun getCourseById(courseId: String, callback: (Course?) -> Unit) {
+        var course: Course?
+        coursesCollection
+            .document(courseId)
+            .get()
+            .addOnSuccessListener { document ->
+                course = document?.toObject(Course::class.java)
+                callback(course)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore", "Error getting documents: ", exception)
+                callback(null)
             }
     }
 }

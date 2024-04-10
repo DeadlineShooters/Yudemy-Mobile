@@ -1,13 +1,14 @@
 package com.deadlineshooters.yudemy.models
 
 import android.os.Parcelable
-
+import com.google.firebase.firestore.DocumentId
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 @kotlinx.parcelize.Parcelize
 data class Course(
+    @DocumentId
     var id: String = "",
     var name: String = "",
     var instructor: String = "",
