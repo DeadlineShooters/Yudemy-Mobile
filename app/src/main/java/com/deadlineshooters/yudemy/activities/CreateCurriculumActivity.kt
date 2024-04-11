@@ -42,7 +42,7 @@ class CreateCurriculumActivity : AppCompatActivity() {
         }
 
         sectionAdapter.onAddLectureClick = {adapter, position ->
-            val newLecture = Lecture("", listSection[position]._id, Video(), "", "", adapter.itemCount + 1)
+            val newLecture = Lecture("", listSection[position]._id, Video() , "", adapter.itemCount + 1)
             adapter.lectures.add(newLecture)
             adapter.notifyItemInserted(adapter.itemCount - 1)
             addedSections.smoothScrollToPosition(position)
@@ -72,7 +72,7 @@ class CreateCurriculumActivity : AppCompatActivity() {
     fun createDummyDataLecture(): ArrayList<Lecture> {
         val lectures = ArrayList<Lecture>()
         for(i in 1..5) {
-            val l = Lecture("1", "1", Video(), "abc", "Video", 1)
+            val l = Lecture("1", "1", Video(), "abc", 1)
             l._id = i.toString()
             l.index = i
             lectures.add(l)

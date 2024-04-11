@@ -3,6 +3,7 @@ package com.deadlineshooters.yudemy.repositories
 import android.util.Log
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
+import com.deadlineshooters.yudemy.models.Section
 import com.deadlineshooters.yudemy.models.Video
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -100,6 +101,21 @@ class CourseRepository {
                 }
             }
         }
+    }
+
+    fun getCourseById(courseId: String, callback: (Course?) -> Unit) {
+        var course: Course?
+        coursesCollection
+            .document(courseId)
+            .get()
+            .addOnSuccessListener { document ->
+                course = document?.toObject(Course::class.java)
+                callback(course)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore", "Error getting documents: ", exception)
+                callback(null)
+            }
     }
 
 

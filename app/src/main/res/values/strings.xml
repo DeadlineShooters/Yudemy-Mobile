@@ -100,7 +100,7 @@
         <item>Questions without instructors\' responses</item>
     </string-array>
     <string name="learning_section_title">Section %d - %s</string>
-    <string name="learning_lecture_detail">Video - %d:%d mins</string>
+    <string name="learning_lecture_detail">%s - %s min</string>
     <string name="about_this_course">About this course</string>
     <string name="course_certificate">Course certificate</string>
     <string name="q_a">Q&amp;A</string>
@@ -217,5 +217,9 @@
     <string name="public_profile">Public profile</string>
     <string name="headline_guideline">Add a professional headline like, \"Instructor at Yudemy \" or \"Architect\".</string>
     <string name="instructor_image">Photo</string>
+    <string name="mark_as_complete">Mark as complete</string>
+    <string name="mark_as_incomplete">Mark as incomplete</string>
+    <string name="qa_for_lecture">Q&amp;A for lecture</string>
+    <string name="no_matching_courses">No matching courses</string>
     <string name="payments_show_name" translatable="false">Successfully received payment data for %s!</string>
 </resources>

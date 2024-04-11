@@ -44,6 +44,8 @@ class CourseDetailActivity : AppCompatActivity() {
                     taskResult.result!!.let {
                         Log.i("Google Pay result:", it.toJson())
                         model.setPaymentData(it)
+                        userRepository.addToCourseList(course.id) {}
+                        startActivity(Intent(this@CourseDetailActivity, StudentMainActivity::class.java))
                     }
                 }
                 //CommonStatusCodes.CANCELED -> The user canceled
