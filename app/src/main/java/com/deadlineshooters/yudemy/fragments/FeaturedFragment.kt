@@ -4,14 +4,13 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,12 +20,9 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.CourseDetailActivity
 import com.deadlineshooters.yudemy.activities.EnrolledActivity
 import com.deadlineshooters.yudemy.activities.InstructorMainActivity
-import com.deadlineshooters.yudemy.activities.SignInActivity
 import com.deadlineshooters.yudemy.adapters.CategoryAdapter1
-import com.deadlineshooters.yudemy.adapters.CourseListAdapter1
 import com.deadlineshooters.yudemy.adapters.CourseListAdapter2
 import com.deadlineshooters.yudemy.databinding.FragmentFeaturedBinding
-import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 
 
@@ -123,7 +119,7 @@ class FeaturedFragment : Fragment() {
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.refreshCourses()
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-            val adapter = CourseListAdapter2(courses)
+            val adapter = CourseListAdapter2(requireContext(), courses)
             binding.courseList.layoutManager = LinearLayoutManager(context)
             binding.courseList.adapter = adapter
             adapter.onItemClick = {course ->

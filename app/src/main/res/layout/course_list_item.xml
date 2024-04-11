@@ -17,7 +17,7 @@
             android:id="@+id/view"/>
     <ImageView
             android:layout_width="40dp"
-            android:layout_height="40dp" app:srcCompat="@drawable/ic_launcher_background" android:id="@+id/imageView2"
+            android:layout_height="40dp" app:srcCompat="@drawable/ic_launcher_background" android:id="@+id/thumbnail"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="16dp"/>
     <TextView
@@ -25,7 +25,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content" android:id="@+id/courseName"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_bias="0.5"
-            app:layout_constraintBottom_toTopOf="@+id/instructor" app:layout_constraintStart_toEndOf="@+id/imageView2"
+            app:layout_constraintBottom_toTopOf="@+id/instructor" app:layout_constraintStart_toEndOf="@+id/thumbnail"
             android:layout_marginStart="16dp" android:layout_marginTop="8dp" android:textStyle="bold" android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"/>
     <TextView

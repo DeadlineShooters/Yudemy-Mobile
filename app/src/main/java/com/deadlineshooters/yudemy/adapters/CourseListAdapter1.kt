@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.models.Course
-import org.w3c.dom.Text
 import java.text.NumberFormat
 import java.util.*
 
@@ -25,16 +26,21 @@ class CourseListAdapter1(context: Context, private val resource: Int, private va
         val ratingStar: RatingBar = view.findViewById(R.id.ratingStar)
         val originalPrice: TextView = view.findViewById(R.id.originalPrice)
         val discountPrice: TextView = view.findViewById(R.id.discountPrice)
+        val thumbnail: ImageView = view.findViewById(R.id.thumbnail)
         val currencyFormat = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
 
         val course = courses[position]
         courseName.text = course.name
         instructor.text = course.instructor
         ratingNumber.text = course.avgRating.toString()
-        ratingStar.setStepSize(0.5f);
+        ratingStar.setStepSize(0.1f);
         ratingStar.rating = course.avgRating.toFloat();
         originalPrice.text = currencyFormat.format(course.price.toInt())
         discountPrice.text = currencyFormat.format((course.price * 0.9).toInt())
+
+        Glide.with(view)
+            .load(course.thumbnail.secure_url)
+            .into(thumbnail)
 
         return view
     }

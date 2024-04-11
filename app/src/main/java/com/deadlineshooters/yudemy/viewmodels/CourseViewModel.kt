@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
 import com.deadlineshooters.yudemy.models.Course
-import com.deadlineshooters.yudemy.models.Image
-import com.deadlineshooters.yudemy.models.Video
 import com.deadlineshooters.yudemy.repositories.CourseRepository
 
 

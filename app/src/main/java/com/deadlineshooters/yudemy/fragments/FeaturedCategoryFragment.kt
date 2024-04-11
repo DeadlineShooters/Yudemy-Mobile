@@ -1,10 +1,10 @@
 package com.deadlineshooters.yudemy.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -61,8 +61,7 @@ class FeaturedCategoryFragment : Fragment() {
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.refreshCourses()
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-//            val clonedCourses = List(1) { courses[0] }
-            val adapter = CourseListAdapter2(courses)
+            val adapter = CourseListAdapter2(requireContext(), courses)
             binding.courseList.layoutManager = LinearLayoutManager(context)
             binding.courseList.adapter = adapter
         })
