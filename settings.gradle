@@ -11,7 +11,12 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url "https://jitpack.io" } // add this
-
+        maven {
+            url "https://maven.tryformation.com/releases"
+            content {
+                includeGroup("com.jillesvangurp")
+            }
+        }
     }
 }
 rootProject.name = "Yudemy"

@@ -3,7 +3,6 @@ package com.deadlineshooters.yudemy.repositories
 import android.util.Log
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
-import com.deadlineshooters.yudemy.models.Section
 import com.deadlineshooters.yudemy.models.Video
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -13,6 +12,7 @@ class CourseRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
     private val coursesCollection = mFireStore.collection("courses")
     private val auth = FirebaseAuth.getInstance()
+
 
     fun generateDummyCourse(img: Image, vid: Video): Course {
         return Course(
@@ -118,5 +118,33 @@ class CourseRepository {
             }
     }
 
+    fun searchCourses(input: String, callback: (List<Course>) -> Unit) {
+        val courses = mutableListOf<Course>()
+
+        coursesCollection.get().addOnSuccessListener { courseDocument ->
+            if (courseDocument != null) {
+                var fetchedCourses = 0
+                for (document in courseDocument) {
+                    val course = document.toObject(Course::class.java)
+
+                    course.id = document.id
+                    userRepository.getUser(course.instructor) { user ->
+                        course.instructor = user.fullName
+                        if (course.name.contains(input, ignoreCase = true)) {
+                            courses.add(course)
+                        }
+                        fetchedCourses++
+                        if (fetchedCourses == courseDocument.size()) {
+                            callback(courses)
+                        }
+                    }
+                }
+            } else {
+                Log.d("Firestore", "No such document")
+            }
+        }.addOnFailureListener { exception ->
+            Log.d("Firestore", "get failed with ", exception)
+        }
+    }
 
 }
