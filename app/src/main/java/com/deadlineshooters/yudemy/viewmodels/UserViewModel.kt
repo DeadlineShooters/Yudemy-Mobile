@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.deadlineshooters.yudemy.activities.SignUpActivity
+import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.repositories.UserRepository
 
@@ -37,6 +38,12 @@ class UserViewModel : ViewModel() {
 
     fun getUserById(userId: String){
         userRepository.getUserById(userId) {
+            _userData.value = it
+        }
+    }
+
+    fun updateUserImage(instructorId: String, image: Image){
+        userRepository.updateUserImage(instructorId, image){
             _userData.value = it
         }
     }

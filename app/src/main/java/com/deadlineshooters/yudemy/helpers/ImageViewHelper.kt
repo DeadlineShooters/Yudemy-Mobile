@@ -32,10 +32,4 @@ class ImageViewHelper {
         }
     }
 
-    fun getImageUri(context: Context, bitmap: Bitmap): Uri {
-        val bytes = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path: String = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, UUID.randomUUID().toString(), null)
-        return Uri.parse(path)
-    }
 }

@@ -68,8 +68,8 @@ class ReplyListAdapter(val replyList: List<Reply>, private val lifecycleOwner: L
         userViewModel.getUserById(reply.replier)
         userViewModel.userData.observe(lifecycleOwner, Observer {
             replierName.text = it.fullName
+            ImageViewHelper().setImageViewFromUrl(it.image, replierImage)
         })
-
 
         val date: Date = originalFormat.parse(reply.createdTime) ?: Date()
         val formattedDate: String = newFormat.format(date)

@@ -33,9 +33,4 @@ class InstructorViewModel : ViewModel(){
         }
     }
 
-    fun updateInstructorImage(instructorId: String, publicId: String, secureUrl: String){
-        instructorRepository.updateInstructorImage(instructorId, publicId, secureUrl){
-            _instructor.value = it
-        }
-    }
 }

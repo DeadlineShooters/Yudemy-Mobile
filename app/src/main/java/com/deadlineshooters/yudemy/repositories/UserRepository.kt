@@ -1,10 +1,12 @@
 package com.deadlineshooters.yudemy.repositories
 
 import android.content.ComponentCallbacks
+import android.content.ContentValues
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.deadlineshooters.yudemy.activities.SignUpActivity
 import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.User
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
@@ -47,6 +49,19 @@ class UserRepository {
                     callbacks(document.toObject(User::class.java)!!)
                 }
             }
+    }
+
+    fun updateUserImage(userId: String, image: Image, callbacks: (User) -> Unit){
+        userCollection.document(userId).update(
+            "image.public_id", image.public_id,
+            "image.secure_url", image.secure_url
+        ).addOnSuccessListener {
+            getUserById(userId){
+                callbacks(it)
+            }
+        }.addOnFailureListener {
+            Log.w(ContentValues.TAG, "Error updating document", it)
+        }
     }
 
     /**

@@ -78,19 +78,6 @@ class InstructorRepository {
         }
     }
 
-    fun updateInstructorImage(instructorId: String, pubicId: String, secureUrl: String, callbacks: (User) -> Unit){
-        instructorCollection.document(instructorId).update(
-            "instructor.image.public_id", pubicId,
-            "instructor.image.secure_url", secureUrl
-        ).addOnSuccessListener {
-            getInstructorById(instructorId){
-                callbacks(it)
-            }
-        }.addOnFailureListener {
-            Log.w(ContentValues.TAG, "Error updating document", it)
-        }
-    }
-
     fun getInstructorNameById(instructorId: String, callback: (String?) -> Unit) {
         instructorCollection.document(instructorId)
             .get()

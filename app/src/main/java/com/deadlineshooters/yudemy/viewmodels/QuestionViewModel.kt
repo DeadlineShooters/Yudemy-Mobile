@@ -11,9 +11,12 @@ class QuestionViewModel : ViewModel() {
     private val questionRepository = QuestionRepository()
     private val _questions = MutableLiveData<ArrayList<Question>>()
     private val _question = MutableLiveData<Question>()
+    private val _questionNoReplies = MutableLiveData<ArrayList<Question>>()
 
     val question get() = _question
     val questions get() = _questions
+
+    val questionNoReplies get() = _questionNoReplies
 
     fun getQuestionsByCourseId(courseId: String) {
         questionRepository.getQuestionListByCourseId(courseId) {
@@ -42,6 +45,18 @@ class QuestionViewModel : ViewModel() {
     fun deleteQuestion(courseId: String, questionId: String) {
         questionRepository.deleteQuestion(courseId, questionId) {
             _questions.value = it
+        }
+    }
+
+    fun getQuestionsOfInstructor(instructorId: String) {
+        questionRepository.getQuestionsListOfInstructor(instructorId) {
+            _questions.value = it
+        }
+    }
+
+    fun getQuestionNoReplies(questionList: ArrayList<Question>){
+        questionRepository.getQuestionNoReplies(questionList){
+            _questionNoReplies.value = it
         }
     }
 }

@@ -87,7 +87,6 @@
     </string-array>
     <string-array name="sort_most_recent_filter">
         <item>Sort by most recent</item>
-        <item>Sort by recommended</item>
     </string-array>
     <string-array name="questions_filter">
         <item>All questions</item>

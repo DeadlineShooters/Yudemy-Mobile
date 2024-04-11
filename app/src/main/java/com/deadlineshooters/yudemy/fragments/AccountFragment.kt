@@ -144,10 +144,10 @@ class AccountFragment() : Fragment() {
         }
 
         editImage.setOnClickListener {
-            replaceFragment(EditImageFragment(), isInstructor!!)
+            replaceFragment(EditImageFragment.newInstance(isInstructor!!), isInstructor!!)
         }
 
-        val imageUrl = "https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg"
+        val imageUrl = "https://res.cloudinary.com/dbgaeu07x/image/upload/v1712737767/Yudemy/spmaesw65l7iyk32xymu.jpg"
         ImageViewHelper().setImageViewFromUrl(Image(imageUrl, ""), avatar)
     }
 

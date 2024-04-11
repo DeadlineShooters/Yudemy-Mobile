@@ -47,7 +47,7 @@ import java.util.Date
 import java.util.Locale
 import kotlin.properties.Delegates
 
-class QADialog(private val courseId: String) : DialogFragment() {
+class QADialog(private val courseId: String, private val curLecture: String) : DialogFragment() {
     private lateinit var qaCloseBtn: TextView
     private lateinit var qaFilterBtn: Button
     private lateinit var addQuestionBtn: Button
@@ -187,6 +187,7 @@ class QADialog(private val courseId: String) : DialogFragment() {
             }
         }
 
+
         dialog.setContentView(sheet)
         return dialog
     }
@@ -207,28 +208,17 @@ class QADialog(private val courseId: String) : DialogFragment() {
         layoutParams.setMargins(0, 0, 16, 0)
         imageView.layoutParams = layoutParams
         imageView.setImageURI(uri)
+
+        imageView.tag = uri.toString()
+        imageView.setOnClickListener {
+            imageContainer.removeView(imageView)
+        }
+
+        imageContainer.addView(imageView)
         imageView.drawable?.let{drawble ->
             val bitmap = (drawble as BitmapDrawable).bitmap
             val filepath = BaseActivity().saveBitmapToFile(bitmap, requireContext())
             imageList.add(filepath.toString())
-        }
-
-        var isAlreadyAdded = false
-        for (i in 0 until imageContainer.childCount) {
-            val childView = imageContainer.getChildAt(i)
-
-            if (childView is ImageView && childView.tag == uri.toString()) {
-                isAlreadyAdded = true
-                break
-            }
-        }
-
-        if (!isAlreadyAdded) {
-            imageView.tag = uri.toString()
-            imageView.setOnClickListener {
-                imageContainer.removeView(imageView)
-            }
-            imageContainer.addView(imageView)
         }
     }
 
@@ -252,13 +242,12 @@ class QADialog(private val courseId: String) : DialogFragment() {
         val questionDetailImageContainer = sheet.findViewById<LinearLayout>(R.id.questionDetailImageContainer)
         val repImageContainer = sheet.findViewById<LinearLayout>(R.id.repImageContainer)
         val replyContent = sheet.findViewById<TextView>(R.id.replyInput)
+        val askerImage = sheet.findViewById<ImageView>(R.id.questionDetailAskerImage)
 
         lateinit var replyListAdapter: ReplyListAdapter
         val userViewModel: UserViewModel = UserViewModel()
         val lectureViewModel: LectureViewModel = LectureViewModel()
         val replyViewModel: ReplyViewModel = ReplyViewModel()
-
-        //TODO: check if the question is asked by the user, if not, change the headpage to "New Question'
 
         userViewModel.getUserById(question.asker)
         lectureViewModel.getLectureById(question.lectureId)
@@ -267,6 +256,7 @@ class QADialog(private val courseId: String) : DialogFragment() {
         questionDetailTitle.text = question.title
         userViewModel.userData.observe(this, Observer { it ->
             questionDetailAskerName.text = it.fullName
+            ImageViewHelper().setImageViewFromUrl(it.image, askerImage)
         })
         val date: Date = originalFormat.parse(question.createdTime) ?: Date()
         val formattedDate: String = newFormat.format(date)
@@ -309,6 +299,7 @@ class QADialog(private val courseId: String) : DialogFragment() {
             val reply = replyContent.text.toString()
             if(imageList.isNotEmpty()){
                 CloudinaryHelper().uploadImageListToCloudinary(imageList){
+                    Log.d("Image list", it.toString())
                     val rep = Reply("", BaseActivity().getCurrentUserID(), question._id , it, reply , originalFormat.format(Date()))
                     replyViewModel.addNewReply(rep)
                     imageList.clear()
@@ -322,7 +313,6 @@ class QADialog(private val courseId: String) : DialogFragment() {
                 replyContent.text = ""
                 replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
             }
-
         }
 
         if(BaseActivity().getCurrentUserID() != question.asker){
@@ -509,7 +499,16 @@ class QADialog(private val courseId: String) : DialogFragment() {
 
         applyFilerBtn.setOnClickListener{
             //TODO: Apply filter and find questions from database
+            val filters = ArrayList<String>().apply {
+                add(lectureFilter.text.toString())
+                add(sortMostRecentFilter.text.toString())
+                add(allQuestionsFilter.text.toString())
+            }
+            questionListAdapter.filterQuestion(filters, curLecture)
+
+            filterQuestionDialog.dismiss()
         }
+
 
         dialog.setContentView(sheet)
         return dialog

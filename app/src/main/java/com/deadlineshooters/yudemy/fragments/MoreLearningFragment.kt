@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.BaseActivity
+import com.deadlineshooters.yudemy.activities.CourseLearningActivity
 import com.deadlineshooters.yudemy.databinding.FragmentMoreLearningBinding
 import com.deadlineshooters.yudemy.dialogs.CertificateDialog
 import com.deadlineshooters.yudemy.dialogs.QADialog
@@ -73,7 +74,7 @@ class MoreLearningFragment : Fragment() {
         qa.setOnClickListener {
 //            val qaDialog = QADialog(courseId!!)
 //            qaDialog.show(parentFragmentManager, "QADialog")
-            val qaDialog = QADialog(course!!.id)
+            val qaDialog = QADialog(course!!.id, (activity as CourseLearningActivity).currentLecture!!.keys.first()._id)
             qaDialog.show(parentFragmentManager, "QADialog")
         }
 

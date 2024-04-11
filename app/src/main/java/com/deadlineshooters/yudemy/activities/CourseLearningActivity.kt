@@ -23,6 +23,7 @@ import com.deadlineshooters.yudemy.fragments.LectureLearningFragment
 import com.deadlineshooters.yudemy.fragments.MoreLearningFragment
 import com.deadlineshooters.yudemy.models.Certificate
 import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.models.Lecture
 import com.deadlineshooters.yudemy.viewmodels.CertificateViewModel
 import com.deadlineshooters.yudemy.viewmodels.CourseProgressViewModel
 import com.google.android.material.tabs.TabLayoutMediator
@@ -45,6 +46,8 @@ class CourseLearningActivity : AppCompatActivity() {
 
     private lateinit var courseProgressViewModel: CourseProgressViewModel
     private lateinit var certificateViewModel: CertificateViewModel
+    var currentLecture: Map<Lecture, Boolean>? = null
+
 
     private var isUpdateProgress = false
 

@@ -113,4 +113,57 @@ class QuestionRepository {
             callback(ArrayList())
         }
     }
+
+    fun getQuestionsListOfInstructor(instructorId: String, callback: (ArrayList<Question>) -> Unit){
+        mFireStore.collection("courses")
+            .whereEqualTo("instructor", instructorId)
+            .get()
+            .addOnSuccessListener { result ->
+                val questionTask = result.map { course ->
+                    val task = TaskCompletionSource<ArrayList<Question>>()
+                    getQuestionListByCourseId(course.id){
+                        task.setResult(it)
+                    }
+                    task.task
+                }
+                Tasks.whenAllSuccess<ArrayList<Question>>(questionTask)
+                    .addOnSuccessListener {
+                        callback(it.flatten() as ArrayList<Question>)
+                    }
+            }
+            .addOnFailureListener{exception ->
+                callback(ArrayList())
+            }
+    }
+
+    fun getQuestionNoReplies(questionList: ArrayList<Question>, callback: (ArrayList<Question>) -> Unit) {
+        val questionTasks = questionList.map { question ->
+            val task = TaskCompletionSource<ArrayList<Question>>()
+            mFireStore.collection("replies")
+                .whereEqualTo("questionId", question._id)
+                .get()
+                .addOnSuccessListener { replyList ->
+                    if (replyList.isEmpty) {
+                        task.setResult(arrayListOf(question))
+                    } else {
+                        task.setResult(arrayListOf())
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.d("QuestionRepository", exception.toString())
+                    task.setException(exception)
+                }
+            task.task
+        }
+
+        Tasks.whenAllSuccess<ArrayList<Question>>(questionTasks)
+            .addOnSuccessListener { resultList ->
+                val mergedList = resultList.flatten() as ArrayList<Question>
+                callback(mergedList)
+            }
+            .addOnFailureListener { exception ->
+                Log.d("QuestionRepository", exception.toString())
+            }
+    }
+
 }
