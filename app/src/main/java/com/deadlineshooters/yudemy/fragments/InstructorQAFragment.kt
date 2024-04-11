@@ -62,21 +62,6 @@ class InstructorQAFragment : Fragment() {
     private val newFormat = SimpleDateFormat("dd, MMM, yyyy", Locale.getDefault())
     private var imageList: ArrayList<String> = ArrayList()
 
-//    private val dumpQuestion1 = Question("123", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-//    private val dumpQuestion2 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-//    private val dumpQuestion3 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-//    private val dumpQuestion4 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-//    private val dumpQuestion5 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-//    private val dumpQuestion6 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-//    private val dumpQuestion7 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-//    private val dumpQuestion8 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-//    private val dumpQuestion9 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-
-
-
-//    private val dumpQuestionList = arrayListOf(dumpQuestion1, dumpQuestion2, dumpQuestion3, dumpQuestion4, dumpQuestion5, dumpQuestion6, dumpQuestion7, dumpQuestion8, dumpQuestion9)
-
-//    private val dumpQuestionList = ArrayList<Question>()
     private lateinit var questionListAdapter: QuestionListAdapter
     private lateinit var questionViewModel: QuestionViewModel
 
@@ -106,14 +91,13 @@ class InstructorQAFragment : Fragment() {
 
         questionViewModel.questions.observe(viewLifecycleOwner, Observer{ result ->
 
-            questionListAdapter = QuestionListAdapter(result, this)
+            questionListAdapter = QuestionListAdapter(result, this, questionViewModel)
             instructorQuestionListView.adapter = questionListAdapter
             instructorQuestionListView.layoutManager = LinearLayoutManager(requireContext())
 
             questionListAdapter.onItemClick = { question ->
                 // TODO: check if the clicked question has asker = user._id
                 questionDetailDialog = createQuestionDetailDialog(question)
-//                state = 2
                 questionDetailDialog.show()
             }
 
@@ -150,6 +134,8 @@ class InstructorQAFragment : Fragment() {
         adapter.onItemClick = { filter, filterIdx ->
             // TODO: handle filter
             Log.i("Filter option click", filter)
+            questionListAdapter.instructorFilterQuestion(filter)
+            dialog.dismiss()
         }
 
         bottomSheet.findViewById<Button>(R.id.cancelBtn).setOnClickListener {

@@ -31,14 +31,13 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class QuestionListAdapter (var questionList: ArrayList<Question>, private val lifecycleOwner: LifecycleOwner): RecyclerView.Adapter<QuestionListAdapter.ViewHolder>() {
+class QuestionListAdapter (var questionList: ArrayList<Question>, private val lifecycleOwner: LifecycleOwner, val questionViewModel: QuestionViewModel): RecyclerView.Adapter<QuestionListAdapter.ViewHolder>() {
     var onItemClick: ((Question) -> Unit)? = null
     private val originalFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val newFormat = SimpleDateFormat("dd, MMM, yyyy", Locale.getDefault())
     private lateinit var userViewModel: UserViewModel
     private lateinit var lectureViewModel: LectureViewModel
     private lateinit var replyViewModel: ReplyViewModel
-    private lateinit var questionViewModel: QuestionViewModel
 
     inner class ViewHolder(listQuestionView: View) : RecyclerView.ViewHolder(listQuestionView) {
         val askerImage: ImageView = listQuestionView.findViewById(R.id.askerImage)
@@ -64,10 +63,7 @@ class QuestionListAdapter (var questionList: ArrayList<Question>, private val li
         val context = parent.context
         val inflater = LayoutInflater.from(context)
         val courseView = inflater.inflate(R.layout.question_list_item, parent, false)
-        userViewModel = UserViewModel()
-        lectureViewModel = LectureViewModel()
-        replyViewModel = ReplyViewModel()
-        questionViewModel = QuestionViewModel()
+
         return ViewHolder(courseView)
     }
 
@@ -82,6 +78,10 @@ class QuestionListAdapter (var questionList: ArrayList<Question>, private val li
         val questionContentView = holder.questionContentView
         val questionImageContainer = holder.questionImageContainer
         val askerImage = holder.askerImage
+
+        userViewModel = UserViewModel()
+        lectureViewModel = LectureViewModel()
+        replyViewModel = ReplyViewModel()
 
         questionTitle.text = question.title
 
@@ -116,16 +116,19 @@ class QuestionListAdapter (var questionList: ArrayList<Question>, private val li
         questionContent.text = question.details
 
 
-        for (imageUrl in question.images) {
-            val imageView = ImageView(questionContentView.context)
-            imageView.layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                350
-            )
-            imageView.adjustViewBounds = true
-            imageView.setPadding(0, 0, 16, 16)
-            ImageViewHelper().setImageViewFromUrl(imageUrl, imageView)
-            questionImageContainer.addView(imageView)
+        if(question.images.isNotEmpty()){
+            questionImageContainer.removeAllViews()
+            for (imageUrl in question.images) {
+                val imageView = ImageView(questionContentView.context)
+                imageView.layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    350
+                )
+                imageView.adjustViewBounds = true
+                imageView.setPadding(0, 0, 16, 16)
+                ImageViewHelper().setImageViewFromUrl(imageUrl, imageView)
+                questionImageContainer.addView(imageView)
+            }
         }
     }
 
@@ -135,14 +138,20 @@ class QuestionListAdapter (var questionList: ArrayList<Question>, private val li
     }
 
     fun filterQuestion(filter: ArrayList<String>, currentLectureId: String) {
-        Log.d("QuestionListAdapter", filter.toString())
-        val tmpQuestionList: ArrayList<Question> = arrayListOf()
-        val resQuestionList: ArrayList<Question> = arrayListOf()
+
+        questionList = questionViewModel.questions.value!!
+        notifyDataSetChanged()
+
+        Log.d("cho na", questionList.toString())
+        questionList.sortByDescending { it.createdTime }
+
+
+        var tmpQuestionList: ArrayList<Question> = arrayListOf()
+        var resQuestionList: ArrayList<Question> = arrayListOf()
+
+
         if(filter[0] == "All lectures") {
-            questionList.forEach { question ->
-                tmpQuestionList.add(question)
-            }
-            notifyDataSetChanged()
+            tmpQuestionList = questionList
         }
         else if(filter[0] == "Current lecture") {
             questionList.forEach { question ->
@@ -152,36 +161,51 @@ class QuestionListAdapter (var questionList: ArrayList<Question>, private val li
             }
         }
 
-        Log.d("QuestionListAdapter", tmpQuestionList.toString())
-
-        tmpQuestionList.sortByDescending { it.createdTime }
-
-
-        questionViewModel.getQuestionNoReplies(tmpQuestionList)
 
         if(filter[2] == "Question without responses") {
+            questionViewModel.getQuestionNoReplies(tmpQuestionList)
             questionViewModel.questionNoReplies.observe(lifecycleOwner, Observer { it ->
-                Log.d("QuestionListAdapter", it.size.toString())
-                resQuestionList.addAll(it)
+                questionList = it
+                notifyDataSetChanged()
             })
         } else if (filter[2] == "Question I asked") {
             questionList.forEach { question ->
                 if (question.asker == BaseActivity().getCurrentUserID()) {
                     resQuestionList.add(question)
                 }
+                questionList = resQuestionList
+                notifyDataSetChanged()
+
             }
-//            questionList.clear()
-//            questionList.addAll(tmpQuestionList)
-//            notifyDataSetChanged()
-        } else{
-            resQuestionList.addAll(tmpQuestionList)
+        } else if (filter[2] == "All questions"){
+            questionList = tmpQuestionList
+            notifyDataSetChanged()
         }
-
-        Log.d("QuestionListAdapter", resQuestionList.toString())
-        Log.d("QuestionListAdapter", resQuestionList.size.toString())
-        questionList = resQuestionList
-        notifyDataSetChanged()
     }
+    fun instructorFilterQuestion(filter: String) {
+        questionList = questionViewModel.questions.value!!
+        notifyDataSetChanged()
 
+        Log.d("cho na", questionList.toString())
+
+        var tmpQuestionList: ArrayList<Question> = questionList
+
+        if(filter == "All questions"){
+            questionList = tmpQuestionList
+            notifyDataSetChanged()
+        } else if(filter == "Questions without responses"){
+            questionViewModel.getQuestionNoReplies(tmpQuestionList)
+            questionViewModel.questionNoReplies.observe(lifecycleOwner, Observer { it ->
+                questionList = it
+                notifyDataSetChanged()
+            })
+        } else if (filter == "Questions without instructors' responses"){
+            questionViewModel.getNoInstructorRepliesQuestions(tmpQuestionList)
+            questionViewModel.questionNoReplies.observe(lifecycleOwner, Observer { it ->
+                questionList = it
+                notifyDataSetChanged()
+            })
+        }
+    }
 }
 

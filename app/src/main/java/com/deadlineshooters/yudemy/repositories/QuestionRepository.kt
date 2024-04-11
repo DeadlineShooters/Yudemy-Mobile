@@ -3,6 +3,7 @@ package com.deadlineshooters.yudemy.repositories
 import android.util.Log
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Question
+import com.deadlineshooters.yudemy.models.Reply
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.android.gms.tasks.Tasks
@@ -166,4 +167,56 @@ class QuestionRepository {
             }
     }
 
+
+    fun getNoInstructorRepliesQuestions(questionList: ArrayList<Question>, callback: (ArrayList<Question>) -> Unit) {
+        val questionTasks = questionList.map { question ->
+            val task = TaskCompletionSource<ArrayList<Question>>()
+            mFireStore.collection("replies")
+                .whereEqualTo("questionId", question._id)
+                .get()
+                .addOnSuccessListener { replyList ->
+                    if (replyList.isEmpty) {
+                        task.setResult(arrayListOf(question))
+                    } else {
+                        val replyTasks = replyList.map { reply ->
+                            val replyTask = TaskCompletionSource<Reply>()
+                            mFireStore.collection("users")
+                                .document(reply.getString("replier")!!)
+                                .get()
+                                .addOnSuccessListener { user ->
+                                    if (user["instructor"] != null) {
+                                        replyTask.setResult(reply.toObject(Reply::class.java))
+                                    }
+                                    else{
+                                        replyTask.setResult(null)
+                                    }
+                                }
+                            replyTask.task
+                        }
+                        Tasks.whenAllSuccess<Reply>(replyTasks)
+                            .addOnSuccessListener { replyResultList ->
+                                if (replyResultList.all{it == null}) {
+                                    task.setResult(arrayListOf(question))
+                                } else {
+                                    task.setResult(arrayListOf())
+                                }
+                            }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.d("QuestionRepository", exception.toString())
+                    task.setException(exception)
+                }
+            task.task
+        }
+
+        Tasks.whenAllSuccess<ArrayList<Question>>(questionTasks)
+            .addOnSuccessListener { resultList ->
+                val mergedList = resultList.flatten() as ArrayList<Question>
+                callback(mergedList)
+            }
+            .addOnFailureListener { exception ->
+                Log.d("QuestionRepository", exception.toString())
+            }
+    }
 }

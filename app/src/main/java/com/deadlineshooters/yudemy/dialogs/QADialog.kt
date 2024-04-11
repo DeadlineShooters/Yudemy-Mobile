@@ -92,7 +92,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         questionViewModel.getQuestionsByCourseId(courseId)
 
         questionViewModel.questions.observe(this, Observer{ result ->
-            questionListAdapter = QuestionListAdapter(result, this)
+            questionListAdapter = QuestionListAdapter(result, this, questionViewModel)
                 questionListView.adapter = questionListAdapter
                 questionListView.layoutManager = LinearLayoutManager(requireContext())
 
