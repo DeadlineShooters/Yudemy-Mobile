@@ -1,23 +1,30 @@
 package com.deadlineshooters.yudemy.fragments
 
+import NotificationHelper
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.AboutUsActivity
 import com.deadlineshooters.yudemy.activities.BaseActivity
 import com.deadlineshooters.yudemy.activities.InstructorMainActivity
 import com.deadlineshooters.yudemy.activities.SignInActivity
 import com.deadlineshooters.yudemy.activities.StudentMainActivity
+import com.deadlineshooters.yudemy.helpers.AlarmHelper
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.time.LocalDateTime
+import java.util.Calendar
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -62,6 +69,7 @@ class AccountFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_account, container, false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -126,6 +134,22 @@ class AccountFragment : Fragment() {
 
         val imageUrl = "https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg"
         ImageViewHelper().setImageViewFromUrl(Image(imageUrl, ""), avatar)
+
+//        val alarmScheduler = NotificationHelper(requireContext())
+//        alarmScheduler.cancel(Calendar.THURSDAY, 1)
+//        alarmScheduler.schedule(
+//            Calendar.THURSDAY,
+//            1)
+//        alarmScheduler.cancel(Calendar.THURSDAY, 1, 30)
+//        alarmScheduler.schedule(
+//            Calendar.THURSDAY,
+//            1, 30)
+
+        // TODO: Uncomment this code to test the alarm
+//        val calendar = Calendar.getInstance()
+//        val alarmHelper = AlarmHelper(requireContext())
+//        alarmHelper.cancelAlarm()
+//        alarmHelper.initRepeatingAlarm(calendar, Calendar.THURSDAY, 9)
     }
 
     private fun replaceFragment(fragment: Fragment) {
