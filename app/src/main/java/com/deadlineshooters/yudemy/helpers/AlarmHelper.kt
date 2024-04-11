@@ -5,35 +5,25 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import org.checkerframework.checker.units.qual.min
 import java.util.Calendar
 
 class AlarmHelper(context: Context) {
     private var mContext = context
     private var alarmMgr: AlarmManager? = null
-    private var alarmIntent: PendingIntent
 
     init {
         alarmMgr = mContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmIntent = Intent(mContext, AlarmReceiver::class.java).let { mIntent ->
-            // if you want more than one notification use different requestCode
-            // every notification need different requestCode
-            PendingIntent.getBroadcast(mContext, 100, mIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        }
     }
 
     @SuppressLint("ScheduleExactAlarm")
-    fun initRepeatingAlarm(calendar: Calendar, day: Int, time: Int) {
-        calendar.apply {
-            set(Calendar.DAY_OF_WEEK, day)
-            set(Calendar.HOUR_OF_DAY, time)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
+    fun initRepeatingAlarm(calendar: Calendar, day: Int, hour: Int) {
+        val alarmIntent = Intent(mContext, AlarmReceiver::class.java).let { mIntent ->
+            PendingIntent.getBroadcast(mContext, day*100 + hour, mIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         }
-
-        Log.d("Alarm", "Alarm set for ${calendar.time} - ${calendar.timeInMillis}")
-
         alarmMgr?.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
@@ -41,7 +31,31 @@ class AlarmHelper(context: Context) {
         )
     }
 
-    fun cancelAlarm() {
+    fun cancelAlarm(day: Int, hour: Int) {
+        val alarmIntent = Intent(mContext, AlarmReceiver::class.java).let { mIntent ->
+            PendingIntent.getBroadcast(mContext, day*100+hour, mIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        }
         alarmMgr?.cancel(alarmIntent)
+        alarmIntent.cancel()
+    }
+
+    fun cancelAllAlarms(days: List<Int>, hours: List<Int>) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            alarmMgr?.cancelAll()
+        }
+        else {
+            for(day in days) {
+                for(hour in hours) {
+                    cancelAlarm(day, hour)
+                }
+            }
+        }
+    }
+
+    fun checkIfActive(day: Int, hour: Int): Boolean {
+        val alarmIntent = Intent(mContext, AlarmReceiver::class.java).let { mIntent ->
+            PendingIntent.getBroadcast(mContext, day*100+hour, mIntent, PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE)
+        }
+        return alarmIntent != null
     }
 }

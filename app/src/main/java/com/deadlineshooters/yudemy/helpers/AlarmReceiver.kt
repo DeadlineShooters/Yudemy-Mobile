@@ -4,6 +4,7 @@ import NotificationHelper
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import java.util.Calendar
 
 class AlarmReceiver : BroadcastReceiver() {
@@ -24,12 +25,19 @@ class AlarmReceiver : BroadcastReceiver() {
 //    }
 
     override fun onReceive(context: Context?, mIntent: Intent?) {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7
+
+        Log.d("Alarm", "Alarm received")
         val notificationUtils = NotificationHelper(context!!)
         notificationUtils.launchNotification()
 
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DATE, 7)
+//        calendar.add(Calendar.DATE, 7)
+//        calendar.add(Calendar.MINUTE, 1)
+//        alarmUtils.initRepeatingAlarm(calendar, Calendar.THURSDAY, 15, 51)
+
         val alarmUtils = AlarmHelper(context)
-        alarmUtils.initRepeatingAlarm(calendar, Calendar.THURSDAY, 9)
+//        calendar.timeInMillis = System.currentTimeMillis() + 1000 * 15
+        alarmUtils.initRepeatingAlarm(calendar, Calendar.THURSDAY, 15)
     }
 }

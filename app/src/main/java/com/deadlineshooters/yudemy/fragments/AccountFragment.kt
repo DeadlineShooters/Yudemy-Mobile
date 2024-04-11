@@ -23,6 +23,7 @@ import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.checkerframework.checker.units.qual.min
 import java.time.LocalDateTime
 import java.util.Calendar
 
@@ -146,10 +147,17 @@ class AccountFragment : Fragment() {
 //            1, 30)
 
         // TODO: Uncomment this code to test the alarm
-//        val calendar = Calendar.getInstance()
 //        val alarmHelper = AlarmHelper(requireContext())
 //        alarmHelper.cancelAlarm()
-//        alarmHelper.initRepeatingAlarm(calendar, Calendar.THURSDAY, 9)
+//        val calendar = Calendar.getInstance()
+//        calendar.apply {
+//            set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY)
+//            set(Calendar.HOUR_OF_DAY, 15)
+//            set(Calendar.MINUTE, 0)
+//            set(Calendar.SECOND, 0)
+//            set(Calendar.MILLISECOND, 0)
+//        }
+//        alarmHelper.initRepeatingAlarm(calendar)
     }
 
     private fun replaceFragment(fragment: Fragment) {

@@ -1,13 +1,20 @@
 package com.deadlineshooters.yudemy.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.widget.SwitchCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.helpers.AlarmHelper
+import com.deadlineshooters.yudemy.viewmodels.UserViewModel
+import java.util.Calendar
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,12 +34,19 @@ class LearningRemindersFragment : Fragment() {
     private lateinit var backFromReminders: Button
     private lateinit var frequency: TextView
 
+    private lateinit var userViewModel: UserViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+        userViewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        userViewModel.checkIfReminderToggled()
+        userViewModel.getReminderDays()
+        userViewModel.getReminderTimes()
     }
 
     override fun onCreateView(
@@ -48,12 +62,53 @@ class LearningRemindersFragment : Fragment() {
 
         backFromReminders = view.findViewById(R.id.backFromReminders)
         frequency = view.findViewById(R.id.frequencyNav)
+        val switchReminder = view.findViewById<SwitchCompat>(R.id.switchAllow)
 
         backFromReminders.setOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
         frequency.setOnClickListener {
             replaceFragment(RemindersFrequencyFragment())
+        }
+
+        val alarmHelper = AlarmHelper(requireContext())
+        userViewModel.isToggleReminder.observe(viewLifecycleOwner, Observer {
+            if(it) {
+                frequency.visibility = View.VISIBLE
+                switchReminder.isChecked = true
+
+                userViewModel.dayTimeCombinedData.observe(viewLifecycleOwner, Observer { (days, times) ->
+                    Log.d("LearningRemindersFragment", "change days: $days, times: $times")
+                    for(day in days) {
+                        for(time in times) {
+                            val tmpDay = getDayFromIdx(day)
+                            val tmpTime = getTimesFromIdx(time)
+
+                            val calendar = Calendar.getInstance()
+                            calendar.apply {
+                                set(Calendar.DAY_OF_WEEK, tmpDay)
+                                set(Calendar.HOUR_OF_DAY, tmpTime)
+                                set(Calendar.MINUTE, 0)
+                                set(Calendar.SECOND, 0)
+                                set(Calendar.MILLISECOND, 0)
+                            }
+                            alarmHelper.initRepeatingAlarm(calendar, tmpDay, tmpTime)
+                        }
+                    }
+                })
+            }
+            else {
+                frequency.visibility = View.GONE
+                switchReminder.isChecked = false
+
+                userViewModel.dayTimeCombinedData.observe(viewLifecycleOwner, Observer { (days, times) ->
+                    alarmHelper.cancelAllAlarms(days, times)
+                })
+            }
+        })
+
+        switchReminder.setOnCheckedChangeListener { _, isChecked ->
+            userViewModel.toggleReminder(isChecked)
         }
     }
 
@@ -83,5 +138,30 @@ class LearningRemindersFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    fun getDayFromIdx(idx: Int): Int {
+        return when(idx) {
+            0 -> Calendar.MONDAY
+            1 -> Calendar.TUESDAY
+            2 -> Calendar.WEDNESDAY
+            3 -> Calendar.THURSDAY
+            4 -> Calendar.FRIDAY
+            5 -> Calendar.SATURDAY
+            6 -> Calendar.SUNDAY
+            else -> -1
+        }
+    }
+
+    fun getTimesFromIdx(idx: Int): Int {
+        return when(idx) {
+            0 -> 6
+            1 -> 9
+            2 -> 12
+            3 -> 15
+            4 -> 18
+            5 -> 21
+            else -> -1
+        }
     }
 }
