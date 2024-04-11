@@ -470,7 +470,7 @@
                         android:layout_marginStart="20dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="52%"
+                        android:text="0%"
                         android:textSize="15sp" />
 
                 </LinearLayout>
@@ -508,7 +508,7 @@
                         android:layout_marginStart="20dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="38%"
+                        android:text="0%"
                         android:textSize="15sp" />
 
                 </LinearLayout>
@@ -546,7 +546,7 @@
                         android:layout_marginStart="20dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="8%"
+                        android:text="0%"
                         android:textSize="15sp" />
 
                 </LinearLayout>
@@ -584,7 +584,7 @@
                         android:layout_marginStart="20dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="1%"
+                        android:text="0%"
                         android:textSize="15sp" />
 
                 </LinearLayout>
@@ -622,7 +622,7 @@
                         android:layout_marginStart="20dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="1%"
+                        android:text="0%"
                         android:textSize="15sp" />
 
                 </LinearLayout>
@@ -632,7 +632,8 @@
                 android:id="@+id/ll_feedbacks"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
 
 
             </LinearLayout>

@@ -119,8 +119,9 @@ class CourseDetailActivity : AppCompatActivity() {
             .into(binding.ivThumbnail)
 
         binding.tvRating.text = course.avgRating.toString()
+        var totalRatings = course.oneStarCnt + course.twoStarCnt + course.threeStarCnt + course.fiveStarCnt + course.fourStarCnt
         val figuresText =
-            getString(R.string.course_figures, course.totalRatings, course.totalStudents)
+            getString(R.string.course_figures, totalRatings, course.totalStudents)
         binding.tvFigures.text = figuresText
         binding.tvCreatedDate.text = getString(R.string.created_date, course.createdDate)
         binding.tvPrice.text = StringUtils.trimDecimalZero(course.price.toString())
