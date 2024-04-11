@@ -168,6 +168,10 @@ class CourseDetailActivity : AppCompatActivity() {
                     // Add the feedback layout to the parent layout
                     parentLayout.addView(feedbackLayout)
                 }
+
+                if (feedbackList.size > 2) {
+                    binding.tvShowMoreFeedback.visibility = View.VISIBLE
+                }
             }
         }
 

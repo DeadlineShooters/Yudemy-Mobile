@@ -16,8 +16,8 @@ class CourseViewModel : ViewModel() {
     private val courseRepository = CourseRepository()
     private val sectionRepository = SectionRepository()
 
-    private val _courses = MutableLiveData<List<Course>>()
-    val courses: LiveData<List<Course>> = _courses
+    private val _dashboardCourses = MutableLiveData<List<Course>>()
+    val dashboardCourses: LiveData<List<Course>> = _dashboardCourses
 
       private val _learningCourse = MutableLiveData<Course?>()
     val learningCourse: LiveData<Course?> = _learningCourse
@@ -37,7 +37,7 @@ class CourseViewModel : ViewModel() {
 
         task.addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                _courses.value = task.result
+                _dashboardCourses.value = task.result
             } else {
                 Log.d(this.javaClass.simpleName, "Failed to get courses: ${task.exception}")
             }

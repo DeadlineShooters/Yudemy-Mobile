@@ -24,7 +24,6 @@ import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.CourseFeedback
 import com.deadlineshooters.yudemy.repositories.CourseFeedbackRepository
 import com.deadlineshooters.yudemy.repositories.FeedbackCallback
-import com.deadlineshooters.yudemy.repositories.FeedbackUpdateListener
 import com.deadlineshooters.yudemy.repositories.UserRepository
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog

@@ -60,7 +60,7 @@ class FeaturedCategoryFragment : Fragment() {
 
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.refreshCourses()
-        courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
+        courseViewModel.dashboardCourses.observe(viewLifecycleOwner, Observer { courses ->
 //            val clonedCourses = List(1) { courses[0] }
             val adapter = CourseListAdapter2(courses)
             binding.courseList.layoutManager = LinearLayoutManager(context)

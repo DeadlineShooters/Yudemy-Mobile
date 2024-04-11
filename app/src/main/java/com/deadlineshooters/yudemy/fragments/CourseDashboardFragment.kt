@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,10 +13,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.adapters.CourseAdapter
@@ -56,7 +53,7 @@ class CourseDashboardFragment : Fragment() {
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.refreshCourses(UserRepository.getCurrentUserID())
 
-        courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
+        courseViewModel.dashboardCourses.observe(viewLifecycleOwner, Observer { courses ->
 
             courseAdapter = CourseAdapter(this, courses)
 
@@ -104,7 +101,7 @@ class CourseDashboardFragment : Fragment() {
         }
 
         /** Set up auto text view*/
-        courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
+        courseViewModel.dashboardCourses.observe(viewLifecycleOwner, Observer { courses ->
             var adapterAutoCompleteTV = ArrayAdapter(
                 requireContext(),
                 android.R.layout.simple_dropdown_item_1line,
@@ -145,7 +142,7 @@ class CourseDashboardFragment : Fragment() {
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
 
                 val searchText = binding.searchBar.text.toString()
-                val filteredCourses = courseViewModel.courses.value?.filter { course ->
+                val filteredCourses = courseViewModel.dashboardCourses.value?.filter { course ->
                     course.name.contains(searchText, ignoreCase = true)
                 }
                 filteredCourses?.let {
@@ -179,7 +176,7 @@ class CourseDashboardFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        courseViewModel.refreshCourses(UserRepository.getCurrentUserID())
+        courseViewModel.refreshCourses(UserRepository.getCurrentUserID(), sortNewest)
     }
 
     fun updateAutoCompleteTextView(newCourses: List<Course>) {

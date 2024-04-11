@@ -633,11 +633,13 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                >
 
 
             </LinearLayout>
             <TextView
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
                 android:id="@+id/tv_showMoreFeedback"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

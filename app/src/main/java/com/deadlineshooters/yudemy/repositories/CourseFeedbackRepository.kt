@@ -25,13 +25,13 @@ class CourseFeedbackRepository {
     private val usersCollection = mFireStore.collection(Constants.USERS)
 
     fun saveFeedback(oldRating : CourseFeedback?, course: Course, feedback: CourseFeedback, callback: FeedbackCallback) {
-        val totalRatings = course.fiveStarCnt + course.fourStarCnt + course.threeStarCnt + course.twoStarCnt + course.oneStarCnt
+        var totalRatings = course.fiveStarCnt + course.fourStarCnt + course.threeStarCnt + course.twoStarCnt + course.oneStarCnt
 
         // If the feedback doesn't have an id, create a new document and get its ID
         val feedbackRef = if (oldRating == null) {
             val newDoc = feedbackCollection.document()
 
-
+            totalRatings += 1
             course.avgRating = (course.avgRating * (totalRatings - 1) + feedback.rating.toDouble()) / totalRatings
 
             // increment the count of the corresponding star rating
