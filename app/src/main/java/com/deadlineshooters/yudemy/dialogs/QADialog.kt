@@ -93,15 +93,15 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
 
         questionViewModel.questions.observe(this, Observer{ result ->
             questionListAdapter = QuestionListAdapter(result, this, questionViewModel)
-                questionListView.adapter = questionListAdapter
-                questionListView.layoutManager = LinearLayoutManager(requireContext())
+            questionListView.adapter = questionListAdapter
+            questionListView.layoutManager = LinearLayoutManager(requireContext())
 
-                questionListAdapter.onItemClick = { question ->
-                    // TODO: check if the clicked question has asker = user._id
-                    questionDetailDialog = createQuestionDetailDialog(question)
-                    state = 2
-                    questionDetailDialog.show()
-                }
+            questionListAdapter.onItemClick = { question ->
+                // TODO: check if the clicked question has asker = user._id
+                questionDetailDialog = createQuestionDetailDialog(question)
+                state = 2
+                questionDetailDialog.show()
+            }
         })
 
         qaCloseBtn.setOnClickListener {
@@ -169,6 +169,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         })
 
         cancelAskBtn.setOnClickListener{
+            imageList.clear()
             askQuestionDialog.dismiss()
         }
 
@@ -183,6 +184,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
 
             CloudinaryHelper().uploadImageListToCloudinary (imageList){
                 questionViewModel.addNewQuestion(courseId, BaseActivity().getCurrentUserID(), title, details, it, selectedLecture, originalFormat.format(Date()))
+                imageList.clear()
                 askQuestionDialog.dismiss()
             }
         }
@@ -287,7 +289,8 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         })
 
         backQuestionDetailBtn.setOnClickListener{
-            questionDetailDialog.dismiss()
+            imageList.clear()
+            dialog.dismiss()
         }
 
         cameraBtn1.setOnClickListener {
@@ -299,13 +302,13 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
             val reply = replyContent.text.toString()
             if(imageList.isNotEmpty()){
                 CloudinaryHelper().uploadImageListToCloudinary(imageList){
-                    Log.d("Image list", it.toString())
                     val rep = Reply("", BaseActivity().getCurrentUserID(), question._id , it, reply , originalFormat.format(Date()))
                     replyViewModel.addNewReply(rep)
                     imageList.clear()
                     replyContent.text = ""
                     repImageContainer.removeAllViews()
                     replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
+                    imageList.clear()
                 }
             } else{
                 val rep = Reply("", BaseActivity().getCurrentUserID(), question._id , ArrayList(), reply , originalFormat.format(Date()))
@@ -353,8 +356,6 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
             }
         }
 
-
-
         dialog.setContentView(sheet)
         return dialog
     }
@@ -370,18 +371,25 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         val submitEditQuestionBtn = sheet.findViewById<TextView>(R.id.submitEditQuestionBtn)
         val title = sheet.findViewById<TextView>(R.id.editQuestionTitle)
         val details = sheet.findViewById<TextView>(R.id.editQuestionDetail)
+        val questionImageContainer = sheet.findViewById<LinearLayout>(R.id.editQuestionImageContainer)
         var selectedLecture: String = ""
+        var curLecturePos: Int = 0
 
         lectureViewModel.getLectureListByCourseId(courseId)
         lectureViewModel.lectures.observe(this, Observer { it ->
             for(lecture in it){
                 lectureList.add(lecture.name)
+                if(lecture._id == question.lectureId){
+                    curLecturePos = lectureList.indexOf(lecture.name)
+                }
             }
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, lectureList)
                 .also { adapter ->
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     editLectureSpinner.adapter = adapter
                 }
+
+            editLectureSpinner.setSelection(curLecturePos)
 
             editLectureSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -398,21 +406,22 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         details.text = question.details
 
         var imgList = question.images
-        for (imageUrl in question.images) {
-            Log.d("QuestionListAdapter", question.images.toString())
-            val imageView = ImageView(sheet.findViewById<HorizontalScrollView>(R.id.editQuestionImageView).context)
-            imageView.layoutParams = ViewGroup.LayoutParams(
-                200,
-                200
-            )
-
-            imageView.adjustViewBounds = true
-            imageView.setPadding(0, 0, 16, 16)
-            ImageViewHelper().setImageViewFromUrl(imageUrl, imageView)
-            sheet.findViewById<LinearLayout>(R.id.editQuestionImageContainer).addView(imageView)
-            imageView.setOnClickListener {
-                sheet.findViewById<LinearLayout>(R.id.editQuestionImageContainer).removeView(imageView)
-                imgList.removeAt(imgList.indexOf(imageUrl))
+        if(question.images.isNotEmpty()){
+            questionImageContainer.removeAllViews()
+            for (imageUrl in question.images) {
+                val imageView = ImageView(sheet.findViewById<HorizontalScrollView>(R.id.editQuestionImageView).context)
+                imageView.layoutParams = ViewGroup.LayoutParams(
+                    200,
+                    200
+                )
+                imageView.adjustViewBounds = true
+                imageView.setPadding(0, 0, 16, 16)
+                ImageViewHelper().setImageViewFromUrl(imageUrl, imageView)
+                sheet.findViewById<LinearLayout>(R.id.editQuestionImageContainer).addView(imageView)
+                imageView.setOnClickListener {
+                    sheet.findViewById<LinearLayout>(R.id.editQuestionImageContainer).removeView(imageView)
+                    imgList.removeAt(imgList.indexOf(imageUrl))
+                }
             }
         }
 
@@ -425,6 +434,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
 
                 }
                 .setPositiveButton(Html.fromHtml("<font color='#FF0000'><b>Discard</b></font>")) { dialog, which ->
+                    imageList.clear()
                     editQuestionDialog.dismiss()
                 }
 
@@ -541,10 +551,6 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
             view.text = filter
             dialog.dismiss()
         }
-
-//        dialog.setOnShowListener {
-//            (bottomSheet.parent.parent as ViewGroup).background = ResourcesCompat.getDrawable(resources, R.color.dialog_background, null)
-//        }
 
         bottomSheet.findViewById<Button>(R.id.cancelBtn).setOnClickListener {
             dialog.dismiss()

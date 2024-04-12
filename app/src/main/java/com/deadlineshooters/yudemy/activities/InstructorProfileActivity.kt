@@ -4,12 +4,14 @@ import InstructorCourseListAdapter
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Instructor
@@ -26,9 +28,10 @@ class InstructorProfileActivity : BaseActivity() {
     private lateinit var instructorTotalReviews: TextView
     private lateinit var instructorBio: TextView
     private lateinit var showMoreBtn: TextView
+    private lateinit var instructorImage: ImageView
 
     private var isExpanded = true
-    private lateinit var instructorCourseListAdapter: ArrayList<Course>
+    private lateinit var instructorCourseListAdapter: InstructorCourseListAdapter
     private lateinit var instructorCoursesOverview: TextView
     private lateinit var instructorCoursesView: RecyclerView
     private lateinit var seeAllBtn: TextView
@@ -50,6 +53,7 @@ class InstructorProfileActivity : BaseActivity() {
         instructorTotalStudents = findViewById(R.id.instructorTotalStudents)
         instructorTotalReviews = findViewById(R.id.instructorTotalReviews)
         instructorBio = findViewById(R.id.instructorBio)
+        instructorImage= findViewById(R.id.instructorImage)
         showMoreBtn = findViewById(R.id.showMoreBtn)
         instructorCoursesOverview = findViewById(R.id.instructorCoursesOverview)
         instructorCoursesView = findViewById(R.id.instructorCoursesView)
@@ -61,6 +65,7 @@ class InstructorProfileActivity : BaseActivity() {
             instructorTotalStudents.text = it.instructor!!.totalStudents.formatThousands()
             instructorTotalReviews.text = it.instructor!!.totalReviews.formatThousands()
             instructorBio.text = it.instructor!!.bio
+            ImageViewHelper().setImageViewFromUrl(it.image, instructorImage)
         })
 
         showMoreBtn.setOnClickListener{
@@ -77,10 +82,17 @@ class InstructorProfileActivity : BaseActivity() {
         courseViewModel.courses.observe(this, Observer { it ->
             instructorCoursesOverview.text = "My course (${it.size.toString()})"
 
-            instructorCourseListAdapter = it as ArrayList<Course>
-            instructorCoursesView.adapter = InstructorCourseListAdapter(instructorCourseListAdapter, this)
+            instructorCourseListAdapter = InstructorCourseListAdapter(it, this)
+            instructorCoursesView.adapter = instructorCourseListAdapter
             instructorCoursesView.layoutManager = LinearLayoutManager(this)
+
+            instructorCourseListAdapter.onItemClick = { course ->
+                val intent = Intent(this, CourseDetailActivity::class.java)
+                intent.putExtra("courseId", course.id)
+                startActivity(intent)
+            }
         })
+
 
         seeAllBtn.setOnClickListener {
             //TODO: make event to see all courses taught by the instructor

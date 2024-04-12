@@ -65,7 +65,7 @@ class SignUpWithEmailActivity : AppCompatActivity() {
         signUpBtn!!.setOnClickListener{
             AuthenticationRepository().createAccount(email!!.text.toString(), password!!.text.toString()){uid ->
                 if (uid != null){
-                    val newUser = User("",name!!.text.toString(), Image("https://res.cloudinary.com/dbgaeu07x/image/upload/v1712737767/Yudemy/spmaesw65l7iyk32xymu.jpg","Yudemy/spmaesw65l7iyk32xymu") ,arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), false, "", Instructor("", 0, 0, "", "", ""))
+                    val newUser = User("",name!!.text.toString(), Image("https://res.cloudinary.com/dbgaeu07x/image/upload/v1712737767/Yudemy/spmaesw65l7iyk32xymu.jpg","Yudemy/spmaesw65l7iyk32xymu") ,arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), false, "", null)
                     UserRepository().addUser(newUser)
                     val intent = Intent(this, StudentMainActivity::class.java)
                     startActivity(intent)
