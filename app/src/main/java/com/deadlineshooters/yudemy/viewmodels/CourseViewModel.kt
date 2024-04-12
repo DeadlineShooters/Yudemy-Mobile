@@ -26,6 +26,7 @@ class CourseViewModel : ViewModel() {
     fun refreshCourses() {
         courseRepository.getCourses { courses ->
             _courses.value = courses
+
         }
     }
 
@@ -39,8 +40,8 @@ class CourseViewModel : ViewModel() {
     fun refreshSearchResult(input: String) {
         courseRepository.searchCourses(input) { courses ->
             _searchResult.value = courses
-        }
 
+        }
     }
 
 //    fun addDummyCourse() {

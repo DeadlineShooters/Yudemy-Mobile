@@ -3,8 +3,7 @@ package com.deadlineshooters.yudemy.models
 import android.os.Parcelable
 import com.google.firebase.firestore.DocumentId
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 @kotlinx.parcelize.Parcelize
 data class Course(
@@ -31,3 +30,4 @@ data class Course(
     var createdDate: String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
     var totalRevenue: Number = 0.0
 ) : Parcelable
+

@@ -145,6 +145,7 @@ class CourseRepository {
         }.addOnFailureListener { exception ->
             Log.d("Firestore", "get failed with ", exception)
         }
+
     }
 
 }

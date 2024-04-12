@@ -118,14 +118,13 @@ class SearchFragment : Fragment() {
         }
 
         val searchView = binding.searchView
-        courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
+        courseViewModel = ViewModelProvider(this)[CourseViewModel::class.java]
 
         var courseNames = ArrayList<String>()
         courseViewModel.refreshCourses()
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
             courseNames = courses.map { it.name } as ArrayList<String>
         })
-
 
         val from = arrayOf(SearchManager.SUGGEST_COLUMN_TEXT_1)
         val to = intArrayOf(android.R.id.text1)
