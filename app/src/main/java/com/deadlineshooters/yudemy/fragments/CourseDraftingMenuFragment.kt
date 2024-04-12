@@ -13,6 +13,7 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.CreateCurriculumActivity
 import com.deadlineshooters.yudemy.activities.EditCourseLandingPageActivity
 import com.deadlineshooters.yudemy.activities.PricingCourseDraftingActivity
+import com.deadlineshooters.yudemy.models.Course
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -60,18 +61,25 @@ class CourseDraftingMenuFragment : Fragment() {
 
         setupActionBar()
 
+        val course = arguments?.getParcelable<Course>("course")
+
         navCurriculum.setOnClickListener {
             val intent = Intent(activity, CreateCurriculumActivity::class.java)
             startActivity(intent)
         }
         navCourseLandingPage.setOnClickListener {
             val intent = Intent(activity, EditCourseLandingPageActivity::class.java)
+            intent.putExtra("course", course)
             startActivity(intent)
         }
         navPricing.setOnClickListener {
             val intent = Intent(activity, PricingCourseDraftingActivity::class.java)
             startActivity(intent)
         }
+
+
+
+
     }
 
     private fun setupActionBar() {
