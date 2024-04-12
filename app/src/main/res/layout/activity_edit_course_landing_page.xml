@@ -35,16 +35,17 @@
 
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSave"
+                android:id="@+id/button_save"
                 style="@style/MyBlackButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:minWidth="45dip"
-                android:minHeight="48dp"
                 android:text="@string/save"
                 android:textAllCaps="false"
+                android:textSize="10sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_toolbar"
                 app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -89,8 +90,6 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/insert_your_course_title"
                     android:inputType="text"
-                    android:minHeight="48dp"
-                    android:textSize="20sp"
                     android:maxLength="55" />
 
             </LinearLayout>
@@ -116,7 +115,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Insert your course subtitle"
-                    android:textSize="20sp"
                     android:inputType="text"
                     android:maxLength="120" />
 
@@ -142,12 +140,8 @@
                     android:id="@+id/et_desc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:textSize="20sp"
-                    android:lines="3"
-                    android:gravity="start"
-                    android:hint="@string/insert_your_course_description"
-                    android:inputType="textMultiLine" />
+                    android:hint="Insert your course description"
+                    android:inputType="text" />
             </LinearLayout>
 
 
@@ -164,7 +158,6 @@
                     android:text="@string/course_image"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="20dp"
                     tools:layout_editor_absoluteX="287dp"
                     tools:layout_editor_absoluteY="214dp" />
 
@@ -174,26 +167,18 @@
                     android:gravity="start"
                     android:orientation="horizontal">
 
-                 <!--   <ImageView
-                        android:id="@+id/iv_courseImage"
-                        android:layout_width="0dp"
-                        android:layout_height="180dp"
-                        android:layout_weight="1"
-                        app:srcCompat="@drawable/placeholder" />-->
                     <ImageView
                         android:id="@+id/iv_courseImage"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:adjustViewBounds="true"
+                        android:layout_height="180dp"
+                        android:layout_weight="2"
+                        android:layout_marginEnd="15dp"
                         app:srcCompat="@drawable/placeholder" />
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:paddingStart="20dp"
                         android:layout_weight="1"
-
                         android:orientation="vertical">
 
                         <TextView

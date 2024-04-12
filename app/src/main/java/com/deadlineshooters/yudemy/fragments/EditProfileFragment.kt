@@ -54,7 +54,7 @@ class EditProfileFragment : Fragment() {
             "I also teach local night classes and run a somewhat popular web development tutorial YouTube channel named LearnWebCode.\n\n" +
             "I'm a front-end developer, designer, and educator. I've been building user interfaces for over a decade for the world's largest brands, international technology leaders, and national political campaigns.\n\n" +
             "I'm fortunate to enjoy the development work I do, but my true passion is helping people learn."
-    private val dumpInst = User("", "Brad Schiff", arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(),false,  "",Instructor("Web developer", 72087, 247011,dumpBio, Image("secure_url", "public_id"), "walletId", "walletName"))
+    private val dumpInst = User("", "Brad Schiff", arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(),false, arrayListOf(), "",Instructor("Web developer", 72087, 247011,dumpBio, Image("secure_url", "public_id"), "walletId", "walletName"))
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

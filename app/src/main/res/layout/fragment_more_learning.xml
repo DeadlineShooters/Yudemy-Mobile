@@ -64,20 +64,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
                 android:drawableLeft="@drawable/ic_star"
                 android:drawablePadding="12dp"
                 android:drawableTint="@color/primary_text_color"
                 android:text="@string/add_course_to_favorites" />
-            <TextView
-                android:id="@+id/tv_leaveRating"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:drawableLeft="@drawable/ic_edit_16"
-                android:drawablePadding="12dp"
-                android:drawableTint="@color/primary_text_color"
-                android:text="@string/leave_a_rating" />
         </LinearLayout>
     </ScrollView>
 

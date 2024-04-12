@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
-    <uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES"/>
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".MyApp"
         android:allowBackup="true"
-        android:enableOnBackInvokedCallback="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -19,28 +16,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Yudemy"
-        tools:replace="android:theme"
         tools:targetApi="31">
         <activity
-                android:name=".activities.EditCourseLandingPageActivity"
-                android:exported="false"
-                android:screenOrientation="portrait"
-                android:theme="@style/Theme.Yudemy.NoActionBar"/>
+            android:name=".activities.EditCourseLandingPageActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Yudemy.NoActionBar" />
+  <activity
+            android:name=".activities.PricingCourseDraftingActivity"
+            android:exported="false" />
         <activity
-                android:name=".activities.PricingCourseDraftingActivity"
-                android:exported="false"/>
+            android:name=".activities.CreateCurriculumActivity"
+            android:exported="false" />
+
         <activity
-                android:name=".activities.CreateCurriculumActivity"
-                android:exported="false"/>
+            android:name=".activities.CertificateActivity"
+            android:exported="false" />
         <activity
-                android:name=".activities.CertificateActivity"
-                android:exported="false"/>
+            android:name=".activities.InstructorProfileActivity"
+            android:exported="false" />
         <activity
-                android:name=".activities.InstructorProfileActivity"
-                android:exported="false"/>
-        <activity
-                android:name=".activities.AboutUsActivity"
-                android:exported="false"/>
+            android:name=".activities.AboutUsActivity"
+            android:exported="false" />
         <activity
                 android:name=".activities.ConfirmResetActivity"
                 android:exported="false"/>
@@ -51,8 +48,8 @@
                 android:name=".activities.PasswordInputActivity"
                 android:exported="false"/>
         <activity
-                android:name=".activities.EmailInputActivity"
-                android:exported="false"/>
+            android:name=".activities.EmailInputActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.CourseLearningActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
@@ -110,7 +107,7 @@
         </activity>
         <activity
                 android:name=".activities.StudentMainActivity"
-                android:exported="true"/>
+                android:exported="true" />
     </application>
 
 </manifest>

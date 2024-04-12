@@ -11,7 +11,7 @@ import java.util.Locale
 data class Certificate(
     var _id: String = "",
     var createdDate: String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
-    var userId: String = "",
+
     var courseId: String = "",
     var title: String = "",
     var length: Int = 0 // in seconds

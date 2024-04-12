@@ -25,15 +25,9 @@ data class Course(
     var totalLength: Int = 0, // in seconds
     var totalQuiz: Int = 0,
     var thumbnail: Image = Image(),
+    var totalRatings: Int = 0,
     var avgRating: Double = 0.0,
     var status: Boolean = false,
     var createdDate: String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
-    var totalRevenue: Number = 0.0,
-    var fiveStarCnt: Int = 0,
-    var fourStarCnt: Int = 0,
-    var threeStarCnt: Int = 0,
-    var twoStarCnt: Int = 0,
-    var oneStarCnt: Int = 0,
-
-
+    var totalRevenue: Number = 0.0
 ) : Parcelable

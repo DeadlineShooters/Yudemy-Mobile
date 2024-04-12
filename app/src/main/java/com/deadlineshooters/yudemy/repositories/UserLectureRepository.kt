@@ -80,13 +80,7 @@ class UserLectureRepository {
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    val data = document.data?.get("sectionList")
-                    val idList = if (data != null) {
-                        data as ArrayList<String>
-                    } else {
-                        // data is null
-                        ArrayList<String>()
-                    }
+                    val idList = document.data?.get("sectionList") as ArrayList<String>
                     val tasks = idList.map { id ->
                         val task = TaskCompletionSource<ArrayList<Map<Lecture, Boolean>>>()
                         getUserLecturesBySection(userId, id) { lectures ->
@@ -97,17 +91,7 @@ class UserLectureRepository {
                     Tasks.whenAllSuccess<ArrayList<Lecture>>(tasks)
                         .addOnSuccessListener { lectures ->
                             Log.d("LectureLearningFragment", "repo getUserLecturesByCourse: $lectures")
-                            val data = lectures
-                            val lectures = if (data is ArrayList<*>) {
-                                data as ArrayList<ArrayList<Map<Lecture, Boolean>>>
-                            } else {
-                                // data is null or an empty list
-                                ArrayList<ArrayList<Map<Lecture, Boolean>>>()
-                            }
-
-                            callback(lectures)
-
-//                            callback(lectures as ArrayList<ArrayList<Map<Lecture, Boolean>>>)
+                            callback(lectures as ArrayList<ArrayList<Map<Lecture, Boolean>>>)
                         }
                 } else {
                     Log.d(ContentValues.TAG, "No such document")
