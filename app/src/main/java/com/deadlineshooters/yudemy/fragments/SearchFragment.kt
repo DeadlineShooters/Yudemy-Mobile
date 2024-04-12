@@ -72,7 +72,7 @@ class SearchFragment : Fragment() {
 
         topSearchAdapter.onItemClick = { category ->
             courseViewModel = ViewModelProvider(this@SearchFragment).get(CourseViewModel::class.java)
-            courseViewModel.dashboardCourses.observe(viewLifecycleOwner, Observer { courses ->
+            courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
 //                val clonedCourses = List(10) { courses[0] }
                 val clonedCourses = List(1) { courses[0] }
                 val resultAdapter = CourseListAdapter1(requireContext(), R.layout.course_list_item, clonedCourses)
@@ -112,7 +112,7 @@ class SearchFragment : Fragment() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 courseViewModel = ViewModelProvider(this@SearchFragment).get(CourseViewModel::class.java)
-                courseViewModel.dashboardCourses.observe(viewLifecycleOwner, Observer { courses ->
+                courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
                     val clonedCourses = List(1) { courses[0] }
                     val resultAdapter = CourseListAdapter1(requireContext(), R.layout.course_list_item, clonedCourses)
                     binding.resultList.adapter = resultAdapter

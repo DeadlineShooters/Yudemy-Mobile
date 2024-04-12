@@ -45,7 +45,7 @@ class CertificateDialog : DialogFragment() {
     private lateinit var studentName: TextView
     private lateinit var finishDate: TextView
     private lateinit var courseLength: TextView
-    private val dumpCertificate = Certificate("123", "13/03/2024", "123", "123","Data Structures & Algorithms Essentials using C++ (2022)", 97200)
+    private val dumpCertificate = Certificate("123", "13/03/2024", "123", "Data Structures & Algorithms Essentials using C++ (2022)", 97200,)
     private val originalFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val newFormat = SimpleDateFormat("MMM, dd, yyyy", Locale.getDefault())
 
