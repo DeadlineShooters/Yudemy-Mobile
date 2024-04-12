@@ -456,7 +456,8 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
                 imageList.clear()
                 questionListAdapter.notifyDataSetChanged()
                 editQuestionDialog.dismiss()
-            } else{
+            }
+            if(imageList.isNotEmpty()){
                 CloudinaryHelper().uploadImageListToCloudinary(imageList){
                     val editedImageList = ArrayList<Image>().apply {
                         addAll(it)
@@ -467,6 +468,14 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
                     questionListAdapter.notifyDataSetChanged()
                     editQuestionDialog.dismiss()
                 }
+            } else{
+                val editedImageList = ArrayList<Image>().apply {
+                    addAll(imgList)
+                }
+                questionViewModel.editQuestion(question._id,BaseActivity().getCurrentUserID(), questionTitle, questionDetails, editedImageList, selectedLecture, question.createdTime)
+                imageList.clear()
+                questionListAdapter.notifyDataSetChanged()
+                editQuestionDialog.dismiss()
             }
         }
 

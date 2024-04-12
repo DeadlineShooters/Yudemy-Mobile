@@ -186,8 +186,6 @@ class QuestionListAdapter (var questionList: ArrayList<Question>, private val li
         questionList = questionViewModel.questions.value!!
         notifyDataSetChanged()
 
-        Log.d("cho na", questionList.toString())
-
         var tmpQuestionList: ArrayList<Question> = questionList
 
         if(filter == "All questions"){
