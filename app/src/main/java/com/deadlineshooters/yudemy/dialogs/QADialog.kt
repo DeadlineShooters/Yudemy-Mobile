@@ -272,6 +272,12 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         lectureViewModel.lecture.observe(this, Observer { it ->
             questionDetailLectureId.text = it.name
         })
+
+        replyViewModel.replies.observe(this, Observer { it ->
+            replyListAdapter = ReplyListAdapter(it, this)
+            replyListView.adapter = replyListAdapter
+            replyListView.layoutManager = LinearLayoutManager(requireContext())
+        })
         questionDetailContent.text = question.details
 
         for (imageUrl in question.images) {
@@ -287,15 +293,16 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
             questionDetailImageContainer.addView(imageView)
         }
 
-        replyViewModel.replies.observe(this, Observer { it ->
-            replyListAdapter = ReplyListAdapter(it, this)
-            replyListView.adapter = replyListAdapter
-            replyListView.layoutManager = LinearLayoutManager(requireContext())
-        })
+
 
         backQuestionDetailBtn.setOnClickListener{
             imageList.clear()
-            dialog.dismiss()
+//            dialog.dismiss()
+//            editQuestionDialog = createEditQuestionDialog(question)
+//            state = 3
+//            editQuestionDialog.show()
+            questionDetailDialog.dismiss()
+            QADialog(courseId, curLecture).show(parentFragmentManager, "QADialog")
         }
 
         cameraBtn1.setOnClickListener {
@@ -459,8 +466,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
             if(imageList.size == 0 && imgList.size == 0){
                 questionViewModel.editQuestion(question._id,BaseActivity().getCurrentUserID(), questionTitle, questionDetails, ArrayList(), selectedLecture, question.createdTime)
                 imageList.clear()
-                questionListAdapter.notifyDataSetChanged()
-                editQuestionDialog.dismiss()
+//                questionListAdapter.notifyDataSetChanged()
             }
             if(imageList.isNotEmpty()){
                 CloudinaryHelper().uploadImageListToCloudinary(imageList){
@@ -470,8 +476,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
                     }
                     questionViewModel.editQuestion(question._id,BaseActivity().getCurrentUserID(), questionTitle, questionDetails, editedImageList, selectedLecture, question.createdTime)
                     imageList.clear()
-                    questionListAdapter.notifyDataSetChanged()
-                    editQuestionDialog.dismiss()
+//                    questionListAdapter.notifyDataSetChanged()
                 }
             } else{
                 val editedImageList = ArrayList<Image>().apply {
@@ -479,9 +484,9 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
                 }
                 questionViewModel.editQuestion(question._id,BaseActivity().getCurrentUserID(), questionTitle, questionDetails, editedImageList, selectedLecture, question.createdTime)
                 imageList.clear()
-                questionListAdapter.notifyDataSetChanged()
-                editQuestionDialog.dismiss()
+//                questionListAdapter.notifyDataSetChanged()
             }
+            dialog.dismiss()
         }
 
         dialog.setContentView(sheet)
