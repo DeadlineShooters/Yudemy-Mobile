@@ -16,7 +16,9 @@ import com.deadlineshooters.yudemy.activities.SignInActivity
 import com.deadlineshooters.yudemy.activities.StudentMainActivity
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Image
+import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
+import com.deadlineshooters.yudemy.repositories.UserRepository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 // TODO: Rename parameter arguments, choose names that match
@@ -45,6 +47,7 @@ class AccountFragment : Fragment() {
     private lateinit var editProfile: TextView
     private lateinit var editImage: TextView
     private val curUserEmail = BaseActivity().getCurrentUserEmail()
+    private val userRepository = UserRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,9 +82,7 @@ class AccountFragment : Fragment() {
         email.text = curUserEmail.toString()
 
         if (requireActivity() is InstructorMainActivity) {
-            navigateIns.text = "Switch to Student View"
-        } else {
-            navigateIns.text = "Switch to Instructor View"
+            navigateIns.text = "Switch to student view"
         }
 
         navigateIns.setOnClickListener {
@@ -92,6 +93,8 @@ class AccountFragment : Fragment() {
                 is StudentMainActivity -> Intent(context, InstructorMainActivity::class.java)
                 else -> throw IllegalStateException("Unexpected activity: $curActivity")
             }
+
+            userRepository.becomeInstructor()
             startActivity(intent)
         }
 
@@ -126,6 +129,9 @@ class AccountFragment : Fragment() {
 
         val imageUrl = "https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg"
         ImageViewHelper().setImageViewFromUrl(Image(imageUrl, ""), avatar)
+
+        UserRepository().loadUserData(this@AccountFragment)
+
     }
 
     private fun replaceFragment(fragment: Fragment) {
@@ -153,6 +159,16 @@ class AccountFragment : Fragment() {
             .show()
     }
 
+    fun setUserData(user: User) {
+        if (requireActivity() is StudentMainActivity) {
+            if (user.instructor != null)
+                navigateIns.text = "Switch to instructor view"
+            else
+                navigateIns.text = "Become an instructor"
+
+        }
+
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of
