@@ -79,6 +79,7 @@ class InstructorProfileActivity : BaseActivity() {
             isExpanded = !isExpanded
         }
 
+
         courseViewModel.courses.observe(this, Observer { it ->
             instructorCoursesOverview.text = "My course (${it.size.toString()})"
 

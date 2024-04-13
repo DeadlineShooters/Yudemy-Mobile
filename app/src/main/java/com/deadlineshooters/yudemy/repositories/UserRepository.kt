@@ -27,6 +27,11 @@ class UserRepository {
     /**
      * Load user data onto any page
      * */
+
+    fun getUserData() : User{
+        // for testing
+        return User("Test")
+    }
     fun loadUserData(context: Any) {
         val documentReference = usersCollection.document(getCurrentUserID())
 

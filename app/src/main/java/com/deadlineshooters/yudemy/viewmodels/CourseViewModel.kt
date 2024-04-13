@@ -23,7 +23,7 @@ class CourseViewModel : ViewModel() {
     private val _dashboardCourses = MutableLiveData<List<Course>>()
     val dashboardCourses: LiveData<List<Course>> = _dashboardCourses
 
-      private val _learningCourse = MutableLiveData<Course?>()
+  private val _learningCourse = MutableLiveData<Course?>()
     val learningCourse: LiveData<Course?> = _learningCourse
 
     private val _sectionsWithLectures = MutableLiveData<List<SectionWithLectures>>()
@@ -31,6 +31,9 @@ class CourseViewModel : ViewModel() {
 
     private val _wishlist = MutableLiveData<List<Course>>()
     val wishlist: LiveData<List<Course>> = _wishlist
+
+    private val _courses = MutableLiveData<List<Course>>()
+    val courses get() = _courses
 
     fun refreshCourses(userId: String? = null, sortByNewest: Boolean = true) {
         val task = if (userId != null) {
@@ -85,8 +88,7 @@ class CourseViewModel : ViewModel() {
 //        }
 //
 //    }
-    private val _courses = MutableLiveData<List<Course>>()
-    val course get() = _courses
+
 
     fun getTop3InstructorCourseList(instructorId: String) {
         courseRepository.getTop3InstructorCourseList(instructorId) {
