@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.deadlineshooters.yudemy.R
@@ -107,6 +108,12 @@ class AccountFragment : Fragment() {
                 val intent = Intent(context, StudentMainActivity::class.java)
                 startActivity(intent)
             } else {
+                userViewModel.userData.observe(viewLifecycleOwner, Observer {user ->
+                    if(user.instructor == null){
+                        UserRepository().becomeInstructor()
+                        Toast.makeText(context, "You are now an instructor", Toast.LENGTH_SHORT).show()
+                    }
+                })
                 val intent = Intent(context, InstructorMainActivity::class.java)
                 startActivity(intent)
             }
