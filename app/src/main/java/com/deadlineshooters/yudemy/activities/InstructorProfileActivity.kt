@@ -89,7 +89,7 @@ class InstructorProfileActivity : BaseActivity() {
 
             instructorCourseListAdapter.onItemClick = { course ->
                 val intent = Intent(this, CourseDetailActivity::class.java)
-                intent.putExtra("courseId", course.id)
+                intent.putExtra("course", course)
                 startActivity(intent)
             }
         })

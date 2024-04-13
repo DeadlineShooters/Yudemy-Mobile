@@ -57,12 +57,14 @@ class CourseDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupActionBar()
 
+
+        course = intent.getParcelableExtra("course", Course::class.java) ?: Course()
         binding.btnViewProfile.setOnClickListener {
             val intent = Intent(this, InstructorProfileActivity::class.java)
-            intent.putExtra("instructorId", "hfhbhaxDyUfPTSnSe0Mel5Z708k2")
+            intent.putExtra("instructorId", course.instructor)
             startActivity(intent)
+            Log.d("Instructor", course.instructor)
         }
-        course = intent.getParcelableExtra("course", Course::class.java) ?: Course()
         courseViewModel = ViewModelProvider(this)[CourseViewModel::class.java]
 
         populateCourseDetails(course)
@@ -209,7 +211,7 @@ class CourseDetailActivity : AppCompatActivity() {
 
         binding.btnViewProfile.setOnClickListener {
             val intent = Intent(this, InstructorProfileActivity::class.java)
-            intent.putExtra("instructor", ins)
+            intent.putExtra("instructorId", ins.id)
             startActivity(intent)
         }
     }
