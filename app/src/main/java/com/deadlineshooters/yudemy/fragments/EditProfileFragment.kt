@@ -9,10 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.models.Image
-import com.deadlineshooters.yudemy.models.Instructor
-import com.deadlineshooters.yudemy.models.User
+import com.deadlineshooters.yudemy.activities.BaseActivity
+import com.deadlineshooters.yudemy.viewmodels.InstructorViewModel
+import com.deadlineshooters.yudemy.viewmodels.UserViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -33,6 +36,9 @@ class EditProfileFragment : Fragment() {
     private lateinit var instructorBio: TextView
     private lateinit var cancelEditProfileBtn: TextView
     private lateinit var saveEditProfileInstructorBtn: Button
+    private lateinit var userViewModel: UserViewModel
+    private lateinit var instructorViewModel: InstructorViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +46,10 @@ class EditProfileFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        instructorViewModel = ViewModelProvider(this)[InstructorViewModel::class.java]
+        userViewModel.getCurUser()
+
     }
 
     override fun onCreateView(
@@ -50,12 +60,6 @@ class EditProfileFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_edit_profile, container, false)
     }
 
-    private val dumpBio = "Hi, I'm Brad and I've taught web development to countless coworkers and held training sessions for fortune 100 companies.\n\n" +
-            "I also teach local night classes and run a somewhat popular web development tutorial YouTube channel named LearnWebCode.\n\n" +
-            "I'm a front-end developer, designer, and educator. I've been building user interfaces for over a decade for the world's largest brands, international technology leaders, and national political campaigns.\n\n" +
-            "I'm fortunate to enjoy the development work I do, but my true passion is helping people learn."
-    private val dumpInst = User("", "Brad Schiff", arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(),false, arrayListOf(), "",Instructor("Web developer", 72087, 247011,dumpBio, Image("secure_url", "public_id"), "walletId", "walletName"))
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         instructorFullName = view.findViewById(R.id.instructorFullName)
@@ -64,12 +68,21 @@ class EditProfileFragment : Fragment() {
         cancelEditProfileBtn = view.findViewById(R.id.cancelEditImageBtn)
         saveEditProfileInstructorBtn = view.findViewById(R.id.saveEditProfileInstructorBtn)
 
-        instructorFullName.text = dumpInst.fullName
-        instructorHeadline.text = dumpInst.instructor!!.headline
-        instructorBio.text = dumpInst.instructor!!.bio
+        userViewModel.userData.observe(viewLifecycleOwner, Observer {user ->
+            if(user.instructor != null){
+                instructorFullName.text = user.fullName
+                instructorHeadline.text = user.instructor!!.headline
+                instructorBio.text = user.instructor!!.bio
+            }
+        })
 
         saveEditProfileInstructorBtn.setOnClickListener {
             //TODO: Save the edited profile
+            if(!isNewInfoEmpty()){
+                instructorViewModel.modifyInstructorProfile(BaseActivity().getCurrentUserID(), instructorFullName.text.toString(), instructorHeadline.text.toString(), instructorBio.text.toString())
+                Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                replaceFragment(AccountFragment.newInstance(true, BaseActivity().getCurrentUserID()))
+            }
         }
 
         cancelEditProfileBtn.setOnClickListener {
@@ -81,7 +94,7 @@ class EditProfileFragment : Fragment() {
 
                 }
                 .setPositiveButton(Html.fromHtml("<font color='#FF0000'><b>Discard</b></font>")) { dialog, which ->
-                    requireActivity().supportFragmentManager.popBackStack()
+                    replaceFragment(AccountFragment.newInstance(true, BaseActivity().getCurrentUserID()))
                 }
 
             val dialog: AlertDialog = builder.create()
@@ -89,6 +102,16 @@ class EditProfileFragment : Fragment() {
         }
     }
 
+    private fun replaceFragment(fragment: Fragment) {
+        val fragmentManager = requireActivity().supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.frameLayoutInstructor, fragment)
+        fragmentTransaction.commit()
+    }
+
+    private fun isNewInfoEmpty(): Boolean {
+        return instructorFullName.text.toString().isEmpty() || instructorHeadline.text.toString().isEmpty() || instructorBio.text.toString().isEmpty()
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of

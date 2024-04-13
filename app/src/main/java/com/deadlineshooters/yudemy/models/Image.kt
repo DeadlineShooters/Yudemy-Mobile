@@ -1,6 +1,5 @@
 package com.deadlineshooters.yudemy.models
 
-import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize

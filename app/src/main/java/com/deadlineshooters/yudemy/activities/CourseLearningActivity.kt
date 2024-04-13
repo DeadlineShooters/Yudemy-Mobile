@@ -1,6 +1,7 @@
 package com.deadlineshooters.yudemy.activities
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Build
@@ -20,9 +21,16 @@ import com.deadlineshooters.yudemy.adapters.TabsAdapter
 import com.deadlineshooters.yudemy.databinding.ActivityCourseLearningBinding
 import com.deadlineshooters.yudemy.fragments.LectureLearningFragment
 import com.deadlineshooters.yudemy.fragments.MoreLearningFragment
+import com.deadlineshooters.yudemy.models.Certificate
 import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.models.Lecture
+import com.deadlineshooters.yudemy.viewmodels.CertificateViewModel
 import com.deadlineshooters.yudemy.viewmodels.CourseProgressViewModel
 import com.google.android.material.tabs.TabLayoutMediator
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.Date
+import java.util.Locale
 import kotlin.math.roundToInt
 
 
@@ -37,6 +45,9 @@ class CourseLearningActivity : AppCompatActivity() {
     private var progress: Int = 0
 
     private lateinit var courseProgressViewModel: CourseProgressViewModel
+    private lateinit var certificateViewModel: CertificateViewModel
+    var currentLecture: Map<Lecture, Boolean>? = null
+
 
     private var isUpdateProgress = false
 
@@ -129,6 +140,22 @@ class CourseLearningActivity : AppCompatActivity() {
         if(newProgress != progress) {
             this.progress = newProgress
             courseProgressViewModel.updateCourseProgress(learningCourse.id, newProgress)
+            if(newProgress == 100) {
+                BaseActivity().showNoButtonDialogWithTimeout(
+                    this,
+                    "Course Completed!",
+                    "Congratulations! You have completed the course!",
+                    3000
+                )
+                createCertificate()
+            }
         }
+    }
+
+    private fun createCertificate() {
+        certificateViewModel = ViewModelProvider(this)[CertificateViewModel::class.java]
+
+        val certificate = Certificate("", learningCourse.id, SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()).toString(), learningCourse.totalLength, learningCourse.name, BaseActivity().getCurrentUserID())
+        certificateViewModel.addCertificate(BaseActivity().getCurrentUserID(), learningCourse.id, certificate)
     }
 }

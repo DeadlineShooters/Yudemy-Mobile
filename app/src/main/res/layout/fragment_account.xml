@@ -134,6 +134,7 @@
                 android:drawableEnd="@drawable/ic_arrow_right"
                 android:drawableTint="@color/gray_300"
                 android:text="@string/edit_profile"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@+id/textView7"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/textView7"

@@ -10,19 +10,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="16dp"
         android:clickable="true"
         android:text="Back"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/textView32" />
 
     <TextView
         android:id="@+id/textView32"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="40dp"
         android:text="Question"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -94,11 +93,12 @@
 
     <TextView
         android:id="@+id/questionDetailLectureId"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="TextView"
         android:textColor="#777477"
+        app:layout_constraintEnd_toEndOf="@+id/questionDetailContentView"
         app:layout_constraintStart_toEndOf="@+id/questionDetailAskDate"
         app:layout_constraintTop_toTopOf="@+id/questionDetailAskDate" />
 
@@ -119,32 +119,43 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/questionDetailImage"
-            android:layout_width="290dp"
-            android:layout_height="163dp"
-            android:layout_marginTop="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
+        <HorizontalScrollView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/questionDetailContent"
-            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <LinearLayout
+                android:id="@+id/questionDetailImageContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:gravity="start"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </HorizontalScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/replyListView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/replyImageView"
         app:layout_constraintEnd_toEndOf="@+id/questionDetailContentView"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/questionDetailAskerImageBackground"
-        app:layout_constraintTop_toBottomOf="@+id/questionDetailAskerName" />
+        app:layout_constraintTop_toBottomOf="@+id/questionDetailAskerName"
+        app:layout_constraintVertical_bias="0.075" />
 
     <View
         android:id="@+id/divider3"
         android:layout_width="0dp"
         android:layout_height="1dp"
+        android:layout_marginBottom="16dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintBottom_toTopOf="@+id/replyInput"
         app:layout_constraintEnd_toEndOf="parent"
@@ -155,24 +166,23 @@
         android:id="@+id/cameraBtn1"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="12dp"
         android:background="@drawable/ic_camera"
         app:layout_constraintBottom_toBottomOf="@+id/replyInput"
         app:layout_constraintEnd_toStartOf="@+id/replyInput"
-        app:layout_constraintTop_toBottomOf="@+id/divider3" />
+        app:layout_constraintTop_toTopOf="@+id/replyInput" />
 
     <EditText
         android:id="@+id/replyInput"
         android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="16dp"
         android:ems="10"
         android:hint="Write a reply"
         android:inputType="text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.483"
+        app:layout_constraintHorizontal_bias="0.45"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -180,25 +190,23 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:background="@drawable/ic_send"
         app:layout_constraintBottom_toBottomOf="@+id/replyInput"
         app:layout_constraintStart_toEndOf="@+id/replyInput"
-        app:layout_constraintTop_toBottomOf="@+id/divider3"
+        app:layout_constraintTop_toTopOf="@+id/replyInput"
         app:layout_constraintVertical_bias="0.509" />
 
     <HorizontalScrollView
         android:id="@+id/replyImageView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/replyInput"
+        app:layout_constraintBottom_toTopOf="@+id/divider3"
         app:layout_constraintEnd_toEndOf="@+id/replyListView"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/replyListView">
 
         <LinearLayout
-            android:id="@+id/replyImageContainer"
+            android:id="@+id/repImageContainer"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal" />

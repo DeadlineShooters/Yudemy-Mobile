@@ -8,9 +8,10 @@ import android.widget.TextView
 import android.widget.Toast
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
+import com.deadlineshooters.yudemy.repositories.UserRepository
 import org.w3c.dom.Text
 
-class PasswordInputActivity : AppCompatActivity() {
+class PasswordInputActivity : BaseActivity() {
     private var email: TextView? = null
     private var forgotHref: TextView? = null
     private var signinBtn: Button? = null
