@@ -61,7 +61,7 @@ class LectureLearningFragment : Fragment() {
     private lateinit var btnMuteAudio: ImageView
     private var exoPlayer: ExoPlayer? = null
 
-    private var currentLecture: Map<Lecture, Boolean>? = null
+//    private var currentLecture: Map<Lecture, Boolean>? = null
     private var currentSectionIdx: Int = 0
     private var currentLectureIdx: Int = 0
 
@@ -109,20 +109,12 @@ class LectureLearningFragment : Fragment() {
 
         exoPlayer!!.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
-                if (playbackState == Player.STATE_ENDED) {
+                if(playbackState == Player.STATE_ENDED) {
                     // Mark the lecture as completed
-                    if (currentLecture != null && !currentLecture!!.values.first()) {
-                        userLectureViewModel.markLecture(
-                            currentLecture!!.keys.first()._id,
-                            true,
-                            currentSectionIdx,
-                            currentLectureIdx
-                        )
+                    if((activity as CourseLearningActivity).currentLecture != null && !(activity as CourseLearningActivity).currentLecture!!.values.first()) {
+                        userLectureViewModel.markLecture((activity as CourseLearningActivity).currentLecture!!.keys.first()._id, true, currentSectionIdx, currentLectureIdx)
                         updateProgress()
-                        courseLearningAdapter?.notifyLectureMarked(
-                            currentSectionIdx,
-                            currentLectureIdx
-                        )
+                        courseLearningAdapter?.notifyLectureMarked(currentSectionIdx, currentLectureIdx)
                     }
                 }
             }
@@ -149,9 +141,9 @@ class LectureLearningFragment : Fragment() {
                 binding.rvSections.layoutManager = LinearLayoutManager(activity)
 
                 if (userLectures.isNotEmpty() && userLectures[0].isNotEmpty()) {
-                    currentLecture = userLectures[0][0]
+                    (activity as CourseLearningActivity).currentLecture = userLectures[0][0]
 
-                    var vidPath = currentLecture!!.keys.first().content.secure_url
+                    var vidPath =  (activity as CourseLearningActivity).currentLecture!!.keys.first().content.secure_url
 
                     var mediaItem = MediaItem.fromUri(Uri.parse(vidPath))
                     exoPlayer!!.setMediaItem(mediaItem)
@@ -159,7 +151,7 @@ class LectureLearningFragment : Fragment() {
                     exoPlayer!!.play()
 
                     courseLearningAdapter!!.onItemClick = { userLecture, sectionIdx, lectureIdx ->
-                        currentLecture = userLecture
+                        (activity as CourseLearningActivity).currentLecture = userLecture
                         currentSectionIdx = sectionIdx
                         currentLectureIdx = lectureIdx
 
@@ -215,7 +207,7 @@ class LectureLearningFragment : Fragment() {
                 courseLearningAdapter?.notifyLectureMarked(sectionIdx, lectureIdx)
                 dialog.dismiss()
             } else if (filterIdx == 1) {
-                val qaDialog = QADialog()
+                val qaDialog = QADialog(course!!.id, (activity as CourseLearningActivity).currentLecture!!.keys.first()._id)
                 qaDialog.show(parentFragmentManager, "QADialog")
                 dialog.dismiss()
             }

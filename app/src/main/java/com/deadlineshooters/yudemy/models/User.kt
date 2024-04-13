@@ -8,7 +8,7 @@ data class User(
     @DocumentId
     var id: String = "",
     var fullName: String = "",
-//    var avatar: Image = Image(),
+    var image: Image = Image(),
     var courseList: ArrayList<String> = arrayListOf(),
     var wishList: ArrayList<String> = arrayListOf(),
     var favoriteCourses: ArrayList<String> = arrayListOf(),

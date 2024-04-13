@@ -2,11 +2,14 @@ package com.deadlineshooters.yudemy.repositories
 
 import com.deadlineshooters.yudemy.fragments.AccountFragment
 import com.deadlineshooters.yudemy.models.Instructor
+import android.content.ComponentCallbacks
+import android.content.ContentValues
 import android.util.Log
 import com.deadlineshooters.yudemy.activities.CourseDetailActivity
-import androidx.lifecycle.MutableLiveData
 import com.deadlineshooters.yudemy.activities.SignUpActivity
+import androidx.lifecycle.MutableLiveData
 import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.utils.Constants
 import com.google.android.gms.tasks.Task
@@ -24,6 +27,11 @@ class UserRepository {
     /**
      * Load user data onto any page
      * */
+
+    fun getUserData() : User{
+        // for testing
+        return User("Test")
+    }
     fun loadUserData(context: Any) {
         val documentReference = usersCollection.document(getCurrentUserID())
 
@@ -108,6 +116,41 @@ class UserRepository {
         userCollection
             .document(mAuth.currentUser!!.uid)
             .set(user)
+    }
+
+    fun getCurUser(callbacks: (User) -> Unit){
+        mFireStore.collection("users")
+            .document(mAuth.currentUser!!.uid)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    callbacks(document.toObject(User::class.java)!!)
+                }
+            }
+    }
+
+    fun getUserById(userId: String, callbacks: (User) -> Unit){
+        mFireStore.collection("users")
+            .document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    callbacks(document.toObject(User::class.java)!!)
+                }
+            }
+    }
+
+    fun updateUserImage(userId: String, image: Image, callbacks: (User) -> Unit){
+        userCollection.document(userId).update(
+            "image.public_id", image.public_id,
+            "image.secure_url", image.secure_url
+        ).addOnSuccessListener {
+            getUserById(userId){
+                callbacks(it)
+            }
+        }.addOnFailureListener {
+            Log.w(ContentValues.TAG, "Error updating document", it)
+        }
     }
 
     companion object {

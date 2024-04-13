@@ -2,6 +2,7 @@ package com.deadlineshooters.yudemy.activities
 
 import android.content.Intent
 import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,7 +11,6 @@ import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -57,7 +57,14 @@ class CourseDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupActionBar()
 
+
         course = intent.getParcelableExtra("course", Course::class.java) ?: Course()
+        binding.btnViewProfile.setOnClickListener {
+            val intent = Intent(this, InstructorProfileActivity::class.java)
+            intent.putExtra("instructorId", course.instructor)
+            startActivity(intent)
+            Log.d("Instructor", course.instructor)
+        }
         courseViewModel = ViewModelProvider(this)[CourseViewModel::class.java]
 
         populateCourseDetails(course)
@@ -204,7 +211,7 @@ class CourseDetailActivity : AppCompatActivity() {
 
         binding.btnViewProfile.setOnClickListener {
             val intent = Intent(this, InstructorProfileActivity::class.java)
-            intent.putExtra("instructor", ins)
+            intent.putExtra("instructorId", ins.id)
             startActivity(intent)
         }
     }

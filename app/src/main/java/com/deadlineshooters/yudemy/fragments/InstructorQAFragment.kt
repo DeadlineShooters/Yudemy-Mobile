@@ -1,8 +1,11 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.app.AlertDialog
 import android.app.Dialog
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,15 +19,23 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.BaseActivity
 import com.deadlineshooters.yudemy.adapters.BottomSheetDialogAdapter
 import com.deadlineshooters.yudemy.adapters.QuestionListAdapter
 import com.deadlineshooters.yudemy.adapters.ReplyListAdapter
+import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
+import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Question
 import com.deadlineshooters.yudemy.models.Reply
+import com.deadlineshooters.yudemy.viewmodels.LectureViewModel
+import com.deadlineshooters.yudemy.viewmodels.QuestionViewModel
+import com.deadlineshooters.yudemy.viewmodels.ReplyViewModel
+import com.deadlineshooters.yudemy.viewmodels.UserViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -51,28 +62,19 @@ class InstructorQAFragment : Fragment() {
     private lateinit var questionDetailDialog: Dialog
     private val originalFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val newFormat = SimpleDateFormat("dd, MMM, yyyy", Locale.getDefault())
+    private var imageList: ArrayList<String> = ArrayList()
 
-    private val dumpQuestion1 = Question("123", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-    private val dumpQuestion2 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-    private val dumpQuestion3 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-    private val dumpQuestion4 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-    private val dumpQuestion5 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-    private val dumpQuestion6 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-    private val dumpQuestion7 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-    private val dumpQuestion8 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
-    private val dumpQuestion9 = Question("124", "John Doe", "456", "How to do this?", "I'm having trouble with this, can someone help me?", arrayListOf(), "13/03/2024")
+    private lateinit var questionListAdapter: QuestionListAdapter
+    private lateinit var questionViewModel: QuestionViewModel
 
 
-
-    private val dumpQuestionList = arrayListOf(dumpQuestion1, dumpQuestion2, dumpQuestion3, dumpQuestion4, dumpQuestion5, dumpQuestion6, dumpQuestion7, dumpQuestion8, dumpQuestion9)
-
-    private var questionListAdapter = QuestionListAdapter(dumpQuestionList)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        questionViewModel = QuestionViewModel()
     }
 
     override fun onCreateView(
@@ -87,20 +89,24 @@ class InstructorQAFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         qaInstructorFilterBtn = view.findViewById(R.id.qaInstructorFilterBtn)
         instructorQuestionListView = view.findViewById(R.id.instructorQuestionListView)
+        questionViewModel.getQuestionsOfInstructor(BaseActivity().getCurrentUserID())
+
+        questionViewModel.questions.observe(viewLifecycleOwner, Observer{ result ->
+            questionListAdapter = QuestionListAdapter(result, this, questionViewModel)
+            instructorQuestionListView.adapter = questionListAdapter
+            instructorQuestionListView.layoutManager = LinearLayoutManager(requireContext())
+
+            questionListAdapter.onItemClick = { question ->
+                // TODO: check if the clicked question has asker = user._id
+                questionViewModel.getQuestionById(question._id)
+                questionDetailDialog = createQuestionDetailDialog()
+                questionDetailDialog.show()
+            }
+        })
 
         qaInstructorFilterBtn.setOnClickListener {
             instructorFilterQuestionDialog = createInstructorQuestionFilterDialog()
             instructorFilterQuestionDialog.show()
-        }
-
-        questionListAdapter = QuestionListAdapter(dumpQuestionList)
-        instructorQuestionListView.adapter = questionListAdapter
-        instructorQuestionListView.layoutManager = LinearLayoutManager(requireContext())
-
-        questionListAdapter.onItemClick = { question ->
-            // TODO: check if the clicked question has asker = user._id
-            questionDetailDialog = createQuestionDetailDialog(question)
-            questionDetailDialog.show()
         }
 
         startForImagePickerResult = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia()) { uris ->
@@ -128,6 +134,8 @@ class InstructorQAFragment : Fragment() {
         adapter.onItemClick = { filter, filterIdx ->
             // TODO: handle filter
             Log.i("Filter option click", filter)
+            questionListAdapter.instructorFilterQuestion(filter)
+            dialog.dismiss()
         }
 
         bottomSheet.findViewById<Button>(R.id.cancelBtn).setOnClickListener {
@@ -139,7 +147,7 @@ class InstructorQAFragment : Fragment() {
     }
 
     private fun addImageView(uri: Uri) {
-        val imageContainer = questionDetailDialog.findViewById(R.id.replyImageContainer) as LinearLayout
+        val imageContainer = questionDetailDialog.findViewById(R.id.repImageContainer) as LinearLayout
 
         val imageView = ImageView(requireContext())
         val layoutParams = LinearLayout.LayoutParams(
@@ -150,25 +158,20 @@ class InstructorQAFragment : Fragment() {
         imageView.layoutParams = layoutParams
         imageView.setImageURI(uri)
 
-        var isAlreadyAdded = false
-        for (i in 0 until imageContainer.childCount) {
-            val childView = imageContainer.getChildAt(i)
-            if (childView is ImageView && childView.tag == uri.toString()) {
-                isAlreadyAdded = true
-                break
-            }
+        imageView.tag = uri.toString()
+        imageView.setOnClickListener {
+            imageContainer.removeView(imageView)
         }
 
-        if (!isAlreadyAdded) {
-            imageView.tag = uri.toString() // Lưu trữ Uri của ảnh trong tag của ImageView để kiểm tra sau này
-            imageView.setOnClickListener {
-                imageContainer.removeView(imageView)
-            }
-            imageContainer.addView(imageView)
+        imageContainer.addView(imageView)
+        imageView.drawable?.let{drawble ->
+            val bitmap = (drawble as BitmapDrawable).bitmap
+            val filepath = BaseActivity().saveBitmapToFile(bitmap, requireContext())
+            imageList.add(filepath.toString())
         }
     }
 
-    private fun createQuestionDetailDialog(question: Question): Dialog {
+    private fun createQuestionDetailDialog(): Dialog {
         val sheet = layoutInflater.inflate(R.layout.dialog_question_detail, null)
         val dialog = Dialog(requireContext(), android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
 
@@ -179,49 +182,97 @@ class InstructorQAFragment : Fragment() {
         val questionDetailLectureId = sheet.findViewById<TextView>(R.id.questionDetailLectureId)
         val questionDetailContentView = sheet.findViewById<ConstraintLayout>(R.id.questionDetailContentView)
         val questionDetailContent = sheet.findViewById<TextView>(R.id.questionDetailContent)
-        val questionDetailImage = sheet.findViewById<ImageView>(R.id.questionDetailImage)
+
         val replyListView = sheet.findViewById<RecyclerView>(R.id.replyListView)
         val cameraBtn1 = sheet.findViewById<Button>(R.id.cameraBtn1)
         val sendBtn = sheet.findViewById<Button>(R.id.sendBtn)
         val deleteQuestionBtn = sheet.findViewById<Button>(R.id.deleteQuestionBtn)
         val editQuestionBtn = sheet.findViewById<TextView>(R.id.editQuestionBtn)
+        val questionDetailImageContainer = sheet.findViewById<LinearLayout>(R.id.questionDetailImageContainer)
+        val repImageContainer = sheet.findViewById<LinearLayout>(R.id.repImageContainer)
+        val replyContent = sheet.findViewById<TextView>(R.id.replyInput)
+        val askerImage = sheet.findViewById<ImageView>(R.id.questionDetailAskerImage)
 
-        val dumpReply1 = Reply("John Doe", "Brad Schiff", "123", arrayListOf(), "I think you should do this I think you should do this I think you should do this", "14/03/2024")
-        val dumpReply2 = Reply("John Doe", "Brad Schiff", "123", arrayListOf(), "I think you should do this", "14/03/2024")
-        val dumpReplyList = listOf(dumpReply1, dumpReply2)
-        //TODO: Get reply list by questionId from database
-        //TODO: check if the question is asked by the user, if not, change the headpage to "New Question'
-
-        questionDetailTitle.text = question.title
-        questionDetailAskerName.text = question.asker
-        val date: Date = originalFormat.parse(question.createdTime) ?: Date()
-        val formattedDate: String = newFormat.format(date)
-        questionDetailAskDate.text = formattedDate
-
-        questionDetailLectureId.text = question.lectureId
-        questionDetailContent.text = question.details
-        if(question.images.isEmpty()){
-            questionDetailImage.visibility = View.GONE
-        }
-        else {
-            questionDetailImage.visibility = View.VISIBLE
-        }
+        lateinit var replyListAdapter: ReplyListAdapter
+        val userViewModel: UserViewModel = UserViewModel()
+        val lectureViewModel: LectureViewModel = LectureViewModel()
+        val replyViewModel: ReplyViewModel = ReplyViewModel()
 
 
-        val replyListAdapter = ReplyListAdapter(dumpReplyList)
-        replyListView.adapter = replyListAdapter
-        replyListView.layoutManager = LinearLayoutManager(requireContext())
+
+        questionViewModel.question.observe(viewLifecycleOwner, Observer { question ->
+            userViewModel.getUserById(question.asker)
+            lectureViewModel.getLectureById(question.lectureId)
+            replyViewModel.getRepliesByQuestionId(question._id)
+
+            questionDetailTitle.text = question.title
+            userViewModel.userData.observe(viewLifecycleOwner, Observer { it ->
+                questionDetailAskerName.text = it.fullName
+                ImageViewHelper().setImageViewFromUrl(it.image, askerImage)
+            })
+            val date: Date = originalFormat.parse(question.createdTime) ?: Date()
+            val formattedDate: String = newFormat.format(date)
+            questionDetailAskDate.text = formattedDate
+
+            lectureViewModel.lecture.observe(viewLifecycleOwner, Observer { it ->
+                questionDetailLectureId.text = it.name
+            })
+
+            replyViewModel.replies.observe(viewLifecycleOwner, Observer { it ->
+                replyListAdapter = ReplyListAdapter(it, this)
+                replyListView.adapter = replyListAdapter
+                replyListView.layoutManager = LinearLayoutManager(requireContext())
+            })
+            questionDetailContent.text = question.details
+
+            if(question.images.isNotEmpty()){
+                questionDetailImageContainer.removeAllViews()
+                for (imageUrl in question.images) {
+                    val imageView = ImageView(questionDetailContentView.context)
+                    imageView.layoutParams = ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        350
+                    )
+
+                    imageView.adjustViewBounds = true
+                    imageView.setPadding(0, 0, 16, 16)
+                    ImageViewHelper().setImageViewFromUrl(imageUrl, imageView)
+                    questionDetailImageContainer.addView(imageView)
+                }
+            }
+
+            sendBtn.setOnClickListener{
+                //TODO: Submit reply to database
+                val reply = replyContent.text.toString()
+                if(imageList.isNotEmpty()){
+                    CloudinaryHelper().uploadImageListToCloudinary(imageList){
+                        val rep = Reply("", BaseActivity().getCurrentUserID(), question._id , it, reply , originalFormat.format(Date()))
+                        replyViewModel.addNewReply(rep)
+                        imageList.clear()
+                        replyContent.text = ""
+                        repImageContainer.removeAllViews()
+                        replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
+                        questionListAdapter.notifyDataSetChanged()
+                        imageList.clear()
+                    }
+                } else{
+                    val rep = Reply("", BaseActivity().getCurrentUserID(), question._id , ArrayList(), reply , originalFormat.format(Date()))
+                    replyViewModel.addNewReply(rep)
+                    replyContent.text = ""
+                    replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
+                    questionListAdapter.notifyDataSetChanged()
+                }
+            }
+
+        })
 
         backQuestionDetailBtn.setOnClickListener{
-            questionDetailDialog.dismiss()
+            imageList.clear()
+            dialog.dismiss()
         }
 
         cameraBtn1.setOnClickListener {
             startForImagePickerResult.launch(PickVisualMediaRequest())
-        }
-
-        sendBtn.setOnClickListener{
-            //TODO: Submit reply to database
         }
 
         deleteQuestionBtn.visibility = View.GONE

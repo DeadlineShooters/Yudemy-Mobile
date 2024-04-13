@@ -1,10 +1,16 @@
 package com.deadlineshooters.yudemy.helpers
 
+import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore
 import android.widget.ImageView
 import com.deadlineshooters.yudemy.models.Image
+import java.io.ByteArrayOutputStream
+import java.util.UUID
 import java.util.concurrent.Executors
 
 class ImageViewHelper {
@@ -25,4 +31,5 @@ class ImageViewHelper {
             }
         }
     }
+
 }
