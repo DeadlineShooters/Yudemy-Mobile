@@ -2,6 +2,7 @@ package com.deadlineshooters.yudemy.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -49,7 +50,6 @@ class AccountFragment : Fragment() {
     private lateinit var signOut: TextView
     private lateinit var editProfile: TextView
     private lateinit var editImage: TextView
-    private lateinit var textView13: TextView
     private lateinit var fullName: TextView
     private lateinit var userViewModel: UserViewModel
     private val curUserEmail = BaseActivity().getCurrentUserEmail()
@@ -60,7 +60,7 @@ class AccountFragment : Fragment() {
             isInstructor = it.getBoolean(ARG_PARAM1)
             curUserId = it.getString(ARG_PARAM2)
         }
-        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        userViewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
         userViewModel.getCurUser()
     }
 
@@ -86,14 +86,14 @@ class AccountFragment : Fragment() {
         signOut = view.findViewById(R.id.signOut)
         editProfile = view.findViewById(R.id.editProfile)
         editImage = view.findViewById(R.id.editImage)
-        textView13 = view.findViewById(R.id.textView13)
 
         userViewModel.userData.observe(viewLifecycleOwner, Observer {user ->
             fullName.text = user.fullName
 
+            ImageViewHelper().setImageViewFromUrl(user.image, avatar)
         })
 
-        email.text = curUserEmail.toString()
+        email.text = curUserEmail
 
 
         if(isInstructor == true) {
@@ -134,7 +134,6 @@ class AccountFragment : Fragment() {
         }
 
         if(isInstructor == true){
-            textView13.visibility = View.VISIBLE
             editProfile.visibility = View.VISIBLE
             editImage.visibility = View.VISIBLE
         }
@@ -144,14 +143,10 @@ class AccountFragment : Fragment() {
         }
 
         editImage.setOnClickListener {
-            replaceFragment(EditImageFragment.newInstance(isInstructor!!), isInstructor!!)
+            replaceFragment(EditImageFragment(), isInstructor!!)
         }
 
-        val imageUrl = "https://res.cloudinary.com/dbgaeu07x/image/upload/v1712737767/Yudemy/spmaesw65l7iyk32xymu.jpg"
-        ImageViewHelper().setImageViewFromUrl(Image(imageUrl, ""), avatar)
-
         UserRepository().loadUserData(this@AccountFragment)
-
     }
 
     private fun replaceFragment(fragment: Fragment, isInstructor: Boolean) {
@@ -192,9 +187,7 @@ class AccountFragment : Fragment() {
                 navigateIns.text = "Switch to instructor view"
             else
                 navigateIns.text = "Become an instructor"
-
         }
-
     }
     companion object {
         /**
