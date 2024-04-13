@@ -141,10 +141,10 @@ class CloudinaryHelper {
             uploadToCloudinary(image) {
                 if (it != null) {
                     resultList.add(it)
-                }
-                count++
-                if (count == imageList.size) {
-                    callback(resultList)
+                    count++
+                    if (count == imageList.size) {
+                        callback(resultList)
+                    }
                 }
             }
         }

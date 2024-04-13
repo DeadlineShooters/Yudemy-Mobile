@@ -125,13 +125,10 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
             askQuestionDialog.show()
         }
 
-
-
         qaFilterBtn.setOnClickListener {
             filterQuestionDialog = createFilterQuestionDialog()
             filterQuestionDialog.show()
         }
-
     }
 
     private fun createAskQuestionDialog(): Dialog {
@@ -353,10 +350,6 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
             }
         })
 
-
-
-
-
         backQuestionDetailBtn.setOnClickListener{
             imageList.clear()
             dialog.dismiss()
@@ -365,8 +358,6 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         cameraBtn1.setOnClickListener {
             startForImagePickerResult.launch(PickVisualMediaRequest())
         }
-
-
 
         dialog.setContentView(sheet)
         return dialog
@@ -486,10 +477,6 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
                 imageList.clear()
                 questionListAdapter.notifyDataSetChanged()
             }
-//            questionViewModel.question.observe(this, Observer { it ->
-//                questionDetailDialog = createQuestionDetailDialog(it)
-//                questionDetailDialog.show()
-//            })
             editQuestionDialog.dismiss()
         }
 
