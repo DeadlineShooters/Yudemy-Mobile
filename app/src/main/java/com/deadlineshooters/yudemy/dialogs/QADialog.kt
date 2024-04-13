@@ -98,7 +98,8 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
 
             questionListAdapter.onItemClick = { question ->
                 // TODO: check if the clicked question has asker = user._id
-                questionDetailDialog = createQuestionDetailDialog(question)
+                questionViewModel.getQuestionById(question._id)
+                questionDetailDialog = createQuestionDetailDialog()
                 state = 2
                 questionDetailDialog.show()
             }
@@ -229,7 +230,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         }
     }
 
-    private fun createQuestionDetailDialog(question: Question): Dialog {
+    private fun createQuestionDetailDialog(): Dialog {
         val sheet = layoutInflater.inflate(R.layout.dialog_question_detail, null)
         val dialog = Dialog(requireContext(), android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
 
@@ -256,117 +257,116 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         val lectureViewModel: LectureViewModel = LectureViewModel()
         val replyViewModel: ReplyViewModel = ReplyViewModel()
 
-        userViewModel.getUserById(question.asker)
-        lectureViewModel.getLectureById(question.lectureId)
-        replyViewModel.getRepliesByQuestionId(question._id)
+        questionViewModel.question.observe(this, Observer { question ->
+            userViewModel.getUserById(question.asker)
+            lectureViewModel.getLectureById(question.lectureId)
+            replyViewModel.getRepliesByQuestionId(question._id)
 
-        questionDetailTitle.text = question.title
-        userViewModel.userData.observe(this, Observer { it ->
-            questionDetailAskerName.text = it.fullName
-            ImageViewHelper().setImageViewFromUrl(it.image, askerImage)
+            questionDetailTitle.text = question.title
+            userViewModel.userData.observe(this, Observer { it ->
+                questionDetailAskerName.text = it.fullName
+                ImageViewHelper().setImageViewFromUrl(it.image, askerImage)
+            })
+            val date: Date = originalFormat.parse(question.createdTime) ?: Date()
+            val formattedDate: String = newFormat.format(date)
+            questionDetailAskDate.text = formattedDate
+
+            lectureViewModel.lecture.observe(this, Observer { it ->
+                questionDetailLectureId.text = it.name
+            })
+
+            replyViewModel.replies.observe(this, Observer { it ->
+                replyListAdapter = ReplyListAdapter(it, this)
+                replyListView.adapter = replyListAdapter
+                replyListView.layoutManager = LinearLayoutManager(requireContext())
+            })
+            questionDetailContent.text = question.details
+
+            if(question.images.isNotEmpty()){
+                questionDetailImageContainer.removeAllViews()
+                for (imageUrl in question.images) {
+                    val imageView = ImageView(questionDetailContentView.context)
+                    imageView.layoutParams = ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        350
+                    )
+
+                    imageView.adjustViewBounds = true
+                    imageView.setPadding(0, 0, 16, 16)
+                    ImageViewHelper().setImageViewFromUrl(imageUrl, imageView)
+                    questionDetailImageContainer.addView(imageView)
+                }
+            }
+
+            sendBtn.setOnClickListener{
+                //TODO: Submit reply to database
+                val reply = replyContent.text.toString()
+                if(imageList.isNotEmpty()){
+                    CloudinaryHelper().uploadImageListToCloudinary(imageList){
+                        val rep = Reply("", BaseActivity().getCurrentUserID(), question._id , it, reply , originalFormat.format(Date()))
+                        replyViewModel.addNewReply(rep)
+                        imageList.clear()
+                        replyContent.text = ""
+                        repImageContainer.removeAllViews()
+                        replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
+                        imageList.clear()
+                    }
+                } else{
+                    val rep = Reply("", BaseActivity().getCurrentUserID(), question._id , ArrayList(), reply , originalFormat.format(Date()))
+                    replyViewModel.addNewReply(rep)
+                    replyContent.text = ""
+                    replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
+                }
+            }
+
+            if(BaseActivity().getCurrentUserID() != question.asker){
+                deleteQuestionBtn.visibility = View.GONE
+                editQuestionBtn.visibility = View.GONE
+            }
+
+            deleteQuestionBtn.setOnClickListener{
+                //TODO: Delete question from database
+                val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+                builder
+                    .setMessage("Are you sure you want delete this question? This action cannot be undone.")
+                    .setTitle("Delete question")
+                    .setNegativeButton(Html.fromHtml("<font color='#00000FF'><b>Cancel</b></font>")) { dialog, which ->
+
+                    }
+                    .setPositiveButton(Html.fromHtml("<font color='#FF0000'><b>Delete</b></font>")) { dialog, which ->
+                        //TODO: Delete question from database
+                        questionViewModel.deleteQuestion(courseId, question._id)
+                        questionDetailDialog.dismiss()
+                    }
+
+                val dialog: AlertDialog = builder.create()
+                dialog.show()
+            }
+
+            editQuestionBtn.setOnClickListener{
+                editQuestionDialog = createEditQuestionDialog(question)
+                state = 3
+                editQuestionDialog.show()
+                editQuestionDialog.setOnDismissListener{
+                    questionViewModel.getQuestionsByCourseId(courseId)
+                }
+            }
         })
-        val date: Date = originalFormat.parse(question.createdTime) ?: Date()
-        val formattedDate: String = newFormat.format(date)
-        questionDetailAskDate.text = formattedDate
 
-        lectureViewModel.lecture.observe(this, Observer { it ->
-            questionDetailLectureId.text = it.name
-        })
 
-        replyViewModel.replies.observe(this, Observer { it ->
-            replyListAdapter = ReplyListAdapter(it, this)
-            replyListView.adapter = replyListAdapter
-            replyListView.layoutManager = LinearLayoutManager(requireContext())
-        })
-        questionDetailContent.text = question.details
-
-        for (imageUrl in question.images) {
-            val imageView = ImageView(questionDetailContentView.context)
-            imageView.layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                350
-            )
-
-            imageView.adjustViewBounds = true
-            imageView.setPadding(0, 0, 16, 16)
-            ImageViewHelper().setImageViewFromUrl(imageUrl, imageView)
-            questionDetailImageContainer.addView(imageView)
-        }
 
 
 
         backQuestionDetailBtn.setOnClickListener{
             imageList.clear()
-//            dialog.dismiss()
-//            editQuestionDialog = createEditQuestionDialog(question)
-//            state = 3
-//            editQuestionDialog.show()
-            questionDetailDialog.dismiss()
-            QADialog(courseId, curLecture).show(parentFragmentManager, "QADialog")
+            dialog.dismiss()
         }
 
         cameraBtn1.setOnClickListener {
             startForImagePickerResult.launch(PickVisualMediaRequest())
         }
 
-        sendBtn.setOnClickListener{
-            //TODO: Submit reply to database
-            val reply = replyContent.text.toString()
-            if(imageList.isNotEmpty()){
-                CloudinaryHelper().uploadImageListToCloudinary(imageList){
-                    val rep = Reply("", BaseActivity().getCurrentUserID(), question._id , it, reply , originalFormat.format(Date()))
-                    replyViewModel.addNewReply(rep)
-                    imageList.clear()
-                    replyContent.text = ""
-                    repImageContainer.removeAllViews()
-                    replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
-                    imageList.clear()
-                }
-            } else{
-                val rep = Reply("", BaseActivity().getCurrentUserID(), question._id , ArrayList(), reply , originalFormat.format(Date()))
-                replyViewModel.addNewReply(rep)
-                replyContent.text = ""
-                replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
-            }
-        }
 
-        if(BaseActivity().getCurrentUserID() != question.asker){
-            deleteQuestionBtn.visibility = View.GONE
-            editQuestionBtn.visibility = View.GONE
-        }
-
-        deleteQuestionBtn.setOnClickListener{
-            //TODO: Delete question from database
-            val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-            builder
-                .setMessage("Are you sure you want delete this question? This action cannot be undone.")
-                .setTitle("Delete question")
-                .setNegativeButton(Html.fromHtml("<font color='#00000FF'><b>Cancel</b></font>")) { dialog, which ->
-
-                }
-                .setPositiveButton(Html.fromHtml("<font color='#FF0000'><b>Delete</b></font>")) { dialog, which ->
-                    //TODO: Delete question from database
-                    questionViewModel.deleteQuestion(courseId, question._id)
-                    questionDetailDialog.dismiss()
-                }
-
-            val dialog: AlertDialog = builder.create()
-            dialog.show()
-        }
-
-        editQuestionBtn.setOnClickListener{
-            editQuestionDialog = createEditQuestionDialog(question)
-            state = 3
-            editQuestionDialog.show()
-            editQuestionDialog.setOnDismissListener{
-                questionViewModel.getQuestionsByCourseId(courseId)
-                questionViewModel.getQuestionById(question._id)
-                questionViewModel.question.observe(this, Observer { it ->
-                    questionDetailDialog = createQuestionDetailDialog(it)
-                    questionDetailDialog.show()
-                })
-            }
-        }
 
         dialog.setContentView(sheet)
         return dialog
@@ -466,7 +466,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
             if(imageList.size == 0 && imgList.size == 0){
                 questionViewModel.editQuestion(question._id,BaseActivity().getCurrentUserID(), questionTitle, questionDetails, ArrayList(), selectedLecture, question.createdTime)
                 imageList.clear()
-//                questionListAdapter.notifyDataSetChanged()
+                questionListAdapter.notifyDataSetChanged()
             }
             if(imageList.isNotEmpty()){
                 CloudinaryHelper().uploadImageListToCloudinary(imageList){
@@ -476,7 +476,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
                     }
                     questionViewModel.editQuestion(question._id,BaseActivity().getCurrentUserID(), questionTitle, questionDetails, editedImageList, selectedLecture, question.createdTime)
                     imageList.clear()
-//                    questionListAdapter.notifyDataSetChanged()
+                    questionListAdapter.notifyDataSetChanged()
                 }
             } else{
                 val editedImageList = ArrayList<Image>().apply {
@@ -484,9 +484,13 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
                 }
                 questionViewModel.editQuestion(question._id,BaseActivity().getCurrentUserID(), questionTitle, questionDetails, editedImageList, selectedLecture, question.createdTime)
                 imageList.clear()
-//                questionListAdapter.notifyDataSetChanged()
+                questionListAdapter.notifyDataSetChanged()
             }
-            dialog.dismiss()
+//            questionViewModel.question.observe(this, Observer { it ->
+//                questionDetailDialog = createQuestionDetailDialog(it)
+//                questionDetailDialog.show()
+//            })
+            editQuestionDialog.dismiss()
         }
 
         dialog.setContentView(sheet)
