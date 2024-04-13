@@ -1,6 +1,7 @@
 package com.deadlineshooters.yudemy.activities
 
 import InstructorCourseListAdapter
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -26,7 +27,7 @@ class InstructorAllCoursesActivity : BaseActivity() {
 //    private val dumpCourseList = arrayListOf(dumpCourse1, dumpCourse2, dumpCourse3)
 //    private var instructorCourseListAdapter = InstructorCourseListAdapter(dumpCourseList)
 
-    private lateinit var instructorCourseListAdapter: ArrayList<Course>
+    private lateinit var instructorCourseListAdapter: InstructorCourseListAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,9 +48,14 @@ class InstructorAllCoursesActivity : BaseActivity() {
         }
 
         courseViewModel.courses.observe(this, Observer { it ->
-            instructorCourseListAdapter = it as ArrayList<Course>
-            instructorAllCoursesView.adapter = InstructorCourseListAdapter(instructorCourseListAdapter, this)
+            instructorCourseListAdapter = InstructorCourseListAdapter(it, this)
+            instructorAllCoursesView.adapter = instructorCourseListAdapter
             instructorAllCoursesView.layoutManager = LinearLayoutManager(this)
+            instructorCourseListAdapter.onItemClick = { course ->
+                val intent = Intent(this, CourseDetailActivity::class.java)
+                intent.putExtra("course", course)
+                startActivity(intent)
+            }
         })
 //
 //        instructorCourseListAdapter = InstructorCourseListAdapter(dumpCourseList)

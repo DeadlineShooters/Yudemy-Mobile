@@ -181,12 +181,17 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
             //TODO: Submit question to database
             val title = sheet.findViewById<TextView>(R.id.askQuestionTitle).text.toString()
             val details = sheet.findViewById<TextView>(R.id.askQuestionDetail).text.toString()
-
-            CloudinaryHelper().uploadImageListToCloudinary (imageList){
-                questionViewModel.addNewQuestion(courseId, BaseActivity().getCurrentUserID(), title, details, it, selectedLecture, originalFormat.format(Date()))
-                imageList.clear()
+            if(imageList.isNotEmpty()){
+                CloudinaryHelper().uploadImageListToCloudinary (imageList){
+                    questionViewModel.addNewQuestion(courseId, BaseActivity().getCurrentUserID(), title, details, it, selectedLecture, originalFormat.format(Date()))
+                    imageList.clear()
+                    askQuestionDialog.dismiss()
+                }
+            } else{
+                questionViewModel.addNewQuestion(courseId, BaseActivity().getCurrentUserID(), title, details, ArrayList(), selectedLecture, originalFormat.format(Date()))
                 askQuestionDialog.dismiss()
             }
+
         }
 
 
