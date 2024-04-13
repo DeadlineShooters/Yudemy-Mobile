@@ -1,12 +1,19 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.app.Dialog
 import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -20,6 +27,10 @@ import com.deadlineshooters.yudemy.dialogs.QADialog
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.viewmodels.CertificateViewModel
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
+import com.deadlineshooters.yudemy.models.CourseFeedback
+import com.deadlineshooters.yudemy.repositories.CourseFeedbackRepository
+import com.deadlineshooters.yudemy.repositories.FeedbackCallback
+import com.deadlineshooters.yudemy.repositories.UserRepository
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -39,6 +50,10 @@ class MoreLearningFragment : Fragment() {
     private lateinit var binding: FragmentMoreLearningBinding
     private lateinit var aboutDialog: BottomSheetDialog
     private lateinit var certificate: TextView
+    private var courseFeedbackRepo = CourseFeedbackRepository()
+    private lateinit var dialog: Dialog
+    private lateinit var ratingBar: RatingBar
+    private lateinit var feedbackEditText: EditText
     private lateinit var certificateViewModel: CertificateViewModel
 
     val title = "More"
@@ -47,7 +62,7 @@ class MoreLearningFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             arguments?.let {
-                course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                course = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     it.getParcelable(ARG_COURSE, Course::class.java)
                 } else {
                     it.getParcelable(ARG_COURSE)
@@ -57,12 +72,92 @@ class MoreLearningFragment : Fragment() {
         certificateViewModel = ViewModelProvider(this)[CertificateViewModel::class.java]
     }
 
+    private fun setupDialog() {
+        dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setContentView(R.layout.course_feedback_popup_layout)
+
+        ratingBar = dialog.findViewById(R.id.ratingBar)
+        feedbackEditText = dialog.findViewById(R.id.feedback)
+    }
+
+    private fun updateUIWithFeedback(feedback: CourseFeedback?) {
+        // Update the UI with the new feedback
+        ratingBar.rating = feedback?.rating?.toFloat() ?: 0f
+        feedbackEditText.setText(feedback?.feedback ?: "")
+        binding.tvLeaveRating.text = if (feedback != null) "Edit rating" else "Leave a rating"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentMoreLearningBinding.inflate(inflater, container, false)
+
+        setupDialog()
+
+        // Get feedback for course and user
+
+        binding.tvLeaveRating.setOnClickListener {
+            courseFeedbackRepo.getFeedbackForCourseAndUser(
+                course!!.id,
+                UserRepository.getCurrentUserID()
+            ) { feedback ->
+                updateUIWithFeedback(feedback)
+
+                // If there is feedback, set the rating and feedback text
+                if (feedback != null) {
+                    ratingBar.rating = feedback.rating.toFloat()
+                    feedbackEditText.setText(feedback.feedback)
+                }
+
+                val closeButton = dialog.findViewById<ImageView>(R.id.iv_exit)
+                closeButton.setOnClickListener {
+                    // Handle close button click here
+                    dialog.dismiss()
+                }
+                dialog.setCanceledOnTouchOutside(false)
+
+                val saveButton = dialog.findViewById<Button>(R.id.saveButton)
+                saveButton.setOnClickListener {
+                    // Get the new rating and feedback text
+                    val newRating = CourseFeedback(
+                        courseId = course!!.id,
+                        userId = UserRepository.getCurrentUserID(),
+                        feedback = feedbackEditText.text.toString(),
+                        rating = ratingBar.rating.toInt(),
+                    )
+
+                    // Save feedback
+                    courseFeedbackRepo.saveFeedback(feedback, course!!, newRating, object :
+                        FeedbackCallback {
+                        override fun onSuccess() {
+                            Toast.makeText(
+                                context,
+                                "Feedback saved successfully",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            // Reload the fragment
+                            updateUIWithFeedback(newRating)
+                        }
+
+                        override fun onFailure(e: Exception) {
+                            Toast.makeText(
+                                context,
+                                "Failed to save feedback: ${e.message}",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    })
+
+                    dialog.dismiss()
+                }
+
+                dialog.show()
+            }
+        }
 
         return binding.root
     }
@@ -94,8 +189,11 @@ class MoreLearningFragment : Fragment() {
         binding.navAbout.setOnClickListener {
             aboutDialog.show()
 
-            aboutDialog.findViewById<TextView>(R.id.contentAboutCourse)!!.text = course!!.description
+            aboutDialog.findViewById<TextView>(R.id.contentAboutCourse)!!.text =
+                course!!.description
         }
+
+
     }
 
     private fun createAboutDialog(): BottomSheetDialog {

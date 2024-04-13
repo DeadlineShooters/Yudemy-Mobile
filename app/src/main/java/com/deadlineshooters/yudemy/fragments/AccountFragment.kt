@@ -18,8 +18,10 @@ import com.deadlineshooters.yudemy.activities.SignInActivity
 import com.deadlineshooters.yudemy.activities.StudentMainActivity
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Image
+import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
 import com.deadlineshooters.yudemy.viewmodels.UserViewModel
+import com.deadlineshooters.yudemy.repositories.UserRepository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 // TODO: Rename parameter arguments, choose names that match
@@ -149,6 +151,9 @@ class AccountFragment() : Fragment() {
 
         val imageUrl = "https://res.cloudinary.com/dbgaeu07x/image/upload/v1712737767/Yudemy/spmaesw65l7iyk32xymu.jpg"
         ImageViewHelper().setImageViewFromUrl(Image(imageUrl, ""), avatar)
+
+        UserRepository().loadUserData(this@AccountFragment)
+
     }
 
     private fun replaceFragment(fragment: Fragment, isInstructor: Boolean) {
@@ -181,6 +186,16 @@ class AccountFragment() : Fragment() {
             .show()
     }
 
+    fun setUserData(user: User) {
+        if (requireActivity() is StudentMainActivity) {
+            if (user.instructor != null)
+                navigateIns.text = "Switch to instructor view"
+            else
+                navigateIns.text = "Become an instructor"
+
+        }
+
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of
