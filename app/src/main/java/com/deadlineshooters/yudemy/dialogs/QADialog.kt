@@ -306,6 +306,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
                         replyContent.text = ""
                         repImageContainer.removeAllViews()
                         replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
+                        questionListAdapter.notifyDataSetChanged()
                         imageList.clear()
                     }
                 } else{
@@ -313,6 +314,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
                     replyViewModel.addNewReply(rep)
                     replyContent.text = ""
                     replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
+                    questionListAdapter.notifyDataSetChanged()
                 }
             }
 

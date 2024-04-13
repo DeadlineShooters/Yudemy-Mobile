@@ -1,9 +1,11 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.app.AlertDialog
 import android.app.Dialog
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -90,18 +92,16 @@ class InstructorQAFragment : Fragment() {
         questionViewModel.getQuestionsOfInstructor(BaseActivity().getCurrentUserID())
 
         questionViewModel.questions.observe(viewLifecycleOwner, Observer{ result ->
-
             questionListAdapter = QuestionListAdapter(result, this, questionViewModel)
             instructorQuestionListView.adapter = questionListAdapter
             instructorQuestionListView.layoutManager = LinearLayoutManager(requireContext())
 
             questionListAdapter.onItemClick = { question ->
                 // TODO: check if the clicked question has asker = user._id
-                questionDetailDialog = createQuestionDetailDialog(question)
+                questionViewModel.getQuestionById(question._id)
+                questionDetailDialog = createQuestionDetailDialog()
                 questionDetailDialog.show()
             }
-
-
         })
 
         qaInstructorFilterBtn.setOnClickListener {
@@ -171,7 +171,7 @@ class InstructorQAFragment : Fragment() {
         }
     }
 
-    private fun createQuestionDetailDialog(question: Question): Dialog {
+    private fun createQuestionDetailDialog(): Dialog {
         val sheet = layoutInflater.inflate(R.layout.dialog_question_detail, null)
         val dialog = Dialog(requireContext(), android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
 
@@ -198,70 +198,81 @@ class InstructorQAFragment : Fragment() {
         val lectureViewModel: LectureViewModel = LectureViewModel()
         val replyViewModel: ReplyViewModel = ReplyViewModel()
 
-        userViewModel.getUserById(question.asker)
-        lectureViewModel.getLectureById(question.lectureId)
-        replyViewModel.getRepliesByQuestionId(question._id)
 
-        questionDetailTitle.text = question.title
-        userViewModel.userData.observe(viewLifecycleOwner, Observer { it ->
-            questionDetailAskerName.text = it.fullName
-            ImageViewHelper().setImageViewFromUrl(it.image, askerImage)
-        })
-        val date: Date = originalFormat.parse(question.createdTime) ?: Date()
-        val formattedDate: String = newFormat.format(date)
-        questionDetailAskDate.text = formattedDate
 
-        lectureViewModel.lecture.observe(viewLifecycleOwner, Observer { it ->
-            questionDetailLectureId.text = it.name
-        })
-        questionDetailContent.text = question.details
+        questionViewModel.question.observe(viewLifecycleOwner, Observer { question ->
+            userViewModel.getUserById(question.asker)
+            lectureViewModel.getLectureById(question.lectureId)
+            replyViewModel.getRepliesByQuestionId(question._id)
 
-        for (imageUrl in question.images) {
-            val imageView = ImageView(questionDetailContentView.context)
-            imageView.layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                350
-            )
+            questionDetailTitle.text = question.title
+            userViewModel.userData.observe(viewLifecycleOwner, Observer { it ->
+                questionDetailAskerName.text = it.fullName
+                ImageViewHelper().setImageViewFromUrl(it.image, askerImage)
+            })
+            val date: Date = originalFormat.parse(question.createdTime) ?: Date()
+            val formattedDate: String = newFormat.format(date)
+            questionDetailAskDate.text = formattedDate
 
-            imageView.adjustViewBounds = true
-            imageView.setPadding(0, 0, 16, 16)
-            ImageViewHelper().setImageViewFromUrl(imageUrl, imageView)
-            questionDetailImageContainer.addView(imageView)
-        }
+            lectureViewModel.lecture.observe(viewLifecycleOwner, Observer { it ->
+                questionDetailLectureId.text = it.name
+            })
 
-        replyViewModel.replies.observe(viewLifecycleOwner, Observer { it ->
-            replyListAdapter = ReplyListAdapter(it, this)
-            replyListView.adapter = replyListAdapter
-            replyListView.layoutManager = LinearLayoutManager(requireContext())
+            replyViewModel.replies.observe(viewLifecycleOwner, Observer { it ->
+                replyListAdapter = ReplyListAdapter(it, this)
+                replyListView.adapter = replyListAdapter
+                replyListView.layoutManager = LinearLayoutManager(requireContext())
+            })
+            questionDetailContent.text = question.details
+
+            if(question.images.isNotEmpty()){
+                questionDetailImageContainer.removeAllViews()
+                for (imageUrl in question.images) {
+                    val imageView = ImageView(questionDetailContentView.context)
+                    imageView.layoutParams = ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        350
+                    )
+
+                    imageView.adjustViewBounds = true
+                    imageView.setPadding(0, 0, 16, 16)
+                    ImageViewHelper().setImageViewFromUrl(imageUrl, imageView)
+                    questionDetailImageContainer.addView(imageView)
+                }
+            }
+
+            sendBtn.setOnClickListener{
+                //TODO: Submit reply to database
+                val reply = replyContent.text.toString()
+                if(imageList.isNotEmpty()){
+                    CloudinaryHelper().uploadImageListToCloudinary(imageList){
+                        val rep = Reply("", BaseActivity().getCurrentUserID(), question._id , it, reply , originalFormat.format(Date()))
+                        replyViewModel.addNewReply(rep)
+                        imageList.clear()
+                        replyContent.text = ""
+                        repImageContainer.removeAllViews()
+                        replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
+                        questionListAdapter.notifyDataSetChanged()
+                        imageList.clear()
+                    }
+                } else{
+                    val rep = Reply("", BaseActivity().getCurrentUserID(), question._id , ArrayList(), reply , originalFormat.format(Date()))
+                    replyViewModel.addNewReply(rep)
+                    replyContent.text = ""
+                    replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
+                    questionListAdapter.notifyDataSetChanged()
+                }
+            }
+
         })
 
         backQuestionDetailBtn.setOnClickListener{
-            questionDetailDialog.dismiss()
+            imageList.clear()
+            dialog.dismiss()
         }
 
         cameraBtn1.setOnClickListener {
             startForImagePickerResult.launch(PickVisualMediaRequest())
-        }
-
-        sendBtn.setOnClickListener{
-            //TODO: Submit reply to database
-            val reply = replyContent.text.toString()
-            if(imageList.isNotEmpty()){
-                CloudinaryHelper().uploadImageListToCloudinary(imageList){
-                    val rep = Reply("", BaseActivity().getCurrentUserID(), question._id , it, reply , originalFormat.format(Date()))
-                    replyViewModel.addNewReply(rep)
-                    imageList.clear()
-                    replyContent.text = ""
-                    repImageContainer.removeAllViews()
-                    replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
-                }
-            } else{
-                val rep = Reply("", BaseActivity().getCurrentUserID(), question._id , ArrayList(), reply , originalFormat.format(Date()))
-                replyViewModel.addNewReply(rep)
-                replyContent.text = ""
-                replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
-            }
-
         }
 
         deleteQuestionBtn.visibility = View.GONE
