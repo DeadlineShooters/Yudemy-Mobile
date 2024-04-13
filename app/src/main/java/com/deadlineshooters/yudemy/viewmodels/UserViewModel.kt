@@ -22,8 +22,5 @@ class UserViewModel : ViewModel() {
 //        mFireStore.collection(Constants.USERS)...
     }
 
-    fun refreshUserData() {
-        val user = userRepository.getUserData()
-        _userData.value = user
-    }
+
 }

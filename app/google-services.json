@@ -12,7 +12,28 @@
           "package_name": "com.deadlineshooters.yudemy"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "54920611721-potqpf485o6iqflb4d8mkrpg1g1llgk7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deadlineshooters.yudemy",
+            "certificate_hash": "6ef2f1b9d47e4c23120a9b68a341595ef006d7ae"
+          }
+        },
+        {
+          "client_id": "54920611721-q1jhce30rocrqavnmvjjvm3vgfdutvv2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deadlineshooters.yudemy",
+            "certificate_hash": "d8ec1cfc5432b1a717e267e09432d9ba1c3b1f27"
+          }
+        },
+        {
+          "client_id": "54920611721-0mnl6kc7j9mioe77gif1ibq3lr7ajsi0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCq_xO3qd0jwDAbenL1jxd8mpiWYCrgRgQ"
@@ -20,26 +41,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:54920611721:android:fb8a11b50149824c6c8358",
-        "android_client_info": {
-          "package_name": "com.example.calculatorapp"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCq_xO3qd0jwDAbenL1jxd8mpiWYCrgRgQ"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "54920611721-0mnl6kc7j9mioe77gif1ibq3lr7ajsi0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

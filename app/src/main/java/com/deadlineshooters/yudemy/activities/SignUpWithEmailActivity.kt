@@ -66,7 +66,7 @@ class SignUpWithEmailActivity : AppCompatActivity() {
         signUpBtn!!.setOnClickListener{
             AuthenticationRepository().createAccount(email!!.text.toString(), password!!.text.toString()){uid ->
                 if (uid != null){
-                    val newUser = User("", name!!.text.toString(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), false, arrayListOf(), "", null)
+                    val newUser = User("", name!!.text.toString(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), false,  "", null)
                     UserRepository().addUser(newUser)
                     val intent = Intent(this, StudentMainActivity::class.java)
                     startActivity(intent)
