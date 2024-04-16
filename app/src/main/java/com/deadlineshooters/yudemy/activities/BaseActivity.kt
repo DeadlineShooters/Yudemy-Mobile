@@ -1,17 +1,18 @@
 package com.deadlineshooters.yudemy.activities
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import android.graphics.Bitmap
-import android.net.sip.SipErrorCode.TIME_OUT
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.os.Environment
 import android.os.Looper
-import android.os.Message
 import android.view.Window
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.DialogProgressBinding
@@ -25,8 +26,6 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.logging.Handler
-import java.util.logging.LogRecord
 
 
 open class BaseActivity : AppCompatActivity() {
@@ -46,15 +45,6 @@ open class BaseActivity : AppCompatActivity() {
         binding = DialogProgressBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-
-        /** add dummy data */
-        // Course
-//        courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
-//        viewModel.addDummyCourse()
-
-        // Lecturer
-//        lecturerViewModel = ViewModelProvider(this).get(LectureViewModel::class.java)
-//        lecturerViewModel.addDummyLecturer()
     }
 
     fun showProgressDialog(text: String) {
@@ -81,14 +71,6 @@ open class BaseActivity : AppCompatActivity() {
     fun getCurrentUserEmail(): String {
         return FirebaseAuth.getInstance().currentUser!!.email.toString()
     }
-
-//    fun getCurUser(): User {
-//        return curUser
-//    }
-//
-//    fun setCurrentUser(user: User) {
-//        curUser = user
-//    }
 
     /**
      * message is the error message to show in the snackbar.
@@ -165,4 +147,8 @@ open class BaseActivity : AppCompatActivity() {
     }
 
 
+    fun hideKeyboard(view: View) {
+        val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
 }

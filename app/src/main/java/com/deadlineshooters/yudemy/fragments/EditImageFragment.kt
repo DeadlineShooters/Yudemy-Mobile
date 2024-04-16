@@ -35,13 +35,12 @@ private const val ARG_PARAM2 = "param2"
  */
 class EditImageFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var isInstructor: Boolean? = null
+//    private var isInstructor: Boolean? = null
 
 //    private var param2: String? = null
     private lateinit var cancelEditImageBtn: TextView
     private lateinit var editedImage: ImageView
     private lateinit var saveInstructorImageBtn: Button
-    private val dumpImage = "https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg"
     private lateinit var startForImagePickerResult: ActivityResultLauncher<PickVisualMediaRequest>
     private lateinit var userViewModel: UserViewModel
     private lateinit var instructorViewModel: InstructorViewModel
@@ -49,12 +48,12 @@ class EditImageFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            isInstructor = it.getBoolean(ARG_PARAM1)
+//            isInstructor = it.getBoolean(ARG_PARAM1)
 //            param2 = it.getString(ARG_PARAM2)
         }
         instructorViewModel = ViewModelProvider(this)[InstructorViewModel::class.java]
-        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
-        userViewModel.getCurUser()
+        userViewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+//        userViewModel.getCurUser()
     }
 
     override fun onCreateView(
@@ -72,7 +71,7 @@ class EditImageFragment : Fragment() {
         saveInstructorImageBtn = view.findViewById(R.id.saveInstructorImageBtn)
 
         cancelEditImageBtn.setOnClickListener {
-            replaceFragment(AccountFragment.newInstance(true, BaseActivity().getCurrentUserID()))
+            requireActivity().supportFragmentManager.popBackStack()
         }
 
         userViewModel.userData.observe(viewLifecycleOwner, Observer {user ->
@@ -101,7 +100,8 @@ class EditImageFragment : Fragment() {
 //                            val publicId = image.public_id
                             userViewModel.updateUserImage(BaseActivity().getCurrentUserID(), image)
                             Toast.makeText(context, "Image updated successfully", Toast.LENGTH_SHORT).show()
-                            replaceFragment(AccountFragment.newInstance(true, BaseActivity().getCurrentUserID()))
+                            requireActivity().supportFragmentManager.popBackStack()
+                            userViewModel.getCurUser()
                         } else {
                             Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
                         }
@@ -110,17 +110,6 @@ class EditImageFragment : Fragment() {
             } ?: run {
             }
         }
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentManager = requireActivity().supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        if(isInstructor == true)
-            fragmentTransaction.replace(R.id.frameLayoutInstructor, fragment)
-        else
-            fragmentTransaction.replace(R.id.frameLayout, fragment)
-//        fragmentTransaction.replace(R.id.frameLayoutInstructor, fragment)
-        fragmentTransaction.commit()
     }
 
     companion object {

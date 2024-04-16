@@ -2,12 +2,14 @@ package com.deadlineshooters.yudemy.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.deadlineshooters.yudemy.R
@@ -34,7 +36,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [AccountFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AccountFragment() : Fragment() {
+class AccountFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var isInstructor: Boolean? = false
     private var curUserId: String? = null
@@ -49,7 +51,6 @@ class AccountFragment() : Fragment() {
     private lateinit var signOut: TextView
     private lateinit var editProfile: TextView
     private lateinit var editImage: TextView
-    private lateinit var textView13: TextView
     private lateinit var fullName: TextView
     private lateinit var userViewModel: UserViewModel
     private val curUserEmail = BaseActivity().getCurrentUserEmail()
@@ -60,7 +61,7 @@ class AccountFragment() : Fragment() {
             isInstructor = it.getBoolean(ARG_PARAM1)
             curUserId = it.getString(ARG_PARAM2)
         }
-        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        userViewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
         userViewModel.getCurUser()
     }
 
@@ -86,14 +87,14 @@ class AccountFragment() : Fragment() {
         signOut = view.findViewById(R.id.signOut)
         editProfile = view.findViewById(R.id.editProfile)
         editImage = view.findViewById(R.id.editImage)
-        textView13 = view.findViewById(R.id.textView13)
 
         userViewModel.userData.observe(viewLifecycleOwner, Observer {user ->
             fullName.text = user.fullName
 
+            ImageViewHelper().setImageViewFromUrl(user.image, avatar)
         })
 
-        email.text = curUserEmail.toString()
+        email.text = curUserEmail
 
 
         if(isInstructor == true) {
@@ -106,10 +107,14 @@ class AccountFragment() : Fragment() {
             if(isInstructor == true){
                 val intent = Intent(context, StudentMainActivity::class.java)
                 startActivity(intent)
-                startActivity(intent)
             } else {
+                userViewModel.userData.observe(viewLifecycleOwner, Observer {user ->
+                    if(user.instructor == null){
+                        UserRepository().becomeInstructor()
+                        Toast.makeText(context, "You are now an instructor", Toast.LENGTH_SHORT).show()
+                    }
+                })
                 val intent = Intent(context, InstructorMainActivity::class.java)
-                startActivity(intent)
                 startActivity(intent)
             }
         }
@@ -136,7 +141,6 @@ class AccountFragment() : Fragment() {
         }
 
         if(isInstructor == true){
-            textView13.visibility = View.VISIBLE
             editProfile.visibility = View.VISIBLE
             editImage.visibility = View.VISIBLE
         }
@@ -146,14 +150,10 @@ class AccountFragment() : Fragment() {
         }
 
         editImage.setOnClickListener {
-            replaceFragment(EditImageFragment.newInstance(isInstructor!!), isInstructor!!)
+            replaceFragment(EditImageFragment(), isInstructor!!)
         }
 
-        val imageUrl = "https://res.cloudinary.com/dbgaeu07x/image/upload/v1712737767/Yudemy/spmaesw65l7iyk32xymu.jpg"
-        ImageViewHelper().setImageViewFromUrl(Image(imageUrl, ""), avatar)
-
         UserRepository().loadUserData(this@AccountFragment)
-
     }
 
     private fun replaceFragment(fragment: Fragment, isInstructor: Boolean) {
@@ -161,9 +161,11 @@ class AccountFragment() : Fragment() {
         val fragmentTransaction = fragmentManager.beginTransaction()
         if (!isInstructor){
             fragmentTransaction.replace(R.id.frameLayout, fragment)
+            fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
         } else{
             fragmentTransaction.replace(R.id.frameLayoutInstructor, fragment)
+            fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
         }
     }
@@ -192,9 +194,7 @@ class AccountFragment() : Fragment() {
                 navigateIns.text = "Switch to instructor view"
             else
                 navigateIns.text = "Become an instructor"
-
         }
-
     }
     companion object {
         /**

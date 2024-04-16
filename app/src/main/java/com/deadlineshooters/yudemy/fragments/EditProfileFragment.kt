@@ -46,9 +46,8 @@ class EditProfileFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        userViewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
         instructorViewModel = ViewModelProvider(this)[InstructorViewModel::class.java]
-        userViewModel.getCurUser()
 
     }
 
@@ -81,7 +80,8 @@ class EditProfileFragment : Fragment() {
             if(!isNewInfoEmpty()){
                 instructorViewModel.modifyInstructorProfile(BaseActivity().getCurrentUserID(), instructorFullName.text.toString(), instructorHeadline.text.toString(), instructorBio.text.toString())
                 Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
-                replaceFragment(AccountFragment.newInstance(true, BaseActivity().getCurrentUserID()))
+                requireActivity().supportFragmentManager.popBackStack()
+                userViewModel.getCurUser()
             }
         }
 
@@ -94,19 +94,12 @@ class EditProfileFragment : Fragment() {
 
                 }
                 .setPositiveButton(Html.fromHtml("<font color='#FF0000'><b>Discard</b></font>")) { dialog, which ->
-                    replaceFragment(AccountFragment.newInstance(true, BaseActivity().getCurrentUserID()))
+                    requireActivity().supportFragmentManager.popBackStack()
                 }
 
             val dialog: AlertDialog = builder.create()
             dialog.show()
         }
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentManager = requireActivity().supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayoutInstructor, fragment)
-        fragmentTransaction.commit()
     }
 
     private fun isNewInfoEmpty(): Boolean {
