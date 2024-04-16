@@ -56,7 +56,7 @@ class LectureLearningAdapter(var lectures: List<Map<Lecture, Boolean>>): Recycle
 
         holder.name.text = lecture.name
 
-        holder.details.text = context.resources.getString(R.string.learning_lecture_detail, lecture.content.resource_type, TimeHelper().convertDurationToString(lecture.content.duration))
+        holder.details.text = context.resources.getString(R.string.learning_lecture_detail, TimeHelper().convertDurationToString(lecture.content.duration))
 
         if(selectedLecture == position) {
             holder.itemView.background = ResourcesCompat.getDrawable(context.resources, R.color.purple_alpha, null)
