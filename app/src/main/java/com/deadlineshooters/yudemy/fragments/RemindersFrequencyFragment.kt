@@ -12,8 +12,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.BaseActivity
 import com.deadlineshooters.yudemy.adapters.DayTimeFrequencyAdapter
+import com.deadlineshooters.yudemy.helpers.AlarmHelper
 import com.deadlineshooters.yudemy.viewmodels.UserViewModel
+import java.util.Calendar
 import kotlin.text.Typography.times
 
 // TODO: Rename parameter arguments, choose names that match
@@ -82,7 +85,10 @@ class RemindersFrequencyFragment : Fragment() {
         })
 
         userViewModel.reminderTimes.observe(viewLifecycleOwner, Observer {
-            timeAdapter.chosenItems = it
+            for(time in it) {
+                (activity as BaseActivity).getIdxFromHour(time).let { idx -> timeAdapter.chosenItems.add(idx) }
+            }
+//            timeAdapter.chosenItems = it
             for(time in it) {
                 timeAdapter.notifyItemChanged(time)
             }
@@ -112,15 +118,28 @@ class RemindersFrequencyFragment : Fragment() {
                 return
             if(timeAdapter.chosenItems.contains(it)) {
                 timeAdapter.chosenItems.remove(it)
-                userViewModel.removeReminderTime(it)
+                userViewModel.removeReminderTime((activity as BaseActivity).getHourFromIdx(it))
                 timeAdapter.notifyItemChanged(it)
             }
             else {
                 timeAdapter.chosenItems.add(it)
-                userViewModel.addReminderTime(it)
+                userViewModel.addReminderTime((activity as BaseActivity).getHourFromIdx(it))
                 timeAdapter.notifyItemChanged(it)
             }
         }
+    }
+
+    fun setPushNoti(day: Int, hour: Int) {
+        val alarmHelper = AlarmHelper(requireContext())
+        val calendar = Calendar.getInstance()
+        calendar.apply {
+            set(Calendar.DAY_OF_WEEK, day)
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        alarmHelper.initRepeatingAlarm(calendar, day, hour)
     }
 
     companion object {

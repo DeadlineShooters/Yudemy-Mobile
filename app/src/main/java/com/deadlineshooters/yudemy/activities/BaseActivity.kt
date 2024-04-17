@@ -23,6 +23,7 @@ import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.deadlineshooters.yudemy.viewmodels.LectureViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import java.util.Calendar
 
 
 open class BaseActivity : AppCompatActivity() {
@@ -114,5 +115,15 @@ open class BaseActivity : AppCompatActivity() {
     fun hideKeyboard(view: View) {
         val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    fun getIdxFromHour(hour: Int): Int {
+        val hours = arrayListOf(6, 9, 12, 15, 18, 21)
+        return hours.indexOf(hour)
+    }
+
+    fun getHourFromIdx(idx: Int): Int {
+        val hours = arrayListOf(6, 9, 12, 15, 18, 21)
+        return hours[idx]
     }
 }

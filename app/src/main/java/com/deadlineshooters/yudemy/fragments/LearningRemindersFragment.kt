@@ -81,18 +81,18 @@ class LearningRemindersFragment : Fragment() {
                     Log.d("LearningRemindersFragment", "change days: $days, times: $times")
                     for(day in days) {
                         for(time in times) {
-                            val tmpDay = getDayFromIdx(day)
-                            val tmpTime = getTimesFromIdx(time)
+//                            val tmpDay = getDayFromIdx(day)
+//                            val tmpTime = getTimesFromIdx(time)
 
                             val calendar = Calendar.getInstance()
                             calendar.apply {
-                                set(Calendar.DAY_OF_WEEK, tmpDay)
-                                set(Calendar.HOUR_OF_DAY, tmpTime)
+                                set(Calendar.DAY_OF_WEEK, day)
+                                set(Calendar.HOUR_OF_DAY, time)
                                 set(Calendar.MINUTE, 0)
                                 set(Calendar.SECOND, 0)
                                 set(Calendar.MILLISECOND, 0)
                             }
-                            alarmHelper.initRepeatingAlarm(calendar, tmpDay, tmpTime)
+                            alarmHelper.initRepeatingAlarm(calendar, day, time)
                         }
                     }
                 })

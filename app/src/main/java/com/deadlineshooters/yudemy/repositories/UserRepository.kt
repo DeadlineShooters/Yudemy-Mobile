@@ -167,7 +167,7 @@ class UserRepository {
                     getReminderDays { days ->
                         getReminderTimes { times ->
                             if(days.isEmpty() || times.isEmpty()) {
-                                addReminderDay(0)
+                                addReminderDay(2)
                                 addReminderTime(0)
                                 callback(true)
                             }
