@@ -25,9 +25,6 @@ class AlarmReceiver : BroadcastReceiver() {
 //    }
 
     override fun onReceive(context: Context?, mIntent: Intent?) {
-//        val calendar = Calendar.getInstance()
-//        calendar.timeInMillis = System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7
-
         val day = mIntent?.getIntExtra("day", 0) ?: 0
         val hour = mIntent?.getIntExtra("hour", 0) ?: 0
         Log.d("Alarm", "Alarm received with day: $day and hour: $hour")

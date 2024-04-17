@@ -36,7 +36,7 @@ class AlarmHelper(context: Context) {
         }
 
         Log.d("AlarmHelper", "initRepeatingAlarm: ${calendar.timeInMillis} intent $alarmIntent")
-        alarmMgr?.setExact(
+        alarmMgr?.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
             alarmIntent

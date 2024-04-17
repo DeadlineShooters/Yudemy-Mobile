@@ -81,8 +81,8 @@ class LearningRemindersFragment : Fragment() {
                 userViewModel.dayTimeCombinedData.observe(viewLifecycleOwner, Observer { (days, times) ->
                     for(day in days) {
                         for(time in times) {
-                            val tmpDay = getDayFromIdx(day)
-                            val tmpTime = getTimesFromIdx(time)
+                            val tmpDay = (activity as BaseActivity).getDayFromIdx(day)
+                            val tmpTime = (activity as BaseActivity).getHourFromIdx(time)
                             Log.d("LearningRemindersFragment", "change days: $tmpDay, times: $tmpTime")
 
                             if(!alarmHelper.checkIfActive(tmpDay, tmpTime)) {
@@ -98,8 +98,8 @@ class LearningRemindersFragment : Fragment() {
                 switchReminder.isChecked = false
 
                 userViewModel.dayTimeCombinedData.observe(viewLifecycleOwner, Observer { (days, times) ->
-                    val tmpDays = days.map { getDayFromIdx(it) }
-                    val tmpTimes = times.map { getTimesFromIdx(it) }
+                    val tmpDays = days.map { (activity as BaseActivity).getDayFromIdx(it) }
+                    val tmpTimes = times.map { (activity as BaseActivity).getHourFromIdx(it) }
                     alarmHelper.cancelAllAlarms(tmpDays, tmpTimes)
                 })
             }
@@ -136,30 +136,5 @@ class LearningRemindersFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
-    }
-
-    fun getDayFromIdx(idx: Int): Int {
-        return when(idx) {
-            0 -> Calendar.MONDAY
-            1 -> Calendar.TUESDAY
-            2 -> Calendar.WEDNESDAY
-            3 -> Calendar.THURSDAY
-            4 -> Calendar.FRIDAY
-            5 -> Calendar.SATURDAY
-            6 -> Calendar.SUNDAY
-            else -> -1
-        }
-    }
-
-    fun getTimesFromIdx(idx: Int): Int {
-        return when(idx) {
-            0 -> 6
-            1 -> 9
-            2 -> 12
-            3 -> 15
-            4 -> 18
-            5 -> 21
-            else -> -1
-        }
     }
 }
