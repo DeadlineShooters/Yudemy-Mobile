@@ -6,12 +6,15 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.WRITE_GSERVICES"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:name=".MyApp"
         android:allowBackup="true"
+        android:enableOnBackInvokedCallback="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -19,8 +22,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Yudemy"
-        tools:targetApi="31" >
-
+        tools:replace="android:theme"
+        tools:targetApi="31">
         <receiver android:name=".helpers.AlarmReceiver" />
 
         <receiver android:name=".helpers.AlarmBootReceiver"
@@ -30,7 +33,9 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
-
+        <activity
+            android:name=".activities.InstructorAllCoursesActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.EditCourseLandingPageActivity"
             android:exported="false"
@@ -41,10 +46,7 @@
             android:exported="false" />
         <activity
             android:name=".activities.CreateCurriculumActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.CertificateActivity"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".activities.InstructorProfileActivity"
             android:exported="false" />
@@ -89,9 +91,7 @@
             android:name=".activities.CourseDetailActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Yudemy.NoActionBar" /> <!-- <activity -->
-        <!-- android:name=".activities.BaseActivity" -->
-        <!-- android:exported="false" /> -->
+            android:theme="@style/Theme.Yudemy.NoActionBar"/>
         <activity
             android:name=".activities.SignUpWithEmailActivity"
             android:exported="false"

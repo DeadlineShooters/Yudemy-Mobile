@@ -87,7 +87,6 @@
     </string-array>
     <string-array name="sort_most_recent_filter">
         <item>Sort by most recent</item>
-        <item>Sort by recommended</item>
     </string-array>
     <string-array name="questions_filter">
         <item>All questions</item>
@@ -100,7 +99,7 @@
         <item>Questions without instructors\' responses</item>
     </string-array>
     <string name="learning_section_title">Section %d - %s</string>
-    <string name="learning_lecture_detail">%s - %s min</string>
+    <string name="learning_lecture_detail">Video - %s min</string>
     <string name="about_this_course">About this course</string>
     <string name="course_certificate">Course certificate</string>
     <string name="q_a">Q&amp;A</string>
@@ -115,7 +114,9 @@
     <string name="about_yudemy">About Yudemy</string>
     <string name="sign_out">Sign out</string>
     <string name="Yudemy_v1.0">Yudemy v1.0</string>
-    <string name="learning_reminder_description">Learning a little each day adds up. Research shows that students who make learning a habit are more likely to retain information and reach their goals</string>
+    <string name="learning_reminder_description">Learning a little each day adds up. Research shows that students who make learning a habit are more
+        likely to retain information and reach their goals
+    </string>
     <string name="learning_reminder_description1">Choose which day(s) you want to get a reminder</string>
     <string name="learning_reminder_description2">Choose what time you want to learn</string>
     <string name="learning_reminder_description3">Update or pause your reminders at any time</string>
@@ -157,8 +158,13 @@
     <string name="retype_new_password">Re-type new password</string>
     <string name="change_password">Change password</string>
     <string name="close_your_account_permanently">Close your account permanently</string>
-    <string name="close_account_warning">Warning: If you close your account, you will be unsubscribe from all your courses, and will lose access forever.</string>
-    <string name="about_yudemy_description">Yudemy is an online learning platform featuring 100+ video courses taught by expert instructors. Take courses in anything from programming languages like Python, and Java to personal development classes like design, drawing, writing and yoga. Join the more than 30 million students who are mastering new skills, advancing their careers, and exploring new hobbies on Udemy.</string>
+    <string name="close_account_warning">Warning: If you close your account, you will be unsubscribe from all your courses, and will lose access
+        forever.
+    </string>
+    <string name="about_yudemy_description">Yudemy is an online learning platform featuring 100+ video courses taught by expert instructors. Take
+        courses in anything from programming languages like Python, and Java to personal development classes like design, drawing, writing and yoga.
+        Join the more than 30 million students who are mastering new skills, advancing their careers, and exploring new hobbies on Udemy.
+    </string>
     <string name="NTVT">Team NTVT:</string>
     <string name="course_subtitle">Course subtitle</string>
 
@@ -172,9 +178,13 @@
     <string name="basic_info">Basic info</string>
     <string name="course_image">Course image</string>
     <string name="upload_file">Upload file</string>
-    <string name="course_image_note">Upload your course image here. Important guidelines: 750x422 pixels; .jpg, .jpeg,. gif, or .png. no text on the image</string>
+    <string name="course_image_note">Upload your course image here. Important guidelines: 750x422 pixels; .jpg, .jpeg,. gif, or .png. no text on the
+        image
+    </string>
     <string name="promotional_video">Promotional video</string>
-    <string name="course_promo_video_note">Your promo video is a quick and compelling way for students to preview what they’ll learn in your course. Students considering your course are more likely to enroll if your promo video is well-made</string>
+    <string name="course_promo_video_note">Your promo video is a quick and compelling way for students to preview what they’ll learn in your course.
+        Students considering your course are more likely to enroll if your promo video is well-made
+    </string>
     <string name="create_content">Create content</string>
     <string name="curriculum">Curriculum</string>
     <string name="curriculum_description">Start putting together your course by creating sections and lectures</string>
@@ -206,6 +216,19 @@
     <string name="public_profile">Public profile</string>
     <string name="headline_guideline">Add a professional headline like, \"Instructor at Yudemy \" or \"Architect\".</string>
     <string name="instructor_image">Photo</string>
+    <string name="leave_a_rating">Leave a rating</string>
+
+    <string name="course_figures">(%1$d ratings) %2$d students</string>
+    <string name="created_date">Created date %s</string>
+    <string name="curriculum_overview">%1$d sections • %2$d lectures • %3$dh %4$dm total length</string>
+
+<!--    Course Detail Activity-->
+    <string name="instructor_reviews">%d Reviews</string>
+    <string name="instructor_students">%d Students</string>
+    <string name="section_title">Section %1$d - %2$s</string>
+    <string name="insert_subtitle">Insert your course subtitle</string>
+
+    <string name="default_web_client_id">54920611721-0mnl6kc7j9mioe77gif1ibq3lr7ajsi0.apps.googleusercontent.com</string>
     <string name="mark_as_complete">Mark as complete</string>
     <string name="mark_as_incomplete">Mark as incomplete</string>
     <string name="qa_for_lecture">Q&amp;A for lecture</string>
