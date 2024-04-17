@@ -19,8 +19,7 @@ import java.util.Calendar
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ARG_INSTRUCTOR = "param1"
 
 /**
  * A simple [Fragment] subclass.
@@ -29,8 +28,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class LearningRemindersFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var isInstructor: Boolean? = null
 
     private lateinit var backFromReminders: Button
     private lateinit var frequency: TextView
@@ -40,8 +38,7 @@ class LearningRemindersFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            isInstructor = it.getBoolean(ARG_INSTRUCTOR)
         }
 
         userViewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
@@ -69,7 +66,7 @@ class LearningRemindersFragment : Fragment() {
             requireActivity().supportFragmentManager.popBackStack()
         }
         frequency.setOnClickListener {
-            replaceFragment(RemindersFrequencyFragment())
+            replaceFragment(RemindersFrequencyFragment(), isInstructor!!)
         }
 
         val alarmHelper = AlarmHelper(requireContext())
@@ -110,12 +107,18 @@ class LearningRemindersFragment : Fragment() {
         }
     }
 
-    private fun replaceFragment(fragment: Fragment) {
+    private fun replaceFragment(fragment: Fragment, isInstructor: Boolean) {
         val fragmentManager = requireActivity().supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayout, fragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
+        if (!isInstructor){
+            fragmentTransaction.replace(R.id.frameLayout, fragment)
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
+        } else{
+            fragmentTransaction.replace(R.id.frameLayoutInstructor, fragment)
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
+        }
     }
 
     companion object {
@@ -129,11 +132,10 @@ class LearningRemindersFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(isInstructor: Boolean) =
             LearningRemindersFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putBoolean(ARG_INSTRUCTOR, isInstructor)
                 }
             }
     }

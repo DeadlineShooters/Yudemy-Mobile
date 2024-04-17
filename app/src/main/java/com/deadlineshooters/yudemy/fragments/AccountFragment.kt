@@ -118,7 +118,7 @@ class AccountFragment : Fragment() {
         }
 
         learningReminders.setOnClickListener {
-            replaceFragment(LearningRemindersFragment(), isInstructor!!)
+            replaceFragment(LearningRemindersFragment.newInstance(isInstructor!!), isInstructor!!)
         }
 
         accSecurity.setOnClickListener {
