@@ -12,6 +12,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.BaseActivity
 import com.deadlineshooters.yudemy.helpers.AlarmHelper
 import com.deadlineshooters.yudemy.viewmodels.UserViewModel
 import java.util.Calendar
@@ -78,21 +79,16 @@ class LearningRemindersFragment : Fragment() {
                 switchReminder.isChecked = true
 
                 userViewModel.dayTimeCombinedData.observe(viewLifecycleOwner, Observer { (days, times) ->
-                    Log.d("LearningRemindersFragment", "change days: $days, times: $times")
                     for(day in days) {
                         for(time in times) {
-//                            val tmpDay = getDayFromIdx(day)
-//                            val tmpTime = getTimesFromIdx(time)
+                            val tmpDay = getDayFromIdx(day)
+                            val tmpTime = getTimesFromIdx(time)
+                            Log.d("LearningRemindersFragment", "change days: $tmpDay, times: $tmpTime")
 
-                            val calendar = Calendar.getInstance()
-                            calendar.apply {
-                                set(Calendar.DAY_OF_WEEK, day)
-                                set(Calendar.HOUR_OF_DAY, time)
-                                set(Calendar.MINUTE, 0)
-                                set(Calendar.SECOND, 0)
-                                set(Calendar.MILLISECOND, 0)
+                            if(!alarmHelper.checkIfActive(tmpDay, tmpTime)) {
+                                Log.d("LearningRemindersFragment", "init push noti: $tmpDay, $tmpTime")
+                                alarmHelper.initRepeatingAlarm(Calendar.getInstance(), tmpDay, tmpTime)
                             }
-                            alarmHelper.initRepeatingAlarm(calendar, day, time)
                         }
                     }
                 })
@@ -102,7 +98,9 @@ class LearningRemindersFragment : Fragment() {
                 switchReminder.isChecked = false
 
                 userViewModel.dayTimeCombinedData.observe(viewLifecycleOwner, Observer { (days, times) ->
-                    alarmHelper.cancelAllAlarms(days, times)
+                    val tmpDays = days.map { getDayFromIdx(it) }
+                    val tmpTimes = times.map { getTimesFromIdx(it) }
+                    alarmHelper.cancelAllAlarms(tmpDays, tmpTimes)
                 })
             }
         })

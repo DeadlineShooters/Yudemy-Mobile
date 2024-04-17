@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -18,6 +19,7 @@ import com.cloudinary.android.callback.UploadCallback
 import com.deadlineshooters.yudemy.BuildConfig
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.DialogProgressBinding
+import com.deadlineshooters.yudemy.helpers.AlarmHelper
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.deadlineshooters.yudemy.viewmodels.LectureViewModel
@@ -117,13 +119,21 @@ open class BaseActivity : AppCompatActivity() {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    fun getIdxFromHour(hour: Int): Int {
-        val hours = arrayListOf(6, 9, 12, 15, 18, 21)
-        return hours.indexOf(hour)
-    }
-
     fun getHourFromIdx(idx: Int): Int {
         val hours = arrayListOf(6, 9, 12, 15, 18, 21)
         return hours[idx]
+    }
+
+    fun getDayFromIdx(idx: Int): Int {
+        return when(idx) {
+            0 -> Calendar.MONDAY
+            1 -> Calendar.TUESDAY
+            2 -> Calendar.WEDNESDAY
+            3 -> Calendar.THURSDAY
+            4 -> Calendar.FRIDAY
+            5 -> Calendar.SATURDAY
+            6 -> Calendar.SUNDAY
+            else -> -1
+        }
     }
 }

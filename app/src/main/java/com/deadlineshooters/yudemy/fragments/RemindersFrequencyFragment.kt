@@ -68,6 +68,7 @@ class RemindersFrequencyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val alarmHelper = AlarmHelper(requireContext())
 
         rvDay = view.findViewById(R.id.rvDay)
         rvTime = view.findViewById(R.id.rvTime)
@@ -85,10 +86,7 @@ class RemindersFrequencyFragment : Fragment() {
         })
 
         userViewModel.reminderTimes.observe(viewLifecycleOwner, Observer {
-            for(time in it) {
-                (activity as BaseActivity).getIdxFromHour(time).let { idx -> timeAdapter.chosenItems.add(idx) }
-            }
-//            timeAdapter.chosenItems = it
+            timeAdapter.chosenItems = it
             for(time in it) {
                 timeAdapter.notifyItemChanged(time)
             }
@@ -103,11 +101,24 @@ class RemindersFrequencyFragment : Fragment() {
                 dayAdapter.chosenItems.remove(it)
                 userViewModel.removeReminderDay(it)
                 dayAdapter.notifyItemChanged(it)
+
+                val tmpDay = (activity as BaseActivity).getDayFromIdx(it)
+                for(time in userViewModel.reminderTimes.value!!) {
+                    val tmpHour = (activity as BaseActivity).getHourFromIdx(time)
+                    alarmHelper.cancelAlarm(tmpDay, tmpHour)
+                }
             }
             else {
                 dayAdapter.chosenItems.add(it)
                 userViewModel.addReminderDay(it)
                 dayAdapter.notifyItemChanged(it)
+
+                val tmpDay = (activity as BaseActivity).getDayFromIdx(it)
+                val calendar = Calendar.getInstance()
+                for(time in userViewModel.reminderTimes.value!!) {
+                    val tmpHour = (activity as BaseActivity).getHourFromIdx(time)
+                    alarmHelper.initRepeatingAlarm(calendar, tmpDay, tmpHour)
+                }
             }
         }
 
@@ -118,28 +129,28 @@ class RemindersFrequencyFragment : Fragment() {
                 return
             if(timeAdapter.chosenItems.contains(it)) {
                 timeAdapter.chosenItems.remove(it)
-                userViewModel.removeReminderTime((activity as BaseActivity).getHourFromIdx(it))
+                userViewModel.removeReminderTime(it)
                 timeAdapter.notifyItemChanged(it)
+
+                val tmpHour = (activity as BaseActivity).getHourFromIdx(it)
+                for(day in userViewModel.reminderDays.value!!) {
+                    val tmpDay = (activity as BaseActivity).getDayFromIdx(day)
+                    alarmHelper.cancelAlarm(tmpDay, tmpHour)
+                }
             }
             else {
                 timeAdapter.chosenItems.add(it)
-                userViewModel.addReminderTime((activity as BaseActivity).getHourFromIdx(it))
+                userViewModel.addReminderTime(it)
                 timeAdapter.notifyItemChanged(it)
+
+                val tmpHour = (activity as BaseActivity).getHourFromIdx(it)
+                val calendar = Calendar.getInstance()
+                for(day in userViewModel.reminderDays.value!!) {
+                    val tmpDay = (activity as BaseActivity).getDayFromIdx(day)
+                    alarmHelper.initRepeatingAlarm(calendar, tmpDay, tmpHour)
+                }
             }
         }
-    }
-
-    fun setPushNoti(day: Int, hour: Int) {
-        val alarmHelper = AlarmHelper(requireContext())
-        val calendar = Calendar.getInstance()
-        calendar.apply {
-            set(Calendar.DAY_OF_WEEK, day)
-            set(Calendar.HOUR_OF_DAY, hour)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
-        alarmHelper.initRepeatingAlarm(calendar, day, hour)
     }
 
     companion object {

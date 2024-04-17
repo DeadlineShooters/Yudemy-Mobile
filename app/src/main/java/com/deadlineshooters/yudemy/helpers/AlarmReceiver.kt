@@ -25,19 +25,25 @@ class AlarmReceiver : BroadcastReceiver() {
 //    }
 
     override fun onReceive(context: Context?, mIntent: Intent?) {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7
+//        val calendar = Calendar.getInstance()
+//        calendar.timeInMillis = System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7
 
-        Log.d("Alarm", "Alarm received")
+        val day = mIntent?.getIntExtra("day", 0) ?: 0
+        val hour = mIntent?.getIntExtra("hour", 0) ?: 0
+        Log.d("Alarm", "Alarm received with day: $day and hour: $hour")
+
         val notificationUtils = NotificationHelper(context!!)
         notificationUtils.launchNotification()
 
-//        calendar.add(Calendar.DATE, 7)
-//        calendar.add(Calendar.MINUTE, 1)
-//        alarmUtils.initRepeatingAlarm(calendar, Calendar.THURSDAY, 15, 51)
-
         val alarmUtils = AlarmHelper(context)
-//        calendar.timeInMillis = System.currentTimeMillis() + 1000 * 15
-        alarmUtils.initRepeatingAlarm(calendar, Calendar.THURSDAY, 15)
+
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.DAY_OF_WEEK, day)
+        calendar.set(Calendar.HOUR_OF_DAY, hour)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        calendar.add(Calendar.WEEK_OF_YEAR, 1)
+        alarmUtils.initRepeatingAlarm(calendar, day, hour)
     }
 }

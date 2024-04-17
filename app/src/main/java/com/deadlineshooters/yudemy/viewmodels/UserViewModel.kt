@@ -93,7 +93,7 @@ class UserViewModel : ViewModel() {
         _isToggleReminder.value = isToggle
         UserRepository().toggleReminder(isToggle) {
             if(it) {
-                _reminderDays.value?.add(2)
+                _reminderDays.value?.add(0)
                 _reminderTimes.value?.add(0)
             }
         }
