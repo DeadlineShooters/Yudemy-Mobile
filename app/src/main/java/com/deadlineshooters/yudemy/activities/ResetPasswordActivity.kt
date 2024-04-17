@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
 
 class ResetPasswordActivity : AppCompatActivity() {
     private var emailReset: TextView? = null
@@ -19,9 +20,13 @@ class ResetPasswordActivity : AppCompatActivity() {
         submitBtn = findViewById(R.id.submitBtn)
 
         submitBtn!!.setOnClickListener {
-            val intent = Intent(this, ConfirmResetActivity::class.java)
-            intent.putExtra("email", emailReset?.text.toString())
-            startActivity(intent);
+            AuthenticationRepository().resetPassword(emailReset?.text.toString()){it ->
+                if(it == true){
+                    val intent = Intent(this, ConfirmResetActivity::class.java)
+                    intent.putExtra("email", emailReset?.text.toString())
+                    startActivity(intent);
+                }
+            }
         }
 
         backBtn2 = findViewById(R.id.backBtn2)
