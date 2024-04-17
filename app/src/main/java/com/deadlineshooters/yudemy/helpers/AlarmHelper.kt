@@ -35,6 +35,12 @@ class AlarmHelper(context: Context) {
             set(Calendar.MILLISECOND, 0)
         }
 
+        // Check if the current time is past the alarm time
+        if (Calendar.getInstance().after(calendar)) {
+            // If it is, set the alarm for the next week
+            calendar.add(Calendar.WEEK_OF_YEAR, 1)
+        }
+
         Log.d("AlarmHelper", "initRepeatingAlarm: ${calendar.timeInMillis} intent $alarmIntent")
         alarmMgr?.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
