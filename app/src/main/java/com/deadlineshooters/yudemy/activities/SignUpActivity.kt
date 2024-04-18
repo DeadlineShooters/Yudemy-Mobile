@@ -12,11 +12,20 @@ import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
 import com.deadlineshooters.yudemy.repositories.UserRepository
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.FacebookSdk
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
+import com.facebook.login.widget.LoginButton
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FacebookAuthProvider
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -37,7 +46,6 @@ class SignUpActivity : BaseActivity() {
         signinHref = findViewById(R.id.signinHref)
         signUpEmailBtn = findViewById(R.id.signUpEmailBtn)
         signUpGoogleBtn = findViewById(R.id.signUpGoogleBtn)
-        signUpFbBtn = findViewById(R.id.signUpFbBtn)
 
         signinHref!!.setOnClickListener {
             val intent = Intent(this, SignInActivity::class.java)
@@ -59,6 +67,24 @@ class SignUpActivity : BaseActivity() {
             startActivityForResult(signInIntent, RC_SIGN_UP)
             googleSignInClient.signOut()
         }
+    }
+
+    private fun handleFacebookAccessToken(token: AccessToken) {
+
+        val credential = FacebookAuthProvider.getCredential(token.token)
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(this, "Facebook sign up success", Toast.LENGTH_SHORT).show()
+                } else {
+                    // Đăng nhập thất bại, hiển thị thông báo cho người dùng
+                    Toast.makeText(
+                        baseContext,
+                        "Authentication failed.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
