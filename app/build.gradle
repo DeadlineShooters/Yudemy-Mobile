@@ -4,6 +4,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-parcelize' // Parcelable
     id "org.jetbrains.kotlin.kapt"
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.23'
 }
 
 
@@ -124,6 +125,11 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     kapt 'com.github.bumptech.glide:compiler:4.16.0'
 
-    implementation "com.jillesvangurp:search-client:2.1.25"
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0'
+    implementation("com.algolia:algoliasearch-client-kotlin:2.0.0")
+    implementation("io.ktor:ktor-client-okhttp:2.0.1")
+    implementation("io.ktor:ktor-client-android:2.0.1")
+    implementation("io.ktor:ktor-client-cio:2.0.1")
+
 }
 

@@ -23,7 +23,11 @@ import com.deadlineshooters.yudemy.activities.InstructorMainActivity
 import com.deadlineshooters.yudemy.adapters.CategoryAdapter1
 import com.deadlineshooters.yudemy.adapters.CourseListAdapter2
 import com.deadlineshooters.yudemy.databinding.FragmentFeaturedBinding
+import com.deadlineshooters.yudemy.helpers.SearchHelper
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 /**
@@ -122,7 +126,7 @@ class FeaturedFragment : Fragment() {
             val adapter = CourseListAdapter2(requireContext(), courses)
             binding.courseList.layoutManager = LinearLayoutManager(context)
             binding.courseList.adapter = adapter
-            adapter.onItemClick = {course ->
+            adapter.onItemClick = { course ->
                 val intent = Intent(activity, CourseDetailActivity::class.java)
                 intent.putExtra("course", course)
                 startActivity(intent)
