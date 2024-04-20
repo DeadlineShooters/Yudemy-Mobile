@@ -35,6 +35,9 @@ class CourseViewModel : ViewModel() {
     private val _courses = MutableLiveData<List<Course>>()
     val courses get() = _courses
 
+    private val _editingCourse = MutableLiveData<Course?>()
+    val editingCourse: LiveData<Course?> = _editingCourse
+
     fun refreshCourses(userId: String? = null, sortByNewest: Boolean = true) {
         val task = if (userId != null) {
             courseRepository.getCoursesByInstructor(userId, sortByNewest)

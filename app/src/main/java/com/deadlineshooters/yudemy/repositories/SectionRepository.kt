@@ -9,8 +9,11 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentSnapshot
 import android.content.ContentValues
+import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
+import com.deadlineshooters.yudemy.models.Video
 import com.deadlineshooters.yudemy.utils.Constants
 import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
 
 class SectionRepository {
@@ -48,7 +51,7 @@ class SectionRepository {
             }.continueWith { task ->
                 for (i in tasks.indices) {
                     val section = (tasks[i].result as DocumentSnapshot).toObject(Section::class.java)
-                    val lectures = lectureTasks[i].result as List<Lecture>
+                    val lectures = lectureTasks[i].result as ArrayList<Lecture>
                     if (section != null) {
                         Log.d(this.javaClass.simpleName, section.title)
                     } else {
@@ -118,5 +121,80 @@ class SectionRepository {
                 Log.w("Firestore", "Error getting documents: ", exception)
                 callback(sectionList)
             }
+    }
+
+    fun addSection(section: Section): Task<String> {
+        return sectionCollection.add(section)
+            .continueWith { task ->
+                task.result.id
+            }
+    }
+
+//    fun addSectionsWithLecture(sections: ArrayList<SectionWithLectures>, course: Course): Task<ArrayList<SectionWithLectures>> {
+//        val tasks = mutableListOf<Task<*>>()
+//        for (section in sections) {
+//            addSection(section.section).addOnCompleteListener {
+//                val sectionId = it.result
+//                CourseRepository().addASection(course.id, sectionId)
+//                    .addOnCompleteListener {
+//                        course.sectionList.add(sectionId)
+//
+//                        val lectureTasks = mutableListOf<Task<*>>()
+//                        for (lecture in section.lectures) {
+//                            CloudinaryHelper.uploadMedia(
+//                                fileUri = lecture.content.contentUri,
+//                                isVideo = true
+//                            ) { media ->
+//                                lecture.content = media as Video
+//                                lecture.sectionId = sectionId
+//                                val lectureTask = LectureRepository().addLecture(lecture)
+//                                lectureTasks.add(lectureTask)
+//                            }
+//                        }
+//                        Tasks.whenAllComplete(lectureTasks).addOnCompleteListener { lectureTask ->
+//                            tasks.add(it)
+//                        }
+//                    }
+//            }
+//        }
+//        return Tasks.whenAllComplete(tasks).continueWith { task ->
+//            Log.d("SectionRepository", "addSectionsWithLecture: ${sections}")
+//            sections
+//        }
+//    }
+
+    fun addSectionsWithLecture(sections: ArrayList<SectionWithLectures>, course: Course): Task<Void> {
+        val tasks = mutableListOf<Task<*>>()
+        for (section in sections) {
+            val task = addSection(section.section).continueWithTask { task ->
+                val sectionId = task.result
+                CourseRepository().addASection(course.id, sectionId)
+                    .continueWithTask {
+                        course.sectionList.add(sectionId)
+
+                        val lectureTasks = mutableListOf<Task<*>>()
+                        for (lecture in section.lectures) {
+                            val tcs = TaskCompletionSource<Void>()
+                            CloudinaryHelper.uploadMedia(
+                                fileUri = lecture.content.contentUri,
+                                isVideo = true
+                            ) { media ->
+                                lecture.content = media as Video
+                                lecture.sectionId = sectionId
+                                LectureRepository().addLecture(lecture).continueWith {
+                                    lecture._id = it.result
+                                    tcs.setResult(null)
+                                }
+                            }
+                            lectureTasks.add(tcs.task)
+                        }
+                        Tasks.whenAllComplete(lectureTasks)
+                    }
+            }
+            tasks.add(task)
+        }
+        return Tasks.whenAllComplete(tasks).continueWith { task ->
+            null
+        }
     }
 }

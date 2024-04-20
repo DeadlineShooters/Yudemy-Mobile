@@ -2,15 +2,18 @@ package com.deadlineshooters.yudemy.activities
 
 import android.app.Dialog
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
+import android.net.Uri
 import android.os.Bundle
-import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.os.Environment
 import android.os.Looper
+import android.provider.MediaStore
+import android.view.View
 import android.view.Window
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.DialogProgressBinding
@@ -18,11 +21,15 @@ import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.deadlineshooters.yudemy.viewmodels.InstructorViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import java.util.Calendar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -167,5 +174,37 @@ open class BaseActivity : AppCompatActivity() {
             6 -> Calendar.SUNDAY
             else -> -1
         }
+    }
+
+    fun retriveVideoFrameFromVideo(videoPath: String?): Bitmap? {
+        var bitmap: Bitmap?
+        var mediaMetadataRetriever: MediaMetadataRetriever? = null
+        try {
+            mediaMetadataRetriever = MediaMetadataRetriever()
+            mediaMetadataRetriever.setDataSource(videoPath, HashMap())
+            bitmap = mediaMetadataRetriever.frameAtTime
+        } catch (e: Exception) {
+            e.printStackTrace()
+            bitmap = null
+        } finally {
+            mediaMetadataRetriever?.release()
+        }
+        return bitmap
+    }
+
+    fun retriveVideoFrameFromVideo(uri: Uri?): Bitmap? { // For local videos
+        var bitmap: Bitmap?
+        var mediaMetadataRetriever: MediaMetadataRetriever? = null
+        try {
+            mediaMetadataRetriever = MediaMetadataRetriever()
+            mediaMetadataRetriever.setDataSource(applicationContext, uri)
+            bitmap = mediaMetadataRetriever.frameAtTime
+        } catch (e: Exception) {
+            e.printStackTrace()
+            bitmap = null
+        } finally {
+            mediaMetadataRetriever?.release()
+        }
+        return bitmap
     }
 }

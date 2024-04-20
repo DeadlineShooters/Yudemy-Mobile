@@ -1,6 +1,8 @@
 package com.deadlineshooters.yudemy.repositories
 
+import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
 import com.deadlineshooters.yudemy.models.Lecture
+import com.deadlineshooters.yudemy.models.Video
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.android.gms.tasks.Tasks
 import com.deadlineshooters.yudemy.utils.Constants
@@ -68,6 +70,14 @@ class LectureRepository {
             }
             .addOnFailureListener { exception ->
                 callback(ArrayList())
+            }
+    }
+
+    fun addLecture(lecture: Lecture): Task<String> {
+        return lecturesCollection
+            .add(lecture)
+            .continueWith{
+                it.result.id
             }
     }
 }
