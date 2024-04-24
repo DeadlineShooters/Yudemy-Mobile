@@ -129,14 +129,20 @@ class UserRepository {
             }
     }
 
-    fun getUserById(userId: String, callbacks: (User) -> Unit){
+    fun getUserById(userId: String, callbacks: (User?) -> Unit){
         mFireStore.collection("users")
             .document(userId)
             .get()
             .addOnSuccessListener { document ->
-                if (document != null) {
+                if (document.exists()) {
                     callbacks(document.toObject(User::class.java)!!)
                 }
+                else{
+                    callbacks(null)
+                }
+            }
+            .addOnFailureListener{
+                callbacks(null)
             }
     }
 
@@ -146,7 +152,7 @@ class UserRepository {
             "image.secure_url", image.secure_url
         ).addOnSuccessListener {
             getUserById(userId){
-                callbacks(it)
+                callbacks(it!!)
             }
         }.addOnFailureListener {
             Log.w(ContentValues.TAG, "Error updating document", it)

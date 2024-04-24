@@ -29,7 +29,7 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Yudemy.NoActionBar" />
-  <activity
+        <activity
             android:name=".activities.PricingCourseDraftingActivity"
             android:exported="false" />
         <activity
