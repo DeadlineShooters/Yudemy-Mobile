@@ -45,6 +45,10 @@ class CourseDashboardFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
+        courseViewModel.refreshCourses(UserRepository.getCurrentUserID())
+
+        courseAdapter = CourseAdapter(this, arrayListOf())
     }
 
 
@@ -61,17 +65,11 @@ class CourseDashboardFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupActionBar()
 
-        courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
-        courseViewModel.refreshCourses(UserRepository.getCurrentUserID())
-
         courseViewModel.dashboardCourses.observe(viewLifecycleOwner, Observer { courses ->
-
-            courseAdapter = CourseAdapter(this, courses)
+            courseAdapter.updateCourses(courses)
 
             binding.rvCourses.adapter = courseAdapter
             binding.rvCourses.layoutManager = LinearLayoutManager(context)
-
-
         })
 
         val dialog = BottomSheetDialog(requireContext())
@@ -104,6 +102,18 @@ class CourseDashboardFragment : Fragment() {
             }
 
             dialog.show()
+        }
+
+        courseAdapter.onDeleteCourseClick = { position ->
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle("Delete course")
+            builder.setMessage("Are you sure you want to delete this course?")
+            builder.setPositiveButton("Yes") { _, _ ->
+                val course = courseAdapter.getCourseAt(position)
+                courseViewModel.deleteCourse(course)
+            }
+            builder.setNegativeButton("No") { _, _ -> }
+            builder.show()
         }
 
         binding.ivSearch.setOnClickListener {

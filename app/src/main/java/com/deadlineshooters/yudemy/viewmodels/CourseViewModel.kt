@@ -73,6 +73,17 @@ class CourseViewModel : ViewModel() {
             }
         }
     }
+
+    fun deleteCourse(course: Course) {
+        courseRepository.deleteCourseAndItsLectures(course)
+            .addOnCompleteListener{ task ->
+            if (task.isSuccessful) {
+                _dashboardCourses.postValue(_dashboardCourses.value!!.minus(course))
+            } else {
+                Log.d(this.javaClass.simpleName, "Failed to delete course: ${task.exception}")
+            }
+        }
+    }
 //    fun addDummyCourse() {
 //
 //        val imageFilePath = "/storage/emulated/0/Android/data/com.deadlineshooters.yudemy/files/DCIM/img_thumbnail.jpg"

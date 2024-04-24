@@ -9,6 +9,7 @@ import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Section
 import com.deadlineshooters.yudemy.models.Video
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -185,5 +186,24 @@ class CourseRepository {
     fun updatePrice(courseId: String, price: Double): Task<Void> {
         return coursesCollection.document(courseId)
             .update("price", price)
+    }
+
+    fun deleteCourseAndItsLectures(course: Course): Task<Void> {
+        val sections = course.sectionList
+
+        val tasks = mutableListOf<Task<*>>()
+        for(section in sections) {
+            val task = LectureRepository().getLecturesBySectionId(section)
+                .continueWithTask {
+                    val lectures = it.result
+                    LectureRepository().deleteLectures(lectures.map { it._id })
+                }
+            tasks.add(task)
+        }
+
+        return Tasks.whenAllComplete(tasks)
+            .continueWithTask {
+                coursesCollection.document(course.id).delete()
+            }
     }
 }
