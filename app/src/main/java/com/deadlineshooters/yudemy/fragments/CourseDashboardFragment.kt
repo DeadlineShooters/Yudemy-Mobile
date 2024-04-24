@@ -1,5 +1,6 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
@@ -10,16 +11,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.RadioGroup
+import android.widget.Spinner
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.BaseActivity
 import com.deadlineshooters.yudemy.adapters.CourseAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentCourseDashboardBinding
+import com.deadlineshooters.yudemy.models.Category
 import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.repositories.CategoryRepository
+import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.deadlineshooters.yudemy.repositories.UserRepository
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -30,6 +39,8 @@ class CourseDashboardFragment : Fragment() {
     private lateinit var binding: FragmentCourseDashboardBinding
     private lateinit var courseAdapter: CourseAdapter
     private var sortNewest = true
+
+    private var categories = arrayListOf<Category>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -156,7 +167,7 @@ class CourseDashboardFragment : Fragment() {
 
 
         binding.ivCreateCourse.setOnClickListener {
-            replaceFragment(CourseDraftingMenuFragment())
+            createCourseDialog()
         }
 
         binding.btnCancel.setOnClickListener {
@@ -209,5 +220,60 @@ class CourseDashboardFragment : Fragment() {
         fragmentTransaction.commit()
     }
 
+    private fun createCourseDialog() {
+        val builder = AlertDialog.Builder(context)
+
+        val dialogView = requireActivity().layoutInflater.inflate(R.layout.dialog_create_new_course, null)
+        builder.setView(dialogView)
+
+        val dialog = builder.create()
+
+        dialogView.findViewById<TextView>(R.id.btnCloseDlgCreateCourse).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        val cateSpinner = dialogView.findViewById<Spinner>(R.id.spinnerSetCate)
+
+        if(categories.isEmpty()) {
+            CategoryRepository().getCategories().addOnSuccessListener {
+                categories.addAll(it)
+                setCategoryAdapterForSpinner(categories, cateSpinner)
+            }
+        }
+        else {
+            setCategoryAdapterForSpinner(categories, cateSpinner)
+        }
+
+        dialogView.findViewById<Button>(R.id.btnCreateCourse).setOnClickListener {
+            val courseTitle = dialogView.findViewById<TextView>(R.id.etNewTitle)
+            if(courseTitle.text.isBlank()){
+                courseTitle.error = "Please enter your course title"
+                return@setOnClickListener
+            }
+
+            val course = Course()
+            course.name = courseTitle.text.toString()
+            course.category = categories[cateSpinner.selectedItemPosition]._id
+
+            (activity as BaseActivity).showProgressDialog("Creating course...")
+            CourseRepository().addCourse(course).addOnSuccessListener {
+                (activity as BaseActivity).hideProgressDialog()
+                course.id = it
+                replaceFragment(CourseDraftingMenuFragment(), course)
+                dialog.dismiss()
+            }
+        }
+
+        dialog.show()
+    }
+
+    fun setCategoryAdapterForSpinner(categories: List<Category>, spinner: Spinner) {
+        val categoriesAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            categories.map { cate -> cate.name })
+        categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = categoriesAdapter
+    }
 
 }

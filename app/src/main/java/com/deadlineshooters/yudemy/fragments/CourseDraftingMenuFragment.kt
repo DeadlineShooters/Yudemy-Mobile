@@ -56,9 +56,6 @@ class CourseDraftingMenuFragment : Fragment() {
             }
             param2 = it.getString(ARG_PARAM2)
         }
-
-        if(course == null)
-            course = Course()
     }
 
     override fun onCreateView(
@@ -84,7 +81,7 @@ class CourseDraftingMenuFragment : Fragment() {
             .into(binding.crsImgView)
 
         binding.navCurriculum.setOnClickListener {
-            if(course!!.id != "" && sectionWithLectures.isEmpty()) {
+            if(sectionWithLectures.isEmpty()) {
                 SectionRepository().getSectionsWithLectures(course!!.id).addOnSuccessListener {
                     sectionWithLectures = it as ArrayList<SectionWithLectures>
                     navToCurriculum()
@@ -102,7 +99,6 @@ class CourseDraftingMenuFragment : Fragment() {
         binding.navPricing.setOnClickListener {
             val intent = Intent(activity, PricingCourseDraftingActivity::class.java)
             intent.putExtra("course", course)
-//            startActivity(intent)
             startForResultPricing.launch(intent)
         }
     }

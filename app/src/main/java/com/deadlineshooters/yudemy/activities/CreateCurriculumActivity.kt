@@ -24,7 +24,6 @@ import com.deadlineshooters.yudemy.models.Lecture
 import com.deadlineshooters.yudemy.models.Section
 import com.deadlineshooters.yudemy.models.SectionWithLectures
 import com.deadlineshooters.yudemy.models.Video
-import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.deadlineshooters.yudemy.repositories.LectureRepository
 import com.deadlineshooters.yudemy.repositories.SectionRepository
 import com.google.android.material.snackbar.Snackbar
@@ -199,28 +198,18 @@ class CreateCurriculumActivity : BaseActivity() {
 
 
         binding.btnSaveCurriculum.setOnClickListener {
-            if(checkIfSectionIsEmpty()) {
+            if(sectionWithLectures.isEmpty()) {
+                Snackbar.make(binding.root, "Please add at least one lecture", Snackbar.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            if(!checkIfFillAllFields()) {
                 Snackbar.make(binding.root, "Please fill in all the titles and upload video for lectures", Snackbar.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
-            if(course.id == "") { // new course
-                CourseRepository().addCourse(course).addOnSuccessListener { courseId ->
-                    if(courseId != "") {
-                        course.id = courseId
-                        addCurriculum()
-                    }
-                    else {
-                        Snackbar.make(
-                            binding.root,
-                            "Failed to save course. Please try again",
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                        val intent = Intent()
-                        setResult(Activity.RESULT_CANCELED, intent)
-                        finish()
-                    }
-                }
+            if(course.sectionList.isEmpty()) { // new course
+                addCurriculum()
             }
             else {
                 Log.d("CreateCurriculumActivity", "deletedSections: $deletedSections")
@@ -297,27 +286,24 @@ class CreateCurriculumActivity : BaseActivity() {
         }
     }
 
-    private fun checkIfSectionIsEmpty(): Boolean {
-        if(sectionWithLectures.isEmpty()) {
-            return true
-        }
+    private fun checkIfFillAllFields(): Boolean {
         for(section in sectionWithLectures) {
             if (section.section.title == "") {
-                return true
+                return false
             }
             if(section.lectures.isEmpty()) {
-                return true
+                return false
             }
             for(lecture in section.lectures) {
                 if(lecture.name == "" || lecture.content.duration == 0.0) {
-                    return true
+                    return false
                 }
             }
         }
-        return false
+        return true
     }
 
-    fun addCurriculum() {
+    private fun addCurriculum() {
         showProgressDialog("Saving curriculum")
 
         SectionRepository()
@@ -332,7 +318,7 @@ class CreateCurriculumActivity : BaseActivity() {
             }
     }
 
-    fun saveEditedCurriculum() {
+    private fun saveEditedCurriculum() {
         showProgressDialog("Saving curriculum")
         SectionRepository()
             .addSectionsWithLecture(addedSections, course)
