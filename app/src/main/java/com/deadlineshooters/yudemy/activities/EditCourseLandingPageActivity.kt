@@ -10,9 +10,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -20,7 +17,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
@@ -92,6 +88,11 @@ class EditCourseLandingPageActivity : BaseActivity() {
 
         // handle save
         binding.btnSave.setOnClickListener {
+            if(!checkIfFillAllFields()) {
+                Toast.makeText(this, "Some fields are missing", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             course.name = binding.etCourseTitle.text.toString()
             course.introduction = binding.etCourseSubtitle.text.toString()
             course.description = binding.etDesc.text.toString()
@@ -103,11 +104,13 @@ class EditCourseLandingPageActivity : BaseActivity() {
                     courseRepository.patchCourse(course)
                     Toast.makeText(this, "Course landing page updated", Toast.LENGTH_SHORT).show()
                     hideProgressDialog()
+                    onBackUpdate()
                 }
             } else {
                 courseRepository.patchCourse(course)
                 Toast.makeText(this, "Course landing page updated", Toast.LENGTH_SHORT).show()
                 hideProgressDialog()
+                onBackUpdate()
             }
 
             // Dismiss the keyboard
@@ -188,11 +191,21 @@ class EditCourseLandingPageActivity : BaseActivity() {
         }
 
         binding.toolbar.setNavigationOnClickListener {
-//            onBackPressedDispatcher.onBackPressed()
-            val intent = Intent()
-            intent.putExtra("course", course)
-            setResult(Activity.RESULT_OK, intent)
-            finish()
+            onBackPressedDispatcher.onBackPressed()
         }
+    }
+
+    private fun checkIfFillAllFields(): Boolean {
+        return binding.etCourseTitle.text.toString().isNotBlank() &&
+                binding.etCourseSubtitle.text.toString().isNotBlank() &&
+                binding.etDesc.text.toString().isNotBlank() &&
+                (course.thumbnail.secure_url != "" || (course.thumbnail.secure_url == "" && thumbnailUri != null))
+    }
+
+    private fun onBackUpdate() {
+        val intent = Intent()
+        intent.putExtra("course", course)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 }

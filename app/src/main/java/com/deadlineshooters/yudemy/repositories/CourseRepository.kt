@@ -206,4 +206,9 @@ class CourseRepository {
                 coursesCollection.document(course.id).delete()
             }
     }
+
+    fun updateCourseStatus(courseId: String, status: Boolean): Task<Void> {
+        return coursesCollection.document(courseId)
+            .update("status", status)
+    }
 }

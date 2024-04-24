@@ -239,4 +239,6 @@
 
     <string name="create_new_course">Create new course</string>
     <string name="category">Category</string>
+
+    <string name="publish">Publish</string>
 </resources>
