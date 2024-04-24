@@ -2,6 +2,7 @@ package com.deadlineshooters.yudemy.repositories
 
 import android.util.Log
 import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.utils.Constants
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
@@ -12,7 +13,7 @@ import java.util.Locale
 class CourseRepository {
     private val userRepository = UserRepository()
     private val mFireStore = FirebaseFirestore.getInstance()
-    private val coursesCollection = mFireStore.collection("courses")
+    private val coursesCollection = mFireStore.collection(Constants.COURSES)
     private val auth = FirebaseAuth.getInstance()
 
 
@@ -80,6 +81,7 @@ class CourseRepository {
 
         val updates = hashMapOf<String, Any>(
             "name" to course.name,
+            "category" to course.category,
             "introduction" to course.introduction,
             "description" to course.description,
             "thumbnail" to course.thumbnail // Make sure this is in a format Firestore can understand

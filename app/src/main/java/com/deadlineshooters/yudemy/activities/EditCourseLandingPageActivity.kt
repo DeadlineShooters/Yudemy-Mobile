@@ -3,16 +3,12 @@ package com.deadlineshooters.yudemy.activities
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -23,16 +19,19 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.ActivityEditCourseLandingPageBinding
+import com.deadlineshooters.yudemy.fragments.CategoryFragment
 import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
+import com.deadlineshooters.yudemy.models.Category
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.github.dhaval2404.imagepicker.ImagePicker
 
-class EditCourseLandingPageActivity : AppCompatActivity() {
+class EditCourseLandingPageActivity : AppCompatActivity(), CategoryFragment.DialogListener {
     private lateinit var binding: ActivityEditCourseLandingPageBinding
     private lateinit var course: Course
     private val courseRepository = CourseRepository()
@@ -113,6 +112,12 @@ class EditCourseLandingPageActivity : AppCompatActivity() {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
         }
+
+        binding.buttonShowCategoryDialog.setOnClickListener{
+            val dialog = CategoryFragment()
+            dialog.listener = this
+            dialog.show(supportFragmentManager, "FireMissilesDialogFragment2")
+        }
     }
 
     private val startForProfileImageResult =
@@ -188,4 +193,11 @@ class EditCourseLandingPageActivity : AppCompatActivity() {
 
         binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
+
+    override fun onDialogPositiveClick(dialog: DialogFragment, selectedCategory: Category) {
+        binding.buttonShowCategoryDialog.text = selectedCategory.name
+        course.category = selectedCategory._id
+    }
+
+
 }
