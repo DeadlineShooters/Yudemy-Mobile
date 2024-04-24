@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "54920611721-4tq4m5riba38ms35i4mfvok9i2hcb2or.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deadlineshooters.yudemy",
+            "certificate_hash": "6a1d926f43a833605af9a79935a9b86297485907"
+          }
+        },
+        {
           "client_id": "54920611721-potqpf485o6iqflb4d8mkrpg1g1llgk7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

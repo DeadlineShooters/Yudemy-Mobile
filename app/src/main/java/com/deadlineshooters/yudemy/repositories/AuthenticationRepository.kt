@@ -2,17 +2,21 @@ package com.deadlineshooters.yudemy.repositories
 
 import com.google.firebase.auth.EmailAuthProvider
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import com.deadlineshooters.yudemy.activities.StudentMainActivity
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.GoogleAuthProvider
 import javax.security.auth.callback.Callback
 
 class AuthenticationRepository {
     private val auth = FirebaseAuth.getInstance()
 
-    fun createAccount(email: String, password: String, callback: (String?) -> Unit) {
+    fun createAccount(email: String, password: String, callback: (String?) -> Unit)  {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -20,7 +24,15 @@ class AuthenticationRepository {
                     val uId = user?.uid
                     callback(uId)
                 } else {
-                    callback(null)
+                    val exception = task.exception
+                    if (exception is FirebaseAuthUserCollisionException) {
+                        Log.d("auth error", "User already exists with this email")
+                        callback("User already exists with this email")
+                    } else {
+                        // Xử lý các loại lỗi khác
+                        Log.d("auth error", exception?.message ?: "Unknown error")
+                        callback(null)
+                    }
                 }
             }
     }
@@ -48,19 +60,50 @@ class AuthenticationRepository {
         }
     }
 
-//    fun firebaseAuthWithGoogle(idToken: String, callback: (String?) -> Unit) {
-//        val credential = GoogleAuthProvider.getCredential(idToken, null)
-//        auth.signInWithCredential(credential)
-//            .addOnCompleteListener() { task ->
-//                if (task.isSuccessful) {
-//                    val user = auth.currentUser
-//                    val uId = user?.uid
-//                    callback(uId)
-//                } else {
-//                    callback(null)
-//                }
-//            }
-//    }
+    fun signUpWithGoogle(account: GoogleSignInAccount, callback: (String?) -> Unit) {
+        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener() { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    val uId = user?.uid
+                    UserRepository().getUserById(uId!!){it ->
+                        if(it == null){
+                            callback(uId)
+                        } else{
+                            callback(null)
+                        }
+                    }
+                } else {
+                    callback(null)
+                }
+            }
+    }
+
+    fun signInWithGoogle(account: GoogleSignInAccount, callback: (String?) -> Unit) {
+        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener() { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    val uId = user?.uid
+                    UserRepository().getUserById(uId!!){it ->
+                        if(it == null){
+                            Log.d("User", "User not found")
+                            closeAccount(){success, userId ->
+                                if(success){
+                                    callback(null)
+                                }
+                            }
+                        } else{
+                            callback(uId)
+                        }
+                    }
+                } else {
+                    callback(null)
+                }
+            }
+    }
 
     fun changePassword(newPassword: String, callback: (Boolean?) -> Unit){
         auth.currentUser?.updatePassword(newPassword)
@@ -96,5 +139,14 @@ class AuthenticationRepository {
                 callback(false, null)
             }
         }
+    }
+
+    fun resetPassword(email: String, callback: (Boolean?) -> Unit){
+        auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener{task ->
+                if(task.isSuccessful){
+                    callback(true)
+                }
+            }
     }
 }
