@@ -73,11 +73,68 @@ class LectureRepository {
             }
     }
 
-    fun addLecture(lecture: Lecture): Task<String> {
+    fun addALecture(lecture: Lecture): Task<String> {
         return lecturesCollection
             .add(lecture)
             .continueWith{
                 it.result.id
             }
+    }
+
+    fun addLectures(lectures: List<Lecture>): Task<List<String>> {
+        val tasks = lectures.map { lecture ->
+            val tcs = TaskCompletionSource<String>()
+            CloudinaryHelper.uploadMedia(
+                fileUri = lecture.content.contentUri,
+                isVideo = true
+            ) { media ->
+                lecture.content = media as Video
+                LectureRepository().addALecture(lecture).addOnSuccessListener {
+                    lecture._id = it
+                    tcs.setResult(it)
+                }
+            }
+            tcs.task
+        }
+        return Tasks.whenAllSuccess(tasks)
+    }
+
+    fun updateLectures(lectures: List<Lecture>): Task<Void> {
+        val tasks = lectures.map { lecture ->
+            lecturesCollection.document(lecture._id).set(lecture)
+
+            val tcs = TaskCompletionSource<Void>()
+            if(lecture.content.public_id == "") {
+                CloudinaryHelper.uploadMedia(
+                    fileUri = lecture.content.contentUri,
+                    isVideo = true
+                ) { media ->
+                    lecture.content = media as Video
+                    tcs.setResult(null)
+                }
+            }
+            else
+                tcs.setResult(null)
+
+            tcs.task.continueWithTask {
+                lecturesCollection.document(lecture._id).set(lecture)
+            }
+        }
+        return Tasks.whenAll(tasks)
+    }
+
+    fun deleteLectures(lectures: List<String>): Task<Void> {
+        val tasks = lectures.map { lectureId ->
+            lecturesCollection.document(lectureId).delete()
+        }
+        return Tasks.whenAll(tasks)
+    }
+
+    fun updateIndexes(lectures: List<Lecture>): Task<Void> {
+        val tasks = lectures.map { lecture ->
+            lecturesCollection.document(lecture._id)
+                .update("index", lecture.index)
+        }
+        return Tasks.whenAll(tasks)
     }
 }

@@ -55,6 +55,8 @@ open class BaseActivity : AppCompatActivity() {
 
     fun showProgressDialog(text: String) {
         mProgressDialog = Dialog(this)
+        mProgressDialog.setCancelable(false)
+        mProgressDialog.setCanceledOnTouchOutside(false)
 
         /*Set the screen content from a layout resource.
         The resource will be inflated, adding all top-level views to the screen.*/

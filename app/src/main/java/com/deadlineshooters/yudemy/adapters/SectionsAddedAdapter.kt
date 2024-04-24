@@ -1,10 +1,6 @@
 package com.deadlineshooters.yudemy.adapters
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,13 +8,17 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.core.widget.doAfterTextChanged
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.helpers.CustomItemTouchHelper
+import com.deadlineshooters.yudemy.interfaces.ItemTouchListener
 import com.deadlineshooters.yudemy.models.Lecture
 import com.deadlineshooters.yudemy.models.Section
 import com.deadlineshooters.yudemy.models.SectionWithLectures
-import java.util.ArrayList
+import java.util.Collections
+
 
 class SectionsAddedAdapter(private val sections: ArrayList<SectionWithLectures>): RecyclerView.Adapter<SectionsAddedAdapter.ViewHolder>() {
     lateinit var context: Context
@@ -104,6 +104,17 @@ class SectionsAddedAdapter(private val sections: ArrayList<SectionWithLectures>)
             onUploadVideoClick?.invoke(holder.bindingAdapterPosition, it)
         }
 
+        val callback: ItemTouchHelper.Callback =
+            CustomItemTouchHelper(object : ItemTouchListener {
+                override fun onMove(fromPosition: Int, toPosition: Int) {
+                    lecturesAddedAdapter.onMove(fromPosition, toPosition)
+                }
+
+                override fun onSwipe(position: Int, direction: Int) {
+                }
+            })
+        ItemTouchHelper(callback).attachToRecyclerView(holder.lectureList)
+
         holder.btnAddLecture.setOnClickListener {
             onAddLectureClick?.invoke(holder.bindingAdapterPosition)
             holder.lectureList.smoothScrollToPosition(lecturesAddedAdapter.itemCount - 1)
@@ -111,5 +122,24 @@ class SectionsAddedAdapter(private val sections: ArrayList<SectionWithLectures>)
 
         holder.lectureList.adapter = lecturesAddedAdapter
         holder.lectureList.layoutManager = LinearLayoutManager(context)
+    }
+
+    fun onMove(fromPosition: Int, toPosition: Int) {
+        if (fromPosition < toPosition) {
+            for (i in fromPosition until toPosition) {
+                Collections.swap(sections, i, i + 1)
+                Collections.swap(lectureAdapters, i, i + 1)
+            }
+        } else {
+            for (i in fromPosition downTo toPosition + 1) {
+                Collections.swap(sections, i, i - 1)
+                Collections.swap(lectureAdapters, i, i - 1)
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition)
+        if(fromPosition < toPosition)
+            notifyItemRangeChanged(fromPosition, toPosition - fromPosition + 1)
+        else
+            notifyItemRangeChanged(toPosition, fromPosition - toPosition + 1)
     }
 }

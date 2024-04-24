@@ -22,7 +22,9 @@ import com.deadlineshooters.yudemy.activities.EditCourseLandingPageActivity
 import com.deadlineshooters.yudemy.activities.PricingCourseDraftingActivity
 import com.deadlineshooters.yudemy.databinding.FragmentCourseDraftingMenuBinding
 import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.models.Section
 import com.deadlineshooters.yudemy.models.SectionWithLectures
+import com.deadlineshooters.yudemy.repositories.SectionRepository
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -82,10 +84,15 @@ class CourseDraftingMenuFragment : Fragment() {
             .into(binding.crsImgView)
 
         binding.navCurriculum.setOnClickListener {
-            val intent = Intent(activity, CreateCurriculumActivity::class.java)
-            intent.putExtra("course", course)
-            intent.putParcelableArrayListExtra("sections", sectionWithLectures)
-            startForResult.launch(intent)
+            if(course!!.id != "" && sectionWithLectures.isEmpty()) {
+                SectionRepository().getSectionsWithLectures(course!!.id).addOnSuccessListener {
+                    sectionWithLectures = it as ArrayList<SectionWithLectures>
+                    navToCurriculum()
+                }
+            }
+            else {
+                navToCurriculum()
+            }
         }
         binding.navLandingPage.setOnClickListener {
             val intent = Intent(activity, EditCourseLandingPageActivity::class.java)
@@ -128,6 +135,13 @@ class CourseDraftingMenuFragment : Fragment() {
 
             Log.d("CourseDraftingMenuFragment", "onActivityResult: sectionWithLectures $sectionWithLectures")
         }
+    }
+
+    private fun navToCurriculum() {
+        val intent = Intent(activity, CreateCurriculumActivity::class.java)
+        intent.putExtra("course", course)
+        intent.putParcelableArrayListExtra("sections", sectionWithLectures)
+        startForResult.launch(intent)
     }
 
     companion object {

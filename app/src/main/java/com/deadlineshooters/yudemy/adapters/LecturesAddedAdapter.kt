@@ -1,5 +1,6 @@
 package com.deadlineshooters.yudemy.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -17,6 +18,7 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.BaseActivity
 import com.deadlineshooters.yudemy.helpers.StringUtils
 import com.deadlineshooters.yudemy.models.Lecture
+import java.util.Collections
 
 class LecturesAddedAdapter(var lectures: ArrayList<Lecture>): RecyclerView.Adapter<LecturesAddedAdapter.ViewHolder>() {
     private lateinit var context: Context
@@ -73,10 +75,10 @@ class LecturesAddedAdapter(var lectures: ArrayList<Lecture>): RecyclerView.Adapt
             val thumbnailUri = lecture.content.contentUri
             if(thumbnailUri != null) {
             val bitmap = (context as BaseActivity).retriveVideoFrameFromVideo(thumbnailUri)
-                Glide.with(context)
-                    .load(bitmap)
-                    .placeholder(R.drawable.placeholder)
-                    .into(holder.thumnail)
+            Glide.with(context)
+                .load(bitmap)
+                .placeholder(R.drawable.placeholder)
+                .into(holder.thumnail)
             }
             else {
                 Glide.with(context)
@@ -92,5 +94,22 @@ class LecturesAddedAdapter(var lectures: ArrayList<Lecture>): RecyclerView.Adapt
                 .placeholder(R.drawable.placeholder)
                 .into(holder.thumnail)
         }
+    }
+
+    fun onMove(fromPosition: Int, toPosition: Int) {
+        if (fromPosition < toPosition) {
+            for (i in fromPosition until toPosition) {
+                Collections.swap(lectures, i, i + 1)
+            }
+        } else {
+            for (i in fromPosition downTo toPosition + 1) {
+                Collections.swap(lectures, i, i - 1)
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition)
+        if(fromPosition < toPosition)
+            notifyItemRangeChanged(fromPosition, toPosition - fromPosition + 1)
+        else
+            notifyItemRangeChanged(toPosition, fromPosition - toPosition + 1)
     }
 }

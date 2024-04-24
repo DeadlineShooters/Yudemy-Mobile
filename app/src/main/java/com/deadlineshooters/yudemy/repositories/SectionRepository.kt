@@ -8,13 +8,12 @@ import com.deadlineshooters.yudemy.models.SectionWithLectures
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentSnapshot
-import android.content.ContentValues
 import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
 import com.deadlineshooters.yudemy.models.Video
 import com.deadlineshooters.yudemy.utils.Constants
 import com.google.android.gms.tasks.TaskCompletionSource
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlin.text.Typography.section
 
 class SectionRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
@@ -130,44 +129,12 @@ class SectionRepository {
             }
     }
 
-//    fun addSectionsWithLecture(sections: ArrayList<SectionWithLectures>, course: Course): Task<ArrayList<SectionWithLectures>> {
-//        val tasks = mutableListOf<Task<*>>()
-//        for (section in sections) {
-//            addSection(section.section).addOnCompleteListener {
-//                val sectionId = it.result
-//                CourseRepository().addASection(course.id, sectionId)
-//                    .addOnCompleteListener {
-//                        course.sectionList.add(sectionId)
-//
-//                        val lectureTasks = mutableListOf<Task<*>>()
-//                        for (lecture in section.lectures) {
-//                            CloudinaryHelper.uploadMedia(
-//                                fileUri = lecture.content.contentUri,
-//                                isVideo = true
-//                            ) { media ->
-//                                lecture.content = media as Video
-//                                lecture.sectionId = sectionId
-//                                val lectureTask = LectureRepository().addLecture(lecture)
-//                                lectureTasks.add(lectureTask)
-//                            }
-//                        }
-//                        Tasks.whenAllComplete(lectureTasks).addOnCompleteListener { lectureTask ->
-//                            tasks.add(it)
-//                        }
-//                    }
-//            }
-//        }
-//        return Tasks.whenAllComplete(tasks).continueWith { task ->
-//            Log.d("SectionRepository", "addSectionsWithLecture: ${sections}")
-//            sections
-//        }
-//    }
-
     fun addSectionsWithLecture(sections: ArrayList<SectionWithLectures>, course: Course): Task<Void> {
         val tasks = mutableListOf<Task<*>>()
         for (section in sections) {
             val task = addSection(section.section).continueWithTask { task ->
                 val sectionId = task.result
+                section.section._id = sectionId
                 CourseRepository().addASection(course.id, sectionId)
                     .continueWithTask {
                         course.sectionList.add(sectionId)
@@ -181,7 +148,7 @@ class SectionRepository {
                             ) { media ->
                                 lecture.content = media as Video
                                 lecture.sectionId = sectionId
-                                LectureRepository().addLecture(lecture).continueWith {
+                                LectureRepository().addALecture(lecture).continueWith {
                                     lecture._id = it.result
                                     tcs.setResult(null)
                                 }
@@ -196,5 +163,27 @@ class SectionRepository {
         return Tasks.whenAllComplete(tasks).continueWith { task ->
             null
         }
+    }
+
+    fun updateSections(sections: List<Section>): Task<Void> {
+        val tasks = sections.map { section ->
+            sectionCollection.document(section._id).set(section)
+        }
+        return Tasks.whenAll(tasks)
+    }
+
+    fun deleteSections(sections: List<String>): Task<Void> {
+        val tasks = sections.map { sectionId ->
+            sectionCollection.document(sectionId).delete()
+        }
+        return Tasks.whenAll(tasks)
+    }
+
+    fun updateIndexes(sections: List<Section>): Task<Void> {
+        val tasks = sections.map { section ->
+            sectionCollection.document(section._id)
+                .update("index", section.index)
+        }
+        return Tasks.whenAll(tasks)
     }
 }
