@@ -181,4 +181,9 @@ class CourseRepository {
         return coursesCollection.document(courseId)
             .update("sectionList", FieldValue.arrayUnion(section))
     }
+
+    fun updatePrice(courseId: String, price: Double): Task<Void> {
+        return coursesCollection.document(courseId)
+            .update("price", price)
+    }
 }

@@ -101,7 +101,9 @@ class CourseDraftingMenuFragment : Fragment() {
         }
         binding.navPricing.setOnClickListener {
             val intent = Intent(activity, PricingCourseDraftingActivity::class.java)
-            startActivity(intent)
+            intent.putExtra("course", course)
+//            startActivity(intent)
+            startForResultPricing.launch(intent)
         }
     }
 
@@ -152,6 +154,17 @@ class CourseDraftingMenuFragment : Fragment() {
                 .load(course?.thumbnail?.secure_url)
                 .placeholder(R.drawable.placeholder)
                 .into(binding.crsImgView)
+        }
+    }
+
+    private val startForResultPricing = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+
+            course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                data!!.getParcelableExtra("course", Course::class.java)!!
+            else
+                data!!.getParcelableExtra<Course>("course")!!
         }
     }
 
