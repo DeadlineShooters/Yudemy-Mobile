@@ -97,7 +97,7 @@ class CourseDraftingMenuFragment : Fragment() {
         binding.navLandingPage.setOnClickListener {
             val intent = Intent(activity, EditCourseLandingPageActivity::class.java)
             intent.putExtra("course", course)
-            startActivity(intent)
+            startForResultCourseLanding.launch(intent)
         }
         binding.navPricing.setOnClickListener {
             val intent = Intent(activity, PricingCourseDraftingActivity::class.java)
@@ -134,6 +134,24 @@ class CourseDraftingMenuFragment : Fragment() {
                 data.getParcelableExtra<Course>("course")!!
 
             Log.d("CourseDraftingMenuFragment", "onActivityResult: sectionWithLectures $sectionWithLectures")
+        }
+    }
+
+    private val startForResultCourseLanding = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+
+            course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                data!!.getParcelableExtra("course", Course::class.java)!!
+            else
+                data!!.getParcelableExtra<Course>("course")!!
+
+            Log.d("CourseDraftingMenuFragment", "onActivityResult: course $course")
+            binding.tvCourseTitle.text = course?.name ?: ""
+            Glide.with(this)
+                .load(course?.thumbnail?.secure_url)
+                .placeholder(R.drawable.placeholder)
+                .into(binding.crsImgView)
         }
     }
 

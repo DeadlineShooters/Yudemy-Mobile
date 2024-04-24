@@ -32,7 +32,7 @@ import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.github.dhaval2404.imagepicker.ImagePicker
 
-class EditCourseLandingPageActivity : AppCompatActivity() {
+class EditCourseLandingPageActivity : BaseActivity() {
     private lateinit var binding: ActivityEditCourseLandingPageBinding
     private lateinit var course: Course
     private val courseRepository = CourseRepository()
@@ -96,18 +96,19 @@ class EditCourseLandingPageActivity : AppCompatActivity() {
             course.introduction = binding.etCourseSubtitle.text.toString()
             course.description = binding.etDesc.text.toString()
 
+            showProgressDialog("Please wait...")
             if (thumbnailUri is Uri) {
                 CloudinaryHelper.uploadMedia(fileUri = thumbnailUri) {
                     course.thumbnail = it as Image
                     courseRepository.patchCourse(course)
-
+                    Toast.makeText(this, "Course landing page updated", Toast.LENGTH_SHORT).show()
+                    hideProgressDialog()
                 }
             } else {
                 courseRepository.patchCourse(course)
-
+                Toast.makeText(this, "Course landing page updated", Toast.LENGTH_SHORT).show()
+                hideProgressDialog()
             }
-
-            Toast.makeText(this, "Course landing page updated", Toast.LENGTH_SHORT).show()
 
             // Dismiss the keyboard
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -186,6 +187,12 @@ class EditCourseLandingPageActivity : AppCompatActivity() {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
         }
 
-        binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+        binding.toolbar.setNavigationOnClickListener {
+//            onBackPressedDispatcher.onBackPressed()
+            val intent = Intent()
+            intent.putExtra("course", course)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
     }
 }
