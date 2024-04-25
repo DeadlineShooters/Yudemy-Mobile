@@ -1,11 +1,15 @@
 package com.deadlineshooters.yudemy.viewmodels
 
+import android.content.ComponentCallbacks
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
 import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.models.Image
+import com.deadlineshooters.yudemy.models.User
+import com.deadlineshooters.yudemy.models.Video
 import com.deadlineshooters.yudemy.models.SectionWithLectures
 import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.deadlineshooters.yudemy.repositories.SectionRepository
@@ -19,7 +23,7 @@ class CourseViewModel : ViewModel() {
     private val _dashboardCourses = MutableLiveData<List<Course>>()
     val dashboardCourses: LiveData<List<Course>> = _dashboardCourses
 
-      private val _learningCourse = MutableLiveData<Course?>()
+  private val _learningCourse = MutableLiveData<Course?>()
     val learningCourse: LiveData<Course?> = _learningCourse
 
     private val _sectionsWithLectures = MutableLiveData<List<SectionWithLectures>>()
@@ -27,6 +31,9 @@ class CourseViewModel : ViewModel() {
 
     private val _wishlist = MutableLiveData<List<Course>>()
     val wishlist: LiveData<List<Course>> = _wishlist
+
+    private val _courses = MutableLiveData<List<Course>>()
+    val courses get() = _courses
 
     fun refreshCourses(userId: String? = null, sortByNewest: Boolean = true) {
         val task = if (userId != null) {
@@ -81,4 +88,18 @@ class CourseViewModel : ViewModel() {
 //        }
 //
 //    }
+
+
+    fun getTop3InstructorCourseList(instructorId: String) {
+        courseRepository.getTop3InstructorCourseList(instructorId) {
+            _courses.value = it
+        }
+    }
+
+    fun getInstructorCourseList(instructorId: String) {
+        courseRepository.getInstructorCourseList(instructorId) {
+            _courses.value = it
+        }
+    }
+
 }

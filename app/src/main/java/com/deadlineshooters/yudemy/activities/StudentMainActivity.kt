@@ -42,7 +42,7 @@ class StudentMainActivity : BaseActivity() {
                 }
 
                 R.id.account -> {
-                    replaceFragment(AccountFragment())
+                    replaceFragment(AccountFragment.newInstance(false, this.getCurrentUserID()))
                 }
 
                 else -> {

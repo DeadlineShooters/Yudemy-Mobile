@@ -6,13 +6,13 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.databinding.ActivitySignUpWithEmailBinding
 import com.deadlineshooters.yudemy.models.Image
+import com.deadlineshooters.yudemy.models.Instructor
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
 import com.deadlineshooters.yudemy.repositories.UserRepository
-import com.google.api.Authentication
 
 class SignUpWithEmailActivity : AppCompatActivity() {
 //    private lateinit var binding: ActivitySignUpWithEmailBinding
@@ -65,11 +65,19 @@ class SignUpWithEmailActivity : AppCompatActivity() {
 
         signUpBtn!!.setOnClickListener{
             AuthenticationRepository().createAccount(email!!.text.toString(), password!!.text.toString()){uid ->
-                if (uid != null){
-                    val newUser = User("", name!!.text.toString(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), false,  "", null)
-                    UserRepository().addUser(newUser)
-                    val intent = Intent(this, StudentMainActivity::class.java)
-                    startActivity(intent)
+                if(uid == "User already exists with this email"){
+                    Toast.makeText(this, "${email!!.text} is already in used", Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    if(uid != null){
+                        val newUser = User("",name!!.text.toString(), Image("https://res.cloudinary.com/dbgaeu07x/image/upload/v1712737767/Yudemy/spmaesw65l7iyk32xymu.jpg","Yudemy/spmaesw65l7iyk32xymu") ,arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), arrayListOf(), false, "", null)
+                        UserRepository().addUser(newUser)
+                        val intent = Intent(this, StudentMainActivity::class.java)
+                        startActivity(intent)
+                    }
+                    else {
+                        Toast.makeText(this, "Sign up failed", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }

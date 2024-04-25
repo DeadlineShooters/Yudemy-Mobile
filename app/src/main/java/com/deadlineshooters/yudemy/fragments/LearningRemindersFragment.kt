@@ -50,7 +50,7 @@ class LearningRemindersFragment : Fragment() {
         frequency = view.findViewById(R.id.frequencyNav)
 
         backFromReminders.setOnClickListener {
-            replaceFragment(AccountFragment())
+            requireActivity().supportFragmentManager.popBackStack()
         }
         frequency.setOnClickListener {
             replaceFragment(RemindersFrequencyFragment())
@@ -61,6 +61,7 @@ class LearningRemindersFragment : Fragment() {
         val fragmentManager = requireActivity().supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frameLayout, fragment)
+        fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
 

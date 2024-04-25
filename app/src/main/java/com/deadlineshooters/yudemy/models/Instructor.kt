@@ -9,7 +9,6 @@ data class Instructor(
     var totalReviews: Int = 0,
     var totalStudents: Int = 0,
     var bio: String = "",
-    var image: Image = Image(),
     var walletId: String = "",
     var walletName: String = ""
 ) : Parcelable

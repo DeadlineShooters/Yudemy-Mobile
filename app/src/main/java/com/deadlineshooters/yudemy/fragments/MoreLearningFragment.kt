@@ -16,11 +16,17 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.BaseActivity
+import com.deadlineshooters.yudemy.activities.CourseLearningActivity
 import com.deadlineshooters.yudemy.databinding.FragmentMoreLearningBinding
 import com.deadlineshooters.yudemy.dialogs.CertificateDialog
 import com.deadlineshooters.yudemy.dialogs.QADialog
 import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.viewmodels.CertificateViewModel
+import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.deadlineshooters.yudemy.models.CourseFeedback
 import com.deadlineshooters.yudemy.repositories.CourseFeedbackRepository
 import com.deadlineshooters.yudemy.repositories.FeedbackCallback
@@ -48,6 +54,8 @@ class MoreLearningFragment : Fragment() {
     private lateinit var dialog: Dialog
     private lateinit var ratingBar: RatingBar
     private lateinit var feedbackEditText: EditText
+    private lateinit var certificateViewModel: CertificateViewModel
+
     val title = "More"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +69,7 @@ class MoreLearningFragment : Fragment() {
                 }
             }
         }
+        certificateViewModel = ViewModelProvider(this)[CertificateViewModel::class.java]
     }
 
     private fun setupDialog() {
@@ -153,18 +162,27 @@ class MoreLearningFragment : Fragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         qa = view.findViewById(R.id.qa)
         certificate = view.findViewById(R.id.certificate)
         qa.setOnClickListener {
-            val qaDialog = QADialog()
+//            val qaDialog = QADialog(courseId!!)
+//            qaDialog.show(parentFragmentManager, "QADialog")
+            val qaDialog = QADialog(course!!.id, (activity as CourseLearningActivity).currentLecture!!.keys.first()._id)
             qaDialog.show(parentFragmentManager, "QADialog")
         }
+
         certificate.setOnClickListener {
-            val certificateDialog = CertificateDialog()
-            certificateDialog.show(parentFragmentManager, "CertificateDialog")
+            certificateViewModel.getCertificate(BaseActivity().getCurrentUserID() ,course!!.id)
+            certificateViewModel.certificate.observe(viewLifecycleOwner, Observer {
+                if(it != null) {
+                    val certificateDialog = CertificateDialog(course!!.id)
+                    certificateDialog.show(parentFragmentManager, "CertificateDialog")
+                } else {
+                    BaseActivity().showNoButtonDialogWithTimeout(requireContext(), "Certificate", "You have not completed this course yet", 2000)
+                }
+            })
         }
 
         aboutDialog = createAboutDialog()
