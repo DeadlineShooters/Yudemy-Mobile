@@ -1,5 +1,6 @@
 package com.deadlineshooters.yudemy.repositories
 
+import android.util.Log
 import com.deadlineshooters.yudemy.models.Category
 import com.deadlineshooters.yudemy.utils.Constants
 import com.google.android.gms.tasks.Task
@@ -23,6 +24,22 @@ class CategoryRepository {
                 emptyList()
             }
         }
+    }
+
+    fun loadCategory(categoryId: String, callback: (Category?) -> Unit) {
+        if (categoryId != "") {
+            categoriesCollection.document(categoryId)
+                .get()
+                .addOnSuccessListener { document ->
+                    val category = document?.toObject(Category::class.java)
+                    callback(category)
+                }
+                .addOnFailureListener { exception ->
+                    Log.w("Firestore", "Error getting category: ", exception)
+                    callback(null)
+                }
+        } else callback(null)
+
     }
 
 

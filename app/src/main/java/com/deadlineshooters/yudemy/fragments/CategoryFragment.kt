@@ -58,6 +58,7 @@ class CategoryFragment : DialogFragment() {
             .setPositiveButton("OK", null)
 
         categoryViewModel.categoryList.observe(this, Observer { categories ->
+            Log.d(this.javaClass.simpleName, categories[0].toString())
             val categoryItems = categories.map { Category(it._id, it.name) }
             adapter.clear()
             adapter.addAll(categoryItems)

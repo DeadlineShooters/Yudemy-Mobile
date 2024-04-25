@@ -28,6 +28,7 @@ import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
 import com.deadlineshooters.yudemy.models.Category
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
+import com.deadlineshooters.yudemy.repositories.CategoryRepository
 import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.github.dhaval2404.imagepicker.ImagePicker
 
@@ -35,7 +36,9 @@ class EditCourseLandingPageActivity : AppCompatActivity(), CategoryFragment.Dial
     private lateinit var binding: ActivityEditCourseLandingPageBinding
     private lateinit var course: Course
     private val courseRepository = CourseRepository()
+    private val categoryRepository = CategoryRepository()
     private var thumbnailUri : Uri? = null
+
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,29 +68,35 @@ class EditCourseLandingPageActivity : AppCompatActivity(), CategoryFragment.Dial
                 }
         }
 
-        course = intent.getParcelableExtra("course", Course::class.java) ?: Course()
+        loadCourseInformation()
 
-        // put data into this screen
-        if (course.name == "") {
-            binding.etCourseTitle.hint = getString(R.string.insert_your_course_title)
-        }
-
-        if (course.introduction == "") {
-            binding.etCourseSubtitle.hint = getString(R.string.insert_subtitle)
-        }
-
-        if (course.description == "") {
-            binding.etDesc.hint = getString(R.string.insert_your_course_description)
-        }
-
-        binding.etCourseTitle.setText(course.name)
-        binding.etCourseSubtitle.setText(course.introduction)
-        binding.etDesc.setText(course.description)
-
-        Glide.with(this)
-            .load(course.thumbnail.secure_url)
-            .placeholder(R.drawable.placeholder)
-            .into(binding.ivCourseImage)
+//        course = intent.getParcelableExtra("course", Course::class.java) ?: Course()
+//        courseRepository.getCourseById(courseId = course.id) {courseLoaded ->
+//            course = courseLoaded!!
+//
+//        }
+//
+//        // put data into this screen
+//        if (course.name == "") {
+//            binding.etCourseTitle.hint = getString(R.string.insert_your_course_title)
+//        }
+//
+//        if (course.introduction == "") {
+//            binding.etCourseSubtitle.hint = getString(R.string.insert_subtitle)
+//        }
+//
+//        if (course.description == "") {
+//            binding.etDesc.hint = getString(R.string.insert_your_course_description)
+//        }
+//
+//        binding.etCourseTitle.setText(course.name)
+//        binding.etCourseSubtitle.setText(course.introduction)
+//        binding.etDesc.setText(course.description)
+//
+//        Glide.with(this)
+//            .load(course.thumbnail.secure_url)
+//            .placeholder(R.drawable.placeholder)
+//            .into(binding.ivCourseImage)
 
         // handle save
         binding.btnSave.setOnClickListener {
@@ -117,6 +126,60 @@ class EditCourseLandingPageActivity : AppCompatActivity(), CategoryFragment.Dial
             val dialog = CategoryFragment()
             dialog.listener = this
             dialog.show(supportFragmentManager, "FireMissilesDialogFragment2")
+        }
+
+        categoryRepository.loadCategory(course.category) {category ->
+            if (category != null) {
+                binding.buttonShowCategoryDialog.text = category.name
+            } else
+                binding.buttonShowCategoryDialog.text = getString(R.string.select_category)
+
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun onResume() {
+        super.onResume()
+        // Reload course information on resume
+        loadCourseInformation()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun loadCourseInformation() {
+        course = intent.getParcelableExtra("course", Course::class.java) ?: Course()
+        courseRepository.getCourseById(courseId = course.id) { courseLoaded ->
+            course = courseLoaded!!
+
+            // put data into this screen
+            if (course.name == "") {
+                binding.etCourseTitle.hint = getString(R.string.insert_your_course_title)
+            }
+
+            if (course.introduction == "") {
+                binding.etCourseSubtitle.hint = getString(R.string.insert_subtitle)
+            }
+
+            if (course.description == "") {
+                binding.etDesc.hint = getString(R.string.insert_your_course_description)
+            }
+
+            binding.etCourseTitle.setText(course.name)
+            binding.etCourseSubtitle.setText(course.introduction)
+            binding.etDesc.setText(course.description)
+
+            Glide.with(this)
+                .load(course.thumbnail.secure_url)
+                .placeholder(R.drawable.placeholder)
+                .into(binding.ivCourseImage)
+
+            // Load category information
+            categoryRepository.loadCategory(course.category) { category ->
+                if (category != null) {
+                    binding.buttonShowCategoryDialog.text = category.name
+                } else {
+                    binding.buttonShowCategoryDialog.text = getString(R.string.select_category)
+                }
+            }
         }
     }
 
