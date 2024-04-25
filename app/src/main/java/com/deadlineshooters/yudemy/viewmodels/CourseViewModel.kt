@@ -9,8 +9,6 @@ import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
 import com.deadlineshooters.yudemy.helpers.SearchHelper
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.repositories.CourseRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -33,13 +31,13 @@ class CourseViewModel : ViewModel() {
             _courses.value = courses
 
             // Init data for Algolia
-//            val searchHelper = SearchHelper()
-//            for (course in courses) {
-//                viewModelScope.launch {
-//                    searchHelper.indexData(course)
-//                }
-//                Log.d("coroutine", course.name)
-//            }
+            val searchHelper = SearchHelper()
+            for (course in courses) {
+                viewModelScope.launch {
+                    searchHelper.indexData(course)
+                }
+                Log.d("coroutine", course.name)
+            }
         }
     }
 

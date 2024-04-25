@@ -1,25 +1,18 @@
 package com.deadlineshooters.yudemy.helpers
 
 import com.algolia.search.client.ClientSearch
+import com.algolia.search.dsl.attributesToRetrieve
+import com.algolia.search.dsl.query
+import com.algolia.search.helper.deserialize
 import com.algolia.search.model.APIKey
 import com.algolia.search.model.ApplicationID
 import com.algolia.search.model.IndexName
 import com.algolia.search.model.ObjectID
-import com.algolia.search.model.indexing.Indexable
+import com.deadlineshooters.yudemy.models.AlgoliaCourse
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.repositories.CourseRepository
-import kotlinx.serialization.Serializable
 
 class SearchHelper {
-    @Serializable
-    data class AlgoliaCourse(
-        var name: String = "",
-        var instructor: String = "",
-        var introduction: String = "",
-        var description: String = "",
-        var category: String = "",
-        override val objectID: ObjectID
-    ) : Indexable
 
     val courseRepository = CourseRepository()
 
@@ -39,10 +32,25 @@ class SearchHelper {
                 introduction = course.introduction,
                 description = course.description,
                 category = course.category,
-                ObjectID(course.id),
+                avgRating = course.avgRating,
+                price = course.price,
+                thumbnail = course.thumbnail.secure_url,
+                _highlightResult = null,
+                objectID = ObjectID(course.id),
             )
             saveObject(AlgoliaCourse.serializer(), record).wait()
         }
+    }
+
+    suspend fun searchIndex(s: String) {
+        val query = query {
+            query = s
+            hitsPerPage = 50
+            attributesToRetrieve {"objectID"}
+        }
+        val result = index.search(query)
+
+        result.hits.deserialize(AlgoliaCourse.serializer())
     }
 }
 
