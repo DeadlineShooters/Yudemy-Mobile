@@ -3,18 +3,21 @@ package com.deadlineshooters.yudemy.fragments
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.algolia.instantsearch.core.connection.ConnectionHandler
+import com.algolia.instantsearch.core.hits.connectHitsView
+import com.algolia.search.helper.deserialize
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.adapters.CourseListAdapter2
-import com.deadlineshooters.yudemy.adapters.InstructorListAdapter
+import com.deadlineshooters.yudemy.adapters.CourseSearchAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentFeaturedCategoryBinding
+import com.deadlineshooters.yudemy.models.AlgoliaCourse
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
-import com.deadlineshooters.yudemy.viewmodels.InstructorViewModel
+import com.deadlineshooters.yudemy.viewmodels.QuerySuggestionViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,7 +32,8 @@ private const val ARG_PARAM2 = "param2"
 class FeaturedCategoryFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private lateinit var courseViewModel: CourseViewModel
-    private lateinit var instructorViewModel: InstructorViewModel
+    private val viewModel by viewModels<QuerySuggestionViewModel>()
+    private val connection = ConnectionHandler()
     private lateinit var category: String
     private var _binding: FragmentFeaturedCategoryBinding? = null
 
@@ -51,28 +55,45 @@ class FeaturedCategoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.categoryName.text = category
 
-        instructorViewModel = ViewModelProvider(this).get(InstructorViewModel::class.java)
-        instructorViewModel.instructors.observe(viewLifecycleOwner, Observer { instructors ->
-            val adapter = InstructorListAdapter(instructors)
-            binding.instructorList.adapter = adapter
-            binding.instructorList.layoutManager = GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
-        })
+//        courseViewModel = ViewModelProvider(this)[CourseViewModel::class.java]
+//        courseViewModel.refreshCourses()
+//        courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
+//            val adapter = CourseListAdapter2(requireContext(), courses)
+//            binding.courseList.layoutManager = LinearLayoutManager(context)
+//            binding.courseList.adapter = adapter
+//        })
 
-        courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
-        courseViewModel.refreshCourses()
-        courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-            val adapter = CourseListAdapter2(requireContext(), courses)
-            binding.courseList.layoutManager = LinearLayoutManager(context)
-            binding.courseList.adapter = adapter
-        })
+        val courseListAdapter = CourseSearchAdapter()
+        binding.courseList.layoutManager = LinearLayoutManager(requireContext())
+        binding.courseList.adapter = courseListAdapter
+        connection += viewModel.courseSearcher.connectHitsView(courseListAdapter) {
+            it.hits.deserialize(AlgoliaCourse.serializer())
+        }
+
+        viewModel.courseSearcher.setQuery(category)
+        viewModel.courseSearcher.searchAsync()
 
         binding.backBtn.setOnClickListener {
             activity?.supportFragmentManager?.popBackStack()
+        }
+
+        viewModel.courseSearcher.response.subscribe { response ->
+            val courses = response?.hits?.deserialize(AlgoliaCourse.serializer())
+            if (courses != null) {
+                if (courses.isEmpty()) {
+                    binding.placeholder.visibility = VISIBLE
+                    binding.placeholderTV.visibility = VISIBLE
+                } else {
+                    binding.placeholder.visibility = GONE
+                    binding.placeholderTV.visibility = GONE
+                }
+            }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        connection.clear()
         _binding = null
     }
 

@@ -1,6 +1,7 @@
 package com.deadlineshooters.yudemy.fragments
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,8 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.algolia.instantsearch.android.searchbox.SearchBoxViewAppCompat
 import com.algolia.instantsearch.core.connection.ConnectionHandler
@@ -25,14 +24,14 @@ import com.deadlineshooters.yudemy.models.Suggestion
 import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.deadlineshooters.yudemy.viewmodels.QuerySuggestionViewModel
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.flexbox.JustifyContent
+import java.text.SimpleDateFormat
+import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+private const val FILTER_REQUEST_CODE = 1000
 
 /**
  * A simple [Fragment] subclass.
@@ -42,6 +41,9 @@ private const val ARG_PARAM2 = "param2"
 class SearchFragment : Fragment() {
     private val viewModel by viewModels<QuerySuggestionViewModel>()
     private val connection = ConnectionHandler()
+
+    private val resultAdapter = CourseSearchAdapter()
+    private var originalCourses: List<AlgoliaCourse> = listOf()
 
     private lateinit var courseViewModel: CourseViewModel
     private val courseRepository = CourseRepository()
@@ -71,29 +73,6 @@ class SearchFragment : Fragment() {
             "Finance & Accounting", "IT & Software", "Personal Development",
             "Lifestyle", "Health & Fitness", "Music"
         )
-
-        val topSearchList = binding.topSearchList
-        val topSearchAdapter = CategoryAdapter1(categories)
-        topSearchList.adapter = topSearchAdapter
-
-        // Set a FlexboxLayoutManager for wrapping content
-        var layoutManager = FlexboxLayoutManager(context)
-        layoutManager.flexDirection = FlexDirection.ROW
-        layoutManager.justifyContent = JustifyContent.FLEX_START
-        topSearchList.layoutManager = layoutManager
-        topSearchList.addItemDecoration(FeaturedFragment.SpaceItemDecoration(8))
-
-        topSearchAdapter.onItemClick = { category ->
-            courseViewModel = ViewModelProvider(this@SearchFragment)[CourseViewModel::class.java]
-            courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
-//                val clonedCourses = List(10) { courses[0] }
-                val clonedCourses = List(1) { courses[0] }
-                val resultAdapter = CourseListAdapter2(requireContext(), clonedCourses)
-                binding.resultList.adapter = resultAdapter
-                binding.emptyFrame.visibility = View.GONE
-                binding.resultList.visibility = View.VISIBLE
-            })
-        }
 
         binding.backBtn.setOnClickListener {
             binding.emptyFrame.visibility = View.VISIBLE
@@ -131,7 +110,6 @@ class SearchFragment : Fragment() {
             it.hits.deserialize(Suggestion.serializer())
         }
 
-        val resultAdapter = CourseSearchAdapter()
         binding.resultList.layoutManager = LinearLayoutManager(requireContext())
         binding.resultList.adapter = resultAdapter
         connection += viewModel.courseSearcher.connectHitsView(resultAdapter) {
@@ -158,12 +136,20 @@ class SearchFragment : Fragment() {
             }
         }
 
+        viewModel.courseSearcher.response.subscribe { response ->
+            val courses = response?.hits?.deserialize(AlgoliaCourse.serializer())
+            if (courses != null) {
+                originalCourses = courses
+            }
+        }
+
+
         // Observe suggestions
         searchBoxView.setText(searchView.query.toString())
         viewModel.suggestions.observe(viewLifecycleOwner) { searchBoxView.setText(it.query, true) }
 
-//
-//
+
+// Old version without indexing
 //        courseViewModel = ViewModelProvider(this)[CourseViewModel::class.java]
 //
 //        var courseNames = ArrayList<String>()
@@ -237,8 +223,8 @@ class SearchFragment : Fragment() {
 //        })
 
         binding.filterBtn.setOnClickListener {
-            val intent = Intent(context, FilterActivity::class.java)
-            startActivity(intent)
+            val intent = Intent(activity, FilterActivity::class.java)
+            startActivityForResult(intent, FILTER_REQUEST_CODE)
         }
     }
 
@@ -248,24 +234,52 @@ class SearchFragment : Fragment() {
         _binding = null
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == FILTER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val sortOption = data?.getStringExtra("sortOption")
+            val priceOptions = data?.getStringArrayExtra("priceOptions")
+            val languageOptions = data?.getStringArrayExtra("languageOptions")
+            val ratingOptions = data?.getStringArrayExtra("ratingOptions")
+            val durationOptions = data?.getStringArrayExtra("durationOptions")
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment Search.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SearchFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+
+            var courses: List<AlgoliaCourse> = originalCourses
+
+            courses = courses.filter { course ->
+                (priceOptions?.isEmpty() ?: true || priceOptions?.contains(if (course.price == 0.0) "Free" else "Paid") ?: true) &&
+                        (languageOptions?.isEmpty() ?: true || languageOptions?.contains(course.language) ?: true) &&
+                        (ratingOptions?.isEmpty() ?: true || ratingOptions?.any { rating ->
+                            val ratingNumber = if (rating.contains("& up")) {
+                                rating.split(" ")[0].toDouble()
+                            } else {
+                                rating.toDouble()
+                            }
+                            ratingNumber <= course.avgRating
+                        } ?: true) &&
+                        (durationOptions?.isEmpty() ?: true || durationOptions?.any { duration -> course.totalLength in duration.toSecondsRange() } ?: true)
             }
+
+
+            println(courses)
+
+            courses = when (sortOption) {
+                "Ratings" -> courses.sortedByDescending { it.avgRating }
+                "Newest" -> courses.sortedByDescending { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(it.createdDate) }
+                else -> courses
+            }
+            resultAdapter.submitList(courses)
+        }
+    }
+
+    private fun String.toSecondsRange(): IntRange {
+        val hoursRange = when (this) {
+            "0-1 Hours" -> 0..3599
+            "1-3 Hours" -> 3600..10799
+            "3-6 Hours" -> 10800..21599
+            "6+ Hours" -> 21600..Int.MAX_VALUE
+            else -> 0..Int.MAX_VALUE
+        }
+        return hoursRange
     }
 }

@@ -9,6 +9,7 @@ import com.algolia.search.client.ClientSearch
 import com.algolia.search.model.APIKey
 import com.algolia.search.model.ApplicationID
 import com.algolia.search.model.IndexName
+import com.deadlineshooters.yudemy.models.AlgoliaCourse
 import com.deadlineshooters.yudemy.models.Suggestion
 
 class QuerySuggestionViewModel : ViewModel() {
@@ -22,6 +23,7 @@ class QuerySuggestionViewModel : ViewModel() {
     val suggestionSearcher = multiSearcher.addHitsSearcher(indexName = IndexName("yudemy_courses_query_suggestions"))
     val searchBox = SearchBoxConnector(multiSearcher)
     val suggestions = MutableLiveData<Suggestion>()
+
 
     override fun onCleared() {
         multiSearcher.cancel()

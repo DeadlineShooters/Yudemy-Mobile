@@ -9,6 +9,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class CourseRepository {
     private val userRepository = UserRepository()
+    private val categoryRepository = CategoryRepository()
+    private val languageRepository = LanguageRepository()
     private val mFireStore = FirebaseFirestore.getInstance()
     private val coursesCollection = mFireStore.collection("courses")
     private val auth = FirebaseAuth.getInstance()
@@ -59,10 +61,16 @@ class CourseRepository {
                     course.id = document.id
                     userRepository.getUser(course.instructor) { user ->
                         course.instructor = user.fullName
-                        courses.add(course)
-                        fetchedCourses++
-                        if (fetchedCourses == courseDocument.size()) {
-                            callback(courses)
+                        categoryRepository.getCategory(course.category) { category ->
+                            course.category = category.name
+                            languageRepository.getLanguage(course.language) { language ->
+                                course.language = language.name
+                                courses.add(course)
+                                fetchedCourses++
+                                if (fetchedCourses == courseDocument.size()) {
+                                    callback(courses)
+                                }
+                            }
                         }
                     }
                 }
