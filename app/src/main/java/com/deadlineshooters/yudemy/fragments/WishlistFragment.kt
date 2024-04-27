@@ -63,7 +63,7 @@ class WishlistFragment : Fragment() {
             fragmentTransaction?.commit()
         }
 
-        courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
+        courseViewModel = ViewModelProvider(this)[CourseViewModel::class.java]
         courseViewModel.refreshWishlist()
         courseViewModel.wishlist.observe(viewLifecycleOwner, Observer { courses ->
             val wishListAdapter = CourseListAdapter1(requireContext(), R.layout.course_list_item, courses)

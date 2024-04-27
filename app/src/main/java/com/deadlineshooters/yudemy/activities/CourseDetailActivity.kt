@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
@@ -103,8 +105,7 @@ class CourseDetailActivity : AppCompatActivity() {
         amount = binding.tvPrice.text.toString()
 
         val currencyFormat = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
-        binding.tvPrice.text = currencyFormat.format(amount.toInt())
-        binding.tvPrice.text = currencyFormat.format(amount.toInt())
+        binding.tvPrice.text = currencyFormat.format(amount.toDouble())
 
         when (environment) {
             0 -> {
@@ -156,6 +157,19 @@ class CourseDetailActivity : AppCompatActivity() {
         )
         googlePayButton.setOnClickListener { requestPayment(course) }
 
+        userRepository.getWishlistID { wishlistID ->
+            if (wishlistID.contains(course.id)) {
+                binding.btnBuy.visibility = GONE
+                binding.googlePayButton.visibility = GONE
+                binding.btnWishlist.visibility = GONE
+                binding.gotoCourseBtn.visibility = VISIBLE
+            } else {
+                binding.btnBuy.visibility = VISIBLE
+                binding.googlePayButton.visibility = VISIBLE
+                binding.btnWishlist.visibility = VISIBLE
+                binding.gotoCourseBtn.visibility = GONE
+            }
+        }
     }
 
     private fun populateCourseDetails(course: Course) {

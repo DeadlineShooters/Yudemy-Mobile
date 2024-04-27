@@ -122,18 +122,22 @@ class CourseRepository {
             var fetchedCourses = 0
             for (courseId in wishlistID) {
                 coursesCollection.document(courseId).get().addOnSuccessListener { courseDocument ->
-                    if (courseDocument != null) {
-                        val course = courseDocument.toObject(Course::class.java)!!
-                        course.id = courseDocument.id
-                        userRepository.getUserById(course.instructor) { user ->
-                            if (user != null) {
-                                course.instructor = user.fullName
+                    if (courseDocument != null && courseDocument.exists()) {
+                        val course = courseDocument.toObject(Course::class.java)
+                        if (course != null) {
+                            course.id = courseDocument.id
+                            userRepository.getUserById(course.instructor) { user ->
+                                if (user != null) {
+                                    course.instructor = user.fullName
+                                }
+                                courses.add(course)
+                                fetchedCourses++
+                                if (fetchedCourses == wishlistID.size) {
+                                    callback(courses)
+                                }
                             }
-                            courses.add(course)
-                            fetchedCourses++
-                            if (fetchedCourses == wishlistID.size) {
-                                callback(courses)// Pass the courses to the callback function
-                            }
+                        } else {
+                            Log.d("Firestore", "Failed to convert document to Course")
                         }
                     } else {
                         Log.d("Firestore", "No such document")
@@ -144,6 +148,7 @@ class CourseRepository {
             }
         }
     }
+
 
     fun patchCourse(course: Course) {
         val courseDocument = coursesCollection.document(course.id)
