@@ -19,7 +19,7 @@ class EnrolledActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
-        courseViewModel.courses.observe(this, Observer { courses ->
+        courseViewModel.dashboardCourses.observe(this, Observer { courses ->
             val clonedCourses = List(1) { courses[0] }
             val courseListAdapter = CourseListAdapter2(this, clonedCourses)
             binding.courseList.layoutManager = LinearLayoutManager(this)

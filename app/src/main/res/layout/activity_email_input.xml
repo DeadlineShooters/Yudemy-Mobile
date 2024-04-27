@@ -47,7 +47,7 @@
         android:layout_width="384dp"
         android:layout_height="60dp"
         android:layout_marginTop="24dp"
-        android:background="#8D8D8F"
+        android:background="@color/black"
         android:text="Next"
         android:textAllCaps="false"
         android:textColor="#FFFFFF"

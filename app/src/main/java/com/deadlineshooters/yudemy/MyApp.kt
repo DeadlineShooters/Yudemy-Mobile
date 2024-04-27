@@ -2,6 +2,7 @@ package com.deadlineshooters.yudemy
 
 import android.app.Application
 import com.cloudinary.android.MediaManager
+import com.deadlineshooters.yudemy.activities.BaseActivity
 import java.util.HashMap
 
 class MyApp : Application() {

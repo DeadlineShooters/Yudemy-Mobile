@@ -87,7 +87,6 @@
     </string-array>
     <string-array name="sort_most_recent_filter">
         <item>Sort by most recent</item>
-        <item>Sort by recommended</item>
     </string-array>
     <string-array name="questions_filter">
         <item>All questions</item>
@@ -100,7 +99,7 @@
         <item>Questions without instructors\' responses</item>
     </string-array>
     <string name="learning_section_title">Section %d - %s</string>
-    <string name="learning_lecture_detail">%s - %s min</string>
+    <string name="learning_lecture_detail">Video - %s min</string>
     <string name="about_this_course">About this course</string>
     <string name="course_certificate">Course certificate</string>
     <string name="q_a">Q&amp;A</string>
@@ -217,9 +216,24 @@
     <string name="public_profile">Public profile</string>
     <string name="headline_guideline">Add a professional headline like, \"Instructor at Yudemy \" or \"Architect\".</string>
     <string name="instructor_image">Photo</string>
+    <string name="leave_a_rating">Leave a rating</string>
+
+    <string name="course_figures">(%1$d ratings) %2$d students</string>
+    <string name="created_date">Created date %s</string>
+    <string name="curriculum_overview">%1$d sections • %2$d lectures • %3$dh %4$dm total length</string>
+
+<!--    Course Detail Activity-->
+    <string name="instructor_reviews">%d Reviews</string>
+    <string name="instructor_students">%d Students</string>
+    <string name="section_title">Section %1$d - %2$s</string>
+    <string name="insert_subtitle">Insert your course subtitle</string>
+
+    <string name="default_web_client_id">54920611721-potqpf485o6iqflb4d8mkrpg1g1llgk7.apps.googleusercontent.com</string>
     <string name="mark_as_complete">Mark as complete</string>
     <string name="mark_as_incomplete">Mark as incomplete</string>
     <string name="qa_for_lecture">Q&amp;A for lecture</string>
     <string name="no_matching_courses">No matching courses</string>
-    <string name="payments_show_name" translatable="false">Successfully received payment data for %s!</string>
+    <string name="close_your_account">Close your account?</string>
+    <string name="close_account_confirm_mess">Are you sure you want to close your account?</string>
+    <string name="enter_your_password">Enter your password</string>
 </resources>

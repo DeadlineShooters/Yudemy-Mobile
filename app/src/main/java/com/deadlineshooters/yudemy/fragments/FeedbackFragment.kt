@@ -2,8 +2,6 @@ package com.deadlineshooters.yudemy.fragments
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.adapters.FeedbackAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentFeedbackBinding
-import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.CourseFeedback
 import com.google.android.material.bottomsheet.BottomSheetDialog
 

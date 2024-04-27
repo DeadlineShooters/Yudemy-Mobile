@@ -10,10 +10,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class InstructorRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
-    private val lecturersCollection = mFireStore.collection("lecturers")
+    private val instructorCollection = mFireStore.collection("users")
+    private val courseCollection = mFireStore.collection("courses")
 
     fun addInstructor(instructor: User) {
-        val documentReference = lecturersCollection.document()
+        val documentReference = instructorCollection.document()
         instructor.id = documentReference.id
         documentReference.set(instructor)
             .addOnSuccessListener {
@@ -27,7 +28,7 @@ class InstructorRepository {
     fun getInstructor(): LiveData<List<Instructor>> {
         val instructorsLiveData = MutableLiveData<List<Instructor>>()
 
-        lecturersCollection.addSnapshotListener { snapshot, e ->
+        instructorCollection.addSnapshotListener { snapshot, e ->
             if (e != null) {
                 Log.w(ContentValues.TAG, "Listen failed.", e)
                 return@addSnapshotListener
@@ -44,9 +45,41 @@ class InstructorRepository {
         return instructorsLiveData
     }
 
+    fun getInstructorByCourseId(courseId: String, callbacks: (User) -> Unit){
+        courseCollection.document(courseId).get().addOnSuccessListener { document ->
+            if (document != null) {
+                val instructorId = document.getString("instructor")
+                if (instructorId != null) {
+                    instructorCollection.document(instructorId).get().addOnSuccessListener { document ->
+                        callbacks(document.toObject(User::class.java)!!)
+                    }
+                }
+            }
+        }
+    }
+
+    fun getInstructorById(instructorId: String, callbacks: (User) -> Unit){
+        instructorCollection.document(instructorId).get().addOnSuccessListener { document ->
+            callbacks(document.toObject(User::class.java)!!)
+        }
+    }
+
+    fun modifyInstructorProfile(instructorId: String, fullName: String, headLine: String, bio: String, callbacks: (User) -> Unit){
+        instructorCollection.document(instructorId).update(
+            "fullName" , fullName,
+            "instructor.headline", headLine,
+            "instructor.bio", bio
+        ).addOnSuccessListener {
+            getInstructorById(instructorId){
+                callbacks(it)
+            }
+        }.addOnFailureListener {
+            Log.w(ContentValues.TAG, "Error updating document", it)
+        }
+    }
+
     fun getInstructorNameById(instructorId: String, callback: (String?) -> Unit) {
-        mFireStore.collection("users")
-            .document(instructorId)
+        instructorCollection.document(instructorId)
             .get()
             .addOnSuccessListener { document ->
                 callback(document?.get("fullName") as String?)

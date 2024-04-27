@@ -54,10 +54,7 @@ class RemindersFrequencyFragment : Fragment() {
         backFromFrequency = view.findViewById(R.id.backFromFrequency)
 
         backFromFrequency.setOnClickListener {
-            val fragmentManager = requireActivity().supportFragmentManager
-            val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.frameLayout, LearningRemindersFragment())
-            fragmentTransaction.commit()
+            requireActivity().supportFragmentManager.popBackStack()
         }
 
         val days = arrayListOf(1, 2)

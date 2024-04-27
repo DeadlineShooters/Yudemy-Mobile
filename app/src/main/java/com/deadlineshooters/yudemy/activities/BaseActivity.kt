@@ -1,23 +1,31 @@
 package com.deadlineshooters.yudemy.activities
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.os.Environment
+import android.os.Looper
+import android.view.Window
+import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
-import com.cloudinary.android.MediaManager
-import com.cloudinary.android.callback.ErrorInfo
-import com.cloudinary.android.callback.UploadCallback
-import com.deadlineshooters.yudemy.BuildConfig
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.DialogProgressBinding
-import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
-import com.deadlineshooters.yudemy.viewmodels.LectureViewModel
+import com.deadlineshooters.yudemy.viewmodels.InstructorViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 open class BaseActivity : AppCompatActivity() {
@@ -28,22 +36,15 @@ open class BaseActivity : AppCompatActivity() {
     private lateinit var mProgressDialog : Dialog
     private lateinit var binding: DialogProgressBinding
     open lateinit var courseViewModel: CourseViewModel
-    open lateinit var instructorViewModel: LectureViewModel
+    open lateinit var instructorViewModel: InstructorViewModel
+
+    val MSG_DISMISS_DIALOG = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DialogProgressBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-
-        /** add dummy data */
-        // Course
-//        courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
-//        viewModel.addDummyCourse()
-
-        // Lecturer
-//        lecturerViewModel = ViewModelProvider(this).get(LectureViewModel::class.java)
-//        lecturerViewModel.addDummyLecturer()
     }
 
     fun showProgressDialog(text: String) {
@@ -64,7 +65,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun getCurrentUserID(): String {
-        return FirebaseAuth.getInstance().currentUser!!.uid.toString()
+        return FirebaseAuth.getInstance().currentUser!!.uid
     }
 
     fun getCurrentUserEmail(): String {
@@ -106,4 +107,48 @@ open class BaseActivity : AppCompatActivity() {
         return this.toString().replace(regex, "$1.")
     }
 
+    fun saveBitmapToFile(bitmap: Bitmap, context: Context): String? {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val fileName = "JPEG_$timeStamp.jpg"
+        val directory = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val file = File(directory, fileName)
+
+        return try {
+            val fileOutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
+            fileOutputStream.flush()
+            fileOutputStream.close()
+            file.absolutePath
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
+    fun showNoButtonDialogWithTimeout(context: Context, title: String, content: String ,timeout: Int) {
+        val dialog = Dialog(context)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_custom)
+
+        val mTitle = dialog.findViewById(R.id.title_dialog) as TextView
+        val mContent = dialog.findViewById(R.id.content_dialog) as TextView
+
+        mTitle.text = title
+        mContent.text = content
+
+        dialog.show()
+
+        val handler = android.os.Handler(Looper.getMainLooper())
+        handler.postDelayed({
+            if (dialog.isShowing) {
+                dialog.dismiss()
+            }
+        }, timeout.toLong())
+    }
+
+
+    fun hideKeyboard(view: View) {
+        val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
 }

@@ -6,31 +6,61 @@
     android:layout_height="match_parent"
     tools:context=".fragments.AccountSecurityFragment">
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/etRetypePassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:ems="10"
         android:hint="@string/retype_new_password"
         android:inputType="textPassword"
+        android:textColorHint="@color/gray_250"
         app:layout_constraintEnd_toEndOf="@+id/etCurrPassword"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/etCurrPassword"
-        app:layout_constraintTop_toBottomOf="@+id/etNewPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/etNewPassword"
+        app:passwordToggleEnabled="true">
 
-    <EditText
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordInputRetype"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/etRetypePassword"
+            app:layout_constraintEnd_toEndOf="@+id/etRetypePassword"
+            app:layout_constraintStart_toStartOf="@+id/etRetypePassword"
+            app:layout_constraintTop_toTopOf="@+id/etRetypePassword" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/etNewPassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:ems="10"
         android:hint="@string/enter_new_password"
         android:inputType="textPassword"
+        android:textColorHint="@color/gray_250"
         app:layout_constraintEnd_toEndOf="@+id/etCurrPassword"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/etCurrPassword"
-        app:layout_constraintTop_toBottomOf="@+id/etCurrPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/etCurrPassword"
+        app:passwordToggleEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordInputNew"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/etNewPassword"
+            app:layout_constraintEnd_toEndOf="@+id/etNewPassword"
+            app:layout_constraintStart_toStartOf="@+id/etNewPassword"
+            app:layout_constraintTop_toTopOf="@+id/etNewPassword" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/textView26"
@@ -103,21 +133,36 @@
         app:layout_constraintStart_toStartOf="@+id/textView24"
         app:layout_constraintTop_toBottomOf="@+id/textView24" />
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/etCurrPassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:ems="10"
         android:hint="@string/enter_current_password"
         android:inputType="textPassword"
+        android:textColorHint="@color/gray_250"
         app:layout_constraintEnd_toEndOf="@+id/etEmail"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView26"
-        app:layout_constraintTop_toBottomOf="@+id/textView26" />
+        app:layout_constraintTop_toBottomOf="@+id/textView26"
+        app:passwordToggleEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordInputCurr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/etCurrPassword"
+            app:layout_constraintEnd_toEndOf="@+id/etCurrPassword"
+            app:layout_constraintStart_toStartOf="@+id/etCurrPassword"
+            app:layout_constraintTop_toTopOf="@+id/etCurrPassword" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/resetBtn"
+        android:id="@+id/btnChangePw"
         style="@style/MyBlackButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -1,16 +1,32 @@
 package com.deadlineshooters.yudemy.activities
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.RatingBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.adapters.DetailSectionAdapter
 import com.deadlineshooters.yudemy.databinding.ActivityCourseDetailBinding
+import com.deadlineshooters.yudemy.helpers.StringUtils
 import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.models.CourseFeedback
+import com.deadlineshooters.yudemy.models.User
+import com.deadlineshooters.yudemy.repositories.CourseFeedbackRepository
 import com.deadlineshooters.yudemy.repositories.UserRepository
 import com.deadlineshooters.yudemy.utils.PaymentsUtil
 import com.deadlineshooters.yudemy.viewmodels.CheckoutViewModel
+import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.wallet.button.ButtonConstants
 import com.google.android.gms.wallet.button.ButtonOptions
@@ -26,6 +42,7 @@ class CourseDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCourseDetailBinding
 
     private val userRepository = UserRepository()
+    private val courseFeedbackRepo = CourseFeedbackRepository()
     private lateinit var course: Course
 
     private var amount = ""
@@ -36,6 +53,9 @@ class CourseDetailActivity : AppCompatActivity() {
     private val merchantNameLabel = "Nhà cung cấp"
     private var description = "Thanh toán khóa học "
     private var pendingPaymentRequest: PendingPaymentRequest? = null
+    private lateinit var sectionAdapter: DetailSectionAdapter
+    private lateinit var courseViewModel: CourseViewModel
+
 
     private val paymentDataLauncher =
         registerForActivityResult(TaskResultContracts.GetPaymentDataResult()) { taskResult ->
@@ -56,20 +76,34 @@ class CourseDetailActivity : AppCompatActivity() {
 
     private val model: CheckoutViewModel by viewModels()
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCourseDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupActionBar()
 
-        course = intent.getParcelableExtra<Course>("course") ?: Course()
 
-        AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT); // AppMoMoLib.ENVIRONMENT.PRODUCTION
+        course = intent.getParcelableExtra<Course>("course") ?: Course()
+        binding.btnViewProfile.setOnClickListener {
+            val intent = Intent(this, InstructorProfileActivity::class.java)
+            intent.putExtra("instructorId", course.instructor)
+            startActivity(intent)
+            Log.d("Instructor", course.instructor)
+        }
+        courseViewModel = ViewModelProvider(this)[CourseViewModel::class.java]
+
+        populateCourseDetails(course)
+        courseViewModel.refreshSections(course.id)
+
+        AppMoMoLib.getInstance()
+            .setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT); // AppMoMoLib.ENVIRONMENT.PRODUCTION
 
         description += binding.tvTitle.text
         amount = binding.tvPrice.text.toString()
 
         val currencyFormat = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
+        binding.tvPrice.text = currencyFormat.format(amount.toInt())
         binding.tvPrice.text = currencyFormat.format(amount.toInt())
 
         when (environment) {
@@ -100,6 +134,18 @@ class CourseDetailActivity : AppCompatActivity() {
             }
         }
 
+
+        courseViewModel.sectionsWithLectures.observe(
+            this
+        ) { sectionsWithLectures ->
+            sectionAdapter = DetailSectionAdapter(sectionsWithLectures)
+
+            binding.rvSections.adapter = sectionAdapter
+            binding.rvSections.layoutManager = LinearLayoutManager(this)
+
+
+        }
+
         val googlePayButton = binding.googlePayButton
 
         googlePayButton.initialize(
@@ -108,8 +154,108 @@ class CourseDetailActivity : AppCompatActivity() {
                 .setCornerRadius(8)
                 .setAllowedPaymentMethods(PaymentsUtil.allowedPaymentMethods.toString()).build()
         )
-        googlePayButton.setOnClickListener { requestPayment() }
+        googlePayButton.setOnClickListener { requestPayment(course) }
 
+    }
+
+    private fun populateCourseDetails(course: Course) {
+        binding.tvTitle.text = course.name
+
+        binding.tvIntro.text = course.introduction
+
+        Glide.with(this)
+            .load(course.thumbnail.secure_url)
+            .into(binding.ivThumbnail)
+
+        binding.tvRating.text = course.avgRating.toString()
+        var totalRatings = course.oneStarCnt + course.twoStarCnt + course.threeStarCnt + course.fiveStarCnt + course.fourStarCnt
+        val figuresText =
+            getString(R.string.course_figures, totalRatings, course.totalStudents)
+        binding.tvFigures.text = figuresText
+        binding.tvCreatedDate.text = getString(R.string.created_date, course.createdDate)
+        binding.tvPrice.text = StringUtils.trimDecimalZero(course.price.toString())
+
+        val totalLengthHours = course.totalLength / 3600
+        val totalLengthMinutes = (course.totalLength % 3600) / 60
+        val curriculumOverviewText = getString(
+            R.string.curriculum_overview,
+            course.totalSection,
+            course.totalLecture,
+            totalLengthHours,
+            totalLengthMinutes
+        )
+        binding.tvCurriculumOverview.text = curriculumOverviewText
+
+        binding.tvDesc.text = course.description
+
+        userRepository.loadInstructorData(this, course.instructor)
+
+        // inject the 2 latest feedback
+
+        courseFeedbackRepo.getLatestCourseFeedback(course.id, this) { feedbackList ->
+            // Clear the parent layout
+            var parentLayout = binding.llFeedbacks
+            parentLayout.removeAllViews()
+
+            if (feedbackList.isNullOrEmpty()) {
+                // Handle the case where there are no feedback entries
+                // For example, display a message to the user
+                Toast.makeText(this, "No feedback entries for this course yet.", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+
+                // For each feedback, inflate a new feedback layout and add it to the parent layout
+                feedbackList.forEach { feedback ->
+                    // Inflate the feedback layout
+                    val inflater = LayoutInflater.from(this)
+                    val feedbackLayout =
+                        inflater.inflate(R.layout.detail_feedback_layout, parentLayout, false)
+
+                    // Update the feedback layout with the feedback
+                    updateLinearLayoutWithFeedback(feedbackLayout, feedback)
+
+                    // Add the feedback layout to the parent layout
+                    parentLayout.addView(feedbackLayout)
+                }
+
+                if (feedbackList.size > 2) {
+                    binding.tvShowMoreFeedback.visibility = View.VISIBLE
+                }
+            }
+        }
+
+
+    }
+
+    fun updateLinearLayoutWithFeedback(linearLayout: View, feedback: CourseFeedback) {
+        val ratingBar = linearLayout.findViewById<RatingBar>(R.id.rb_review)
+        val nameTextView = linearLayout.findViewById<TextView>(R.id.tv_name)
+        val dateTextView = linearLayout.findViewById<TextView>(R.id.tv_date)
+        val tvFeedback = linearLayout.findViewById<TextView>(R.id.tv_feedback)
+
+        // Update the rating, name, and date
+        ratingBar.rating = feedback.rating.toFloat()
+        courseFeedbackRepo.getUserFullName(feedback.userId) { fullName ->
+            nameTextView.text = fullName
+        }
+        dateTextView.text =
+            feedback.createdDatetime // assuming you have a createdDatetime field in your feedback
+        tvFeedback.text = feedback.feedback
+    }
+
+    fun setInstructor(ins: User) {
+        binding.tvNameInstructor.text = ins.fullName
+        binding.tvHeadline.text = ins.instructor!!.headline
+        binding.tvReviews.text =
+            getString(R.string.instructor_reviews, ins.instructor!!.totalReviews)
+        binding.tvStudents.text =
+            getString(R.string.instructor_students, ins.instructor!!.totalStudents)
+
+        binding.btnViewProfile.setOnClickListener {
+            val intent = Intent(this, InstructorProfileActivity::class.java)
+            intent.putExtra("instructorId", ins.id)
+            startActivity(intent)
+        }
     }
 
     private fun setupActionBar() {
@@ -204,8 +350,8 @@ class CourseDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun requestPayment() {
-        val task = model.getLoadPaymentDataTask(priceCents = 1299000L)
+    private fun requestPayment(course: Course) {
+        val task = model.getLoadPaymentDataTask(priceCents = (course.price * 0.9).toLong())
         task.addOnCompleteListener(paymentDataLauncher::launch)
     }
 }
