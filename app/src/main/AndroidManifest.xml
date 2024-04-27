@@ -91,9 +91,11 @@
             android:theme="@style/Theme.Yudemy.NoActionBar" />
         <activity
             android:name=".activities.CourseDetailActivity"
+            android:configChanges="orientation|screenSize|screenLayout"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Yudemy.NoActionBar"/>
+            android:theme="@style/Theme.Yudemy.NoActionBar" />
+
         <activity
             android:name=".activities.SignUpWithEmailActivity"
             android:exported="false"
