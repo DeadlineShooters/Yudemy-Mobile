@@ -6,27 +6,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.Button
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.CourseDetailActivity
-import com.deadlineshooters.yudemy.activities.EnrolledActivity
-import com.deadlineshooters.yudemy.activities.InstructorMainActivity
 import com.deadlineshooters.yudemy.adapters.CategoryAdapter1
 import com.deadlineshooters.yudemy.adapters.CourseListAdapter2
 import com.deadlineshooters.yudemy.databinding.FragmentFeaturedBinding
-import com.deadlineshooters.yudemy.helpers.SearchHelper
+import com.deadlineshooters.yudemy.repositories.UserRepository
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 /**
@@ -37,9 +30,8 @@ import kotlinx.coroutines.launch
 class FeaturedFragment : Fragment() {
     private lateinit var courseViewModel: CourseViewModel
     private var _binding: FragmentFeaturedBinding? = null
-
-    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
+    private val userRepository = UserRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -99,6 +91,13 @@ class FeaturedFragment : Fragment() {
                 startActivity(intent)
             }
         })
+
+        userRepository.getCurUser { user ->
+            binding.welcomeLine.text = "Welcome, ${user.fullName}"
+            Glide.with(view)
+                .load(user.image.secure_url)
+                .into(binding.avatar)
+        }
     }
 
     override fun onDestroyView() {
