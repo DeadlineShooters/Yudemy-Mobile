@@ -266,6 +266,29 @@ class UserRepository {
             }
     }
 
+    fun isInCourseList(courseId: String, callback: (Boolean) -> Unit) {
+        val uid = mAuth.currentUser?.uid
+        usersCollection
+            .document(uid!!)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val courseList = document.get("courseList") as MutableList<String>
+                    if (courseList.contains(courseId)) {
+                        callback(true)
+                    } else {
+                        callback(false)
+                    }
+                } else {
+                    Log.d("Firestore", "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("Firestore", "get failed with ", exception)
+                callback(false)
+            }
+    }
+
     fun addToCourseList(courseId: String, callback: (Boolean) -> Unit) {
         val uid = mAuth.currentUser?.uid
         usersCollection

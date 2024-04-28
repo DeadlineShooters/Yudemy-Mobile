@@ -23,8 +23,11 @@ import com.deadlineshooters.yudemy.databinding.ActivityCourseDetailBinding
 import com.deadlineshooters.yudemy.helpers.StringUtils
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.CourseFeedback
+import com.deadlineshooters.yudemy.models.Transaction
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.repositories.CourseFeedbackRepository
+import com.deadlineshooters.yudemy.repositories.CourseRepository
+import com.deadlineshooters.yudemy.repositories.TransactionRepository
 import com.deadlineshooters.yudemy.repositories.UserRepository
 import com.deadlineshooters.yudemy.utils.PaymentsUtil
 import com.deadlineshooters.yudemy.viewmodels.CheckoutViewModel
@@ -35,6 +38,7 @@ import com.google.android.gms.wallet.button.ButtonOptions
 import com.google.android.gms.wallet.contract.TaskResultContracts
 import vn.momo.momo_partner.AppMoMoLib
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -67,12 +71,11 @@ class CourseDetailActivity : AppCompatActivity() {
                         Log.i("Google Pay result:", it.toJson())
                         model.setPaymentData(it)
                         userRepository.addToCourseList(course.id) {}
+                        addTransaction()
+
                         startActivity(Intent(this@CourseDetailActivity, StudentMainActivity::class.java))
                     }
                 }
-                //CommonStatusCodes.CANCELED -> The user canceled
-                //AutoResolveHelper.RESULT_ERROR -> The API returned an error (it.status: Status)
-                //CommonStatusCodes.INTERNAL_ERROR -> Handle other unexpected errors
             }
         }
 
@@ -157,8 +160,8 @@ class CourseDetailActivity : AppCompatActivity() {
         )
         googlePayButton.setOnClickListener { requestPayment(course) }
 
-        userRepository.getWishlistID { wishlistID ->
-            if (wishlistID.contains(course.id)) {
+        userRepository.isInCourseList(course.id) { isInCourseList ->
+            if (isInCourseList) {
                 binding.btnBuy.visibility = GONE
                 binding.googlePayButton.visibility = GONE
                 binding.btnWishlist.visibility = GONE
@@ -346,6 +349,7 @@ class CourseDetailActivity : AppCompatActivity() {
     private fun handlePaymentSuccess(token: String?, phoneNumber: String?) {
         Log.d("message", "success")
         userRepository.addToCourseList(course.id) {}
+        addTransaction()
         startActivity(Intent(this@CourseDetailActivity, StudentMainActivity::class.java))
     }
 
@@ -367,5 +371,28 @@ class CourseDetailActivity : AppCompatActivity() {
     private fun requestPayment(course: Course) {
         val task = model.getLoadPaymentDataTask(priceCents = (course.price * 0.9).toLong())
         task.addOnCompleteListener(paymentDataLauncher::launch)
+    }
+
+    private fun addTransaction() {
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        userRepository.getCurUser { currentUser ->
+            CourseRepository().getCourseById(course.id) { courseDoc ->
+                val transaction = courseDoc?.let { it1 ->
+                    Transaction(
+                        senderId = currentUser.id,
+                        receiverId = it1.instructor,
+                        courseId = course.id,
+                        amount = course.price,
+                        date = formatter.format(Date())
+                    )
+                }
+
+                // Add the transaction to the database
+                val transactionRepository = TransactionRepository()
+                if (transaction != null) {
+                    transactionRepository.addTransaction(transaction) {}
+                }
+            }
+        }
     }
 }
