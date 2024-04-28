@@ -7,46 +7,109 @@
     android:layout_marginBottom="20dp"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/inter_bold"
-        android:text="Serhii M"
-        android:textColor="@color/black"
-        android:textSize="18sp" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <RatingBar
-            android:id="@+id/rb_review"
-            style="?android:attr/ratingBarStyleSmall"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:numStars="5"
-            android:rating="4"
-            android:stepSize="1"
-            android:theme="@style/RatingBar" />
+            android:fontFamily="@font/inter_bold"
+            android:text="Serhii M"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <RatingBar
+                android:id="@+id/rb_review"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:numStars="5"
+                android:rating="4"
+                android:stepSize="1"
+                android:theme="@style/RatingBar" />
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="2 Feb 2024"
+                android:textSize="15sp" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/tv_date"
+            android:id="@+id/tv_feedback"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:text="2 Feb 2024"
-            android:textSize="15sp" />
+            android:text="Thank you!"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/tv_feedback"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/ll_instructorResponse"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Thank you!"
-        android:textColor="@color/black"
-        android:textSize="18sp" />
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp"
+        android:visibility="gone"
+        >
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#000000"
+            android:layout_marginRight="15dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_instructorName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_bold"
+                android:text="Serhii M"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/instructor_response"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_responseDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="2 Feb 2024"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_response"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thank you!"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+    </LinearLayout>
 </LinearLayout>

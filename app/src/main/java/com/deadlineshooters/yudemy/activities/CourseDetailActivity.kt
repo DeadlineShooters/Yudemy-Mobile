@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.ImageView
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
@@ -79,7 +80,12 @@ class CourseDetailActivity : AppCompatActivity() {
                         userRepository.addToCourseList(course.id) {}
                         addTransaction()
 
-                        startActivity(Intent(this@CourseDetailActivity, StudentMainActivity::class.java))
+                        startActivity(
+                            Intent(
+                                this@CourseDetailActivity,
+                                StudentMainActivity::class.java
+                            )
+                        )
                     }
                 }
             }
@@ -158,11 +164,10 @@ class CourseDetailActivity : AppCompatActivity() {
 
         binding.ivPlay.setOnClickListener {
             val vidPath = course.promotionalVideo.secure_url
-            if(vidPath != "") {
+            if (vidPath != "") {
                 val previewCourseDialog = PreviewCourseDialog(vidPath)
                 previewCourseDialog.show(supportFragmentManager, "PreviewCourseDialog")
-            }
-            else
+            } else
                 Toast.makeText(this, "No promotional video available", Toast.LENGTH_SHORT).show()
         }
 
@@ -201,7 +206,8 @@ class CourseDetailActivity : AppCompatActivity() {
             .into(binding.ivThumbnail)
 
         binding.tvRating.text = course.avgRating.toString()
-        var totalRatings = course.oneStarCnt + course.twoStarCnt + course.threeStarCnt + course.fiveStarCnt + course.fourStarCnt
+        var totalRatings =
+            course.oneStarCnt + course.twoStarCnt + course.threeStarCnt + course.fiveStarCnt + course.fourStarCnt
         val figuresText =
             getString(R.string.course_figures, totalRatings, course.totalStudents)
         binding.tvFigures.text = figuresText
@@ -236,9 +242,11 @@ class CourseDetailActivity : AppCompatActivity() {
                 Toast.makeText(this, "No feedback entries for this course yet.", Toast.LENGTH_SHORT)
                     .show()
             } else {
+                // Get the first two feedbacks from the list
+                val firstTwoFeedbacks = feedbackList.take(2)
 
-                // For each feedback, inflate a new feedback layout and add it to the parent layout
-                feedbackList.forEach { feedback ->
+                // For each feedback in the first two, inflate a new feedback layout and add it to the parent layout
+                firstTwoFeedbacks.forEach { feedback ->
                     // Inflate the feedback layout
                     val inflater = LayoutInflater.from(this)
                     val feedbackLayout =
@@ -253,12 +261,17 @@ class CourseDetailActivity : AppCompatActivity() {
 
                 if (feedbackList.size > 2) {
                     binding.tvShowMoreFeedback.visibility = VISIBLE
+                    binding.tvShowMoreFeedback.setOnClickListener {
+                        val intent = Intent(this, StudentFeedbackActivity::class.java)
+                        intent.putParcelableArrayListExtra("feedbackList", ArrayList(feedbackList))
+                        startActivity(intent)
+                    }
                 }
             }
         }
 
-
     }
+
 
     fun updateLinearLayoutWithFeedback(linearLayout: View, feedback: CourseFeedback) {
         val ratingBar = linearLayout.findViewById<RatingBar>(R.id.rb_review)
@@ -274,6 +287,19 @@ class CourseDetailActivity : AppCompatActivity() {
         dateTextView.text =
             feedback.createdDatetime // assuming you have a createdDatetime field in your feedback
         tvFeedback.text = feedback.feedback
+
+        if (feedback.instructorResponse != null) {
+            linearLayout.findViewById<LinearLayout>(R.id.ll_instructorResponse).visibility =
+                View.VISIBLE
+            courseFeedbackRepo.getUserFullName(feedback.instructorResponse!!.instructorId) { fullName ->
+                linearLayout.findViewById<TextView>(R.id.tv_instructorName).text = fullName
+            }
+            linearLayout.findViewById<TextView>(R.id.tv_responseDate).text =
+                feedback.instructorResponse!!.createdDatetime
+            linearLayout.findViewById<TextView>(R.id.tv_response).text =
+                feedback.instructorResponse!!.content
+        }
+
     }
 
     fun setInstructor(ins: User) {

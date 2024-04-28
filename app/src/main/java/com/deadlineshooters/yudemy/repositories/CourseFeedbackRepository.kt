@@ -111,7 +111,6 @@ class CourseFeedbackRepository {
     fun getLatestCourseFeedback(courseId: String, context: Context, callback: (List<CourseFeedback>?) -> Unit) {
         feedbackCollection.whereEqualTo("courseId", courseId)
             .orderBy("createdDatetime", Query.Direction.DESCENDING)
-            .limit(2)
             .get()
             .addOnSuccessListener { documents ->
                 val feedbackList = documents.map { it.toObject(CourseFeedback::class.java) }
@@ -133,4 +132,6 @@ class CourseFeedbackRepository {
             }
         }
     }
+
+
 }

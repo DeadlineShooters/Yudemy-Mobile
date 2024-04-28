@@ -27,7 +27,6 @@ class FeedbackAdapter(private val context: FeedbackFragment, private val feedbac
         val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBarItem)
         val tvReview: TextView = itemView.findViewById(R.id.tv_review)
         val btnRespond: Button = itemView.findViewById(R.id.btn_respond)
-        // val btnRespond: MaterialButton = itemView.findViewById(R.id.btn_respond)
 
         init {
             itemView.setOnClickListener(this)

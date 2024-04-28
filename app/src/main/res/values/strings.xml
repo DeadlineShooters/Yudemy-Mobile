@@ -222,7 +222,7 @@
     <string name="created_date">Created date %s</string>
     <string name="curriculum_overview">%1$d sections • %2$d lectures • %3$dh %4$dm total length</string>
 
-<!--    Course Detail Activity-->
+    <!--    Course Detail Activity-->
     <string name="instructor_reviews">%d Reviews</string>
     <string name="instructor_students">%d Students</string>
     <string name="section_title">Section %1$d - %2$s</string>
@@ -243,4 +243,5 @@
 
     <string name="publish">Publish</string>
     <string name="see_all">See all</string>
+    <string name="instructor_response">Instructor Response •</string>
 </resources>
