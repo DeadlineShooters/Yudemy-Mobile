@@ -231,7 +231,7 @@ class CourseDetailActivity : AppCompatActivity() {
 
         // inject the 2 latest feedback
 
-        courseFeedbackRepo.getLatestCourseFeedback(course.id, this) { feedbackList ->
+        courseFeedbackRepo.getLatestCourseFeedback(course.id) { feedbackList ->
             // Clear the parent layout
             var parentLayout = binding.llFeedbacks
             parentLayout.removeAllViews()
@@ -273,7 +273,7 @@ class CourseDetailActivity : AppCompatActivity() {
     }
 
 
-    fun updateLinearLayoutWithFeedback(linearLayout: View, feedback: CourseFeedback) {
+    private fun updateLinearLayoutWithFeedback(linearLayout: View, feedback: CourseFeedback) {
         val ratingBar = linearLayout.findViewById<RatingBar>(R.id.rb_review)
         val nameTextView = linearLayout.findViewById<TextView>(R.id.tv_name)
         val dateTextView = linearLayout.findViewById<TextView>(R.id.tv_date)

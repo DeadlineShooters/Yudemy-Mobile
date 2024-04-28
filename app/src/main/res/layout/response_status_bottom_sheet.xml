@@ -38,12 +38,22 @@
             android:id="@+id/radioNotResponded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="I haven't responded" />
+            android:text="I haven't responded"
+            android:checked="true" />
 
         <RadioButton
             android:id="@+id/radioResponded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="I responded" />
+
+
     </RadioGroup>
+    <Button
+        android:id="@+id/btnClearFilter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Clear Filter"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp" />
 </LinearLayout>

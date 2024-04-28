@@ -15,5 +15,6 @@ data class CourseFeedback(
     var feedback: String = "",
     var rating: Int = 5,
     var createdDatetime: String = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date()),  // last updated
-    var instructorResponse: FeedbackResponse? = null
+    var instructorResponse: FeedbackResponse? = null,
+    var course: Course? = null
 ) : Parcelable

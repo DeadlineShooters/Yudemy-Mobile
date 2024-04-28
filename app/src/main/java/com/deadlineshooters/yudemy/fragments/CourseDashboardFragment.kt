@@ -25,6 +25,7 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.BaseActivity
 import com.deadlineshooters.yudemy.adapters.CourseAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentCourseDashboardBinding
+import com.deadlineshooters.yudemy.helpers.FragmentHelper
 import com.deadlineshooters.yudemy.models.Category
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.repositories.CategoryRepository
@@ -216,19 +217,7 @@ class CourseDashboardFragment : Fragment() {
     }
 
 
-    fun replaceFragment(fragment: Fragment, course: Course? = null) {
-        val bundle = Bundle()
-        if (course != null) {
-            bundle.putParcelable("course", course)
-            fragment.arguments = bundle
-        }
 
-        val fragmentManager = requireActivity().supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frameLayoutInstructor, fragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
-    }
 
     private fun createCourseDialog() {
         val builder = AlertDialog.Builder(context)
@@ -269,7 +258,7 @@ class CourseDashboardFragment : Fragment() {
             CourseRepository().addCourse(course).addOnSuccessListener {
                 (activity as BaseActivity).hideProgressDialog()
                 course.id = it
-                replaceFragment(CourseDraftingMenuFragment(), course)
+                FragmentHelper.replaceFragment(CourseDraftingMenuFragment(), course, this)
                 dialog.dismiss()
             }
         }

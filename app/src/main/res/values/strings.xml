@@ -244,4 +244,6 @@
     <string name="publish">Publish</string>
     <string name="see_all">See all</string>
     <string name="instructor_response">Instructor Response •</string>
+    <string name="no_feedback_found">No feedback found.</string>
+    <string name="you">You</string>
 </resources>
