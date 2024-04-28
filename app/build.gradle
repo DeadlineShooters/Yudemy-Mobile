@@ -52,7 +52,7 @@ android {
             it.buildConfigField 'String', 'API_SECRET', API_SECRET
             it.buildConfigField 'String', 'CLOUD_NAME', CLOUD_NAME
             it.buildConfigField 'String', 'UPLOAD_PRESET', UPLOAD_PRESET
-            it.buildConfigField 'String', 'UPLOAD_PRESET', ALGOLIA_API_KEY
+            it.buildConfigField 'String', 'ALGOLIA_API_KEY', ALGOLIA_API_KEY
         }
     }
     compileOptions {
