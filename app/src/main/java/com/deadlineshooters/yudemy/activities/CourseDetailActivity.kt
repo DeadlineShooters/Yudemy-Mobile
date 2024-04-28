@@ -43,7 +43,7 @@ class CourseDetailActivity : AppCompatActivity() {
     private val courseFeedbackRepo = CourseFeedbackRepository()
     private lateinit var course: Course
 
-    private var amount = ""
+    private var amount = 0.0
     private val fee = "0"
     private var environment = 1 //developer default
     private val merchantName = "Udemy"
@@ -79,10 +79,10 @@ class CourseDetailActivity : AppCompatActivity() {
             .setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT); // AppMoMoLib.ENVIRONMENT.PRODUCTION
 
         description += binding.tvTitle.text
-        amount = binding.tvPrice.text.toString()
+        amount = binding.tvPrice.text.toString().toDouble()
 
-        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
-        binding.tvPrice.text = currencyFormat.format(amount.toInt())
+        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "US"))
+        binding.tvPrice.text = currencyFormat.format(amount)
 
         if (environment == 0) {
             AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEBUG);
