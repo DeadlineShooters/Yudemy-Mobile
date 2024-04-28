@@ -70,10 +70,7 @@ class CourseDetailActivity : AppCompatActivity() {
                     taskResult.result!!.let {
                         Log.i("Google Pay result:", it.toJson())
                         model.setPaymentData(it)
-                        userRepository.addToCourseList(course.id) {}
-                        addTransaction()
-
-                        startActivity(Intent(this@CourseDetailActivity, StudentMainActivity::class.java))
+                        handlePaymentSuccess("", "")
                     }
                 }
             }
@@ -138,6 +135,12 @@ class CourseDetailActivity : AppCompatActivity() {
             }
         }
 
+        binding.gotoCourseBtn.setOnClickListener {
+            val intent = Intent(this, CourseLearningActivity::class.java)
+            intent.putExtra("course", course)
+            startActivity(intent)
+        }
+
 
         courseViewModel.sectionsWithLectures.observe(
             this
@@ -160,17 +163,29 @@ class CourseDetailActivity : AppCompatActivity() {
         )
         googlePayButton.setOnClickListener { requestPayment(course) }
 
+        binding.enrollBtn.setOnClickListener {
+            handlePaymentSuccess("", "")
+        }
+
         userRepository.isInCourseList(course.id) { isInCourseList ->
             if (isInCourseList) {
                 binding.btnBuy.visibility = GONE
                 binding.googlePayButton.visibility = GONE
                 binding.btnWishlist.visibility = GONE
+                binding.enrollBtn.visibility = GONE
                 binding.gotoCourseBtn.visibility = VISIBLE
             } else {
-                binding.btnBuy.visibility = VISIBLE
-                binding.googlePayButton.visibility = VISIBLE
                 binding.btnWishlist.visibility = VISIBLE
                 binding.gotoCourseBtn.visibility = GONE
+                if (course.price == 0.0) {
+                    binding.enrollBtn.visibility = VISIBLE
+                    binding.btnBuy.visibility = GONE
+                    binding.googlePayButton.visibility = GONE
+                } else {
+                    binding.enrollBtn.visibility = GONE
+                    binding.btnBuy.visibility = VISIBLE
+                    binding.googlePayButton.visibility = VISIBLE
+                }
             }
         }
     }
@@ -349,8 +364,11 @@ class CourseDetailActivity : AppCompatActivity() {
     private fun handlePaymentSuccess(token: String?, phoneNumber: String?) {
         Log.d("message", "success")
         userRepository.addToCourseList(course.id) {}
+        CourseRepository().updateCourseStats(course.id) {}
         addTransaction()
-        startActivity(Intent(this@CourseDetailActivity, StudentMainActivity::class.java))
+        val intent = Intent(this@CourseDetailActivity, EnrolledActivity::class.java)
+        intent.putExtra("course", course)
+        startActivity(intent)
     }
 
     private fun handlePaymentFailure(message: String) {

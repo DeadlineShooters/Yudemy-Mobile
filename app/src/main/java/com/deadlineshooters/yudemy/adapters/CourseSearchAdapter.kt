@@ -43,8 +43,13 @@ class CourseSearchAdapter : ListAdapter<AlgoliaCourse, CourseSearchAdapter.Cours
             ratingNumber.text = course.avgRating.toString()
             ratingStar.setStepSize(0.1f);
             ratingStar.rating = course.avgRating.toFloat();
-            originalPrice.text = currencyFormat.format(course.price.toInt())
-            discountPrice.text = currencyFormat.format((course.price * 0.9).toInt())
+            if (course.price > 0) {
+                originalPrice.text = currencyFormat.format(course.price.toInt())
+                discountPrice.text = currencyFormat.format((course.price * 0.9).toInt())
+            } else {
+                originalPrice.visibility = View.GONE
+                discountPrice.text = "Free"
+            }
 
             Glide.with(view)
                 .load(course.thumbnail)

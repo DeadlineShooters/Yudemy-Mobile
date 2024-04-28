@@ -228,6 +228,35 @@ class CourseRepository {
             }
     }
 
+    fun updateCourseStats(courseId: String, callback: (Boolean) -> Unit) {
+        coursesCollection
+            .document(courseId)
+            .get()
+            .addOnSuccessListener { document ->
+                val course = document?.toObject(Course::class.java)
+                if (course != null) {
+                    course.totalStudents++
+                    course.totalRevenue += course.price
+
+                    coursesCollection.document(courseId).set(course)
+                        .addOnSuccessListener {
+                            callback(true)
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.w("Firestore", "Error updating document: ", exception)
+                            callback(false)
+                        }
+                } else {
+                    callback(false)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore", "Error getting documents: ", exception)
+                callback(false)
+            }
+    }
+
+
     fun searchCourses(input: String, callback: (List<Course>) -> Unit) {
         val courses = mutableListOf<Course>()
 

@@ -8,12 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.RatingBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -25,12 +20,11 @@ import com.deadlineshooters.yudemy.databinding.FragmentMoreLearningBinding
 import com.deadlineshooters.yudemy.dialogs.CertificateDialog
 import com.deadlineshooters.yudemy.dialogs.QADialog
 import com.deadlineshooters.yudemy.models.Course
-import com.deadlineshooters.yudemy.viewmodels.CertificateViewModel
-import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.deadlineshooters.yudemy.models.CourseFeedback
 import com.deadlineshooters.yudemy.repositories.CourseFeedbackRepository
 import com.deadlineshooters.yudemy.repositories.FeedbackCallback
 import com.deadlineshooters.yudemy.repositories.UserRepository
+import com.deadlineshooters.yudemy.viewmodels.CertificateViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -51,6 +45,7 @@ class MoreLearningFragment : Fragment() {
     private lateinit var aboutDialog: BottomSheetDialog
     private lateinit var certificate: TextView
     private var courseFeedbackRepo = CourseFeedbackRepository()
+    private var userRepository = UserRepository()
     private lateinit var dialog: Dialog
     private lateinit var ratingBar: RatingBar
     private lateinit var feedbackEditText: EditText
@@ -156,6 +151,18 @@ class MoreLearningFragment : Fragment() {
                 }
 
                 dialog.show()
+            }
+        }
+
+        binding.addToFav.setOnClickListener {
+            userRepository.isInFavorites(course!!.id) { isInFavorites ->
+                if (!isInFavorites) {
+                    userRepository.addToFavorites(course!!.id) {}
+                    binding.addToFav.text = "Remove course from favorites"
+                } else {
+                    userRepository.removeFromFavorites(course!!.id) {}
+                    binding.addToFav.text = "Add course to favorites"
+                }
             }
         }
 
