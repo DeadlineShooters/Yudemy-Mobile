@@ -14,8 +14,11 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.ActivityPricingCourseDraftingBinding
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.repositories.CourseRepository
+import com.deadlineshooters.yudemy.utils.Constants
+import java.text.NumberFormat
+import java.util.Locale
 
-class PricingCourseDraftingActivity : AppCompatActivity() {
+class PricingCourseDraftingActivity : BaseActivity() {
     private lateinit var binding: ActivityPricingCourseDraftingBinding
     private var newPrice = 0.0
 
@@ -34,49 +37,22 @@ class PricingCourseDraftingActivity : AppCompatActivity() {
             intent.getParcelableExtra<Course>("course")!!
         newPrice = course.price
 
+        val tierStrings = Constants.PRICE_TIERS.map {
+            if(it == 0.0) "Free" else
+            NumberFormat.getCurrencyInstance(Locale("vi", "VN")).format(it.toInt())
+        }
         val currencyAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.currency))
         currencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerCurrency.adapter = currencyAdapter
 
-        val typeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.pricing_type))
+        val typeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, tierStrings)
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerTypePricing.adapter = typeAdapter
-        binding.spinnerTypePricing.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                if(position == 0) {
-                    binding.etPriceSetting.visibility = View.GONE
-                    newPrice = 0.0
-                }
-                else {
-                    binding.etPriceSetting.visibility = View.VISIBLE
-                }
-            }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // Do something when nothing is selected
-            }
-        }
-
-        if(course.price == 0.0) {
-            binding.spinnerTypePricing.setSelection(0)
-            binding.etPriceSetting.visibility = View.GONE
-        }
-        else {
-            binding.spinnerTypePricing.setSelection(1)
-            binding.etPriceSetting.visibility = View.VISIBLE
-            binding.etPriceSetting.setText(course.price.toString())
-        }
+        binding.spinnerTypePricing.setSelection(Constants.PRICE_TIERS.indexOf(course.price))
 
         binding.btnSavePricing.setOnClickListener {
-            if(binding.spinnerTypePricing.selectedItemPosition == 1) {
-                if(binding.etPriceSetting.text.toString().isNotEmpty()) {
-                    newPrice = binding.etPriceSetting.text.toString().toDouble()
-                }
-                else {
-                    Toast.makeText(this, "Please enter a price", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-            }
+            newPrice = Constants.PRICE_TIERS[binding.spinnerTypePricing.selectedItemPosition]
 
             if(course.price != newPrice) {
                 course.price = newPrice

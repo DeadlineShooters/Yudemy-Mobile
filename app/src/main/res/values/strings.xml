@@ -204,11 +204,7 @@
     <string name="price">Price</string>
     <string name="enter_price_here">Enter price here</string>
     <string-array name="currency">
-        <item>USD</item>
-    </string-array>
-    <string-array name="pricing_type">
-        <item>Free</item>
-        <item>Paid</item>
+        <item>VND</item>
     </string-array>
     <string name="profile_settings">Profile settings</string>
     <string name="edit_profile">Edit profile</string>
