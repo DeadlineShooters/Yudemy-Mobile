@@ -9,14 +9,14 @@ import com.algolia.search.client.ClientSearch
 import com.algolia.search.model.APIKey
 import com.algolia.search.model.ApplicationID
 import com.algolia.search.model.IndexName
-import com.deadlineshooters.yudemy.models.AlgoliaCourse
+import com.deadlineshooters.yudemy.BuildConfig
 import com.deadlineshooters.yudemy.models.Suggestion
 
 class QuerySuggestionViewModel : ViewModel() {
 
     private val client = ClientSearch(
         applicationID = ApplicationID("6ZF9V4WNWQ"),
-        apiKey = APIKey("a3277b74e7356f932541bb8b4ee14074"),
+        apiKey = APIKey(BuildConfig.ALGOLIA_API_KEY),
     )
     private val multiSearcher = MultiSearcher(client)
     val courseSearcher = multiSearcher.addHitsSearcher(indexName = IndexName("yudemy_courses"))
