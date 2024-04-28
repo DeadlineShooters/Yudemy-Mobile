@@ -16,7 +16,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.DialogFragment
@@ -32,7 +31,7 @@ import com.deadlineshooters.yudemy.repositories.CategoryRepository
 import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.github.dhaval2404.imagepicker.ImagePicker
 
-class EditCourseLandingPageActivity : AppCompatActivity(), CategoryFragment.DialogListener {
+class EditCourseLandingPageActivity : BaseActivity(), CategoryFragment.DialogListener {
     private lateinit var binding: ActivityEditCourseLandingPageBinding
     private lateinit var course: Course
     private val courseRepository = CourseRepository()
@@ -100,22 +99,30 @@ class EditCourseLandingPageActivity : AppCompatActivity(), CategoryFragment.Dial
 
         // handle save
         binding.btnSave.setOnClickListener {
+            if(!checkIfFillAllFields()) {
+                Toast.makeText(this, "Some fields are missing", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             course.name = binding.etCourseTitle.text.toString()
             course.introduction = binding.etCourseSubtitle.text.toString()
             course.description = binding.etDesc.text.toString()
 
+            showProgressDialog("Please wait...")
             if (thumbnailUri is Uri) {
                 CloudinaryHelper.uploadMedia(fileUri = thumbnailUri) {
                     course.thumbnail = it as Image
                     courseRepository.patchCourse(course)
-
+                    Toast.makeText(this, "Course landing page updated", Toast.LENGTH_SHORT).show()
+                    hideProgressDialog()
+                    onBackUpdate()
                 }
             } else {
                 courseRepository.patchCourse(course)
-
+                Toast.makeText(this, "Course landing page updated", Toast.LENGTH_SHORT).show()
+                hideProgressDialog()
+                onBackUpdate()
             }
-
-            Toast.makeText(this, "Course landing page updated", Toast.LENGTH_SHORT).show()
 
             // Dismiss the keyboard
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -254,7 +261,23 @@ class EditCourseLandingPageActivity : AppCompatActivity(), CategoryFragment.Dial
             actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
         }
 
-        binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+    }
+
+    private fun checkIfFillAllFields(): Boolean {
+        return binding.etCourseTitle.text.toString().isNotBlank() &&
+                binding.etCourseSubtitle.text.toString().isNotBlank() &&
+                binding.etDesc.text.toString().isNotBlank() &&
+                (course.thumbnail.secure_url != "" || (course.thumbnail.secure_url == "" && thumbnailUri != null))
+    }
+
+    private fun onBackUpdate() {
+        val intent = Intent()
+        intent.putExtra("course", course)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment, selectedCategory: Category) {

@@ -10,7 +10,9 @@ import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Section
 import com.deadlineshooters.yudemy.models.Video
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -43,15 +45,12 @@ class CourseRepository {
         )
     }
 
-    fun addCourse(course: Course) {
-        val documentReference = coursesCollection.document()
-        course.id = documentReference.id
-        documentReference.set(course)
-            .addOnSuccessListener {
-                Log.d("Course", "DocumentSnapshot successfully written!\n$course")
-            }
-            .addOnFailureListener { e ->
-                Log.w("Course", "Error writing document", e)
+    fun addCourse(course: Course): Task<String> {
+        course.instructor = auth.currentUser?.uid.toString()
+        return coursesCollection
+            .add(course)
+            .continueWith { task ->
+                task.result.id
             }
     }
 
@@ -181,5 +180,37 @@ class CourseRepository {
             }
     }
 
+    fun addASection(courseId: String, section: String): Task<Void> {
+        return coursesCollection.document(courseId)
+            .update("sectionList", FieldValue.arrayUnion(section))
+    }
 
+    fun updatePrice(courseId: String, price: Double): Task<Void> {
+        return coursesCollection.document(courseId)
+            .update("price", price)
+    }
+
+    fun deleteCourseAndItsLectures(course: Course): Task<Void> {
+        val sections = course.sectionList
+
+        val tasks = mutableListOf<Task<*>>()
+        for(section in sections) {
+            val task = LectureRepository().getLecturesBySectionId(section)
+                .continueWithTask {
+                    val lectures = it.result
+                    LectureRepository().deleteLectures(lectures.map { it._id })
+                }
+            tasks.add(task)
+        }
+
+        return Tasks.whenAllComplete(tasks)
+            .continueWithTask {
+                coursesCollection.document(course.id).delete()
+            }
+    }
+
+    fun updateCourseStatus(courseId: String, status: Boolean): Task<Void> {
+        return coursesCollection.document(courseId)
+            .update("status", status)
+    }
 }

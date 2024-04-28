@@ -43,4 +43,9 @@ class CategoryRepository {
     }
 
 
+    fun getCategories(): Task<List<Category>> {
+        return categoryCollection.get().continueWith { task ->
+            task.result.toObjects(Category::class.java)
+        }
+    }
 }

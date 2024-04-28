@@ -10,4 +10,6 @@ object Constants {
     const val CLOUDINARY_FOLDER: String = "Yudemy"
     const val PROJECT_ID: String = "test-b0670"
     const val PROJECT_NUMBER: String = "54920611721"
+    const val CHANNEL_ID = "com.deadlineshooters.yudemy"
+    const val CHANNEL_NAME = "Yudemy Notifications"
 }

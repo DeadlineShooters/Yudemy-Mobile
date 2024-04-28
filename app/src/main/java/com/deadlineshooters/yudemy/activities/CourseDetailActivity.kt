@@ -1,22 +1,27 @@
 package com.deadlineshooters.yudemy.activities
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.adapters.DetailSectionAdapter
 import com.deadlineshooters.yudemy.databinding.ActivityCourseDetailBinding
+import com.deadlineshooters.yudemy.dialogs.PreviewCourseDialog
 import com.deadlineshooters.yudemy.helpers.StringUtils
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.CourseFeedback
@@ -113,7 +118,15 @@ class CourseDetailActivity : AppCompatActivity() {
 
         }
 
-
+        binding.ivPlay.setOnClickListener {
+            val vidPath = course.promotionalVideo.secure_url
+            if(vidPath != "") {
+                val previewCourseDialog = PreviewCourseDialog(vidPath)
+                previewCourseDialog.show(supportFragmentManager, "PreviewCourseDialog")
+            }
+            else
+                Toast.makeText(this, "No promotional video available", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun populateCourseDetails(course: Course) {

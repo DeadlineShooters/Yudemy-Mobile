@@ -2,7 +2,6 @@ package com.deadlineshooters.yudemy.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +18,6 @@ import com.deadlineshooters.yudemy.activities.InstructorMainActivity
 import com.deadlineshooters.yudemy.activities.SignInActivity
 import com.deadlineshooters.yudemy.activities.StudentMainActivity
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
-import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
 import com.deadlineshooters.yudemy.viewmodels.UserViewModel
@@ -120,7 +118,7 @@ class AccountFragment : Fragment() {
         }
 
         learningReminders.setOnClickListener {
-            replaceFragment(LearningRemindersFragment(), isInstructor!!)
+            replaceFragment(LearningRemindersFragment.newInstance(isInstructor!!), isInstructor!!)
         }
 
         accSecurity.setOnClickListener {

@@ -26,6 +26,7 @@ import java.util.Locale
 public class CourseAdapter(private val fragmentContext: CourseDashboardFragment, private var courseList: List<Course>) : RecyclerView.Adapter<CourseAdapter.ViewHolder>() {
     var listener: AdapterView.OnItemClickListener? = null
     var onEditCourseClick: (() -> Unit)? = null
+    var onDeleteCourseClick: ((Int) -> Unit)? = null
     val currencyFormat = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
 
 
@@ -78,8 +79,9 @@ public class CourseAdapter(private val fragmentContext: CourseDashboardFragment,
                 }
 
                 llDelete.setOnClickListener {
-                    // TODO: Shows pop up delete course
-                    Toast.makeText(context, "Delete clicked!", Toast.LENGTH_SHORT).show()
+                    onDeleteCourseClick?.invoke(bindingAdapterPosition)
+
+                    dialog.dismiss()
                 }
 
                 llRevenueAnalytics.setOnClickListener {
