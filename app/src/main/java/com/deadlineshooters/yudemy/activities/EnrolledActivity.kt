@@ -1,7 +1,7 @@
 package com.deadlineshooters.yudemy.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +21,7 @@ class EnrolledActivity : AppCompatActivity() {
         courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
         courseViewModel.dashboardCourses.observe(this, Observer { courses ->
             val clonedCourses = List(1) { courses[0] }
-            val courseListAdapter = CourseListAdapter2(clonedCourses)
+            val courseListAdapter = CourseListAdapter2(this, clonedCourses)
             binding.courseList.layoutManager = LinearLayoutManager(this)
             binding.courseList.adapter = courseListAdapter
         })

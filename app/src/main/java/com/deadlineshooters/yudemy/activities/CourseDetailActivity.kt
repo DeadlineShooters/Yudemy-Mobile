@@ -3,18 +3,21 @@ package com.deadlineshooters.yudemy.activities
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -25,12 +28,22 @@ import com.deadlineshooters.yudemy.dialogs.PreviewCourseDialog
 import com.deadlineshooters.yudemy.helpers.StringUtils
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.CourseFeedback
+import com.deadlineshooters.yudemy.models.Transaction
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.repositories.CourseFeedbackRepository
+import com.deadlineshooters.yudemy.repositories.CourseRepository
+import com.deadlineshooters.yudemy.repositories.TransactionRepository
 import com.deadlineshooters.yudemy.repositories.UserRepository
+import com.deadlineshooters.yudemy.utils.PaymentsUtil
+import com.deadlineshooters.yudemy.viewmodels.CheckoutViewModel
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
+import com.google.android.gms.common.api.CommonStatusCodes
+import com.google.android.gms.wallet.button.ButtonConstants
+import com.google.android.gms.wallet.button.ButtonOptions
+import com.google.android.gms.wallet.contract.TaskResultContracts
 import vn.momo.momo_partner.AppMoMoLib
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -43,7 +56,7 @@ class CourseDetailActivity : AppCompatActivity() {
     private val courseFeedbackRepo = CourseFeedbackRepository()
     private lateinit var course: Course
 
-    private var amount = 0.0
+    private var amount = ""
     private val fee = "0"
     private var environment = 1 //developer default
     private val merchantName = "Udemy"
@@ -55,6 +68,24 @@ class CourseDetailActivity : AppCompatActivity() {
     private lateinit var courseViewModel: CourseViewModel
 
 
+    private val paymentDataLauncher =
+        registerForActivityResult(TaskResultContracts.GetPaymentDataResult()) { taskResult ->
+            when (taskResult.status.statusCode) {
+                CommonStatusCodes.SUCCESS -> {
+                    taskResult.result!!.let {
+                        Log.i("Google Pay result:", it.toJson())
+                        model.setPaymentData(it)
+                        userRepository.addToCourseList(course.id) {}
+                        addTransaction()
+
+                        startActivity(Intent(this@CourseDetailActivity, StudentMainActivity::class.java))
+                    }
+                }
+            }
+        }
+
+    private val model: CheckoutViewModel by viewModels()
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +94,7 @@ class CourseDetailActivity : AppCompatActivity() {
         setupActionBar()
 
 
-        course = intent.getParcelableExtra("course", Course::class.java) ?: Course()
+        course = intent.getParcelableExtra<Course>("course") ?: Course()
         binding.btnViewProfile.setOnClickListener {
             val intent = Intent(this, InstructorProfileActivity::class.java)
             intent.putExtra("instructorId", course.instructor)
@@ -81,15 +112,21 @@ class CourseDetailActivity : AppCompatActivity() {
         description += binding.tvTitle.text
         amount = binding.tvPrice.text.toString().toDouble()
 
-        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "US"))
-        binding.tvPrice.text = currencyFormat.format(amount)
+        val currencyFormat = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
+        binding.tvPrice.text = currencyFormat.format(amount.toDouble())
 
-        if (environment == 0) {
-            AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEBUG);
-        } else if (environment == 1) {
-            AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT);
-        } else if (environment == 2) {
-            AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.PRODUCTION);
+        when (environment) {
+            0 -> {
+                AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEBUG);
+            }
+
+            1 -> {
+                AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT);
+            }
+
+            2 -> {
+                AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.PRODUCTION);
+            }
         }
 
         binding.btnBuy.setOnClickListener {
@@ -126,6 +163,30 @@ class CourseDetailActivity : AppCompatActivity() {
             }
             else
                 Toast.makeText(this, "No promotional video available", Toast.LENGTH_SHORT).show()
+        }
+
+        val googlePayButton = binding.googlePayButton
+
+        googlePayButton.initialize(
+            ButtonOptions.newBuilder()
+                .setButtonType(ButtonConstants.ButtonType.PLAIN)
+                .setCornerRadius(8)
+                .setAllowedPaymentMethods(PaymentsUtil.allowedPaymentMethods.toString()).build()
+        )
+        googlePayButton.setOnClickListener { requestPayment(course) }
+
+        userRepository.isInCourseList(course.id) { isInCourseList ->
+            if (isInCourseList) {
+                binding.btnBuy.visibility = GONE
+                binding.googlePayButton.visibility = GONE
+                binding.btnWishlist.visibility = GONE
+                binding.gotoCourseBtn.visibility = VISIBLE
+            } else {
+                binding.btnBuy.visibility = VISIBLE
+                binding.googlePayButton.visibility = VISIBLE
+                binding.btnWishlist.visibility = VISIBLE
+                binding.gotoCourseBtn.visibility = GONE
+            }
         }
     }
 
@@ -303,6 +364,7 @@ class CourseDetailActivity : AppCompatActivity() {
     private fun handlePaymentSuccess(token: String?, phoneNumber: String?) {
         Log.d("message", "success")
         userRepository.addToCourseList(course.id) {}
+        addTransaction()
         startActivity(Intent(this@CourseDetailActivity, StudentMainActivity::class.java))
     }
 
@@ -317,6 +379,34 @@ class CourseDetailActivity : AppCompatActivity() {
                 binding.btnWishlist.text = "Wishlisted"
             } else {
                 binding.btnWishlist.text = "Add to wishlist"
+            }
+        }
+    }
+
+    private fun requestPayment(course: Course) {
+        val task = model.getLoadPaymentDataTask(priceCents = (course.price * 0.9).toLong())
+        task.addOnCompleteListener(paymentDataLauncher::launch)
+    }
+
+    private fun addTransaction() {
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        userRepository.getCurUser { currentUser ->
+            CourseRepository().getCourseById(course.id) { courseDoc ->
+                val transaction = courseDoc?.let { it1 ->
+                    Transaction(
+                        senderId = currentUser.id,
+                        receiverId = it1.instructor,
+                        courseId = course.id,
+                        amount = course.price,
+                        date = formatter.format(Date())
+                    )
+                }
+
+                // Add the transaction to the database
+                val transactionRepository = TransactionRepository()
+                if (transaction != null) {
+                    transactionRepository.addTransaction(transaction) {}
+                }
             }
         }
     }
