@@ -47,7 +47,7 @@ fun getCategory(categoryId: String, callback: (Category) -> Unit) {
             callback(Category())
             return
         }
-        categoryCollection
+    categoriesCollection
             .document(categoryId)
             .get()
             .addOnSuccessListener { document ->

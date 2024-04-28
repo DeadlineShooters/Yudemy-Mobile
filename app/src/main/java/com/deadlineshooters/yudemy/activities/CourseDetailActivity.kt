@@ -69,6 +69,7 @@ class CourseDetailActivity : AppCompatActivity() {
 
 
     private val paymentDataLauncher =
+
         registerForActivityResult(TaskResultContracts.GetPaymentDataResult()) { taskResult ->
             when (taskResult.status.statusCode) {
                 CommonStatusCodes.SUCCESS -> {
@@ -110,7 +111,7 @@ class CourseDetailActivity : AppCompatActivity() {
             .setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT); // AppMoMoLib.ENVIRONMENT.PRODUCTION
 
         description += binding.tvTitle.text
-        amount = binding.tvPrice.text.toString().toDouble()
+        amount = binding.tvPrice.text.toString()
 
         val currencyFormat = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
         binding.tvPrice.text = currencyFormat.format(amount.toDouble())
@@ -251,7 +252,7 @@ class CourseDetailActivity : AppCompatActivity() {
                 }
 
                 if (feedbackList.size > 2) {
-                    binding.tvShowMoreFeedback.visibility = View.VISIBLE
+                    binding.tvShowMoreFeedback.visibility = VISIBLE
                 }
             }
         }

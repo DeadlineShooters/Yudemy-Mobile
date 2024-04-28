@@ -393,7 +393,7 @@ class UserRepository {
     }
 
     fun getReminderDays(callback: (ArrayList<Number>) -> Unit) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .get()
             .addOnSuccessListener { document ->
@@ -408,7 +408,7 @@ class UserRepository {
     }
 
     fun getReminderTimes(callback: (ArrayList<Number>) -> Unit) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .get()
             .addOnSuccessListener { document ->
@@ -423,31 +423,31 @@ class UserRepository {
     }
 
     fun addReminderDay(day: Int) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .update("reminderDays", FieldValue.arrayUnion(day))
     }
 
     fun removeReminderDay(day: Int) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .update("reminderDays", FieldValue.arrayRemove(day))
     }
 
     fun addReminderTime(time: Int) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .update("reminderTimes", FieldValue.arrayUnion(time))
     }
 
     fun removeReminderTime(time: Int) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .update("reminderTimes", FieldValue.arrayRemove(time))
     }
 
     fun checkIfReminderToggled(callback: (Boolean) -> Unit) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .get()
             .addOnSuccessListener { document ->
@@ -462,7 +462,7 @@ class UserRepository {
     }
 
     fun toggleReminder(isToggle: Boolean, callback: (Boolean) -> Unit) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .update("reminderNotification", isToggle)
             .addOnSuccessListener {
