@@ -11,6 +11,7 @@ import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.SectionWithLectures
 import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.deadlineshooters.yudemy.repositories.SectionRepository
+import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.launch
 
 
@@ -139,5 +140,18 @@ class CourseViewModel : ViewModel() {
             _searchResult.value = courses
         }
     }
+
+    fun getTotalRevenueForInstructor(instructorId: String): Task<Int> {
+        return courseRepository.getCoursesByInstructor(instructorId).continueWith { task ->
+            if (task.isSuccessful) {
+                val courses = task.result
+                courses?.sumOf { course -> course.totalRevenue } ?: 0
+            } else {
+                0
+            }
+        }
+    }
+
+
 
 }

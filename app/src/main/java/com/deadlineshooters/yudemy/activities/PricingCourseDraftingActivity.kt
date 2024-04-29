@@ -17,7 +17,7 @@ import com.deadlineshooters.yudemy.repositories.CourseRepository
 
 class PricingCourseDraftingActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPricingCourseDraftingBinding
-    private var newPrice = 0.0
+    private var newPrice = 0
 
     private lateinit var course: Course
 
@@ -45,7 +45,7 @@ class PricingCourseDraftingActivity : AppCompatActivity() {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 if(position == 0) {
                     binding.etPriceSetting.visibility = View.GONE
-                    newPrice = 0.0
+                    newPrice = 0
                 }
                 else {
                     binding.etPriceSetting.visibility = View.VISIBLE
@@ -57,7 +57,7 @@ class PricingCourseDraftingActivity : AppCompatActivity() {
             }
         }
 
-        if(course.price == 0.0) {
+        if(course.price == 0) {
             binding.spinnerTypePricing.setSelection(0)
             binding.etPriceSetting.visibility = View.GONE
         }
@@ -70,7 +70,7 @@ class PricingCourseDraftingActivity : AppCompatActivity() {
         binding.btnSavePricing.setOnClickListener {
             if(binding.spinnerTypePricing.selectedItemPosition == 1) {
                 if(binding.etPriceSetting.text.toString().isNotEmpty()) {
-                    newPrice = binding.etPriceSetting.text.toString().toDouble()
+                    newPrice = binding.etPriceSetting.text.toString().toInt()
                 }
                 else {
                     Toast.makeText(this, "Please enter a price", Toast.LENGTH_SHORT).show()

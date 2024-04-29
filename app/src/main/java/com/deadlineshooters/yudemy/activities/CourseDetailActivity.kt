@@ -26,6 +26,7 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.adapters.DetailSectionAdapter
 import com.deadlineshooters.yudemy.databinding.ActivityCourseDetailBinding
 import com.deadlineshooters.yudemy.dialogs.PreviewCourseDialog
+import com.deadlineshooters.yudemy.helpers.DialogHelper
 import com.deadlineshooters.yudemy.helpers.StringUtils
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.CourseFeedback
@@ -54,6 +55,7 @@ class CourseDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCourseDetailBinding
 
     private val userRepository = UserRepository()
+    private val courseRepository = CourseRepository()
     private val courseFeedbackRepo = CourseFeedbackRepository()
     private lateinit var course: Course
 
@@ -100,8 +102,11 @@ class CourseDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupActionBar()
 
+        course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            intent.getParcelableExtra("course", Course::class.java)!!
+        else
+            intent.getParcelableExtra<Course>("course")!!
 
-        course = intent.getParcelableExtra<Course>("course") ?: Course()
         binding.btnViewProfile.setOnClickListener {
             val intent = Intent(this, InstructorProfileActivity::class.java)
             intent.putExtra("instructorId", course.instructor)
@@ -181,21 +186,36 @@ class CourseDetailActivity : AppCompatActivity() {
         )
         googlePayButton.setOnClickListener { requestPayment(course) }
 
+
+
+
         userRepository.isInCourseList(course.id) { isInCourseList ->
-            if (isInCourseList) {
-                binding.btnBuy.visibility = GONE
-                binding.googlePayButton.visibility = GONE
-                binding.btnWishlist.visibility = GONE
-                binding.gotoCourseBtn.visibility = VISIBLE
-            } else {
-                binding.btnBuy.visibility = VISIBLE
-                binding.googlePayButton.visibility = VISIBLE
-                binding.btnWishlist.visibility = VISIBLE
-                binding.gotoCourseBtn.visibility = GONE
+            val isCourseVisible = if (isInCourseList) VISIBLE else GONE
+            val isBuyVisible = if (isInCourseList) GONE else VISIBLE
+
+            updateButtonVisibility(isBuyVisible, isCourseVisible)
+            DialogHelper.showProgressDialog(this, "Loading course details...")
+            courseRepository.getCourseById(course.id) { courseRes ->
+                DialogHelper.hideProgressDialog()
+                if (courseRes!!.instructor == UserRepository.getCurrentUserID()) {
+                    updateButtonVisibility(GONE, VISIBLE)
+                }
             }
         }
+
+
+
+
     }
 
+    private fun updateButtonVisibility(isBuyVisible: Int, isCourseVisible: Int) {
+        binding.apply {
+            btnBuy.visibility = isBuyVisible
+            googlePayButton.visibility = isBuyVisible
+            btnWishlist.visibility = isBuyVisible
+            gotoCourseBtn.visibility = isCourseVisible
+        }
+    }
     private fun populateCourseDetails(course: Course) {
         binding.tvTitle.text = course.name
 

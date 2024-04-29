@@ -8,6 +8,7 @@ object Constants {
     const val COURSES: String = "courses"
     const val COURSE_FEEDBACK: String = "course_feedback"
     const val CATEGORIES: String = "categories"
+    const val TRANSACTIONS: String = "transactions"
 
     const val CLOUDINARY_FOLDER: String = "Yudemy"
     const val PROJECT_ID: String = "test-b0670"

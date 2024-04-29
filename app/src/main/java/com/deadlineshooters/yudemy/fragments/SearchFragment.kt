@@ -247,7 +247,7 @@ class SearchFragment : Fragment() {
             var courses: List<AlgoliaCourse> = originalCourses
 
             courses = courses.filter { course ->
-                (priceOptions?.isEmpty() ?: true || priceOptions?.contains(if (course.price == 0.0) "Free" else "Paid") ?: true) &&
+                (priceOptions?.isEmpty() ?: true || priceOptions?.contains(if (course.price == 0) "Free" else "Paid") ?: true) &&
                         (languageOptions?.isEmpty() ?: true || languageOptions?.contains(course.language) ?: true) &&
                         (ratingOptions?.isEmpty() ?: true || ratingOptions?.any { rating ->
                             val ratingNumber = if (rating.contains("& up")) {

@@ -72,8 +72,9 @@ public class CourseAdapter(private val fragmentContext: CourseDashboardFragment,
                 val llDelete = filterView.findViewById<LinearLayout>(R.id.ll_delete)
                 val llRevenueAnalytics = filterView.findViewById<LinearLayout>(R.id.ll_revenueAnalytics)
 
+                val course = courseList[bindingAdapterPosition]
+
                 llEdit.setOnClickListener {
-                    val course = courseList[bindingAdapterPosition]
                     FragmentHelper.replaceFragment(CourseDraftingMenuFragment(), course, fragmentContext)
 
                     dialog.dismiss()
@@ -86,7 +87,11 @@ public class CourseAdapter(private val fragmentContext: CourseDashboardFragment,
                 }
 
                 llRevenueAnalytics.setOnClickListener {
+                    dialog.dismiss()
+
                     val intent = Intent(context, CourseRevenueAnalyticsActivity::class.java)
+                    intent.putExtra("course", course)
+
                     context.startActivity(intent)
                 }
             }
@@ -119,11 +124,11 @@ public class CourseAdapter(private val fragmentContext: CourseDashboardFragment,
             holder.ll_rating.visibility = View.GONE
             holder.tv_dot.visibility = View.GONE
         }
-        holder.tv_price.text = currencyFormat.format(course.price.toInt())
+        holder.tv_price.text = currencyFormat.format(course.price)
 
 
         holder.tv_rating.text = course.avgRating.toString()
-        holder.tv_totalEarning.text = currencyFormat.format(course.totalRevenue.toInt())
+        holder.tv_totalEarning.text = currencyFormat.format(course.totalRevenue)
     }
 
     override fun getItemCount(): Int {
