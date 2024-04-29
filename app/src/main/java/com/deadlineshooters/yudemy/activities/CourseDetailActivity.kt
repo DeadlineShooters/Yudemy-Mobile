@@ -150,7 +150,7 @@ class CourseDetailActivity : AppCompatActivity() {
         val totalLengthMinutes = (course.totalLength % 3600) / 60
         val curriculumOverviewText = getString(
             R.string.curriculum_overview,
-            course.totalSection,
+            course.sectionList.size,
             course.totalLecture,
             totalLengthHours,
             totalLengthMinutes

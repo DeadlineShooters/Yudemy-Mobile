@@ -69,22 +69,26 @@ class LecturesAddedAdapter(var lectures: ArrayList<Lecture>): RecyclerView.Adapt
             onLectureTitleChange?.invoke(it.toString(), holder.bindingAdapterPosition)
         }
 
-        holder.duration.text = StringUtils.secondsToMinuteSecondFormat(lecture.content.duration)
+//        holder.duration.text = StringUtils.secondsToMinuteSecondFormat(lecture.content.duration)
 
-        if(lecture.content.public_id == "") { // local video
+        if(lecture.content.contentUri != null) { // local video
             val thumbnailUri = lecture.content.contentUri
             if(thumbnailUri != null) {
-            val bitmap = (context as BaseActivity).retriveVideoFrameFromVideo(thumbnailUri)
-            Glide.with(context)
-                .load(bitmap)
-                .placeholder(R.drawable.placeholder)
-                .into(holder.thumnail)
+                val bitmap = (context as BaseActivity).retriveVideoFrameFromVideo(thumbnailUri)
+                Glide.with(context)
+                    .load(bitmap)
+                    .placeholder(R.drawable.placeholder)
+                    .into(holder.thumnail)
+
+                holder.duration.text = StringUtils.secondsToMinuteSecondFormat((context as BaseActivity).getVideoDuration(thumbnailUri))
             }
             else {
                 Glide.with(context)
                     .load(R.drawable.placeholder)
                     .placeholder(R.drawable.placeholder)
                     .into(holder.thumnail)
+
+                holder.duration.text = StringUtils.secondsToMinuteSecondFormat(0.0)
             }
         }
         else { // online video
@@ -93,6 +97,8 @@ class LecturesAddedAdapter(var lectures: ArrayList<Lecture>): RecyclerView.Adapt
                 .load(bitmap)
                 .placeholder(R.drawable.placeholder)
                 .into(holder.thumnail)
+2
+            holder.duration.text = StringUtils.secondsToMinuteSecondFormat(lecture.content.duration)
         }
     }
 

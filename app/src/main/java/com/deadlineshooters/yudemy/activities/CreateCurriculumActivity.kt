@@ -3,7 +3,6 @@ package com.deadlineshooters.yudemy.activities
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import android.media.MediaMetadataRetriever
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
@@ -27,7 +26,6 @@ import com.deadlineshooters.yudemy.models.Video
 import com.deadlineshooters.yudemy.repositories.LectureRepository
 import com.deadlineshooters.yudemy.repositories.SectionRepository
 import com.google.android.material.snackbar.Snackbar
-import java.io.File
 
 
 class CreateCurriculumActivity : BaseActivity() {
@@ -39,12 +37,10 @@ class CreateCurriculumActivity : BaseActivity() {
 
     private var currentPositionsUpload = Pair(0, 0)
 
-    private var uploadedFiles = ArrayList<File>()
-
     private lateinit var course: Course
 
-    private var deletedSections = arrayListOf<String>()
-    private var deletedLectures = arrayListOf<String>()
+    private var deletedSections = arrayListOf<SectionWithLectures>()
+    private var deletedLectures = arrayListOf<Lecture>()
 
     private var updatedSections = arrayListOf<Section>()
     private var updatedLectures = arrayListOf<Lecture>()
@@ -109,7 +105,7 @@ class CreateCurriculumActivity : BaseActivity() {
                 addedSections.remove(sectionWithLectures[it])
             }
             else { // if delete existing section
-                deletedSections.add(sectionWithLectures[it].section._id)
+                deletedSections.add(sectionWithLectures[it])
             }
             if(updatedSections.contains(sectionWithLectures[it].section)) { // if delete updated section
                 updatedSections.remove(sectionWithLectures[it].section)
@@ -137,7 +133,7 @@ class CreateCurriculumActivity : BaseActivity() {
                 addedLectures.remove(sectionWithLectures[positionSection].lectures[positionLecture])
             }
             else { // if delete existing lecture
-                deletedLectures.add(sectionWithLectures[positionSection].lectures[positionLecture]._id)
+                deletedLectures.add(sectionWithLectures[positionSection].lectures[positionLecture])
             }
             if(updatedLectures.contains(sectionWithLectures[positionSection].lectures[positionLecture])) { // if delete updated lecture
                 updatedLectures.remove(sectionWithLectures[positionSection].lectures[positionLecture])
@@ -232,17 +228,6 @@ class CreateCurriculumActivity : BaseActivity() {
                 val videoFullPath = uriPathHelper.getPath(baseContext, data.data!!)
                 Log.d("CreateCurriculumActivity", "onActivityResult: $videoFullPath")
                 if (videoFullPath != null) {
-                    val file = File(videoFullPath)
-                    uploadedFiles.add(file)
-
-                    val retriever = MediaMetadataRetriever()
-                    retriever.setDataSource(applicationContext, data.data)
-                    val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                    val timeInMillisec = time!!.toLong()
-                    retriever.release()
-
-                    sectionWithLectures[currentPositionsUpload.first].lectures[currentPositionsUpload.second].content = Video()
-                    sectionWithLectures[currentPositionsUpload.first].lectures[currentPositionsUpload.second].content.duration = (timeInMillisec/1000).toDouble()
                     sectionWithLectures[currentPositionsUpload.first].lectures[currentPositionsUpload.second].content.contentUri = data.data
 
                     sectionAdapter.lectureAdapters[currentPositionsUpload.first].notifyItemChanged(currentPositionsUpload.second)
@@ -295,7 +280,9 @@ class CreateCurriculumActivity : BaseActivity() {
                 return false
             }
             for(lecture in section.lectures) {
-                if(lecture.name == "" || lecture.content.duration == 0.0) {
+                if(lecture.name == ""
+                    || (lecture.content.contentUri != null && (getVideoDuration(lecture.content.contentUri!!) == 0.0)))
+                {
                     return false
                 }
             }
@@ -323,15 +310,15 @@ class CreateCurriculumActivity : BaseActivity() {
         SectionRepository()
             .addSectionsWithLecture(addedSections, course)
             .continueWithTask {
-                LectureRepository().addLectures(addedLectures)
+                LectureRepository().addLectures(addedLectures, course)
                     .continueWithTask {
                         SectionRepository().updateSections(updatedSections)
                             .continueWithTask {
-                                LectureRepository().updateLectures(updatedLectures)
+                                LectureRepository().updateLectures(updatedLectures, course)
                                     .continueWithTask {
-                                        SectionRepository().deleteSections(deletedSections)
+                                        SectionRepository().deleteSectionsWithLectures(deletedSections, course)
                                             .continueWithTask {
-                                                LectureRepository().deleteLectures(deletedLectures)
+                                                LectureRepository().deleteLectures(deletedLectures, course)
                                                     .continueWithTask {
                                                         SectionRepository().updateIndexes(sectionWithLectures.filter {
                                                             !addedSections.contains(it) && !updatedSections.contains(it.section)

@@ -13,7 +13,6 @@ import com.deadlineshooters.yudemy.models.Video
 import com.deadlineshooters.yudemy.utils.Constants
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlin.text.Typography.section
 
 class SectionRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
@@ -148,7 +147,7 @@ class SectionRepository {
                             ) { media ->
                                 lecture.content = media as Video
                                 lecture.sectionId = sectionId
-                                LectureRepository().addALecture(lecture).continueWith {
+                                LectureRepository().addALecture(lecture, course).continueWith {
                                     lecture._id = it.result
                                     tcs.setResult(null)
                                 }
@@ -172,9 +171,17 @@ class SectionRepository {
         return Tasks.whenAll(tasks)
     }
 
-    fun deleteSections(sections: List<String>): Task<Void> {
-        val tasks = sections.map { sectionId ->
-            sectionCollection.document(sectionId).delete()
+    fun deleteSectionsWithLectures(sections: List<SectionWithLectures>, course: Course): Task<Void> {
+        val tasks = sections.map { section ->
+            sectionCollection.document(section.section._id).delete()
+                .continueWithTask {
+                    LectureRepository().deleteLectures(section.lectures, course)
+                        .continueWithTask {
+                            CourseRepository().deleteSection(course.id, section.section._id)
+                            course.sectionList.remove(section.section._id)
+                            it
+                        }
+                }
         }
         return Tasks.whenAll(tasks)
     }

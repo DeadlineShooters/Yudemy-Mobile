@@ -1,6 +1,7 @@
 package com.deadlineshooters.yudemy.repositories
 
 import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
+import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Lecture
 import com.deadlineshooters.yudemy.models.Video
 import com.google.android.gms.tasks.TaskCompletionSource
@@ -12,7 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 class LectureRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
     private val lecturesCollection = mFireStore.collection(Constants.LECTURES)
-
+    private val courseRepository = mFireStore.collection(Constants.COURSES)
 
     fun getLecturesBySectionId(sectionId: String): Task<List<Lecture>> {
         val task = mFireStore.collection("lectures")
@@ -73,15 +74,17 @@ class LectureRepository {
             }
     }
 
-    fun addALecture(lecture: Lecture): Task<String> {
+    fun addALecture(lecture: Lecture, course: Course): Task<String> {
         return lecturesCollection
             .add(lecture)
-            .continueWith{
-                it.result.id
+            .continueWithTask{ lectureTask ->
+                CourseRepository().updateTotal(lecture, course, true).continueWith {
+                    lectureTask.result.id
+                }
             }
     }
 
-    fun addLectures(lectures: List<Lecture>): Task<List<String>> {
+    fun addLectures(lectures: List<Lecture>, course: Course): Task<List<String>> {
         val tasks = lectures.map { lecture ->
             val tcs = TaskCompletionSource<String>()
             CloudinaryHelper.uploadMedia(
@@ -89,7 +92,7 @@ class LectureRepository {
                 isVideo = true
             ) { media ->
                 lecture.content = media as Video
-                LectureRepository().addALecture(lecture).addOnSuccessListener {
+                LectureRepository().addALecture(lecture, course).addOnSuccessListener {
                     lecture._id = it
                     tcs.setResult(it)
                 }
@@ -99,17 +102,19 @@ class LectureRepository {
         return Tasks.whenAllSuccess(tasks)
     }
 
-    fun updateLectures(lectures: List<Lecture>): Task<Void> {
+    fun updateLectures(lectures: List<Lecture>, course: Course): Task<Void> {
         val tasks = lectures.map { lecture ->
             lecturesCollection.document(lecture._id).set(lecture)
 
             val tcs = TaskCompletionSource<Void>()
-            if(lecture.content.public_id == "") {
+            if(lecture.content.contentUri != null) {
                 CloudinaryHelper.uploadMedia(
                     fileUri = lecture.content.contentUri,
                     isVideo = true
                 ) { media ->
-                    lecture.content = media as Video
+                    val uploadedVideo = media as Video
+                    CourseRepository().updateTotalLength(course, lecture.content.duration.toInt(), uploadedVideo.duration.toInt())
+                    lecture.content = uploadedVideo
                     tcs.setResult(null)
                 }
             }
@@ -123,9 +128,14 @@ class LectureRepository {
         return Tasks.whenAll(tasks)
     }
 
-    fun deleteLectures(lectures: List<String>): Task<Void> {
-        val tasks = lectures.map { lectureId ->
-            lecturesCollection.document(lectureId).delete()
+    fun deleteLectures(lectures: List<Lecture>, course: Course): Task<Void> {
+        val tasks = lectures.map { lecture ->
+            lecturesCollection
+                .document(lecture._id)
+                .delete()
+                .continueWithTask {
+                    CourseRepository().updateTotal(lecture, course, false)
+                }
         }
         return Tasks.whenAll(tasks)
     }

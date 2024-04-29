@@ -209,4 +209,13 @@ open class BaseActivity : AppCompatActivity() {
         }
         return bitmap
     }
+
+    fun getVideoDuration(uri: Uri): Double {
+        val retriever = MediaMetadataRetriever()
+        retriever.setDataSource(applicationContext, uri)
+        val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+        val timeInSec = ((time?.toLong() ?: 0)/1000).toDouble()
+        retriever.release()
+        return timeInSec
+    }
 }

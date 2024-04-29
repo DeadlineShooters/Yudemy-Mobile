@@ -21,9 +21,7 @@ data class Course(
     var language: String = "",
     var category: String = "",
     var totalLecture: Int = 0,
-    var totalSection: Int = 0,
     var totalLength: Int = 0, // in seconds
-    var totalQuiz: Int = 0,
     var thumbnail: Image = Image(),
     var avgRating: Double = 0.0,
     var status: Boolean = false,
