@@ -162,7 +162,7 @@ class CourseDetailActivity : AppCompatActivity() {
 
         }
 
-        binding.ivPlay.setOnClickListener {
+        binding.clPreviewCourse.setOnClickListener {
             val vidPath = course.promotionalVideo.secure_url
             if (vidPath != "") {
                 val previewCourseDialog = PreviewCourseDialog(vidPath)

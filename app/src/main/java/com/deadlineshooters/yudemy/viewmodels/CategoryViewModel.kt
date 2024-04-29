@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.deadlineshooters.yudemy.helpers.DialogHelper
 import com.deadlineshooters.yudemy.models.Category
 import com.deadlineshooters.yudemy.repositories.CategoryRepository
 
@@ -19,6 +20,7 @@ class CategoryViewModel : ViewModel() {
 
         task.addOnCompleteListener { task ->
             if (task.isSuccessful) {
+                DialogHelper.hideProgressDialog()
                 _categoryList.value = task.result
             } else {
                 Log.d(this.javaClass.simpleName, "Failed to get categories: ${task.exception}")

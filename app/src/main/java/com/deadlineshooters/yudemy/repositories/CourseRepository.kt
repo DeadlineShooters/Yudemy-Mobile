@@ -150,7 +150,7 @@ class CourseRepository {
     }
 
 
-    fun patchCourse(course: Course) {
+    fun patchCourse(course: Course, onSuccess: (() -> Unit)? = null) {
         val courseDocument = coursesCollection.document(course.id)
 
         val updates = hashMapOf<String, Any>(
@@ -158,17 +158,21 @@ class CourseRepository {
             "category" to course.category,
             "introduction" to course.introduction,
             "description" to course.description,
-            "thumbnail" to course.thumbnail // Make sure this is in a format Firestore can understand
+            "thumbnail" to course.thumbnail,
+            "promotionalVideo" to course.promotionalVideo
         )
 
         courseDocument.update(updates)
             .addOnSuccessListener {
                 Log.d("Firestore", "DocumentSnapshot successfully updated!")
+                onSuccess?.invoke()  // Invoke the success callback if it's not null
             }
             .addOnFailureListener { e ->
                 Log.w("Firestore", "Error updating document", e)
             }
     }
+
+
 
     fun getCourses(): LiveData<List<Course>> {
         val coursesLiveData = MutableLiveData<List<Course>>()

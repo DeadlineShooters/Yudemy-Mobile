@@ -43,8 +43,10 @@
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                android:id="@+id/cl_previewCourse"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
 
                 <ImageView
@@ -69,7 +71,7 @@
                         android:src="@drawable/ic_play_filled_24"
 
                         app:layout_constraintBottom_toBottomOf="@+id/iv_thumbnail"
-                        app:layout_constraintEnd_toEndOf="@+id/iv_thumbnail"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -122,7 +124,7 @@
                         android:layout_height="wrap_content"
                         android:text="4,5"
                         android:textColor="@color/rating_color"
-                        android:textSize="15dp"
+                        android:textSize="15sp"
                         android:textStyle="bold"/>
 
                 <ImageView
@@ -263,79 +265,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ll_toolbar" />
-<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="20dp"-->
-<!--                android:gravity="center_vertical"-->
-
-<!--                android:orientation="horizontal">-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:text="Section 1 - Getting started"-->
-<!--                    android:textSize="16dp"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--                &lt;!&ndash;  <ImageView-->
-<!--                      android:id="@+id/iv_minus"-->
-<!--                      android:layout_width="wrap_content"-->
-<!--                      android:layout_height="match_parent"-->
-<!--                      app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                      app:layout_constraintEnd_toEndOf="parent"-->
-<!--                      app:layout_constraintTop_toTopOf="parent"-->
-<!--                      tools:srcCompat="@drawable/ic_minus" />&ndash;&gt;-->
-<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="20dp"-->
-<!--                android:gravity="center_horizontal"-->
-<!--                android:orientation="horizontal">-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginEnd="10dp"-->
-<!--                    android:padding="15dp"-->
-<!--                    android:text="1"-->
-<!--                    android:textColor="@color/black"-->
-<!--                    android:textSize="18dp"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:orientation="vertical">-->
-
-<!--                    <TextView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:text="Introduction to the course"-->
-<!--                        android:textColor="@color/black"-->
-<!--                        android:textSize="20dp"-->
-<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--                    <TextView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:text="04:29"-->
-<!--                        android:textSize="14dp"-->
-<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toTopOf="parent" />-->
-<!--                </LinearLayout>-->
-<!--            </LinearLayout>-->
-
 
 
             <TextView
@@ -358,15 +287,6 @@
 \n\nThis course assumes no prior knowledge of or experience with Logstash. We start from the very basics and gradually transition into more advanced topics. The course is designed so that you can follow along the whole time step by step, and you can find all of the configuration files within a GitHub repository. The course covers topics such as handling Apache web server logs (both access and error logs), data enrichment, sending data to Elasticsearch, visualizing data with Kibana, along with covering a number of popular use cases that you are likely to come across. Upon completing this course, you will know all of the most important aspects of Logstash, and will be able to build complex pipeline configurations and process many different kinds of events and data."
                     android:textColor="@color/black"
                     android:textSize="20sp"/>
-
-            <!--            <TextView-->
-            <!--                android:id="@+id/tv_showMoreDesc"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:fontFamily="@font/inter_bold"-->
-            <!--                android:text="@string/show_more"-->
-            <!--                android:textColor="@color/design_default_color_primary"-->
-            <!--                android:textSize="18sp" />-->
 
             <TextView
                     android:id="@+id/tv_instructor"
