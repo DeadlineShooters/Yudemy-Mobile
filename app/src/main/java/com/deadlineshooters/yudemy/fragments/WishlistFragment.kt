@@ -1,5 +1,6 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.CourseDetailActivity
 import com.deadlineshooters.yudemy.adapters.CategoryAdapter2
 import com.deadlineshooters.yudemy.adapters.CourseListAdapter1
 import com.deadlineshooters.yudemy.databinding.FragmentWishlistBinding
@@ -27,6 +29,7 @@ private const val ARG_PARAM2 = "param2"
 class WishlistFragment : Fragment() {
     private lateinit var courseViewModel: CourseViewModel
     private var _binding: FragmentWishlistBinding? = null
+
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
@@ -75,7 +78,14 @@ class WishlistFragment : Fragment() {
                 binding.emptyFrame.visibility = View.GONE
                 binding.wishlistList.visibility = View.VISIBLE
             }
+
+            wishListAdapter.setOnItemClickListener { course ->
+                val intent = Intent(requireContext(), CourseDetailActivity::class.java)
+                intent.putExtra("course", course)
+                startActivity(intent)
+            }
         })
+
     }
 
     override fun onDestroyView() {

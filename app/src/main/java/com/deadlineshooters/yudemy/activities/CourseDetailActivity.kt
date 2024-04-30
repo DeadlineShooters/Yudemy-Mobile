@@ -21,14 +21,8 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.adapters.DetailSectionAdapter
 import com.deadlineshooters.yudemy.databinding.ActivityCourseDetailBinding
 import com.deadlineshooters.yudemy.helpers.StringUtils
-import com.deadlineshooters.yudemy.models.Course
-import com.deadlineshooters.yudemy.models.CourseFeedback
-import com.deadlineshooters.yudemy.models.Transaction
-import com.deadlineshooters.yudemy.models.User
-import com.deadlineshooters.yudemy.repositories.CourseFeedbackRepository
-import com.deadlineshooters.yudemy.repositories.CourseRepository
-import com.deadlineshooters.yudemy.repositories.TransactionRepository
-import com.deadlineshooters.yudemy.repositories.UserRepository
+import com.deadlineshooters.yudemy.models.*
+import com.deadlineshooters.yudemy.repositories.*
 import com.deadlineshooters.yudemy.utils.PaymentsUtil
 import com.deadlineshooters.yudemy.viewmodels.CheckoutViewModel
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
@@ -167,6 +161,12 @@ class CourseDetailActivity : AppCompatActivity() {
             handlePaymentSuccess("", "")
         }
 
+        if (course.price == 0.0) {
+            binding.tvPrice.visibility = GONE
+        } else {
+            binding.tvPrice.visibility = VISIBLE
+        }
+
         userRepository.isInCourseList(course.id) { isInCourseList ->
             if (isInCourseList) {
                 binding.btnBuy.visibility = GONE
@@ -175,16 +175,17 @@ class CourseDetailActivity : AppCompatActivity() {
                 binding.enrollBtn.visibility = GONE
                 binding.gotoCourseBtn.visibility = VISIBLE
             } else {
-                binding.btnWishlist.visibility = VISIBLE
                 binding.gotoCourseBtn.visibility = GONE
                 if (course.price == 0.0) {
                     binding.enrollBtn.visibility = VISIBLE
                     binding.btnBuy.visibility = GONE
                     binding.googlePayButton.visibility = GONE
+                    binding.btnWishlist.visibility = GONE
                 } else {
                     binding.enrollBtn.visibility = GONE
                     binding.btnBuy.visibility = VISIBLE
                     binding.googlePayButton.visibility = VISIBLE
+                    binding.btnWishlist.visibility = VISIBLE
                 }
             }
         }
@@ -205,7 +206,7 @@ class CourseDetailActivity : AppCompatActivity() {
             getString(R.string.course_figures, totalRatings, course.totalStudents)
         binding.tvFigures.text = figuresText
         binding.tvCreatedDate.text = getString(R.string.created_date, course.createdDate)
-        binding.tvPrice.text = StringUtils.trimDecimalZero(course.price.toString())
+        binding.tvPrice.text = StringUtils.trimDecimalZero((course.price * 0.9).toString())
 
         val totalLengthHours = course.totalLength / 3600
         val totalLengthMinutes = (course.totalLength % 3600) / 60
@@ -366,6 +367,7 @@ class CourseDetailActivity : AppCompatActivity() {
         userRepository.addToCourseList(course.id) {}
         CourseRepository().updateCourseStats(course.id) {}
         addTransaction()
+        newCourseProgress()
         val intent = Intent(this@CourseDetailActivity, EnrolledActivity::class.java)
         intent.putExtra("course", course)
         startActivity(intent)
@@ -400,7 +402,7 @@ class CourseDetailActivity : AppCompatActivity() {
                         senderId = currentUser.id,
                         receiverId = it1.instructor,
                         courseId = course.id,
-                        amount = course.price,
+                        amount = (course.price * 0.9),
                         date = formatter.format(Date())
                     )
                 }
@@ -413,4 +415,18 @@ class CourseDetailActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun newCourseProgress() {
+        userRepository.getCurUser { currentUser ->
+            val courseProgress = CourseProgress(
+                userId = currentUser.id,
+                courseId = course.id,
+                percentCompleted = 0
+            )
+
+            val courseProgressRepository = CourseProgressRepository()
+            courseProgressRepository.newCourseProgress(courseProgress) {}
+        }
+    }
+
 }

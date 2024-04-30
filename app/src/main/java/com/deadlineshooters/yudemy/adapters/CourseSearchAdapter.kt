@@ -19,13 +19,27 @@ import java.util.*
 
 class CourseSearchAdapter : ListAdapter<AlgoliaCourse, CourseSearchAdapter.CourseViewHolder>(CourseDiffUtil), HitsView<AlgoliaCourse> {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        CourseViewHolder(parent.inflate(R.layout.course_list_item))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseViewHolder {
+        val holder = CourseViewHolder(parent.inflate(R.layout.course_list_item))
+        holder.itemView.setOnClickListener {
+            val position = holder.adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                onItemClickListener?.invoke(getItem(position))
+            }
+        }
+        return holder
+    }
 
     override fun onBindViewHolder(holder: CourseViewHolder, position: Int) =
         holder.bind(getItem(position))
 
     override fun setHits(hits: List<AlgoliaCourse>) = submitList(hits)
+
+    private var onItemClickListener: ((AlgoliaCourse) -> Unit)? = null
+
+    fun setOnItemClickListener(listener: (AlgoliaCourse) -> Unit) {
+        onItemClickListener = listener
+    }
 
     class CourseViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(course: AlgoliaCourse) {
@@ -54,6 +68,8 @@ class CourseSearchAdapter : ListAdapter<AlgoliaCourse, CourseSearchAdapter.Cours
             Glide.with(view)
                 .load(course.thumbnail)
                 .into(thumbnail)
+
+
         }
     }
 

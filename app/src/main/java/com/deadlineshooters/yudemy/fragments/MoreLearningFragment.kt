@@ -154,6 +154,14 @@ class MoreLearningFragment : Fragment() {
             }
         }
 
+        userRepository.isInFavorites(course!!.id) { isInFavorites ->
+            if (isInFavorites) {
+                binding.addToFav.text = "Remove course from favorites"
+            } else {
+                binding.addToFav.text = "Add course to favorites"
+            }
+        }
+
         binding.addToFav.setOnClickListener {
             userRepository.isInFavorites(course!!.id) { isInFavorites ->
                 if (!isInFavorites) {

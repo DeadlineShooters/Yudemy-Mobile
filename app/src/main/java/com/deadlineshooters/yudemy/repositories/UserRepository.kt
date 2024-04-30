@@ -296,7 +296,12 @@ class UserRepository {
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
+                    val wishList = document.get("wishList") as MutableList<String>
                     val courseList = document.get("courseList") as MutableList<String>
+                    if (wishList.contains(courseId)) {
+                        wishList.remove(courseId)
+                        usersCollection.document(uid).update("wishList", wishList)
+                    }
                     if (!courseList.contains(courseId)) {
                         courseList.add(courseId)
                         usersCollection.document(uid).update("courseList", courseList)
@@ -319,6 +324,8 @@ class UserRepository {
                 callback(false)
             }
     }
+
+
 
     /**
      * Get user courses with progress and instructor name

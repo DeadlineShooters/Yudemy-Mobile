@@ -1,6 +1,7 @@
 package com.deadlineshooters.yudemy.repositories
 
 import android.util.Log
+import com.deadlineshooters.yudemy.models.CourseProgress
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -35,6 +36,18 @@ class CourseProgressRepository {
             }
             .addOnFailureListener {
                 Log.w("Firestore", "Error getting documents: ", it)
+            }
+    }
+
+    fun newCourseProgress(courseProgress: CourseProgress, callback: (Boolean) -> Unit) {
+        courseProgressCollection
+            .add(courseProgress)
+            .addOnSuccessListener {
+                callback(true)
+            }
+            .addOnFailureListener { exception ->
+                Log.d("Firestore", "add failed with ", exception)
+                callback(false)
             }
     }
 }

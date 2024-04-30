@@ -1,5 +1,6 @@
 package com.deadlineshooters.yudemy.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,9 +14,11 @@ import com.algolia.instantsearch.core.connection.ConnectionHandler
 import com.algolia.instantsearch.core.hits.connectHitsView
 import com.algolia.search.helper.deserialize
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.CourseDetailActivity
 import com.deadlineshooters.yudemy.adapters.CourseSearchAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentFeaturedCategoryBinding
 import com.deadlineshooters.yudemy.models.AlgoliaCourse
+import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.deadlineshooters.yudemy.viewmodels.QuerySuggestionViewModel
 
@@ -36,9 +39,8 @@ class FeaturedCategoryFragment : Fragment() {
     private val connection = ConnectionHandler()
     private lateinit var category: String
     private var _binding: FragmentFeaturedCategoryBinding? = null
-
-    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
+    private val courseRepository = CourseRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,6 +68,14 @@ class FeaturedCategoryFragment : Fragment() {
         val courseListAdapter = CourseSearchAdapter()
         binding.courseList.layoutManager = LinearLayoutManager(requireContext())
         binding.courseList.adapter = courseListAdapter
+        courseListAdapter.setOnItemClickListener { course ->
+            courseRepository.getCourseById(course.objectID.toString()) {courseDoc ->
+                val intent = Intent(requireContext(), CourseDetailActivity::class.java)
+                intent.putExtra("course", courseDoc)
+                startActivity(intent)
+            }
+        }
+
         connection += viewModel.courseSearcher.connectHitsView(courseListAdapter) {
             it.hits.deserialize(AlgoliaCourse.serializer())
         }

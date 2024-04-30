@@ -1,7 +1,6 @@
 package com.deadlineshooters.yudemy.activities
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Build
@@ -28,9 +27,7 @@ import com.deadlineshooters.yudemy.viewmodels.CertificateViewModel
 import com.deadlineshooters.yudemy.viewmodels.CourseProgressViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.util.Date
-import java.util.Locale
+import java.util.*
 import kotlin.math.roundToInt
 
 

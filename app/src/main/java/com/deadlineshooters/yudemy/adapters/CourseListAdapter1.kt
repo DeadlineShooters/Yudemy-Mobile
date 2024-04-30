@@ -16,6 +16,12 @@ import java.util.*
 
 class CourseListAdapter1(context: Context, private val resource: Int, private val courses: List<Course>) :
     ArrayAdapter<Course>(context, resource, courses) {
+    private var onItemClickListener: ((Course) -> Unit)? = null
+
+    // Define a method to set the click listener
+    fun setOnItemClickListener(listener: (Course) -> Unit) {
+        onItemClickListener = listener
+    }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(context).inflate(resource, parent, false)
@@ -46,6 +52,10 @@ class CourseListAdapter1(context: Context, private val resource: Int, private va
         Glide.with(view)
             .load(course.thumbnail.secure_url)
             .into(thumbnail)
+
+        view.setOnClickListener {
+            onItemClickListener?.invoke(course)
+        }
 
         return view
     }

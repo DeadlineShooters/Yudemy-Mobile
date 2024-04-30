@@ -16,6 +16,7 @@ import com.algolia.instantsearch.core.hits.connectHitsView
 import com.algolia.instantsearch.searchbox.connectView
 import com.algolia.search.helper.deserialize
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.CourseDetailActivity
 import com.deadlineshooters.yudemy.activities.FilterActivity
 import com.deadlineshooters.yudemy.adapters.*
 import com.deadlineshooters.yudemy.databinding.FragmentSearchBinding
@@ -112,6 +113,13 @@ class SearchFragment : Fragment() {
 
         binding.resultList.layoutManager = LinearLayoutManager(requireContext())
         binding.resultList.adapter = resultAdapter
+        resultAdapter.setOnItemClickListener { course ->
+            courseRepository.getCourseById(course.objectID.toString()) {courseDoc ->
+                val intent = Intent(requireContext(), CourseDetailActivity::class.java)
+                intent.putExtra("course", courseDoc)
+                startActivity(intent)
+            }
+        }
         connection += viewModel.courseSearcher.connectHitsView(resultAdapter) {
             it.hits.deserialize(AlgoliaCourse.serializer())
         }
