@@ -9,6 +9,7 @@ import android.text.Html
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,15 +54,21 @@ class CreateCurriculumActivity : BaseActivity() {
         binding = ActivityCreateCurriculumBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            intent.getParcelableExtra("course", Course::class.java)!!
+        else
+            intent.getParcelableExtra<Course>("course")!!
+
         sectionWithLectures = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
                 intent.getParcelableArrayListExtra("sections", SectionWithLectures::class.java) as ArrayList<SectionWithLectures>
             else
                 intent.getParcelableArrayListExtra<SectionWithLectures>("sections") as ArrayList<SectionWithLectures>
 
-        course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            intent.getParcelableExtra("course", Course::class.java)!!
-        else
-            intent.getParcelableExtra<Course>("course")!!
+        if(sectionWithLectures.isEmpty()) {
+            SectionRepository().getSectionsWithLectures(course.id).addOnSuccessListener {
+                sectionWithLectures = it as ArrayList<SectionWithLectures>
+            }
+        }
 
         setupActionBar()
 
@@ -167,10 +174,9 @@ class CreateCurriculumActivity : BaseActivity() {
         }
 
         sectionAdapter.onUploadVideoClick = {positionSection, positionLecture ->
-            val intent = Intent(Intent.ACTION_GET_CONTENT, null)
             currentPositionsUpload = Pair(positionSection, positionLecture)
-            intent.type = "video/*"
-            startPickVideoForResult.launch(intent)
+
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
 
             if( !addedSections.contains(sectionWithLectures[positionSection])
                 && !addedLectures.contains(sectionWithLectures[positionSection].lectures[positionLecture])
@@ -219,20 +225,22 @@ class CreateCurriculumActivity : BaseActivity() {
         }
     }
 
-    private val startPickVideoForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == RESULT_OK) {
-            val data: Intent? = result.data
+    val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        // Callback is invoked after the user selects a media item or closes the
+        // photo picker.
+        if (uri != null) {
+            Log.d("PhotoPicker", "Selected URI: $uri")
 
-            if (data?.data != null) {
-                val uriPathHelper = URIPathHelper()
-                val videoFullPath = uriPathHelper.getPath(baseContext, data.data!!)
-                Log.d("CreateCurriculumActivity", "onActivityResult: $videoFullPath")
-                if (videoFullPath != null) {
-                    sectionWithLectures[currentPositionsUpload.first].lectures[currentPositionsUpload.second].content.contentUri = data.data
+            val uriPathHelper = URIPathHelper()
+            val videoFullPath = uriPathHelper.getPath(baseContext, uri)
+            Log.d("CreateCurriculumActivity", "onActivityResult: $videoFullPath")
 
-                    sectionAdapter.lectureAdapters[currentPositionsUpload.first].notifyItemChanged(currentPositionsUpload.second)
-                }
-            }
+            sectionWithLectures[currentPositionsUpload.first].lectures[currentPositionsUpload.second].content.contentUri = uri
+            sectionWithLectures[currentPositionsUpload.first].lectures[currentPositionsUpload.second].content.secure_url = videoFullPath!!
+
+            sectionAdapter.lectureAdapters[currentPositionsUpload.first].notifyItemChanged(currentPositionsUpload.second)
+        } else {
+            Log.d("PhotoPicker", "No media selected")
         }
     }
 
@@ -252,10 +260,9 @@ class CreateCurriculumActivity : BaseActivity() {
                 builder
                     .setMessage("Are you sure you want to discard the changes?")
                     .setTitle("Please Confirm")
-                    .setNegativeButton(Html.fromHtml("<font color='#363A43'><b>Cancel</b></font>")) { dialog, which ->
-
+                    .setNegativeButton(Html.fromHtml("<font color='#5624D0'><b>Cancel</b></font>")) { dialog, which ->
                     }
-                    .setPositiveButton(Html.fromHtml("<font color='#7325A3'><b>Discard</b></font>")) { dialog, which ->
+                    .setPositiveButton(Html.fromHtml("<font color='#B32D0F'><b>Discard</b></font>")) { dialog, which ->
                         val intent = Intent()
                         setResult(Activity.RESULT_CANCELED, intent)
                         finish()

@@ -16,6 +16,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.BaseActivity
 import com.deadlineshooters.yudemy.activities.CreateCurriculumActivity
 import com.deadlineshooters.yudemy.activities.EditCourseLandingPageActivity
 import com.deadlineshooters.yudemy.activities.PricingCourseDraftingActivity
@@ -87,14 +88,7 @@ class CourseDraftingMenuFragment : Fragment() {
             .into(binding.crsImgView)
 
         binding.navCurriculum.setOnClickListener {
-            if(sectionWithLectures.isEmpty()) {
-                SectionRepository().getSectionsWithLectures(course!!.id).addOnSuccessListener {
-                    sectionWithLectures = it as ArrayList<SectionWithLectures>
-                    navToCurriculum()
-                }
-            }
-            else
-                navToCurriculum()
+            navToCurriculum()
         }
         binding.navLandingPage.setOnClickListener {
             val intent = Intent(activity, EditCourseLandingPageActivity::class.java)

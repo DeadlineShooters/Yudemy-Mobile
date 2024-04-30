@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.Looper
-import android.provider.MediaStore
 import android.view.View
 import android.view.Window
 import android.view.inputmethod.InputMethodManager
@@ -21,10 +20,6 @@ import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.deadlineshooters.yudemy.viewmodels.InstructorViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -176,38 +171,6 @@ open class BaseActivity : AppCompatActivity() {
             6 -> Calendar.SUNDAY
             else -> -1
         }
-    }
-
-    fun retriveVideoFrameFromVideo(videoPath: String?): Bitmap? {
-        var bitmap: Bitmap?
-        var mediaMetadataRetriever: MediaMetadataRetriever? = null
-        try {
-            mediaMetadataRetriever = MediaMetadataRetriever()
-            mediaMetadataRetriever.setDataSource(videoPath, HashMap())
-            bitmap = mediaMetadataRetriever.frameAtTime
-        } catch (e: Exception) {
-            e.printStackTrace()
-            bitmap = null
-        } finally {
-            mediaMetadataRetriever?.release()
-        }
-        return bitmap
-    }
-
-    fun retriveVideoFrameFromVideo(uri: Uri?): Bitmap? { // For local videos
-        var bitmap: Bitmap?
-        var mediaMetadataRetriever: MediaMetadataRetriever? = null
-        try {
-            mediaMetadataRetriever = MediaMetadataRetriever()
-            mediaMetadataRetriever.setDataSource(applicationContext, uri)
-            bitmap = mediaMetadataRetriever.frameAtTime
-        } catch (e: Exception) {
-            e.printStackTrace()
-            bitmap = null
-        } finally {
-            mediaMetadataRetriever?.release()
-        }
-        return bitmap
     }
 
     fun getVideoDuration(uri: Uri): Double {
