@@ -35,7 +35,7 @@ import java.util.Locale
 import kotlin.math.roundToInt
 
 
-class CourseLearningActivity : AppCompatActivity() {
+class CourseLearningActivity : BaseActivity() {
     private lateinit var courseLearningTabsAdapter: TabsAdapter
     private lateinit var binding: ActivityCourseLearningBinding
 

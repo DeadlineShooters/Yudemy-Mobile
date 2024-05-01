@@ -22,6 +22,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.media3.exoplayer.ExoPlayer
@@ -144,6 +145,8 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         val cameraBtn = sheet.findViewById<Button>(R.id.editCameraBtn)
         val submitQuestionBtn = sheet.findViewById<TextView>(R.id.submitQuestionBtn)
         var selectedLecture: String = ""
+        var title = sheet.findViewById<TextView>(R.id.askQuestionTitle)
+        var details = sheet.findViewById<TextView>(R.id.askQuestionDetail)
 
         lectureViewModel.getLectureListByCourseId(courseId)
         lectureViewModel.lectures.observe(this, Observer { it ->
@@ -178,18 +181,32 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
             startForImagePickerResult.launch(PickVisualMediaRequest())
         }
 
+        title.doAfterTextChanged {
+            submitQuestionBtn.isClickable = !(title.text.isBlank() || details.text.isBlank())
+            submitQuestionBtn.isEnabled = !(title.text.isBlank() || details.text.isBlank())
+        }
+
+        details.doAfterTextChanged {
+            submitQuestionBtn.isClickable = !(title.text.isBlank() || details.text.isBlank())
+            submitQuestionBtn.isEnabled = !(title.text.isBlank() || details.text.isBlank())
+        }
+
         submitQuestionBtn.setOnClickListener{
             //TODO: Submit question to database
-            val title = sheet.findViewById<TextView>(R.id.askQuestionTitle).text.toString()
-            val details = sheet.findViewById<TextView>(R.id.askQuestionDetail).text.toString()
+//            val title = sheet.findViewById<TextView>(R.id.askQuestionTitle).text.toString()
+//            val details = sheet.findViewById<TextView>(R.id.askQuestionDetail).text.toString()
             if(imageList.isNotEmpty()){
+                (activity as CourseLearningActivity).showProgressDialog("")
                 CloudinaryHelper().uploadImageListToCloudinary (imageList){
-                    questionViewModel.addNewQuestion(courseId, BaseActivity().getCurrentUserID(), title, details, it, selectedLecture, originalFormat.format(Date()))
+                    questionViewModel.addNewQuestion(courseId, BaseActivity().getCurrentUserID(), title.text.toString(), details.text.toString(), it, selectedLecture, originalFormat.format(Date()))
                     imageList.clear()
+                    (activity as CourseLearningActivity).hideProgressDialog()
                     askQuestionDialog.dismiss()
                 }
             } else{
-                questionViewModel.addNewQuestion(courseId, BaseActivity().getCurrentUserID(), title, details, ArrayList(), selectedLecture, originalFormat.format(Date()))
+                (activity as CourseLearningActivity).showProgressDialog("")
+                questionViewModel.addNewQuestion(courseId, BaseActivity().getCurrentUserID(), title.text.toString(), details.text.toString(), ArrayList(), selectedLecture, originalFormat.format(Date()))
+                (activity as CourseLearningActivity).hideProgressDialog()
                 askQuestionDialog.dismiss()
             }
 
@@ -287,6 +304,11 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
             })
             questionDetailContent.text = question.details
 
+            replyContent.doAfterTextChanged {
+                sendBtn.isClickable = replyContent.text.isNotBlank()
+                sendBtn.isEnabled = replyContent.text.isNotBlank()
+            }
+
             if(question.images.isNotEmpty()){
                 questionDetailImageContainer.removeAllViews()
                 for (imageUrl in question.images) {
@@ -307,6 +329,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
                 //TODO: Submit reply to database
                 val reply = replyContent.text.toString()
                 if(imageList.isNotEmpty()){
+                    (activity as CourseLearningActivity).showProgressDialog("")
                     CloudinaryHelper().uploadImageListToCloudinary(imageList){
                         val rep = Reply("", BaseActivity().getCurrentUserID(), question._id , it, reply , originalFormat.format(Date()))
                         replyViewModel.addNewReply(rep)
@@ -316,13 +339,16 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
                         replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
                         questionListAdapter.notifyDataSetChanged()
                         imageList.clear()
+                        (activity as CourseLearningActivity).hideProgressDialog()
                     }
                 } else{
+                    (activity as CourseLearningActivity).showProgressDialog("")
                     val rep = Reply("", BaseActivity().getCurrentUserID(), question._id , ArrayList(), reply , originalFormat.format(Date()))
                     replyViewModel.addNewReply(rep)
                     replyContent.text = ""
                     replyListAdapter.notifyItemInserted(replyListAdapter.itemCount)
                     questionListAdapter.notifyDataSetChanged()
+                    (activity as CourseLearningActivity).hideProgressDialog()
                 }
             }
 
@@ -342,8 +368,10 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
                     }
                     .setPositiveButton(Html.fromHtml("<font color='#FF0000'><b>Delete</b></font>")) { dialog, which ->
                         //TODO: Delete question from database
+                        (activity as BaseActivity).showProgressDialog("")
                         questionViewModel.deleteQuestion(courseId, question._id)
                         questionDetailDialog.dismiss()
+                        (activity as BaseActivity).hideProgressDialog()
                     }
 
                 val dialog: AlertDialog = builder.create()
@@ -459,6 +487,16 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
             startForImagePickerResult.launch(PickVisualMediaRequest())
         }
 
+        title.doAfterTextChanged {
+            submitEditQuestionBtn.isClickable = !(title.text.isBlank() || details.text.isBlank())
+            submitEditQuestionBtn.isEnabled = !(title.text.isBlank() || details.text.isBlank())
+        }
+
+        details.doAfterTextChanged {
+            submitEditQuestionBtn.isClickable = !(title.text.isBlank() || details.text.isBlank())
+            submitEditQuestionBtn.isEnabled = !(title.text.isBlank() || details.text.isBlank())
+        }
+
         submitEditQuestionBtn.setOnClickListener{
             //TODO: Submit question to database
             val questionTitle = title.text.toString()
@@ -470,6 +508,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
                 questionListAdapter.notifyDataSetChanged()
             }
             if(imageList.isNotEmpty()){
+                (activity as CourseLearningActivity).showProgressDialog("")
                 CloudinaryHelper().uploadImageListToCloudinary(imageList){
                     val editedImageList = ArrayList<Image>().apply {
                         addAll(it)
@@ -478,14 +517,17 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
                     questionViewModel.editQuestion(question._id,BaseActivity().getCurrentUserID(), questionTitle, questionDetails, editedImageList, selectedLecture, question.createdTime)
                     imageList.clear()
                     questionListAdapter.notifyDataSetChanged()
+                    (activity as CourseLearningActivity).hideProgressDialog()
                 }
             } else{
+                (activity as CourseLearningActivity).showProgressDialog("")
                 val editedImageList = ArrayList<Image>().apply {
                     addAll(imgList)
                 }
                 questionViewModel.editQuestion(question._id,BaseActivity().getCurrentUserID(), questionTitle, questionDetails, editedImageList, selectedLecture, question.createdTime)
                 imageList.clear()
                 questionListAdapter.notifyDataSetChanged()
+                (activity as CourseLearningActivity).hideProgressDialog()
             }
             editQuestionDialog.dismiss()
         }
