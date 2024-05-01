@@ -24,11 +24,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.BaseActivity
+import com.deadlineshooters.yudemy.activities.CourseLearningActivity
 import com.deadlineshooters.yudemy.adapters.BottomSheetDialogAdapter
 import com.deadlineshooters.yudemy.adapters.QuestionListAdapter
 import com.deadlineshooters.yudemy.adapters.ReplyListAdapter
@@ -71,6 +73,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
         questionViewModel = QuestionViewModel()
+        (activity as CourseLearningActivity).exoPlayer?.pause()
     }
 
     override fun onCreateView(
@@ -217,6 +220,11 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         imageView.tag = uri.toString()
         imageView.setOnClickListener {
             imageContainer.removeView(imageView)
+            imageView.drawable?.let{drawble ->
+                val bitmap = (drawble as BitmapDrawable).bitmap
+                val filepath = BaseActivity().saveBitmapToFile(bitmap, requireContext())
+                imageList.remove(filepath.toString())
+            }
         }
 
         imageContainer.addView(imageView)

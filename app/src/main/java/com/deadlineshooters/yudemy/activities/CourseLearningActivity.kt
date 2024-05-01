@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.adapters.TabsAdapter
@@ -47,7 +48,7 @@ class CourseLearningActivity : AppCompatActivity() {
     private lateinit var courseProgressViewModel: CourseProgressViewModel
     private lateinit var certificateViewModel: CertificateViewModel
     var currentLecture: Map<Lecture, Boolean>? = null
-
+    var exoPlayer: ExoPlayer? = null
 
     private var isUpdateProgress = false
 
@@ -157,5 +158,25 @@ class CourseLearningActivity : AppCompatActivity() {
 
         val certificate = Certificate("", learningCourse.id, SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()).toString(), learningCourse.totalLength, learningCourse.name, BaseActivity().getCurrentUserID())
         certificateViewModel.addCertificate(BaseActivity().getCurrentUserID(), learningCourse.id, certificate)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (exoPlayer != null && exoPlayer!!.isPlaying) {
+            exoPlayer!!.playWhenReady = false
+        }
+    }
+
+    override fun onDestroy() {
+        releasePlayer()
+        super.onDestroy()
+    }
+
+    private fun releasePlayer() {
+        if (exoPlayer != null) {
+            exoPlayer!!.stop();
+            exoPlayer!!.release();
+            exoPlayer = null;
+        }
     }
 }

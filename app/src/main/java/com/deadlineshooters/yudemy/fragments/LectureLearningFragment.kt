@@ -3,6 +3,7 @@ package com.deadlineshooters.yudemy.fragments
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
@@ -29,15 +29,10 @@ import com.deadlineshooters.yudemy.adapters.BottomSheetDialogAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentLectureLearningBinding
 import com.deadlineshooters.yudemy.dialogs.QADialog
 import com.deadlineshooters.yudemy.models.Course
-import com.deadlineshooters.yudemy.models.CourseProgress
 import com.deadlineshooters.yudemy.models.Lecture
-import com.deadlineshooters.yudemy.models.Section
-import com.deadlineshooters.yudemy.repositories.CourseProgressRepository
 import com.deadlineshooters.yudemy.viewmodels.CourseProgressViewModel
-import com.deadlineshooters.yudemy.viewmodels.SectionViewModel
 import com.deadlineshooters.yudemy.viewmodels.UserLectureViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlin.math.roundToInt
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,7 +54,6 @@ class LectureLearningFragment : Fragment() {
 
     private lateinit var videoView: PlayerView
     private lateinit var btnMuteAudio: ImageView
-    private var exoPlayer: ExoPlayer? = null
 
 //    private var currentLecture: Map<Lecture, Boolean>? = null
     private var currentSectionIdx: Int = 0
@@ -68,6 +62,8 @@ class LectureLearningFragment : Fragment() {
     private var courseLearningAdapter: CourseLearningAdapter? = null
 
     private var numLectures = 0
+
+    private var exoPlayer: ExoPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +79,7 @@ class LectureLearningFragment : Fragment() {
         userLectureViewModel.getLectureLearningData(course!!.id)
 
         courseProgressViewModel = ViewModelProvider(this)[CourseProgressViewModel::class.java]
+        exoPlayer = (activity as CourseLearningActivity).exoPlayer
     }
 
     override fun onCreateView(
@@ -106,6 +103,12 @@ class LectureLearningFragment : Fragment() {
             .setSeekBackIncrementMs(5000)
             .setSeekForwardIncrementMs(10000)
             .build()
+        (activity as CourseLearningActivity).exoPlayer = exoPlayer
+
+        Log.d("LectureLearningFragment1",  exoPlayer.toString())
+        Log.d("LectureLearningFragment1", (activity as CourseLearningActivity).exoPlayer.toString())
+
+
 
         exoPlayer!!.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
@@ -245,26 +248,4 @@ class LectureLearningFragment : Fragment() {
             }
     }
 
-    override fun onPause() {
-        super.onPause()
-
-        if (exoPlayer!!.isPlaying) {
-            if (exoPlayer != null) {
-                exoPlayer!!.playWhenReady = false
-            }
-        }
-    }
-
-    override fun onDestroy() {
-        releasePlayer()
-        super.onDestroy()
-    }
-
-    private fun releasePlayer() {
-        if (exoPlayer != null) {
-            exoPlayer!!.stop();
-            exoPlayer!!.release();
-            exoPlayer = null;
-        }
-    }
 }
