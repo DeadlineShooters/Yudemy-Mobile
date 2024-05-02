@@ -46,6 +46,7 @@ class CourseSearchAdapter : ListAdapter<AlgoliaCourse, CourseSearchAdapter.Cours
             val courseName: TextView = view.findViewById(R.id.courseName)
             val instructor: TextView = view.findViewById(R.id.instructor)
             val ratingNumber: TextView = view.findViewById(R.id.ratingNumber)
+            val ratingQuantity: TextView = view.findViewById(R.id.ratingQuantity)
             val ratingStar: RatingBar = view.findViewById(R.id.ratingStar)
             val originalPrice: TextView = view.findViewById(R.id.originalPrice)
             val discountPrice: TextView = view.findViewById(R.id.discountPrice)
@@ -57,6 +58,7 @@ class CourseSearchAdapter : ListAdapter<AlgoliaCourse, CourseSearchAdapter.Cours
             ratingNumber.text = course.avgRating.toString()
             ratingStar.setStepSize(0.1f);
             ratingStar.rating = course.avgRating.toFloat();
+            ratingQuantity.text = ""
             if (course.price > 0) {
                 originalPrice.text = currencyFormat.format(course.price.toInt())
                 discountPrice.text = currencyFormat.format((course.price * 0.9).toInt())

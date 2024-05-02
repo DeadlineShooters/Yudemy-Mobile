@@ -23,6 +23,7 @@ class CourseListAdapter2(private val context: Context, private val courses: List
         val courseName: TextView = view.findViewById(R.id.courseName)
         val instructor: TextView = view.findViewById(R.id.instructor)
         val ratingNumber: TextView = view.findViewById(R.id.ratingNumber)
+        val ratingQuantity: TextView = view.findViewById(R.id.ratingQuantity)
         val ratingStar: RatingBar = view.findViewById(R.id.ratingStar)
         val originalPrice: TextView = view.findViewById(R.id.originalPrice)
         val discountPrice: TextView = view.findViewById(R.id.discountPrice)
@@ -46,6 +47,8 @@ class CourseListAdapter2(private val context: Context, private val courses: List
         holder.ratingNumber.text = course.avgRating.toString()
         holder.ratingStar.setStepSize(0.1f);
         holder.ratingStar.rating = course.avgRating.toFloat();
+        (course.oneStarCnt + course.twoStarCnt + course.threeStarCnt + course.fourStarCnt + course.fiveStarCnt).toString()
+            .also { holder.ratingQuantity.text = "($it)" }
         if (course.price > 0) {
             holder.originalPrice.text = currencyFormat.format(course.price.toInt())
             holder.discountPrice.text = currencyFormat.format((course.price * 0.9).toInt())

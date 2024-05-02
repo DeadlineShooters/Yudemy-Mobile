@@ -96,7 +96,9 @@ class FeaturedFragment : Fragment() {
             binding.welcomeLine.text = "Welcome, ${user.fullName}"
             Glide.with(view)
                 .load(user.image.secure_url)
-                .into(binding.avatar)
+                .circleCrop()
+                .into(binding.avatar);
+
         }
     }
 
