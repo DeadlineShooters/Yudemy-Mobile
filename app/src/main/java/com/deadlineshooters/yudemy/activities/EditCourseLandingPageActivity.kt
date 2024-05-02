@@ -128,7 +128,7 @@ class EditCourseLandingPageActivity : BaseActivity(), CategoryFragment.DialogLis
         }
 
         binding.buttonUploadVideo.setOnClickListener {
-            DialogHelper.showProgressDialog(this, "Processing video...")
+//            DialogHelper.showProgressDialog(this, "Processing video...")
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "video/*"
 
@@ -136,22 +136,23 @@ class EditCourseLandingPageActivity : BaseActivity(), CategoryFragment.DialogLis
             startPickVideoForResult.launch(intent)
         }
 
+        DialogHelper.showProgressDialog(this, "Loading course...")
 
         loadCourseInformation()
-        DialogHelper.hideProgressDialog()
+//        DialogHelper.hideProgressDialog()
+
 
 
         // handle save
         fun handleSuccess() {
-            DialogHelper.hideProgressDialog()
-
+            hideProgressDialog()
             Toast.makeText(this, "Course landing page updated", Toast.LENGTH_SHORT).show()
             loadCourseInformation()
-            DialogHelper.hideProgressDialog()
 
         }
 
         binding.btnSave.setOnClickListener {
+            showProgressDialog("Saving course...")
             // Dismiss the keyboard
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
@@ -166,7 +167,7 @@ class EditCourseLandingPageActivity : BaseActivity(), CategoryFragment.DialogLis
             course.description = binding.etDesc.text.toString()
 
             if (thumbnailUri is Uri) {
-                DialogHelper.showProgressDialog(this, "Saving video...")
+//                DialogHelper.showProgressDialog(this, "Saving video...")
                 CloudinaryHelper.uploadMedia(fileUri = thumbnailUri) {
                     course.thumbnail = it as Image
                     courseRepository.patchCourse(course) {
@@ -176,7 +177,7 @@ class EditCourseLandingPageActivity : BaseActivity(), CategoryFragment.DialogLis
             }
 
             if (uploadedVideo != null) {
-                DialogHelper.showProgressDialog(this, "Saving video...")
+//                DialogHelper.showProgressDialog(this, "Saving video...")
 
                 CloudinaryHelper.uploadMedia(
                     fileUri = Uri.fromFile(uploadedVideo),
@@ -205,7 +206,7 @@ class EditCourseLandingPageActivity : BaseActivity(), CategoryFragment.DialogLis
         binding.buttonShowCategoryDialog.setOnClickListener {
             categoryViewModel.refreshCategories()
 
-            DialogHelper.showProgressDialog(this, "Loading categories")
+//            DialogHelper.showProgressDialog(this, "Loading categories")
             val dialog = CategoryFragment(currentCategoryIndex)
             dialog.listener = this
             dialog.show(supportFragmentManager, "FireMissilesDialogFragment2")
@@ -252,7 +253,7 @@ class EditCourseLandingPageActivity : BaseActivity(), CategoryFragment.DialogLis
 
                         isVideoEdited = true
                         binding.btnSave.isEnabled = true
-
+                        binding.ivPlay.visibility = View.INVISIBLE
                         binding.ivCourseVideo.visibility = View.INVISIBLE
                         binding.tvInstructionSaveVideo.visibility = View.VISIBLE
                         retriever.release()
@@ -264,7 +265,7 @@ class EditCourseLandingPageActivity : BaseActivity(), CategoryFragment.DialogLis
             } else {
                 Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show()
             }
-            DialogHelper.hideProgressDialog()
+//            DialogHelper.hideProgressDialog()
 
         }
 
@@ -272,8 +273,8 @@ class EditCourseLandingPageActivity : BaseActivity(), CategoryFragment.DialogLis
     override fun onResume() {
         super.onResume()
         // Reload course information on resume
-        loadCourseInformation()
-        DialogHelper.hideProgressDialog()
+//        loadCourseInformation()
+//        DialogHelper.hideProgressDialog()
 //
         categoryViewModel.refreshCategories()
 
@@ -285,11 +286,9 @@ class EditCourseLandingPageActivity : BaseActivity(), CategoryFragment.DialogLis
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun loadCourseInformation() {
-        DialogHelper.showProgressDialog(this, "Loading course...")
 
         course = intent.getParcelableExtra("course", Course::class.java) ?: Course()
         courseRepository.getCourseById(courseId = course.id) { courseLoaded ->
-
             course = courseLoaded!!
 
             // put data into this screen
@@ -355,6 +354,7 @@ class EditCourseLandingPageActivity : BaseActivity(), CategoryFragment.DialogLis
                     binding.buttonShowCategoryDialog.text = getString(R.string.select_category)
                 }
             }
+            DialogHelper.hideProgressDialog()
 
         }
 

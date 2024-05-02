@@ -81,11 +81,12 @@ class FeedbackAdapter(
             .into(holder.ivCourseImage)
 
         userRepo.getUserById(feedback.userId) { user ->
+            Log.d(this.javaClass.simpleName, user.toString())
             Glide.with(holder.itemView.context)
-                .load(user!!.image.public_id)
+                .load(user?.image?.public_id)
                 .placeholder(R.drawable.placeholder_avatar)
                 .into(holder.ivAvatar)
-            holder.fullname.text = user.fullName
+            holder.fullname.text = user!!.fullName
         }
 
 

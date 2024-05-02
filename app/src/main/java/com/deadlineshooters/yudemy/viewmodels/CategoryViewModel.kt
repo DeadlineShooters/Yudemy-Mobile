@@ -20,7 +20,6 @@ class CategoryViewModel : ViewModel() {
 
         task.addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                DialogHelper.hideProgressDialog()
                 _categoryList.value = task.result
             } else {
                 Log.d(this.javaClass.simpleName, "Failed to get categories: ${task.exception}")

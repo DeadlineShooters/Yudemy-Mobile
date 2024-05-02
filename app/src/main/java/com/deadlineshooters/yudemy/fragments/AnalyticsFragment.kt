@@ -116,7 +116,7 @@ class AnalyticsFragment : Fragment() {
         if (transactions.isEmpty()) {
             binding.chart.clear() // Clear the chart
             if (!noDataMessageShown) {
-                Toast.makeText(this, "No data to display", Toast.LENGTH_SHORT).show() // Display a message
+                Toast.makeText(requireContext(), "No data to display", Toast.LENGTH_SHORT).show() // Display a message
                 noDataMessageShown = true
             }
             return

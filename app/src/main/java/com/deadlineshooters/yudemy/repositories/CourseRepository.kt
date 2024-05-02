@@ -1,9 +1,11 @@
 package com.deadlineshooters.yudemy.repositories
 
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.deadlineshooters.yudemy.helpers.DialogHelper
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.utils.Constants
 import com.deadlineshooters.yudemy.models.Image
@@ -203,9 +205,11 @@ class CourseRepository {
             .addOnSuccessListener { document ->
                 course = document?.toObject(Course::class.java)
                 callback(course)
+
             }
             .addOnFailureListener { exception ->
                 Log.w("Firestore", "Error getting documents: ", exception)
+
                 callback(null)
             }
     }
