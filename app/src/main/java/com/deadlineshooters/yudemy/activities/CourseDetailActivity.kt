@@ -366,7 +366,9 @@ class CourseDetailActivity : AppCompatActivity() {
         Log.d("message", "success")
         userRepository.addToCourseList(course.id) {}
         CourseRepository().updateCourseStats(course.id) {}
-        addTransaction()
+        if (course.price != 0.0) {
+            addTransaction()
+        }
         newCourseProgress()
         val intent = Intent(this@CourseDetailActivity, EnrolledActivity::class.java)
         intent.putExtra("course", course)
