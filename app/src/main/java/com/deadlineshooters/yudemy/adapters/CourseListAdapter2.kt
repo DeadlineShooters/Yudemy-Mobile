@@ -16,6 +16,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.repositories.UserRepository
 import java.text.NumberFormat
 import java.util.*
 
@@ -46,7 +47,10 @@ class CourseListAdapter2(private val context: Context, private val courses: List
         val course = courses[position]
         val currencyFormat = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
         holder.courseName.text = course.name
-        holder.instructor.text = course.instructor
+        UserRepository().getUserById(course.instructor) {user ->
+            holder.instructor.text = user!!.fullName
+
+        }
         holder.ratingNumber.text = course.avgRating.toString()
         holder.ratingStar.setStepSize(0.1f);
         holder.ratingStar.rating = course.avgRating.toFloat();

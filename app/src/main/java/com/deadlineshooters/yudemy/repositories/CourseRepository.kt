@@ -69,9 +69,7 @@ class CourseRepository {
                     val course = document.toObject(Course::class.java)
                     course.id = document.id
                     userRepository.getUserById(course.instructor) { user ->
-                        if (user != null) {
-                            course.instructor = user.fullName
-                        }
+
                         categoryRepository.getCategory(course.category) { category ->
                             course.category = category.name
                             languageRepository.getLanguage(course.language) { language ->

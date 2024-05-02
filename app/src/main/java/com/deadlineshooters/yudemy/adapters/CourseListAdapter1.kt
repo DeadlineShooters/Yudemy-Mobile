@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.repositories.UserRepository
 import java.text.NumberFormat
 import java.util.*
 

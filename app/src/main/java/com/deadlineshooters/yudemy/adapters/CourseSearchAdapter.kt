@@ -14,6 +14,7 @@ import com.algolia.instantsearch.core.hits.HitsView
 import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.models.AlgoliaCourse
+import com.deadlineshooters.yudemy.repositories.UserRepository
 import java.text.NumberFormat
 import java.util.*
 
@@ -33,13 +34,17 @@ class CourseSearchAdapter : ListAdapter<AlgoliaCourse, CourseSearchAdapter.Cours
             val instructor: TextView = view.findViewById(R.id.instructor)
             val ratingNumber: TextView = view.findViewById(R.id.ratingNumber)
             val ratingStar: RatingBar = view.findViewById(R.id.ratingStar)
+            val ratingQuantity: TextView = view.findViewById(R.id.ratingQuantity)
             val originalPrice: TextView = view.findViewById(R.id.originalPrice)
             val discountPrice: TextView = view.findViewById(R.id.discountPrice)
             val thumbnail: ImageView = view.findViewById(R.id.thumbnail)
             val currencyFormat = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
 
             courseName.text = course.highlightedName?.toSpannedString() ?: course.name
-            instructor.text = course.instructor
+            UserRepository().getUserById(course.instructor) {user ->
+                instructor.text = user?.fullName
+
+            }
             ratingNumber.text = course.avgRating.toString()
             ratingStar.setStepSize(0.1f);
             ratingStar.rating = course.avgRating.toFloat();

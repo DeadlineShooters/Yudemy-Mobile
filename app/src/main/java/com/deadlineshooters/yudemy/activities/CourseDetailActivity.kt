@@ -69,6 +69,7 @@ class CourseDetailActivity : AppCompatActivity() {
     private var pendingPaymentRequest: PendingPaymentRequest? = null
     private lateinit var sectionAdapter: DetailSectionAdapter
     private lateinit var courseViewModel: CourseViewModel
+    private var isExpanded = false
 
 
     private val paymentDataLauncher =
@@ -112,6 +113,17 @@ class CourseDetailActivity : AppCompatActivity() {
             intent.putExtra("instructorId", course.instructor)
             startActivity(intent)
             Log.d("Instructor", course.instructor)
+        }
+
+        binding.showMoreBtn.setOnClickListener{
+            if(isExpanded){
+                binding.tvDesc.maxLines = 7
+                binding.showMoreBtn.text = "Show more"
+            } else {
+                binding.tvDesc.maxLines = Integer.MAX_VALUE
+                binding.showMoreBtn.text = "Show less"
+            }
+            isExpanded = !isExpanded
         }
         courseViewModel = ViewModelProvider(this)[CourseViewModel::class.java]
 
@@ -238,7 +250,7 @@ class CourseDetailActivity : AppCompatActivity() {
         val totalLengthMinutes = (course.totalLength % 3600) / 60
         val curriculumOverviewText = getString(
             R.string.curriculum_overview,
-            course.totalSection,
+            course.sectionList.size,
             course.totalLecture,
             totalLengthHours,
             totalLengthMinutes
