@@ -1,5 +1,6 @@
 package com.deadlineshooters.yudemy.adapters
 
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.ScrollView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -27,6 +29,8 @@ import com.deadlineshooters.yudemy.viewmodels.UserViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
@@ -66,8 +70,8 @@ class QuestionListAdapter (var questionList: ArrayList<Question>, private val li
         return ViewHolder(courseView)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: QuestionListAdapter.ViewHolder, position: Int) {
-//        questionList.sortByDescending { it.lectureId }
         val question: Question = questionList[position]
         val questionTitle = holder.questionTitle
         val askerName = holder.askerName
@@ -137,12 +141,13 @@ class QuestionListAdapter (var questionList: ArrayList<Question>, private val li
         return questionList.size
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun filterQuestion(filter: ArrayList<String>, currentLectureId: String) {
 
         questionList = questionViewModel.questions.value!!
         notifyDataSetChanged()
 
-        questionList.sortByDescending { it.createdTime }
+        questionList.sortByDescending { LocalDate.parse(it.createdTime, DateTimeFormatter.ofPattern("dd/MM/yyyy")) }
 
 
         var tmpQuestionList: ArrayList<Question> = arrayListOf()

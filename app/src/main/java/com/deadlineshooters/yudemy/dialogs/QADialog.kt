@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
@@ -21,6 +22,7 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.DialogFragment
@@ -46,6 +48,8 @@ import com.deadlineshooters.yudemy.viewmodels.ReplyViewModel
 import com.deadlineshooters.yudemy.viewmodels.UserViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import kotlin.properties.Delegates
@@ -86,6 +90,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         return inflater.inflate(R.layout.fragment_q_a, container, false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -97,7 +102,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         questionViewModel.getQuestionsByCourseId(courseId)
 
         questionViewModel.questions.observe(this, Observer{ result ->
-            result.sortByDescending { it.createdTime }
+            result.sortByDescending { LocalDate.parse(it.createdTime, DateTimeFormatter.ofPattern("dd/MM/yyyy")) }
             questionListAdapter = QuestionListAdapter(result, this, questionViewModel)
             questionListView.adapter = questionListAdapter
             questionListView.layoutManager = LinearLayoutManager(requireContext())
@@ -250,6 +255,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun createQuestionDetailDialog(): Dialog {
         val sheet = layoutInflater.inflate(R.layout.dialog_question_detail, null)
         val dialog = Dialog(requireContext(), android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
@@ -295,8 +301,9 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
                 questionDetailLectureId.text = it.name
             })
 
-            replyViewModel.replies.observe(this, Observer { it ->
-                replyListAdapter = ReplyListAdapter(it, this)
+            replyViewModel.replies.observe(this, Observer { result ->
+                result.sortByDescending { LocalDate.parse(it.createdTime, DateTimeFormatter.ofPattern("dd/MM/yyyy")) }
+                replyListAdapter = ReplyListAdapter(result, this)
                 replyListView.adapter = replyListAdapter
                 replyListView.layoutManager = LinearLayoutManager(requireContext())
             })
@@ -533,6 +540,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         dialog.setContentView(sheet)
         return dialog
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun createFilterQuestionDialog(): Dialog {
         val sheet = layoutInflater.inflate(R.layout.dialog_filter_question, null)
         val dialog = Dialog(requireContext(), android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
