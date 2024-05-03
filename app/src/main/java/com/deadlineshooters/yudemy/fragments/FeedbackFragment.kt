@@ -63,13 +63,17 @@ class FeedbackFragment : Fragment() {
         courseFeedbackViewModel.feedback_íntructor.observe(viewLifecycleOwner, Observer { feedbackList ->
             if (feedbackList.isNotEmpty()) {
                 // Create the FeedbackAdapter with the feedbackList
-                feedbackAdapter = FeedbackAdapter(this, feedbackList)
+                binding.tvNoFeedback.visibility = View.GONE
 
-                // Set the RecyclerView's adapter to your FeedbackAdapter
-                binding.rvFeedback.adapter = feedbackAdapter
             } else {
+
                 binding.tvNoFeedback.visibility = View.VISIBLE
             }
+
+            feedbackAdapter = FeedbackAdapter(this, feedbackList)
+
+            // Set the RecyclerView's adapter to your FeedbackAdapter
+            binding.rvFeedback.adapter = feedbackAdapter
         })
 
 

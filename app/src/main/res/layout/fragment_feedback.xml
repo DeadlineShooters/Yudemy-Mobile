@@ -112,6 +112,7 @@
             android:layout_height="wrap_content"
             android:text="@string/no_feedback_found"
             android:visibility="gone"
+            android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_feedback"
