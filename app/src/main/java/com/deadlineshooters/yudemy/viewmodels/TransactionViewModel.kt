@@ -30,7 +30,7 @@ class TransactionViewModel : ViewModel() {
             val groupedTransactions = transactions.groupBy {
                 sdf.parse(it.date)?.time ?: 0L
             }.mapValues {
-                it.value.sumOf { transaction -> transaction.amount }
+                it.value.sumOf { transaction -> transaction.amount }.toInt()
             }
             // Convert the Long timestamps back to String dates
             val stringDateTransactions = groupedTransactions.mapKeys {
@@ -47,7 +47,7 @@ class TransactionViewModel : ViewModel() {
             val groupedTransactions = transactions.groupBy {
               sdf.parse(it.date)?.time ?: 0L
             }.mapValues {
-                it.value.sumOf { transaction -> transaction.amount }
+                it.value.sumOf { transaction -> transaction.amount }.toInt()
             }
             // Convert the Long timestamps back to String dates
             val stringDateTransactions = groupedTransactions.mapKeys {

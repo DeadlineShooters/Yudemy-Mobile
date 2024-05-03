@@ -101,17 +101,4 @@
         app:layout_constraintStart_toStartOf="@+id/spinnerCurrency"
         app:layout_constraintTop_toTopOf="@+id/textView35" />
 
-    <EditText
-        android:id="@+id/etPriceSetting"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:ems="10"
-        android:hint="@string/enter_price_here"
-        android:inputType="numberDecimal"
-        app:layout_constraintBottom_toBottomOf="@+id/spinnerTypePricing"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/spinnerTypePricing"
-        app:layout_constraintTop_toTopOf="@+id/spinnerTypePricing" />
 </androidx.constraintlayout.widget.ConstraintLayout>

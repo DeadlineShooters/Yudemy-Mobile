@@ -18,7 +18,7 @@ data class AlgoliaCourse(
     var introduction: String = "",
     var description: String = "",
     var language: String = "",
-    var price: Int = 0,
+    var price: Double = 0.0,
     var avgRating: Double = 0.0,
     var totalLength: Int = 0,
     var createdDate: String = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),

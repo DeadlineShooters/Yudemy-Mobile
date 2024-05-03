@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
+import android.text.Html
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -109,11 +110,11 @@ class CourseDashboardFragment : Fragment() {
             val builder = AlertDialog.Builder(context)
             builder.setTitle("Delete course")
             builder.setMessage("Are you sure you want to delete this course?")
-            builder.setPositiveButton("Yes") { _, _ ->
+            builder.setPositiveButton(Html.fromHtml("<font color='#B32D0F'><b>Yes</b></font>")) { _, _ ->
                 val course = courseAdapter.getCourseAt(position)
                 courseViewModel.deleteCourse(course)
             }
-            builder.setNegativeButton("No") { _, _ -> }
+            builder.setNegativeButton(Html.fromHtml("<font color='#5624D0'><b>No</b></font>")) { _, _ -> }
             builder.show()
         }
 

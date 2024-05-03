@@ -1,9 +1,7 @@
 package com.deadlineshooters.yudemy.adapters
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +16,7 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.BaseActivity
 import com.deadlineshooters.yudemy.helpers.StringUtils
 import com.deadlineshooters.yudemy.models.Lecture
+import java.io.File
 import java.util.Collections
 
 class LecturesAddedAdapter(var lectures: ArrayList<Lecture>): RecyclerView.Adapter<LecturesAddedAdapter.ViewHolder>() {
@@ -69,30 +68,21 @@ class LecturesAddedAdapter(var lectures: ArrayList<Lecture>): RecyclerView.Adapt
             onLectureTitleChange?.invoke(it.toString(), holder.bindingAdapterPosition)
         }
 
-        holder.duration.text = StringUtils.secondsToMinuteSecondFormat(lecture.content.duration)
-
-        if(lecture.content.public_id == "") { // local video
-            val thumbnailUri = lecture.content.contentUri
-            if(thumbnailUri != null) {
-            val bitmap = (context as BaseActivity).retriveVideoFrameFromVideo(thumbnailUri)
-            Glide.with(context)
-                .load(bitmap)
-                .placeholder(R.drawable.placeholder)
-                .into(holder.thumnail)
-            }
-            else {
-                Glide.with(context)
-                    .load(R.drawable.placeholder)
-                    .placeholder(R.drawable.placeholder)
-                    .into(holder.thumnail)
-            }
+        if(lecture.content.contentUri != null) { // local video
+            Glide
+                .with(context)
+                .asBitmap()
+                .load(Uri.fromFile(File(lecture.content.secure_url)))
+                .into((holder.thumnail))
+            holder.duration.text = StringUtils.secondsToMinuteSecondFormat((context as BaseActivity).getVideoDuration(lecture.content.contentUri!!))
         }
         else { // online video
-            val bitmap = (context as BaseActivity).retriveVideoFrameFromVideo(lecture.content.secure_url)
             Glide.with(context)
-                .load(bitmap)
+                .load(lecture.content.secure_url)
                 .placeholder(R.drawable.placeholder)
                 .into(holder.thumnail)
+2
+            holder.duration.text = StringUtils.secondsToMinuteSecondFormat(lecture.content.duration)
         }
     }
 

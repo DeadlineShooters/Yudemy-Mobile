@@ -10,6 +10,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -48,8 +49,9 @@ class CourseLearningActivity : AppCompatActivity() {
     private lateinit var certificateViewModel: CertificateViewModel
     var currentLecture: Map<Lecture, Boolean>? = null
 
-
     private var isUpdateProgress = false
+
+    private lateinit var btFullscreen: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,44 +85,21 @@ class CourseLearningActivity : AppCompatActivity() {
             }
         }.attach()
 
-        val btFullscreen = findViewById<ImageView>(R.id.bt_fullscreen)
+        btFullscreen = findViewById(R.id.bt_fullscreen)
         btFullscreen.setOnClickListener { view ->
-            requestedOrientation = if (!isFullScreen) {
-                btFullscreen.setImageDrawable(
-                    ContextCompat
-                        .getDrawable(
-                            applicationContext,
-                            R.drawable.ic_close_fullscreen_fill
-                        )
-                )
-                ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-            } else {
-                btFullscreen.setImageDrawable(
-                    ContextCompat
-                        .getDrawable(applicationContext, R.drawable.ic_open_in_full_fill)
-                )
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            }
-            isFullScreen = !isFullScreen
-
-            if(isFullScreen) {
-                binding.contentLearningLayout.visibility = View.GONE
-                binding.videoView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-            }
-            else {
-                binding.contentLearningLayout.visibility = View.VISIBLE
-                val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                    200F, resources.displayMetrics
-                ).toInt()
-                binding.videoView.layoutParams.height = height
-            }
+            rotateScreen()
         }
 
         findViewById<TextView>(R.id.btnBackFromPlayer).setOnClickListener {
-            val intent = Intent()
-            intent.putExtra("isUpdateProgress", isUpdateProgress)
-            setResult(Activity.RESULT_OK, intent)
-            finish()
+            if(isFullScreen) {
+                rotateScreen()
+            }
+            else {
+                val intent = Intent()
+                intent.putExtra("isUpdateProgress", isUpdateProgress)
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+            }
         }
     }
 
@@ -157,5 +136,37 @@ class CourseLearningActivity : AppCompatActivity() {
 
         val certificate = Certificate("", learningCourse.id, SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()).toString(), learningCourse.totalLength, learningCourse.name, BaseActivity().getCurrentUserID())
         certificateViewModel.addCertificate(BaseActivity().getCurrentUserID(), learningCourse.id, certificate)
+    }
+
+    private fun rotateScreen() {
+        requestedOrientation = if (!isFullScreen) {
+            btFullscreen.setImageDrawable(
+                ContextCompat
+                    .getDrawable(
+                        applicationContext,
+                        R.drawable.ic_close_fullscreen_fill
+                    )
+            )
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        } else {
+            btFullscreen.setImageDrawable(
+                ContextCompat
+                    .getDrawable(applicationContext, R.drawable.ic_open_in_full_fill)
+            )
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+        isFullScreen = !isFullScreen
+
+        if(isFullScreen) {
+            binding.contentLearningLayout.visibility = View.GONE
+            binding.videoView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+        }
+        else {
+            binding.contentLearningLayout.visibility = View.VISIBLE
+            val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                200F, resources.displayMetrics
+            ).toInt()
+            binding.videoView.layoutParams.height = height
+        }
     }
 }

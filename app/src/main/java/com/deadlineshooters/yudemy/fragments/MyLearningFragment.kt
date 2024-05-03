@@ -59,7 +59,7 @@ class MyLearningFragment : Fragment() {
 
     private lateinit var myLearningAdapter: MyLearningAdapter
 
-    private var filterIdx = 0
+    private var filterIdx = 1
     private var searchQuery = ""
 
     private var updatedCourse: Course? = null
@@ -121,20 +121,24 @@ class MyLearningFragment : Fragment() {
 
             binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    searchQuery = query!!
-                    refreshSearchList()
-
-                    myLearningAdapter.searchCourses(searchQuery)
-                    if(myLearningAdapter.courses.isEmpty()) {
-                        binding.noResultLayout.visibility = View.VISIBLE
-                    }
-                    else {
-                        binding.noResultLayout.visibility = View.GONE
-                    }
                     return false
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
+                    searchQuery = newText!!
+                    refreshSearchList()
+
+                    if(searchQuery != "") {
+                        myLearningAdapter.searchCourses(searchQuery)
+                        if (myLearningAdapter.courses.isEmpty()) {
+                            binding.noResultLayout.visibility = View.VISIBLE
+                        } else {
+                            binding.noResultLayout.visibility = View.GONE
+                        }
+                    }
+                    else {
+                        binding.noResultLayout.visibility = View.GONE
+                    }
                     return false
                 }
             })
@@ -191,6 +195,7 @@ class MyLearningFragment : Fragment() {
         layoutParams.topToBottom = R.id.frmTitle
         // clear text in search view
         binding.searchView.setQuery("", false)
+        binding.noResultLayout.visibility = View.GONE
     }
 
     private fun createFilterDialog(): BottomSheetDialog {
@@ -203,8 +208,9 @@ class MyLearningFragment : Fragment() {
         rvFilters.layoutManager = LinearLayoutManager(activity)
         val itemDecoration: RecyclerView.ItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         rvFilters.addItemDecoration(itemDecoration)
-        adapter.onItemClick = { filter, filterIdx ->
-            if(filterIdx == 0) {
+        adapter.onItemClick = { filter, idx ->
+            filterIdx = idx
+            if(idx == 0) {
                 courseProgressViewModel.getUserFavoriteCourseIds()
                 courseProgressViewModel.myFavoriteCourseIds.observe(viewLifecycleOwner, Observer { courseIds ->
                     myLearningAdapter.filterFavoriteCourses(courseIds)
@@ -228,11 +234,10 @@ class MyLearningFragment : Fragment() {
     }
 
     fun refreshSearchList() {
+        myLearningAdapter.refreshCourses(courseProgressViewModel.mylearningCourses.value!!, courseProgressViewModel.myCoursesProgress.value!! as ArrayList<Int>)
         if(filterIdx == 0 && courseProgressViewModel.myFavoriteCourseIds.value != null) {
             myLearningAdapter.filterFavoriteCourses(courseProgressViewModel.myFavoriteCourseIds.value!!)
         }
-        else
-            myLearningAdapter.refreshCourses(courseProgressViewModel.mylearningCourses.value!!, courseProgressViewModel.myCoursesProgress.value!! as ArrayList<Int>)
     }
 
     companion object {

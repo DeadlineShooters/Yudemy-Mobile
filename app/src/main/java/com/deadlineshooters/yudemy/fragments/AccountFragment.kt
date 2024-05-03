@@ -2,6 +2,7 @@ package com.deadlineshooters.yudemy.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Html
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -171,7 +172,7 @@ class AccountFragment : Fragment() {
     private fun showSignOutDialog() {
         MaterialAlertDialogBuilder(requireContext(),  R.style.ThemeOverlay_MyApp_MaterialAlertDialog)
             .setMessage("Sign out from Yudemy?")
-            .setPositiveButton("Sign out") { dialog, which ->
+            .setPositiveButton(Html.fromHtml("<font color='#B32D0F'><b>Sign Out</b></font>")) { dialog, which ->
                 // TODO: Implement sign out
                 AuthenticationRepository().signOut { isSignedOut ->
                     if (isSignedOut == true) {
@@ -180,7 +181,7 @@ class AccountFragment : Fragment() {
                     }
                 }
             }
-            .setNegativeButton("Cancel") { dialog, which ->
+            .setNegativeButton(Html.fromHtml("<font color='#5624D0'><b>Cancel</b></font>")) { dialog, which ->
                 // Do something else.
             }
             .show()

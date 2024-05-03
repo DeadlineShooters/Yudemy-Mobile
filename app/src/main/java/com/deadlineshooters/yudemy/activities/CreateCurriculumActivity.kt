@@ -3,13 +3,13 @@ package com.deadlineshooters.yudemy.activities
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import android.media.MediaMetadataRetriever
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,7 +27,6 @@ import com.deadlineshooters.yudemy.models.Video
 import com.deadlineshooters.yudemy.repositories.LectureRepository
 import com.deadlineshooters.yudemy.repositories.SectionRepository
 import com.google.android.material.snackbar.Snackbar
-import java.io.File
 
 
 class CreateCurriculumActivity : BaseActivity() {
@@ -39,12 +38,10 @@ class CreateCurriculumActivity : BaseActivity() {
 
     private var currentPositionsUpload = Pair(0, 0)
 
-    private var uploadedFiles = ArrayList<File>()
-
     private lateinit var course: Course
 
-    private var deletedSections = arrayListOf<String>()
-    private var deletedLectures = arrayListOf<String>()
+    private var deletedSections = arrayListOf<SectionWithLectures>()
+    private var deletedLectures = arrayListOf<Lecture>()
 
     private var updatedSections = arrayListOf<Section>()
     private var updatedLectures = arrayListOf<Lecture>()
@@ -57,15 +54,21 @@ class CreateCurriculumActivity : BaseActivity() {
         binding = ActivityCreateCurriculumBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            intent.getParcelableExtra("course", Course::class.java)!!
+        else
+            intent.getParcelableExtra<Course>("course")!!
+
         sectionWithLectures = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
                 intent.getParcelableArrayListExtra("sections", SectionWithLectures::class.java) as ArrayList<SectionWithLectures>
             else
                 intent.getParcelableArrayListExtra<SectionWithLectures>("sections") as ArrayList<SectionWithLectures>
 
-        course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            intent.getParcelableExtra("course", Course::class.java)!!
-        else
-            intent.getParcelableExtra<Course>("course")!!
+        if(sectionWithLectures.isEmpty()) {
+            SectionRepository().getSectionsWithLectures(course.id).addOnSuccessListener {
+                sectionWithLectures = it as ArrayList<SectionWithLectures>
+            }
+        }
 
         setupActionBar()
 
@@ -109,7 +112,7 @@ class CreateCurriculumActivity : BaseActivity() {
                 addedSections.remove(sectionWithLectures[it])
             }
             else { // if delete existing section
-                deletedSections.add(sectionWithLectures[it].section._id)
+                deletedSections.add(sectionWithLectures[it])
             }
             if(updatedSections.contains(sectionWithLectures[it].section)) { // if delete updated section
                 updatedSections.remove(sectionWithLectures[it].section)
@@ -137,7 +140,7 @@ class CreateCurriculumActivity : BaseActivity() {
                 addedLectures.remove(sectionWithLectures[positionSection].lectures[positionLecture])
             }
             else { // if delete existing lecture
-                deletedLectures.add(sectionWithLectures[positionSection].lectures[positionLecture]._id)
+                deletedLectures.add(sectionWithLectures[positionSection].lectures[positionLecture])
             }
             if(updatedLectures.contains(sectionWithLectures[positionSection].lectures[positionLecture])) { // if delete updated lecture
                 updatedLectures.remove(sectionWithLectures[positionSection].lectures[positionLecture])
@@ -171,10 +174,9 @@ class CreateCurriculumActivity : BaseActivity() {
         }
 
         sectionAdapter.onUploadVideoClick = {positionSection, positionLecture ->
-            val intent = Intent(Intent.ACTION_GET_CONTENT, null)
             currentPositionsUpload = Pair(positionSection, positionLecture)
-            intent.type = "video/*"
-            startPickVideoForResult.launch(intent)
+
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
 
             if( !addedSections.contains(sectionWithLectures[positionSection])
                 && !addedLectures.contains(sectionWithLectures[positionSection].lectures[positionLecture])
@@ -223,31 +225,22 @@ class CreateCurriculumActivity : BaseActivity() {
         }
     }
 
-    private val startPickVideoForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == RESULT_OK) {
-            val data: Intent? = result.data
+    val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        // Callback is invoked after the user selects a media item or closes the
+        // photo picker.
+        if (uri != null) {
+            Log.d("PhotoPicker", "Selected URI: $uri")
 
-            if (data?.data != null) {
-                val uriPathHelper = URIPathHelper()
-                val videoFullPath = uriPathHelper.getPath(baseContext, data.data!!)
-                Log.d("CreateCurriculumActivity", "onActivityResult: $videoFullPath")
-                if (videoFullPath != null) {
-                    val file = File(videoFullPath)
-                    uploadedFiles.add(file)
+            val uriPathHelper = URIPathHelper()
+            val videoFullPath = uriPathHelper.getPath(baseContext, uri)
+            Log.d("CreateCurriculumActivity", "onActivityResult: $videoFullPath")
 
-                    val retriever = MediaMetadataRetriever()
-                    retriever.setDataSource(applicationContext, data.data)
-                    val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                    val timeInMillisec = time!!.toLong()
-                    retriever.release()
+            sectionWithLectures[currentPositionsUpload.first].lectures[currentPositionsUpload.second].content.contentUri = uri
+            sectionWithLectures[currentPositionsUpload.first].lectures[currentPositionsUpload.second].content.secure_url = videoFullPath!!
 
-                    sectionWithLectures[currentPositionsUpload.first].lectures[currentPositionsUpload.second].content = Video()
-                    sectionWithLectures[currentPositionsUpload.first].lectures[currentPositionsUpload.second].content.duration = (timeInMillisec/1000).toDouble()
-                    sectionWithLectures[currentPositionsUpload.first].lectures[currentPositionsUpload.second].content.contentUri = data.data
-
-                    sectionAdapter.lectureAdapters[currentPositionsUpload.first].notifyItemChanged(currentPositionsUpload.second)
-                }
-            }
+            sectionAdapter.lectureAdapters[currentPositionsUpload.first].notifyItemChanged(currentPositionsUpload.second)
+        } else {
+            Log.d("PhotoPicker", "No media selected")
         }
     }
 
@@ -267,10 +260,9 @@ class CreateCurriculumActivity : BaseActivity() {
                 builder
                     .setMessage("Are you sure you want to discard the changes?")
                     .setTitle("Please Confirm")
-                    .setNegativeButton(Html.fromHtml("<font color='#363A43'><b>Cancel</b></font>")) { dialog, which ->
-
+                    .setNegativeButton(Html.fromHtml("<font color='#5624D0'><b>Cancel</b></font>")) { dialog, which ->
                     }
-                    .setPositiveButton(Html.fromHtml("<font color='#7325A3'><b>Discard</b></font>")) { dialog, which ->
+                    .setPositiveButton(Html.fromHtml("<font color='#B32D0F'><b>Discard</b></font>")) { dialog, which ->
                         val intent = Intent()
                         setResult(Activity.RESULT_CANCELED, intent)
                         finish()
@@ -295,7 +287,9 @@ class CreateCurriculumActivity : BaseActivity() {
                 return false
             }
             for(lecture in section.lectures) {
-                if(lecture.name == "" || lecture.content.duration == 0.0) {
+                if(lecture.name == ""
+                    || (lecture.content.contentUri != null && (getVideoDuration(lecture.content.contentUri!!) == 0.0)))
+                {
                     return false
                 }
             }
@@ -323,15 +317,15 @@ class CreateCurriculumActivity : BaseActivity() {
         SectionRepository()
             .addSectionsWithLecture(addedSections, course)
             .continueWithTask {
-                LectureRepository().addLectures(addedLectures)
+                LectureRepository().addLectures(addedLectures, course)
                     .continueWithTask {
                         SectionRepository().updateSections(updatedSections)
                             .continueWithTask {
-                                LectureRepository().updateLectures(updatedLectures)
+                                LectureRepository().updateLectures(updatedLectures, course)
                                     .continueWithTask {
-                                        SectionRepository().deleteSections(deletedSections)
+                                        SectionRepository().deleteSectionsWithLectures(deletedSections, course)
                                             .continueWithTask {
-                                                LectureRepository().deleteLectures(deletedLectures)
+                                                LectureRepository().deleteLectures(deletedLectures, course)
                                                     .continueWithTask {
                                                         SectionRepository().updateIndexes(sectionWithLectures.filter {
                                                             !addedSections.contains(it) && !updatedSections.contains(it.section)

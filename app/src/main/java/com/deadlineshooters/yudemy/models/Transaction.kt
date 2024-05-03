@@ -14,6 +14,6 @@ data class Transaction(
     var senderId: String = "",
     var receiverId: String = "",
     var courseId: String = "",
-    var amount: Int = 0,
+    var amount: Double  = 0.0,
     var date: String = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()),
 ) : Parcelable

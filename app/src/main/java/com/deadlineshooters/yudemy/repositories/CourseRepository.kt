@@ -1,22 +1,19 @@
 package com.deadlineshooters.yudemy.repositories
 
 import android.content.ContentValues.TAG
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.deadlineshooters.yudemy.helpers.DialogHelper
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.utils.Constants
-import com.deadlineshooters.yudemy.models.Image
-import com.deadlineshooters.yudemy.models.Video
+import com.deadlineshooters.yudemy.models.Lecture
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 class CourseRepository {
     private val userRepository = UserRepository()
@@ -247,7 +244,7 @@ class CourseRepository {
         }
     }
 
-    fun updatePrice(courseId: String, price: Int): Task<Void> {
+    fun updatePrice(courseId: String, price: Double): Task<Void> {
         return coursesCollection.document(courseId)
             .update("price", price)
     }
@@ -260,7 +257,7 @@ class CourseRepository {
             val task = LectureRepository().getLecturesBySectionId(section)
                 .continueWithTask {
                     val lectures = it.result
-                    LectureRepository().deleteLectures(lectures.map { it._id })
+                    LectureRepository().deleteLectures(lectures, course)
                 }
             tasks.add(task)
         }
@@ -276,6 +273,31 @@ class CourseRepository {
             .update("status", status)
     }
 
+    fun updateTotal(lecture: Lecture, course: Course, isAdded: Boolean): Task<Void> {
+        return coursesCollection.document(course.id)
+            .update("totalLecture", FieldValue.increment(if (isAdded) 1 else -1))
+            .continueWithTask {
+                course.totalLecture += if (isAdded) 1 else -1
+                coursesCollection.document(course.id)
+                    .update("totalLength", FieldValue.increment(if(isAdded) lecture.content.duration.toLong() else -lecture.content.duration.toLong()))
+                    .continueWithTask {
+                        course.totalLength += if(isAdded) lecture.content.duration.toInt() else -lecture.content.duration.toInt()
+                        it
+                    }
+            }
+    }
 
+    fun updateTotalLength(course: Course, oldLength: Int, newLength: Int): Task<Void> {
+        return coursesCollection.document(course.id)
+            .update("totalLength", FieldValue.increment(newLength.toLong() - oldLength.toLong()))
+            .continueWithTask {
+                course.totalLength += (newLength - oldLength)
+                it
+            }
+    }
 
+    fun deleteSection(courseId: String, sectionId: String): Task<Void> {
+        return coursesCollection.document(courseId)
+            .update("sectionList", FieldValue.arrayRemove(sectionId))
+    }
 }
