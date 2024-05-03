@@ -26,12 +26,21 @@ class QuestionRepository {
                     val task = TaskCompletionSource<ArrayList<Question>>()
                     mFireStore.collection("lectures").whereEqualTo("sectionId", section).get()
                         .addOnSuccessListener { lectureList ->
+                            var lectureTasks = mutableListOf<Task<ArrayList<Question>>>()
                             for (lecture in lectureList) {
+                                val questionListTask = TaskCompletionSource<ArrayList<Question>>()
                                 val lectureId = lecture.id
                                 getQuestionListByLectureId(lectureId){
-                                    task.setResult(it)
+//                                    task.setResult(it)
+//                                    lectureTasks.add(questionListTask.task)
+                                    questionListTask.setResult(it)
                                 }
+                                lectureTasks.add(questionListTask.task)
                             }
+                            Tasks.whenAllSuccess<ArrayList<Question>>(lectureTasks)
+                                .addOnSuccessListener {
+                                    task.setResult(it.flatten() as ArrayList<Question>)
+                                }
                         }
                     task.task
                 }
