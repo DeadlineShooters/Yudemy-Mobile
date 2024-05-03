@@ -73,7 +73,9 @@ class CourseRepository {
                             course.category = category.name
                             languageRepository.getLanguage(course.language) { language ->
                                 course.language = language.name
-                                courses.add(course)
+                                if (course.status) {
+                                    courses.add(course)
+                                }
                                 fetchedCourses++
                                 if (fetchedCourses == courseDocument.size()) {
                                     callback(courses)
