@@ -5,5 +5,5 @@ import android.os.Parcelable
 @kotlinx.parcelize.Parcelize
 data class SectionWithLectures(
     val section: Section,
-    val lectures: List<Lecture>
+    val lectures: ArrayList<Lecture>
 ) : Parcelable

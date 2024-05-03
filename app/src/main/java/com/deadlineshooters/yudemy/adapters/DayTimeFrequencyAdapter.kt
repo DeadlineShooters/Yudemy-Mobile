@@ -14,7 +14,7 @@ import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 
-class DayFrequencyAdapter(private val items: Array<String>, private val subItems: Array<String>?, private val chosenDays: ArrayList<Int>): RecyclerView.Adapter<DayFrequencyAdapter.ViewHolder>() {
+class DayTimeFrequencyAdapter(private val items: Array<String>, private val subItems: Array<String>?, var chosenItems: ArrayList<Int>): RecyclerView.Adapter<DayTimeFrequencyAdapter.ViewHolder>() {
     var onItemClick: ((Int) -> Unit)? = null
     private lateinit var context: Context
     inner class ViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
@@ -59,7 +59,7 @@ class DayFrequencyAdapter(private val items: Array<String>, private val subItems
         DrawableCompat.setTint(wrappedDrawable, context.resources.getColor(R.color.primary_color, null))
 
         // check if the day is chosen
-        if(chosenDays.contains(position)) {
+        if(chosenItems.contains(position)) {
             holder.text.setCompoundDrawablesWithIntrinsicBounds(null, null, wrappedDrawable, null)
         }
         else {

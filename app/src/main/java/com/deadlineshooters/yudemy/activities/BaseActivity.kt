@@ -1,18 +1,18 @@
 package com.deadlineshooters.yudemy.activities
 
-import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
+import android.net.Uri
 import android.os.Bundle
-import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.os.Environment
 import android.os.Looper
+import android.view.View
 import android.view.Window
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.databinding.DialogProgressBinding
@@ -24,6 +24,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -49,6 +50,8 @@ open class BaseActivity : AppCompatActivity() {
 
     fun showProgressDialog(text: String) {
         mProgressDialog = Dialog(this)
+        mProgressDialog.setCancelable(false)
+        mProgressDialog.setCanceledOnTouchOutside(false)
 
         /*Set the screen content from a layout resource.
         The resource will be inflated, adding all top-level views to the screen.*/
@@ -150,5 +153,32 @@ open class BaseActivity : AppCompatActivity() {
     fun hideKeyboard(view: View) {
         val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    fun getHourFromIdx(idx: Int): Int {
+        val hours = arrayListOf(6, 9, 12, 15, 18, 21)
+        return hours[idx]
+    }
+
+    fun getDayFromIdx(idx: Int): Int {
+        return when(idx) {
+            0 -> Calendar.MONDAY
+            1 -> Calendar.TUESDAY
+            2 -> Calendar.WEDNESDAY
+            3 -> Calendar.THURSDAY
+            4 -> Calendar.FRIDAY
+            5 -> Calendar.SATURDAY
+            6 -> Calendar.SUNDAY
+            else -> -1
+        }
+    }
+
+    fun getVideoDuration(uri: Uri): Double {
+        val retriever = MediaMetadataRetriever()
+        retriever.setDataSource(applicationContext, uri)
+        val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+        val timeInSec = ((time?.toLong() ?: 0)/1000).toDouble()
+        retriever.release()
+        return timeInSec
     }
 }
