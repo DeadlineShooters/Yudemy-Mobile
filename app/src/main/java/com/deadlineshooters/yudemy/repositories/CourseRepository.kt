@@ -260,12 +260,6 @@ class CourseRepository {
                     LectureRepository().deleteLectures(lectures, course)
                         .continueWithTask {
                             SectionRepository().deleteSection(section)
-                                .continueWithTask {
-                                    CourseProgressRepository().deleteProgressByCourse(course.id)
-                                        .continueWithTask {
-                                            UserRepository().removeCourse(course.id)
-                                        }
-                                }
                         }
                 }
             tasks.add(task)
@@ -274,6 +268,12 @@ class CourseRepository {
         return Tasks.whenAllComplete(tasks)
             .continueWithTask {
                 coursesCollection.document(course.id).delete()
+                    .continueWithTask {
+                        CourseProgressRepository().deleteProgressByCourse(course.id)
+                            .continueWithTask {
+                                UserRepository().removeCourse(course.id)
+                            }
+                    }
             }
     }
 
