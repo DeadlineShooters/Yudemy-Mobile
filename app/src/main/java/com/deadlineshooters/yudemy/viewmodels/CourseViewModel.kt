@@ -35,6 +35,9 @@ class CourseViewModel : ViewModel() {
     private val _courses = MutableLiveData<List<Course>>()
     val courses get() = _courses
 
+    private val _editingCourse = MutableLiveData<Course?>()
+    val editingCourse: LiveData<Course?> = _editingCourse
+
     fun refreshCourses(userId: String? = null, sortByNewest: Boolean = true) {
         val task = if (userId != null) {
             courseRepository.getCoursesByInstructor(userId, sortByNewest)
@@ -67,6 +70,17 @@ class CourseViewModel : ViewModel() {
                 _sectionsWithLectures.value = task.result
             } else {
                 Log.d(this.javaClass.simpleName, "Failed to get sections with lectures: ${task.exception}")
+            }
+        }
+    }
+
+    fun deleteCourse(course: Course) {
+        courseRepository.deleteCourseAndItsLectures(course)
+            .addOnCompleteListener{ task ->
+            if (task.isSuccessful) {
+                _dashboardCourses.postValue(_dashboardCourses.value!!.minus(course))
+            } else {
+                Log.d(this.javaClass.simpleName, "Failed to delete course: ${task.exception}")
             }
         }
     }

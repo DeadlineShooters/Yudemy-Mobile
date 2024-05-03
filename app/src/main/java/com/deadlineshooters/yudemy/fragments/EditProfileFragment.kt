@@ -128,10 +128,10 @@ class EditProfileFragment : Fragment() {
             builder
                 .setMessage("Are you sure you want to discard the changes?")
                 .setTitle("Please Confirm")
-                .setNegativeButton(Html.fromHtml("<font color='#00000FF'><b>Cancel</b></font>")) { dialog, which ->
+                .setNegativeButton(Html.fromHtml("<font color='#5624D0'><b>Cancel</b></font>")) { dialog, which ->
 
                 }
-                .setPositiveButton(Html.fromHtml("<font color='#FF0000'><b>Discard</b></font>")) { dialog, which ->
+                .setPositiveButton(Html.fromHtml("<font color='#B32D0F'><b>Discard</b></font>")) { dialog, which ->
                     requireActivity().supportFragmentManager.popBackStack()
                 }
 

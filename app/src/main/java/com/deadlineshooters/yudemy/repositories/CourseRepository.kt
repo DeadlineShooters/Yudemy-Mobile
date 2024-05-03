@@ -6,13 +6,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
+import com.deadlineshooters.yudemy.models.Lecture
 import com.deadlineshooters.yudemy.models.Section
 import com.deadlineshooters.yudemy.models.Video
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Locale
+import kotlin.text.Typography.section
 
 class CourseRepository {
     private val userRepository = UserRepository()
@@ -42,15 +46,12 @@ class CourseRepository {
         )
     }
 
-    fun addCourse(course: Course) {
-        val documentReference = coursesCollection.document()
-        course.id = documentReference.id
-        documentReference.set(course)
-            .addOnSuccessListener {
-                Log.d("Course", "DocumentSnapshot successfully written!\n$course")
-            }
-            .addOnFailureListener { e ->
-                Log.w("Course", "Error writing document", e)
+    fun addCourse(course: Course): Task<String> {
+        course.instructor = auth.currentUser?.uid.toString()
+        return coursesCollection
+            .add(course)
+            .continueWith { task ->
+                task.result.id
             }
     }
 
@@ -179,5 +180,65 @@ class CourseRepository {
             }
     }
 
+    fun addASection(courseId: String, section: String): Task<Void> {
+        return coursesCollection.document(courseId)
+            .update("sectionList", FieldValue.arrayUnion(section))
+    }
 
+    fun updatePrice(courseId: String, price: Double): Task<Void> {
+        return coursesCollection.document(courseId)
+            .update("price", price)
+    }
+
+    fun deleteCourseAndItsLectures(course: Course): Task<Void> {
+        val sections = course.sectionList
+
+        val tasks = mutableListOf<Task<*>>()
+        for(section in sections) {
+            val task = LectureRepository().getLecturesBySectionId(section)
+                .continueWithTask {
+                    val lectures = it.result
+                    LectureRepository().deleteLectures(lectures, course)
+                }
+            tasks.add(task)
+        }
+
+        return Tasks.whenAllComplete(tasks)
+            .continueWithTask {
+                coursesCollection.document(course.id).delete()
+            }
+    }
+
+    fun updateCourseStatus(courseId: String, status: Boolean): Task<Void> {
+        return coursesCollection.document(courseId)
+            .update("status", status)
+    }
+
+    fun updateTotal(lecture: Lecture, course: Course, isAdded: Boolean): Task<Void> {
+        return coursesCollection.document(course.id)
+            .update("totalLecture", FieldValue.increment(if (isAdded) 1 else -1))
+            .continueWithTask {
+                course.totalLecture += if (isAdded) 1 else -1
+                coursesCollection.document(course.id)
+                    .update("totalLength", FieldValue.increment(if(isAdded) lecture.content.duration.toLong() else -lecture.content.duration.toLong()))
+                    .continueWithTask {
+                        course.totalLength += if(isAdded) lecture.content.duration.toInt() else -lecture.content.duration.toInt()
+                        it
+                    }
+            }
+    }
+
+    fun updateTotalLength(course: Course, oldLength: Int, newLength: Int): Task<Void> {
+        return coursesCollection.document(course.id)
+            .update("totalLength", FieldValue.increment(newLength.toLong() - oldLength.toLong()))
+            .continueWithTask {
+                course.totalLength += (newLength - oldLength)
+                it
+            }
+    }
+
+    fun deleteSection(courseId: String, sectionId: String): Task<Void> {
+        return coursesCollection.document(courseId)
+            .update("sectionList", FieldValue.arrayRemove(sectionId))
+    }
 }
