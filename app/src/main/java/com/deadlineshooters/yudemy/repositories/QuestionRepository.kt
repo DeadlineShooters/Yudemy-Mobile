@@ -185,7 +185,7 @@ class QuestionRepository {
     }
 
 
-    fun getNoInstructorRepliesQuestions(questionList: ArrayList<Question>, callback: (ArrayList<Question>) -> Unit) {
+    fun getNoInstructorRepliesQuestions(questionList: ArrayList<Question>, instructorId: String, callback: (ArrayList<Question>) -> Unit) {
         val questionTasks = questionList.map { question ->
             val task = TaskCompletionSource<ArrayList<Question>>()
             mFireStore.collection("replies")
@@ -201,7 +201,7 @@ class QuestionRepository {
                                 .document(reply.getString("replier")!!)
                                 .get()
                                 .addOnSuccessListener { user ->
-                                    if (user["instructor"] != null) {
+                                    if(user.id != instructorId){
                                         replyTask.setResult(reply.toObject(Reply::class.java))
                                     }
                                     else{

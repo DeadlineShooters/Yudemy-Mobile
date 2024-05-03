@@ -197,7 +197,8 @@ class QuestionListAdapter (var questionList: ArrayList<Question>, private val li
                 notifyDataSetChanged()
             })
         } else if (filter == "Questions without instructors' responses"){
-            questionViewModel.getNoInstructorRepliesQuestions(tmpQuestionList)
+            Log.d("QuestionListAdapter", BaseActivity().getCurrentUserID())
+            questionViewModel.getNoInstructorRepliesQuestions(tmpQuestionList, BaseActivity().getCurrentUserID())
             questionViewModel.questionNoReplies.observe(lifecycleOwner, Observer { it ->
                 questionList = it
                 notifyDataSetChanged()
