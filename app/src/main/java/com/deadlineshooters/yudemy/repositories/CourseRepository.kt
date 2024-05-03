@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
 import com.deadlineshooters.yudemy.models.Lecture
-import com.deadlineshooters.yudemy.models.Section
 import com.deadlineshooters.yudemy.models.Video
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -16,7 +15,6 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Locale
-import kotlin.text.Typography.section
 
 class CourseRepository {
     private val userRepository = UserRepository()
@@ -190,7 +188,10 @@ class CourseRepository {
             .update("price", price)
     }
 
-    fun deleteCourseAndItsLectures(course: Course): Task<Void> {
+    /**
+     * delete its sections, lectures, learner's progress, learner's course, learner's favorite course
+     */
+    fun deleteCourse(course: Course): Task<Void> {
         val sections = course.sectionList
 
         val tasks = mutableListOf<Task<*>>()
@@ -199,6 +200,15 @@ class CourseRepository {
                 .continueWithTask {
                     val lectures = it.result
                     LectureRepository().deleteLectures(lectures, course)
+                        .continueWithTask {
+                            SectionRepository().deleteSection(section)
+                                .continueWithTask {
+                                    CourseProgressRepository().deleteProgressByCourse(course.id)
+                                        .continueWithTask {
+                                            UserRepository().removeCourse(course.id)
+                                        }
+                                }
+                        }
                 }
             tasks.add(task)
         }
@@ -237,7 +247,7 @@ class CourseRepository {
             }
     }
 
-    fun deleteSection(courseId: String, sectionId: String): Task<Void> {
+    fun removeSection(courseId: String, sectionId: String): Task<Void> {
         return coursesCollection.document(courseId)
             .update("sectionList", FieldValue.arrayRemove(sectionId))
     }

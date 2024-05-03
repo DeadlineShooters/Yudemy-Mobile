@@ -177,7 +177,7 @@ class SectionRepository {
                 .continueWithTask {
                     LectureRepository().deleteLectures(section.lectures, course)
                         .continueWithTask {
-                            CourseRepository().deleteSection(course.id, section.section._id)
+                            CourseRepository().removeSection(course.id, section.section._id)
                             course.sectionList.remove(section.section._id)
                             it
                         }
@@ -192,5 +192,9 @@ class SectionRepository {
                 .update("index", section.index)
         }
         return Tasks.whenAll(tasks)
+    }
+
+    fun deleteSection(sectionId: String): Task<Void> {
+        return sectionCollection.document(sectionId).delete()
     }
 }

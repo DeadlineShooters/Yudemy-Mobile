@@ -460,4 +460,15 @@ class UserRepository {
                 }
             }
     }
+
+    fun removeCourse(courseId: String): Task<Void> {
+        return userCollection
+            .document(mAuth.currentUser!!.uid)
+            .update("courseList", FieldValue.arrayRemove(courseId))
+            .continueWithTask {
+                userCollection
+                    .document(mAuth.currentUser!!.uid)
+                    .update("favoriteCourses", FieldValue.arrayRemove(courseId))
+            }
+    }
 }

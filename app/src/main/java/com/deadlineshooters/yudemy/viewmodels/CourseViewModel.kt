@@ -1,15 +1,11 @@
 package com.deadlineshooters.yudemy.viewmodels
 
-import android.content.ComponentCallbacks
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
 import com.deadlineshooters.yudemy.models.Course
-import com.deadlineshooters.yudemy.models.Image
-import com.deadlineshooters.yudemy.models.User
-import com.deadlineshooters.yudemy.models.Video
 import com.deadlineshooters.yudemy.models.SectionWithLectures
 import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.deadlineshooters.yudemy.repositories.SectionRepository
@@ -75,7 +71,7 @@ class CourseViewModel : ViewModel() {
     }
 
     fun deleteCourse(course: Course) {
-        courseRepository.deleteCourseAndItsLectures(course)
+        courseRepository.deleteCourse(course)
             .addOnCompleteListener{ task ->
             if (task.isSuccessful) {
                 _dashboardCourses.postValue(_dashboardCourses.value!!.minus(course))
