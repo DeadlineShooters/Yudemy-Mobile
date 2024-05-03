@@ -1,13 +1,11 @@
 package com.deadlineshooters.yudemy.activities
 
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.LinearLayout
@@ -16,8 +14,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -421,6 +417,7 @@ class CourseDetailActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        DialogHelper.showProgressDialog(this, "Loading...")
         userRepository.isInWishlist(course.id) { isInWishlist ->
             if (isInWishlist) {
                 binding.btnWishlist.text = "Wishlisted"
@@ -429,6 +426,7 @@ class CourseDetailActivity : AppCompatActivity() {
             }
         }
         handleCourseInCourseList()
+        DialogHelper.hideProgressDialog()
     }
 
     private fun requestPayment(course: Course) {
