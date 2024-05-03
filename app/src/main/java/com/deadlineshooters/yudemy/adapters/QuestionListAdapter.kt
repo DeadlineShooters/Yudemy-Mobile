@@ -9,7 +9,6 @@ import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.ScrollView
 import android.widget.TextView
-import androidx.compose.ui.layout.LookaheadLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -68,6 +67,7 @@ class QuestionListAdapter (var questionList: ArrayList<Question>, private val li
     }
 
     override fun onBindViewHolder(holder: QuestionListAdapter.ViewHolder, position: Int) {
+//        questionList.sortByDescending { it.lectureId }
         val question: Question = questionList[position]
         val questionTitle = holder.questionTitle
         val askerName = holder.askerName
@@ -142,7 +142,6 @@ class QuestionListAdapter (var questionList: ArrayList<Question>, private val li
         questionList = questionViewModel.questions.value!!
         notifyDataSetChanged()
 
-        Log.d("cho na", questionList.toString())
         questionList.sortByDescending { it.createdTime }
 
 

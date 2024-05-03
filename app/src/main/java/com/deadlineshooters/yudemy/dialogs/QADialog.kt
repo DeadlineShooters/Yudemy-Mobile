@@ -75,6 +75,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         setStyle(STYLE_NORMAL, android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
         questionViewModel = QuestionViewModel()
         (activity as CourseLearningActivity).exoPlayer?.pause()
+
     }
 
     override fun onCreateView(
@@ -96,6 +97,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
         questionViewModel.getQuestionsByCourseId(courseId)
 
         questionViewModel.questions.observe(this, Observer{ result ->
+            result.sortByDescending { it.createdTime }
             questionListAdapter = QuestionListAdapter(result, this, questionViewModel)
             questionListView.adapter = questionListAdapter
             questionListView.layoutManager = LinearLayoutManager(requireContext())
@@ -193,8 +195,6 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
 
         submitQuestionBtn.setOnClickListener{
             //TODO: Submit question to database
-//            val title = sheet.findViewById<TextView>(R.id.askQuestionTitle).text.toString()
-//            val details = sheet.findViewById<TextView>(R.id.askQuestionDetail).text.toString()
             if(imageList.isNotEmpty()){
                 (activity as CourseLearningActivity).showProgressDialog("")
                 CloudinaryHelper().uploadImageListToCloudinary (imageList){
@@ -236,12 +236,10 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
 
         imageView.tag = uri.toString()
         imageView.setOnClickListener {
-            imageContainer.removeView(imageView)
-            imageView.drawable?.let{drawble ->
-                val bitmap = (drawble as BitmapDrawable).bitmap
-                val filepath = BaseActivity().saveBitmapToFile(bitmap, requireContext())
-                imageList.remove(filepath.toString())
+            imageContainer.indexOfChild(imageView).let { index ->
+                imageList.removeAt(index)
             }
+            imageContainer.removeView(imageView)
         }
 
         imageContainer.addView(imageView)

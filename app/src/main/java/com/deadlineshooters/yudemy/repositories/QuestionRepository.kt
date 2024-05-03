@@ -103,17 +103,25 @@ class QuestionRepository {
         }
     }
 
-    fun deleteQuestion(courseId: String, questionId: String, callback: (ArrayList<Question>) -> Unit){
-        questionsCollection.document(questionId).delete()
-        .addOnSuccessListener {
-            getQuestionListByCourseId(courseId){
-                callback(it)
+        fun deleteQuestion(courseId: String, questionId: String, callback: (ArrayList<Question>) -> Unit){
+            questionsCollection.document(questionId).delete()
+            .addOnSuccessListener {
+                mFireStore.collection("replies")
+                    .whereEqualTo("questionId", questionId)
+                    .get()
+                    .addOnSuccessListener { result ->
+                        for (document in result) {
+                            document.reference.delete()
+                        }
+                    }
+                getQuestionListByCourseId(courseId){
+                    callback(it)
+                }
+            }
+            .addOnFailureListener {
+                callback(ArrayList())
             }
         }
-        .addOnFailureListener {
-            callback(ArrayList())
-        }
-    }
 
     fun getQuestionsListOfInstructor(instructorId: String, callback: (ArrayList<Question>) -> Unit){
         mFireStore.collection("courses")
