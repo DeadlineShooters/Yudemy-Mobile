@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
@@ -18,7 +19,9 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,6 +41,9 @@ import com.deadlineshooters.yudemy.viewmodels.ReplyViewModel
 import com.deadlineshooters.yudemy.viewmodels.UserViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
@@ -85,6 +91,7 @@ class InstructorQAFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_instructor_q_a, container, false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         qaInstructorFilterBtn = view.findViewById(R.id.qaInstructorFilterBtn)
@@ -92,6 +99,7 @@ class InstructorQAFragment : Fragment() {
         questionViewModel.getQuestionsOfInstructor(BaseActivity().getCurrentUserID())
 
         questionViewModel.questions.observe(viewLifecycleOwner, Observer{ result ->
+            result.sortByDescending { LocalDate.parse(it.createdTime, DateTimeFormatter.ofPattern("dd/MM/yyyy")) }
             questionListAdapter = QuestionListAdapter(result, this, questionViewModel)
             instructorQuestionListView.adapter = questionListAdapter
             instructorQuestionListView.layoutManager = LinearLayoutManager(requireContext())
@@ -160,6 +168,9 @@ class InstructorQAFragment : Fragment() {
 
         imageView.tag = uri.toString()
         imageView.setOnClickListener {
+            imageContainer.indexOfChild(imageView).let { index ->
+                imageList.removeAt(index)
+            }
             imageContainer.removeView(imageView)
         }
 
@@ -171,6 +182,7 @@ class InstructorQAFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun createQuestionDetailDialog(): Dialog {
         val sheet = layoutInflater.inflate(R.layout.dialog_question_detail, null)
         val dialog = Dialog(requireContext(), android.R.style.Theme_DeviceDefault_Light_NoActionBar_Fullscreen)
@@ -218,8 +230,9 @@ class InstructorQAFragment : Fragment() {
                 questionDetailLectureId.text = it.name
             })
 
-            replyViewModel.replies.observe(viewLifecycleOwner, Observer { it ->
-                replyListAdapter = ReplyListAdapter(it, this)
+            replyViewModel.replies.observe(viewLifecycleOwner, Observer { result ->
+                result.sortByDescending { LocalDate.parse(it.createdTime, DateTimeFormatter.ofPattern("dd/MM/yyyy")) }
+                replyListAdapter = ReplyListAdapter(result, this)
                 replyListView.adapter = replyListAdapter
                 replyListView.layoutManager = LinearLayoutManager(requireContext())
             })
@@ -239,6 +252,11 @@ class InstructorQAFragment : Fragment() {
                     ImageViewHelper().setImageViewFromUrl(imageUrl, imageView)
                     questionDetailImageContainer.addView(imageView)
                 }
+            }
+
+            replyContent.doAfterTextChanged {
+                sendBtn.isClickable = replyContent.text.isNotBlank()
+                sendBtn.isEnabled = replyContent.text.isNotBlank()
             }
 
             sendBtn.setOnClickListener{
