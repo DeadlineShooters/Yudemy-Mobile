@@ -74,7 +74,6 @@ class CourseViewModel : ViewModel() {
         courseRepository.getWishlist { courses ->
             _wishlist.value = courses
         }
-
     }
 
     fun refreshSections(courseId: String) {

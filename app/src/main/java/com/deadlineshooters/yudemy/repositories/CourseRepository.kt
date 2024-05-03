@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
+import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.models.Video
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -19,6 +20,7 @@ class CourseRepository {
     private val languageRepository = LanguageRepository()
     private val mFireStore = FirebaseFirestore.getInstance()
     private val coursesCollection = mFireStore.collection("courses")
+    private val usersCollection = mFireStore.collection("users")
     private val auth = FirebaseAuth.getInstance()
 
 
@@ -36,7 +38,7 @@ class CourseRepository {
                     "This comprehensive course is taught by Prateek Narang & Apaar Kamal, who are Software Engineers at Google and have taught over thousands of students in competitive programming over last 5+ years. This course is worth thousands of dollars, but Coding Minutes is providing you this course to you at a fraction of its original cost! This is action oriented course, we not just delve into theory but focus on the practical aspects by building implementing algorithms & solving problems. With over 95+ high quality video lectures, easy to understand explanations this is one of the most detailed and robust course for Graph Algorithms ever created.\n" +
                     "\n" +
                     "Course starts very basics with how to store and represent graphs on a computer, and then dives into popular algorithms & techniques for problem solving. The course is divided into two parts.",
-            price = 1499000.0,
+            price = 1499000,
             promotionalVideo = vid,
             language = "ylTlDABgESXAzOHGyAxR", // English
             category = "hJqfxq5tTYVFsw69Mts9",
@@ -72,7 +74,7 @@ class CourseRepository {
                     course
                 } ?: emptyList()
 
-                val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()) 
+                val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 courses.sortedWith(compareBy { sdf.parse(it.createdDate) }).let { if (sortByNewest) it.reversed() else it }
             } else {
                 emptyList()
@@ -81,7 +83,7 @@ class CourseRepository {
     }
 
     fun getCourses(callback: (List<Course>) -> Unit) {
-        val courses = mutableListOf<Course>() 
+        val courses = mutableListOf<Course>()
 
         coursesCollection.get().addOnSuccessListener { courseDocument ->
             if (courseDocument != null) {
@@ -119,6 +121,11 @@ class CourseRepository {
         val courses = mutableListOf<Course>()
 
         userRepository.getWishlistID { wishlistID ->
+            if (wishlistID.isEmpty()) {
+                callback(courses)
+                return@getWishlistID
+            }
+
             var fetchedCourses = 0
             for (courseId in wishlistID) {
                 coursesCollection.document(courseId).get().addOnSuccessListener { courseDocument ->
@@ -189,7 +196,7 @@ class CourseRepository {
         return coursesLiveData
     }
 
-    fun getTop3InstructorCourseList(instructorId: String, callbacks:(List<Course>) -> Unit) {
+    fun getTop3InstructorCourseList(instructorId: String, callbacks: (List<Course>) -> Unit) {
         coursesCollection.whereEqualTo("instructor", instructorId).limit(3).get()
             .addOnSuccessListener { documents ->
                 val courses = documents.mapNotNull { it.toObject(Course::class.java) }
@@ -201,7 +208,7 @@ class CourseRepository {
             }
     }
 
-    fun getInstructorCourseList(instructorId: String, callbacks:(List<Course>) -> Unit) {
+    fun getInstructorCourseList(instructorId: String, callbacks: (List<Course>) -> Unit) {
         coursesCollection.whereEqualTo("instructor", instructorId).get()
             .addOnSuccessListener { documents ->
                 val courses = documents.mapNotNull { it.toObject(Course::class.java) }
@@ -240,10 +247,31 @@ class CourseRepository {
 
                     coursesCollection.document(courseId).set(course)
                         .addOnSuccessListener {
-                            callback(true)
+                            usersCollection.document(course.instructor).get()
+                                .addOnSuccessListener { userDocument ->
+                                    val user = userDocument?.toObject(User::class.java)
+                                    if (user != null) {
+                                        user.instructor!!.totalStudents++
+
+                                        usersCollection.document(course.instructor).set(user)
+                                            .addOnSuccessListener {
+                                                callback(true)
+                                            }
+                                            .addOnFailureListener { exception ->
+                                                Log.w("Firestore", "Error updating user document: ", exception)
+                                                callback(false)
+                                            }
+                                    } else {
+                                        callback(false)
+                                    }
+                                }
+                                .addOnFailureListener { exception ->
+                                    Log.w("Firestore", "Error getting user document: ", exception)
+                                    callback(false)
+                                }
                         }
                         .addOnFailureListener { exception ->
-                            Log.w("Firestore", "Error updating document: ", exception)
+                            Log.w("Firestore", "Error updating course document: ", exception)
                             callback(false)
                         }
                 } else {
@@ -251,7 +279,7 @@ class CourseRepository {
                 }
             }
             .addOnFailureListener { exception ->
-                Log.w("Firestore", "Error getting documents: ", exception)
+                Log.w("Firestore", "Error getting course document: ", exception)
                 callback(false)
             }
     }

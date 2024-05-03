@@ -161,35 +161,15 @@ class CourseDetailActivity : AppCompatActivity() {
             handlePaymentSuccess("", "")
         }
 
-        if (course.price == 0.0) {
+        if (course.price == 0) {
             binding.tvPrice.visibility = GONE
         } else {
             binding.tvPrice.visibility = VISIBLE
         }
 
-        userRepository.isInCourseList(course.id) { isInCourseList ->
-            if (isInCourseList) {
-                binding.btnBuy.visibility = GONE
-                binding.googlePayButton.visibility = GONE
-                binding.btnWishlist.visibility = GONE
-                binding.enrollBtn.visibility = GONE
-                binding.gotoCourseBtn.visibility = VISIBLE
-            } else {
-                binding.gotoCourseBtn.visibility = GONE
-                if (course.price == 0.0) {
-                    binding.enrollBtn.visibility = VISIBLE
-                    binding.btnBuy.visibility = GONE
-                    binding.googlePayButton.visibility = GONE
-                    binding.btnWishlist.visibility = GONE
-                } else {
-                    binding.enrollBtn.visibility = GONE
-                    binding.btnBuy.visibility = VISIBLE
-                    binding.googlePayButton.visibility = VISIBLE
-                    binding.btnWishlist.visibility = VISIBLE
-                }
-            }
-        }
+        handleCourseInCourseList()
     }
+
 
     private fun populateCourseDetails(course: Course) {
         binding.tvTitle.text = course.name
@@ -301,7 +281,9 @@ class CourseDetailActivity : AppCompatActivity() {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
         }
 
-        binding.toolbarSignUpActivity.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+        binding.toolbarSignUpActivity.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     //Get token through MoMo app
@@ -366,10 +348,11 @@ class CourseDetailActivity : AppCompatActivity() {
         Log.d("message", "success")
         userRepository.addToCourseList(course.id) {}
         CourseRepository().updateCourseStats(course.id) {}
-        if (course.price != 0.0) {
+        if (course.price != 0) {
             addTransaction()
         }
         newCourseProgress()
+        generateUserLectures()
         val intent = Intent(this@CourseDetailActivity, EnrolledActivity::class.java)
         intent.putExtra("course", course)
         startActivity(intent)
@@ -388,6 +371,7 @@ class CourseDetailActivity : AppCompatActivity() {
                 binding.btnWishlist.text = "Add to wishlist"
             }
         }
+        handleCourseInCourseList()
     }
 
     private fun requestPayment(course: Course) {
@@ -431,4 +415,51 @@ class CourseDetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun generateUserLectures() {
+        userRepository.getCurUser { currentUser ->
+            LectureRepository().getLectureListByCourseId(course.id) { lectureList ->
+                lectureList.forEach { lecture ->
+                    val userLecture = UserLecture(
+                        userId = currentUser.id,
+                        lectureId = lecture._id,
+                        finished = false
+                    )
+
+                    val userLectureRepository = UserLectureRepository()
+                    userLectureRepository.newUserLecture(userLecture) { success ->
+                        if (success) {
+                            Log.d("Firestore", "Successfully added UserLecture for lectureId: ${lecture._id}")
+                        } else {
+                            Log.d("Firestore", "Failed to add UserLecture for lectureId: ${lecture._id}")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleCourseInCourseList() {
+        userRepository.isInCourseList(course.id) { isInCourseList ->
+            if (isInCourseList) {
+                binding.btnBuy.visibility = GONE
+                binding.googlePayButton.visibility = GONE
+                binding.btnWishlist.visibility = GONE
+                binding.enrollBtn.visibility = GONE
+                binding.gotoCourseBtn.visibility = VISIBLE
+            } else {
+                binding.gotoCourseBtn.visibility = GONE
+                if (course.price == 0) {
+                    binding.enrollBtn.visibility = VISIBLE
+                    binding.btnBuy.visibility = GONE
+                    binding.googlePayButton.visibility = GONE
+                    binding.btnWishlist.visibility = GONE
+                } else {
+                    binding.enrollBtn.visibility = GONE
+                    binding.btnBuy.visibility = VISIBLE
+                    binding.googlePayButton.visibility = VISIBLE
+                    binding.btnWishlist.visibility = VISIBLE
+                }
+            }
+        }
+    }
 }
