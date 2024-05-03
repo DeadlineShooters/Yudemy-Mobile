@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
 class UserRepository {
@@ -479,5 +480,96 @@ class UserRepository {
         mFireStore.collection("users")
             .document(userId)
             .delete()
+    }
+
+    fun getReminderDays(callback: (ArrayList<Number>) -> Unit) {
+        usersCollection
+            .document(mAuth.currentUser!!.uid)
+            .get()
+            .addOnSuccessListener { document ->
+                if(document != null) {
+                    val listDays = document.data?.get("reminderDays") as ArrayList<Number>
+                    callback(listDays)
+                }
+                else {
+                    Log.d("Firestore", "No such document")
+                }
+            }
+    }
+
+    fun getReminderTimes(callback: (ArrayList<Number>) -> Unit) {
+        usersCollection
+            .document(mAuth.currentUser!!.uid)
+            .get()
+            .addOnSuccessListener { document ->
+                if(document != null) {
+                    val listTimes = document.data?.get("reminderTimes") as ArrayList<Number>
+                    callback(listTimes)
+                }
+                else {
+                    Log.d("Firestore", "No such document")
+                }
+            }
+    }
+
+    fun addReminderDay(day: Int) {
+        usersCollection
+            .document(mAuth.currentUser!!.uid)
+            .update("reminderDays", FieldValue.arrayUnion(day))
+    }
+
+    fun removeReminderDay(day: Int) {
+        usersCollection
+            .document(mAuth.currentUser!!.uid)
+            .update("reminderDays", FieldValue.arrayRemove(day))
+    }
+
+    fun addReminderTime(time: Int) {
+        usersCollection
+            .document(mAuth.currentUser!!.uid)
+            .update("reminderTimes", FieldValue.arrayUnion(time))
+    }
+
+    fun removeReminderTime(time: Int) {
+        usersCollection
+            .document(mAuth.currentUser!!.uid)
+            .update("reminderTimes", FieldValue.arrayRemove(time))
+    }
+
+    fun checkIfReminderToggled(callback: (Boolean) -> Unit) {
+        usersCollection
+            .document(mAuth.currentUser!!.uid)
+            .get()
+            .addOnSuccessListener { document ->
+                if(document != null) {
+                    val isToggleReminder = document.data?.get("reminderNotification") as Boolean
+                    callback(isToggleReminder)
+                }
+                else {
+                    Log.d("Firestore", "No such document")
+                }
+            }
+    }
+
+    fun toggleReminder(isToggle: Boolean, callback: (Boolean) -> Unit) {
+        usersCollection
+            .document(mAuth.currentUser!!.uid)
+            .update("reminderNotification", isToggle)
+            .addOnSuccessListener {
+                if(isToggle) {
+                    getReminderDays { days ->
+                        getReminderTimes { times ->
+                            if(days.isEmpty() || times.isEmpty()) {
+                                addReminderDay(0)
+                                addReminderTime(0)
+                                callback(true)
+                            }
+                            else {
+                                callback(false)
+                            }
+                        }
+                    }
+                }
+            }
     }
 }

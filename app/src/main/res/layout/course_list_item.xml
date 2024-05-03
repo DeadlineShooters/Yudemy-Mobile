@@ -59,6 +59,7 @@
             app:layout_constraintVertical_bias="0.5" app:layout_constraintBottom_toTopOf="@+id/discountPrice"
             app:layout_constraintStart_toStartOf="@+id/courseName" android:layout_marginTop="8dp" android:textColor="#99742d"/>
     <TextView
+
             android:text="Rating quantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/ratingQuantity"

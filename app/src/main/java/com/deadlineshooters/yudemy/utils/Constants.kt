@@ -7,12 +7,17 @@ object Constants {
     const val LECTURES: String = "lectures"
     const val COURSES: String = "courses"
     const val COURSE_FEEDBACK: String = "course_feedback"
+    const val CATEGORIES: String = "categories"
+    const val TRANSACTIONS: String = "transactions"
 
     const val CLOUDINARY_FOLDER: String = "Yudemy"
     const val PROJECT_ID: String = "test-b0670"
     const val PROJECT_NUMBER: String = "54920611721"
+    const val CHANNEL_ID = "com.deadlineshooters.yudemy"
+    const val CHANNEL_NAME = "Yudemy Notifications"
 
     const val PAYMENTS_ENVIRONMENT = WalletConstants.ENVIRONMENT_TEST
+    val PRICE_TIERS = arrayOf(0, 399000, 449000, 499000, 549000, 599000)
 
     /**
      * The allowed networks to be requested from the API. If the user has cards from networks not
@@ -99,4 +104,5 @@ object Constants {
         "protocolVersion" to "ECv1",
         "publicKey" to DIRECT_TOKENIZATION_PUBLIC_KEY
     )
+
 }

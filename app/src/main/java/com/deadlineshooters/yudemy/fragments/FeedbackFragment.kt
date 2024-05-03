@@ -13,22 +13,35 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import android.widget.RadioButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.adapters.FeedbackAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentFeedbackBinding
 import com.deadlineshooters.yudemy.models.CourseFeedback
+import com.deadlineshooters.yudemy.repositories.CourseFeedbackRepository
+import com.deadlineshooters.yudemy.repositories.UserRepository
+import com.deadlineshooters.yudemy.viewmodels.CourseFeedbackViewModel
+import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
 class FeedbackFragment : Fragment() {
+    private lateinit var courseFeedbackViewModel: CourseFeedbackViewModel
     private lateinit var binding: FragmentFeedbackBinding
     private lateinit var feedbackAdapter: FeedbackAdapter
-
+    private  var noInstructorResponse : Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        courseFeedbackViewModel = ViewModelProvider(this)[CourseFeedbackViewModel::class.java]
+        courseFeedbackViewModel.refreshCourseFeedbackForInstructor(noInstructorResponse)
 
     }
 
@@ -46,12 +59,23 @@ class FeedbackFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupActionBar()
 
-        // TODO: create feedbackList
-        var feedbackList: List<CourseFeedback> = listOf(CourseFeedback(), CourseFeedback())
-        feedbackAdapter = FeedbackAdapter(this, feedbackList)
 
-        // Set the RecyclerView's adapter to your FeedbackAdapter
-        binding.rvFeedback.adapter = feedbackAdapter
+        courseFeedbackViewModel.feedback_íntructor.observe(viewLifecycleOwner, Observer { feedbackList ->
+            if (feedbackList.isNotEmpty()) {
+                // Create the FeedbackAdapter with the feedbackList
+                binding.tvNoFeedback.visibility = View.GONE
+
+            } else {
+
+                binding.tvNoFeedback.visibility = View.VISIBLE
+            }
+
+            feedbackAdapter = FeedbackAdapter(this, feedbackList)
+
+            // Set the RecyclerView's adapter to your FeedbackAdapter
+            binding.rvFeedback.adapter = feedbackAdapter
+        })
+
 
         // Set the RecyclerView's layout manager
         binding.rvFeedback.layoutManager = LinearLayoutManager(context)
@@ -61,15 +85,38 @@ class FeedbackFragment : Fragment() {
             val filterView = layoutInflater.inflate(R.layout.response_status_bottom_sheet, null)
             dialog.setContentView(filterView)
 
+            val radioNotResponded = filterView.findViewById<RadioButton>(R.id.radioNotResponded)
+            val radioResponded = filterView.findViewById<RadioButton>(R.id.radioResponded)
+            val btnClearFilter = filterView.findViewById<Button>(R.id.btnClearFilter)
+
+            radioNotResponded.setOnClickListener {
+                // Change noInstructorResponse to true
+                noInstructorResponse = true
+                courseFeedbackViewModel.refreshCourseFeedbackForInstructor(noInstructorResponse)
+
+
+            }
+
+            radioResponded.setOnClickListener {
+                // Change noInstructorResponse to false
+                noInstructorResponse = false
+                courseFeedbackViewModel.refreshCourseFeedbackForInstructor(noInstructorResponse)
+
+
+            }
+
+            btnClearFilter.setOnClickListener {
+                // Do not pass the no response parameter
+                noInstructorResponse = null
+                courseFeedbackViewModel.refreshCourseFeedbackForInstructor(noInstructorResponse)
+
+            }
+
+            dialog.dismiss()
             dialog.show()
         }
 
 
-
-        binding.ivSearch.setOnClickListener {
-            binding.llToolbar.visibility = View.GONE
-            binding.llSearchBar.visibility = View.VISIBLE
-        }
 
         binding.btnCancel.setOnClickListener {
             binding.llToolbar.visibility = View.VISIBLE
@@ -134,17 +181,17 @@ class FeedbackFragment : Fragment() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        courseFeedbackViewModel.refreshCourseFeedbackForInstructor(noInstructorResponse)
+
+    }
+
     private fun setupActionBar() {
         val appCompatActivity = activity as AppCompatActivity?
         appCompatActivity?.setSupportActionBar(binding.toolbarFeedback)
 
-//        val actionBar = appCompatActivity?.supportActionBar
-//        if (actionBar != null) {
-//            actionBar.setDisplayHomeAsUpEnabled(true)
-//            actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
-//        }
-
-//        binding.toolbarFeedback.setNavigationOnClickListener { requireActivity().onBackPressed() }
     }
 
 }

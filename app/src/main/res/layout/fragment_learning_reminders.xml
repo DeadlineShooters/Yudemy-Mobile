@@ -108,6 +108,7 @@
         android:layout_marginTop="24dp"
         android:drawableEnd="@drawable/ic_arrow_right"
         android:text="@string/frequency"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/switchAllow"
         app:layout_constraintStart_toStartOf="@+id/switchAllow"
         app:layout_constraintTop_toBottomOf="@+id/switchAllow" />

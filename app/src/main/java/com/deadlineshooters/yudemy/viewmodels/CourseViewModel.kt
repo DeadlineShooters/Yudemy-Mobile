@@ -11,6 +11,7 @@ import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.SectionWithLectures
 import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.deadlineshooters.yudemy.repositories.SectionRepository
+import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.launch
 
 
@@ -36,6 +37,9 @@ class CourseViewModel : ViewModel() {
 
     private val _courses = MutableLiveData<List<Course>>()
     val courses: LiveData<List<Course>> = _courses
+
+    private val _editingCourse = MutableLiveData<Course?>()
+    val editingCourse: LiveData<Course?> = _editingCourse
 
     fun refreshCourses(userId: String? = null, sortByNewest: Boolean = true) {
         val task = if (userId != null) {
@@ -87,6 +91,17 @@ class CourseViewModel : ViewModel() {
             }
         }
     }
+
+    fun deleteCourse(course: Course) {
+        courseRepository.deleteCourseAndItsLectures(course)
+            .addOnCompleteListener{ task ->
+            if (task.isSuccessful) {
+                _dashboardCourses.postValue(_dashboardCourses.value!!.minus(course))
+            } else {
+                Log.d(this.javaClass.simpleName, "Failed to delete course: ${task.exception}")
+            }
+        }
+    }
 //    fun addDummyCourse() {
 //
 //        val imageFilePath = "/storage/emulated/0/Android/data/com.deadlineshooters.yudemy/files/DCIM/img_thumbnail.jpg"
@@ -124,5 +139,18 @@ class CourseViewModel : ViewModel() {
             _searchResult.value = courses
         }
     }
+
+    fun getTotalRevenueForInstructor(instructorId: String): Task<Int> {
+        return courseRepository.getCoursesByInstructor(instructorId).continueWith { task ->
+            if (task.isSuccessful) {
+                val courses = task.result
+                courses?.sumOf { course -> course.totalRevenue } ?: 0
+            } else {
+                0
+            }
+        }
+    }
+
+
 
 }

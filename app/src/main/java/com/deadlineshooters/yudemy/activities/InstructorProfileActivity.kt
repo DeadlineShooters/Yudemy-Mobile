@@ -68,6 +68,10 @@ class InstructorProfileActivity : BaseActivity() {
             ImageViewHelper().setImageViewFromUrl(it.image, instructorImage)
         })
 
+        if(instructorBio.lineCount <= 7){
+            showMoreBtn.visibility = TextView.GONE
+        }
+
         showMoreBtn.setOnClickListener{
             if(isExpanded){
                 instructorBio.maxLines = Integer.MAX_VALUE

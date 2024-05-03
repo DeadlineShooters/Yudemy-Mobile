@@ -184,6 +184,7 @@ class MoreLearningFragment : Fragment() {
         qa.setOnClickListener {
 //            val qaDialog = QADialog(courseId!!)
 //            qaDialog.show(parentFragmentManager, "QADialog")
+
             val qaDialog = QADialog(course!!.id, (activity as CourseLearningActivity).currentLecture!!.keys.first()._id)
             qaDialog.show(parentFragmentManager, "QADialog")
         }

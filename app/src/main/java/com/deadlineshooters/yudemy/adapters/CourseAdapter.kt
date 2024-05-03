@@ -16,6 +16,7 @@ import com.deadlineshooters.yudemy.activities.CourseRevenueAnalyticsActivity
 import com.deadlineshooters.yudemy.activities.EditCourseLandingPageActivity
 import com.deadlineshooters.yudemy.fragments.CourseDashboardFragment
 import com.deadlineshooters.yudemy.fragments.CourseDraftingMenuFragment
+import com.deadlineshooters.yudemy.helpers.FragmentHelper
 import com.deadlineshooters.yudemy.helpers.StringUtils
 import com.deadlineshooters.yudemy.models.Course
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -26,6 +27,7 @@ import java.util.Locale
 public class CourseAdapter(private val fragmentContext: CourseDashboardFragment, private var courseList: List<Course>) : RecyclerView.Adapter<CourseAdapter.ViewHolder>() {
     var listener: AdapterView.OnItemClickListener? = null
     var onEditCourseClick: (() -> Unit)? = null
+    var onDeleteCourseClick: ((Int) -> Unit)? = null
     val currencyFormat = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
 
 
@@ -70,20 +72,26 @@ public class CourseAdapter(private val fragmentContext: CourseDashboardFragment,
                 val llDelete = filterView.findViewById<LinearLayout>(R.id.ll_delete)
                 val llRevenueAnalytics = filterView.findViewById<LinearLayout>(R.id.ll_revenueAnalytics)
 
+                val course = courseList[bindingAdapterPosition]
+
                 llEdit.setOnClickListener {
-                    val course = courseList[bindingAdapterPosition]
-                    fragmentContext.replaceFragment(CourseDraftingMenuFragment(), course)
+                    FragmentHelper.replaceFragment(CourseDraftingMenuFragment(), course, fragmentContext)
 
                     dialog.dismiss()
                 }
 
                 llDelete.setOnClickListener {
-                    // TODO: Shows pop up delete course
-                    Toast.makeText(context, "Delete clicked!", Toast.LENGTH_SHORT).show()
+                    onDeleteCourseClick?.invoke(bindingAdapterPosition)
+
+                    dialog.dismiss()
                 }
 
                 llRevenueAnalytics.setOnClickListener {
+                    dialog.dismiss()
+
                     val intent = Intent(context, CourseRevenueAnalyticsActivity::class.java)
+                    intent.putExtra("course", course)
+
                     context.startActivity(intent)
                 }
             }
@@ -116,18 +124,11 @@ public class CourseAdapter(private val fragmentContext: CourseDashboardFragment,
             holder.ll_rating.visibility = View.GONE
             holder.tv_dot.visibility = View.GONE
         }
-        holder.tv_price.text = currencyFormat.format(course.price.toInt())
+        holder.tv_price.text = currencyFormat.format(course.price)
 
 
         holder.tv_rating.text = course.avgRating.toString()
-        holder.tv_totalEarning.text = currencyFormat.format(course.totalRevenue.toInt())
-//        // TODO 1: Delete dummy data
-//        holder.image_thumbnail.setImageResource(R.drawable.ic_launcher_background)
-//        holder.text_video_title.text = "Node.js Absolute Beginner Guide - Learn Node From Scratch"
-//        holder.tv_status.text = "LIVE"
-//        holder.tv_price.text = "\$199.99"
-//        holder.tv_rating.text = "4.74"
-//        holder.tv_totalEarning.text = "$30.89"
+        holder.tv_totalEarning.text = currencyFormat.format(course.totalRevenue)
     }
 
     override fun getItemCount(): Int {

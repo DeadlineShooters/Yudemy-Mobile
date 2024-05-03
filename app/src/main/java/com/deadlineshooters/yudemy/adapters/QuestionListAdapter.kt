@@ -1,12 +1,16 @@
 package com.deadlineshooters.yudemy.adapters
 
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RatingBar
+import android.widget.ScrollView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -14,13 +18,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.BaseActivity
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
+import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Question
+import com.deadlineshooters.yudemy.repositories.QuestionRepository
+import com.deadlineshooters.yudemy.viewmodels.InstructorViewModel
 import com.deadlineshooters.yudemy.viewmodels.LectureViewModel
 import com.deadlineshooters.yudemy.viewmodels.QuestionViewModel
 import com.deadlineshooters.yudemy.viewmodels.ReplyViewModel
 import com.deadlineshooters.yudemy.viewmodels.UserViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
-import java.util.*
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 
 class QuestionListAdapter (var questionList: ArrayList<Question>, private val lifecycleOwner: LifecycleOwner, val questionViewModel: QuestionViewModel): RecyclerView.Adapter<QuestionListAdapter.ViewHolder>() {
     var onItemClick: ((Question) -> Unit)? = null
@@ -58,6 +70,7 @@ class QuestionListAdapter (var questionList: ArrayList<Question>, private val li
         return ViewHolder(courseView)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: QuestionListAdapter.ViewHolder, position: Int) {
         val question: Question = questionList[position]
         val questionTitle = holder.questionTitle
@@ -128,13 +141,13 @@ class QuestionListAdapter (var questionList: ArrayList<Question>, private val li
         return questionList.size
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun filterQuestion(filter: ArrayList<String>, currentLectureId: String) {
 
         questionList = questionViewModel.questions.value!!
         notifyDataSetChanged()
 
-        Log.d("cho na", questionList.toString())
-        questionList.sortByDescending { it.createdTime }
+        questionList.sortByDescending { LocalDate.parse(it.createdTime, DateTimeFormatter.ofPattern("dd/MM/yyyy")) }
 
 
         var tmpQuestionList: ArrayList<Question> = arrayListOf()
@@ -189,7 +202,8 @@ class QuestionListAdapter (var questionList: ArrayList<Question>, private val li
                 notifyDataSetChanged()
             })
         } else if (filter == "Questions without instructors' responses"){
-            questionViewModel.getNoInstructorRepliesQuestions(tmpQuestionList)
+            Log.d("QuestionListAdapter", BaseActivity().getCurrentUserID())
+            questionViewModel.getNoInstructorRepliesQuestions(tmpQuestionList, BaseActivity().getCurrentUserID())
             questionViewModel.questionNoReplies.observe(lifecycleOwner, Observer { it ->
                 questionList = it
                 notifyDataSetChanged()

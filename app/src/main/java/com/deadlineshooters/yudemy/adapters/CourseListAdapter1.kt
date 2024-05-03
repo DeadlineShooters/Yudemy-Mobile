@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.models.Course
+import java.math.RoundingMode
 import java.text.NumberFormat
 import java.util.*
 
@@ -39,7 +40,7 @@ class CourseListAdapter1(context: Context, private val resource: Int, private va
         val course = courses[position]
         courseName.text = course.name
         instructor.text = course.instructor
-        ratingNumber.text = course.avgRating.toString()
+        ratingNumber.text = course.avgRating.toBigDecimal().setScale(1, RoundingMode.UP).toString()
         ratingStar.setStepSize(0.1f);
         ratingStar.rating = course.avgRating.toFloat();
         (course.oneStarCnt + course.twoStarCnt + course.threeStarCnt + course.fourStarCnt + course.fiveStarCnt).toString()

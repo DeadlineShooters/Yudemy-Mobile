@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.repositories.UserRepository
+import java.math.RoundingMode
 import java.text.NumberFormat
 import java.util.*
 
@@ -43,8 +45,11 @@ class CourseListAdapter2(private val context: Context, private val courses: List
         val course = courses[position]
         val currencyFormat = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
         holder.courseName.text = course.name
-        holder.instructor.text = course.instructor
-        holder.ratingNumber.text = course.avgRating.toString()
+        UserRepository().getUserById(course.instructor) {user ->
+            holder.instructor.text = user!!.fullName
+
+        }
+        holder.ratingNumber.text = course.avgRating.toBigDecimal().setScale(1, RoundingMode.UP).toString()
         holder.ratingStar.setStepSize(0.1f);
         holder.ratingStar.rating = course.avgRating.toFloat();
         (course.oneStarCnt + course.twoStarCnt + course.threeStarCnt + course.fourStarCnt + course.fiveStarCnt).toString()

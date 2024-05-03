@@ -1,58 +1,77 @@
 package com.deadlineshooters.yudemy.activities
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Activity
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Spinner
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.databinding.ActivityPricingCourseDraftingBinding
+import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.repositories.CourseRepository
+import com.deadlineshooters.yudemy.utils.Constants
+import java.text.NumberFormat
+import java.util.*
 
-class PricingCourseDraftingActivity : AppCompatActivity() {
-    private lateinit var toolbarPricing: Toolbar
-    private lateinit var spinnerCurrency: Spinner
-    private lateinit var spinnerType: Spinner
-    private lateinit var price: EditText
+class PricingCourseDraftingActivity : BaseActivity() {
+    private lateinit var binding: ActivityPricingCourseDraftingBinding
+    private var newPrice  = 0
+
+    private lateinit var course: Course
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pricing_course_drafting)
+        binding = ActivityPricingCourseDraftingBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        toolbarPricing = findViewById(R.id.toolbar_pricing_setting)
         setupActionBar()
 
-        spinnerCurrency = findViewById(R.id.spinnerCurrency)
-        spinnerType = findViewById(R.id.spinnerTypePricing)
-        price = findViewById(R.id.etPriceSetting)
+        course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            intent.getParcelableExtra("course", Course::class.java)!!
+        else
+            intent.getParcelableExtra<Course>("course")!!
+        newPrice = course.price
 
-        val currenncyAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.currency))
-        currenncyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerCurrency.adapter = currenncyAdapter
+        val tierStrings = Constants.PRICE_TIERS.map {
+            if(it == 0) "Free" else
+                NumberFormat.getCurrencyInstance(Locale("vi", "VN")).format(it.toInt())
+        }
+        val currencyAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.currency))
+        currencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerCurrency.adapter = currencyAdapter
 
-        val typeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.pricing_type))
+        val typeAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, tierStrings)
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerType.adapter = typeAdapter
-        spinnerType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                if(position == 0) {
-                    price.visibility = View.GONE
-                }
-                else {
-                    price.visibility = View.VISIBLE
-                }
-            }
+        binding.spinnerTypePricing.adapter = typeAdapter
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // Do something when nothing is selected
+        binding.spinnerTypePricing.setSelection(Constants.PRICE_TIERS.indexOf(course.price))
+
+        binding.btnSavePricing.setOnClickListener {
+            newPrice = Constants.PRICE_TIERS[binding.spinnerTypePricing.selectedItemPosition].toInt()
+
+            if(course.price != newPrice) {
+                course.price = newPrice
+
+                CourseRepository().updatePrice(course.id, newPrice)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Price updated", Toast.LENGTH_SHORT).show()
+                        val intent = Intent()
+                        intent.putExtra("course", course)
+                        setResult(Activity.RESULT_OK, intent)
+                        finish()
+                    }
+            }
+            else {
+                val intent = Intent()
+                setResult(Activity.RESULT_CANCELED, intent)
+                finish()
             }
         }
     }
 
     private fun setupActionBar() {
-        setSupportActionBar(toolbarPricing)
+        setSupportActionBar(binding.toolbarPricingSetting)
 
         val actionBar = supportActionBar
         if (actionBar != null) {
@@ -61,6 +80,10 @@ class PricingCourseDraftingActivity : AppCompatActivity() {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
         }
 
-        toolbarPricing.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+        binding.toolbarPricingSetting.setNavigationOnClickListener {
+            val intent = Intent()
+            setResult(Activity.RESULT_CANCELED, intent)
+            finish()
+        }
     }
 }

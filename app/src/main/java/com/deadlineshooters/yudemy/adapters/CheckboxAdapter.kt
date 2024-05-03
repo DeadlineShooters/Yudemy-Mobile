@@ -40,4 +40,9 @@ class CheckboxAdapter(val items: List<String>) :
         return selectedPositions.map { items[it] }
     }
 
+    fun resetCheckedItems() {
+        selectedPositions.clear()
+        notifyDataSetChanged()
+    }
+
 }

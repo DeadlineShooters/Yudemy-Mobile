@@ -1,6 +1,7 @@
 package com.deadlineshooters.yudemy.fragments
 
 import android.app.AlertDialog
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Html
 import androidx.fragment.app.Fragment
@@ -10,10 +11,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.BaseActivity
+import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.viewmodels.InstructorViewModel
 import com.deadlineshooters.yudemy.viewmodels.UserViewModel
 
@@ -75,14 +78,49 @@ class EditProfileFragment : Fragment() {
             }
         })
 
+
+        instructorFullName.doAfterTextChanged {
+            if(checkNewInfo()){
+                saveEditProfileInstructorBtn.isClickable = true
+                saveEditProfileInstructorBtn.isEnabled = true
+                saveEditProfileInstructorBtn.setBackgroundColor(Color.parseColor("#000000"))
+            } else{
+                saveEditProfileInstructorBtn.isClickable = false
+                saveEditProfileInstructorBtn.isEnabled = false
+                saveEditProfileInstructorBtn.setBackgroundColor(Color.parseColor("#808080"))
+            }
+        }
+
+        instructorHeadline.doAfterTextChanged {
+            if(checkNewInfo()){
+                saveEditProfileInstructorBtn.isClickable = true
+                saveEditProfileInstructorBtn.isEnabled = true
+                saveEditProfileInstructorBtn.setBackgroundColor(Color.parseColor("#000000"))
+            } else{
+                saveEditProfileInstructorBtn.isClickable = false
+                saveEditProfileInstructorBtn.isEnabled = false
+                saveEditProfileInstructorBtn.setBackgroundColor(Color.parseColor("#808080"))
+            }
+        }
+
+        instructorBio.doAfterTextChanged {
+            if(checkNewInfo()){
+                saveEditProfileInstructorBtn.isClickable = true
+                saveEditProfileInstructorBtn.isEnabled = true
+                saveEditProfileInstructorBtn.setBackgroundColor(Color.parseColor("#000000"))
+            } else{
+                saveEditProfileInstructorBtn.isClickable = false
+                saveEditProfileInstructorBtn.isEnabled = false
+                saveEditProfileInstructorBtn.setBackgroundColor(Color.parseColor("#808080"))
+            }
+        }
+
         saveEditProfileInstructorBtn.setOnClickListener {
             //TODO: Save the edited profile
-            if(!isNewInfoEmpty()){
-                instructorViewModel.modifyInstructorProfile(BaseActivity().getCurrentUserID(), instructorFullName.text.toString(), instructorHeadline.text.toString(), instructorBio.text.toString())
-                Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
-                requireActivity().supportFragmentManager.popBackStack()
-                userViewModel.getCurUser()
-            }
+            instructorViewModel.modifyInstructorProfile(BaseActivity().getCurrentUserID(), instructorFullName.text.toString(), instructorHeadline.text.toString(), instructorBio.text.toString())
+            Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+            requireActivity().supportFragmentManager.popBackStack()
+            userViewModel.getCurUser()
         }
 
         cancelEditProfileBtn.setOnClickListener {
@@ -90,10 +128,10 @@ class EditProfileFragment : Fragment() {
             builder
                 .setMessage("Are you sure you want to discard the changes?")
                 .setTitle("Please Confirm")
-                .setNegativeButton(Html.fromHtml("<font color='#00000FF'><b>Cancel</b></font>")) { dialog, which ->
+                .setNegativeButton(Html.fromHtml("<font color='#5624D0'><b>Cancel</b></font>")) { dialog, which ->
 
                 }
-                .setPositiveButton(Html.fromHtml("<font color='#FF0000'><b>Discard</b></font>")) { dialog, which ->
+                .setPositiveButton(Html.fromHtml("<font color='#B32D0F'><b>Discard</b></font>")) { dialog, which ->
                     requireActivity().supportFragmentManager.popBackStack()
                 }
 
@@ -102,8 +140,12 @@ class EditProfileFragment : Fragment() {
         }
     }
 
-    private fun isNewInfoEmpty(): Boolean {
-        return instructorFullName.text.toString().isEmpty() || instructorHeadline.text.toString().isEmpty() || instructorBio.text.toString().isEmpty()
+//    private fun isNewInfoEmpty(): Boolean {
+//        return instructorFullName.text.toString().isEmpty() || instructorHeadline.text.toString().isEmpty() || instructorBio.text.toString().isEmpty()
+//    }
+    //TODO: Check if the new info is the same as the old info (chua xong)
+    private fun checkNewInfo(): Boolean {
+        return (instructorFullName.text.toString() != userViewModel.userData.value?.fullName || instructorHeadline.text.toString() != userViewModel.userData.value?.instructor?.headline || instructorBio.text.toString() != userViewModel.userData.value?.instructor?.bio)
     }
     companion object {
         /**
