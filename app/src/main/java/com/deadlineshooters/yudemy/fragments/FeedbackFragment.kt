@@ -114,13 +114,6 @@ class FeedbackFragment : Fragment() {
 
 
 
-
-
-        binding.ivSearch.setOnClickListener {
-            binding.llToolbar.visibility = View.GONE
-            binding.llSearchBar.visibility = View.VISIBLE
-        }
-
         binding.btnCancel.setOnClickListener {
             binding.llToolbar.visibility = View.VISIBLE
             binding.llSearchBar.visibility = View.GONE

@@ -6,10 +6,12 @@ import android.widget.Toast
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.CourseFeedback
 import com.deadlineshooters.yudemy.models.FeedbackResponse
+import com.deadlineshooters.yudemy.models.Instructor
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.utils.Constants
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import java.text.SimpleDateFormat
@@ -50,6 +52,7 @@ class CourseFeedbackRepository {
                 2 -> course.twoStarCnt += 1
                 1 -> course.oneStarCnt += 1
             }
+
             newDoc
 
         } else {
@@ -74,7 +77,19 @@ class CourseFeedbackRepository {
                     "oneStarCnt", course.oneStarCnt
                 )
                     .addOnSuccessListener {
-                        callback.onSuccess()
+                        // Get a reference to the user document
+                        val userRef = mFireStore.collection(Constants.USERS).document(course.instructor)
+
+                        // Update the user document
+                        userRef.update(
+                            "instructor.totalReviews", FieldValue.increment(1)
+                        )
+                            .addOnSuccessListener {
+                                callback.onSuccess()
+                            }
+                            .addOnFailureListener { e ->
+                                callback.onFailure(e)
+                            }
                     }
                     .addOnFailureListener { e ->
                         callback.onFailure(e)
@@ -84,6 +99,8 @@ class CourseFeedbackRepository {
                 callback.onFailure(e)
             }
     }
+
+
 
 
 

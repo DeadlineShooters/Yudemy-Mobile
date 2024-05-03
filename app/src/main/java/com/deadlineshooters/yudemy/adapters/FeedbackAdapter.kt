@@ -86,7 +86,7 @@ class FeedbackAdapter(
                 .load(user?.image?.public_id)
                 .placeholder(R.drawable.placeholder_avatar)
                 .into(holder.ivAvatar)
-            holder.fullname.text = user!!.fullName
+            holder.fullname.text = user?.fullName
         }
 
 
