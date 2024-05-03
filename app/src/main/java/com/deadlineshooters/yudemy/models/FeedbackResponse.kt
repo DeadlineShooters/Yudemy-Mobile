@@ -13,8 +13,6 @@ import java.util.Locale
 data class FeedbackResponse(
     var instructorId: String = "",
     var content: String = "",
-    var createdDatetime: String = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault()).format(
-        Date()
-    )
+    var createdDatetime: String = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date()),
 
-    ) : Parcelable
+) : Parcelable

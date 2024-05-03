@@ -4,11 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 
-class CheckboxAdapter(private val items: List<String>, private val listener: (String, Boolean) -> Unit) :
+class CheckboxAdapter(val items: List<String>) :
     RecyclerView.Adapter<CheckboxAdapter.ViewHolder>() {
 
     var selectedPositions = mutableSetOf<Int>()
@@ -25,16 +24,20 @@ class CheckboxAdapter(private val items: List<String>, private val listener: (St
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.checkBox.text = items[position]
         holder.checkBox.isChecked = selectedPositions.contains(position)
-        holder.itemView.setOnClickListener {
-            if (selectedPositions.contains(position)) {
-                selectedPositions.remove(position)
-            } else {
+        holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
                 selectedPositions.add(position)
+            } else {
+                selectedPositions.remove(position)
             }
-            notifyDataSetChanged()
-            listener(items[position], holder.checkBox.isChecked)
         }
     }
 
+
     override fun getItemCount() = items.size
+
+    fun getCheckedItems(): List<String> {
+        return selectedPositions.map { items[it] }
+    }
+
 }

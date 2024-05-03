@@ -2,6 +2,7 @@ package com.deadlineshooters.yudemy.models
 
 import android.os.Parcelable
 import com.google.firebase.firestore.DocumentId
+import com.google.firebase.firestore.Exclude
 import kotlinx.android.parcel.Parcelize
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -14,6 +15,7 @@ data class CourseFeedback(
     var userId: String = "",
     var feedback: String = "",
     var rating: Int = 5,
-    var createdDatetime: String = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date()),
-    var instructorResponse: FeedbackResponse? = null
+    var createdDatetime: String = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date()),  // last updated
+    var instructorResponse: FeedbackResponse? = null,
+    @get:Exclude var course: Course? = null
 ) : Parcelable

@@ -25,7 +25,7 @@ class InstructorCourseListAdapter(private val courseList: List<Course>, private 
         val discountPrice: TextView = listCourseView.findViewById(R.id.discountPrice)
         val originalPrice: TextView = listCourseView.findViewById(R.id.originalPrice)
         val instructor: TextView = listCourseView.findViewById(R.id.instructor)
-        val courseImage: ImageView = listCourseView.findViewById(R.id.imageView2)
+        val courseImage: ImageView = listCourseView.findViewById(R.id.thumbnail)
         init {
             listCourseView.setOnClickListener { onItemClick?.invoke(courseList[adapterPosition]) }
         }

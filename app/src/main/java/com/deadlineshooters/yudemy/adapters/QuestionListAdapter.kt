@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RatingBar
-import android.widget.ScrollView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleOwner
@@ -16,19 +14,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.BaseActivity
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
-import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Question
-import com.deadlineshooters.yudemy.repositories.QuestionRepository
-import com.deadlineshooters.yudemy.viewmodels.InstructorViewModel
 import com.deadlineshooters.yudemy.viewmodels.LectureViewModel
 import com.deadlineshooters.yudemy.viewmodels.QuestionViewModel
 import com.deadlineshooters.yudemy.viewmodels.ReplyViewModel
 import com.deadlineshooters.yudemy.viewmodels.UserViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 class QuestionListAdapter (var questionList: ArrayList<Question>, private val lifecycleOwner: LifecycleOwner, val questionViewModel: QuestionViewModel): RecyclerView.Adapter<QuestionListAdapter.ViewHolder>() {
     var onItemClick: ((Question) -> Unit)? = null
