@@ -1,15 +1,12 @@
 package com.deadlineshooters.yudemy.repositories
 
-import com.deadlineshooters.yudemy.fragments.AccountFragment
-import com.deadlineshooters.yudemy.models.Instructor
-import android.content.ComponentCallbacks
 import android.content.ContentValues
 import android.util.Log
 import com.deadlineshooters.yudemy.activities.CourseDetailActivity
-import com.deadlineshooters.yudemy.activities.SignUpActivity
-import androidx.lifecycle.MutableLiveData
+import com.deadlineshooters.yudemy.fragments.AccountFragment
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Image
+import com.deadlineshooters.yudemy.models.Instructor
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.utils.Constants
 import com.google.android.gms.tasks.Task
@@ -21,7 +18,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class UserRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
-    private val userCollection = mFireStore.collection("users")
     private val mAuth = FirebaseAuth.getInstance()
     private val usersCollection = mFireStore.collection(Constants.USERS)
 
@@ -62,21 +58,24 @@ class UserRepository {
 
         documentReference.get()
             .addOnSuccessListener { document ->
-                if (document != null) {
+                if (document != null && document.exists()) {
                     Log.d(this.javaClass.simpleName, "DocumentSnapshot data: ${document.data}")
-                    val instructor = document.toObject(User::class.java)!!
-
-                    when (context) {
-                        is CourseDetailActivity -> {
-                            context.setInstructor(instructor)
+                    val instructor = document.toObject(User::class.java)
+                    if (instructor != null) {
+                        when (context) {
+                            is CourseDetailActivity -> {
+                                context.setInstructor(instructor)
+                            }
                         }
+                    } else {
+                        Log.d(this.javaClass.simpleName, "Failed to convert document to User")
                     }
-
                 } else {
                     Log.d(this.javaClass.simpleName, "No such document")
                 }
             }
     }
+
 
     fun becomeInstructor() {
         val userRef = usersCollection.document(getCurrentUserID())
@@ -114,7 +113,7 @@ class UserRepository {
     }
 
     fun addUser(user: User) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .set(user)
     }
@@ -148,7 +147,7 @@ class UserRepository {
     }
 
     fun updateUserImage(userId: String, image: Image, callbacks: (User) -> Unit){
-        userCollection.document(userId).update(
+        usersCollection.document(userId).update(
             "image.public_id", image.public_id,
             "image.secure_url", image.secure_url
         ).addOnSuccessListener {
@@ -168,7 +167,7 @@ class UserRepository {
 
     fun getWishlistID(callback: (List<String>) -> Unit) {
         val uid = mAuth.currentUser?.uid
-        userCollection
+        usersCollection
             .document(uid!!)
             .get()
             .addOnSuccessListener { document ->
@@ -185,7 +184,7 @@ class UserRepository {
 
     fun addToWishlist(courseId: String, callback: (Boolean) -> Unit) {
         val uid = mAuth.currentUser?.uid
-        userCollection
+        usersCollection
             .document(uid!!)
             .get()
             .addOnSuccessListener { document ->
@@ -193,7 +192,7 @@ class UserRepository {
                     val wishlist = document.get("wishList") as MutableList<String>
                     if (!wishlist.contains(courseId)) {
                         wishlist.add(courseId)
-                        userCollection.document(uid).update("wishList", wishlist)
+                        usersCollection.document(uid).update("wishList", wishlist)
                             .addOnSuccessListener {
                                 callback(true)
                             }
@@ -216,7 +215,7 @@ class UserRepository {
 
     fun removeFromWishlist(courseId: String, callback: (Boolean) -> Unit) {
         val uid = mAuth.currentUser?.uid
-        userCollection
+        usersCollection
             .document(uid!!)
             .get()
             .addOnSuccessListener { document ->
@@ -224,7 +223,7 @@ class UserRepository {
                     val wishlist = document.get("wishList") as MutableList<String>
                     if (wishlist.contains(courseId)) {
                         wishlist.remove(courseId)
-                        userCollection.document(uid).update("wishList", wishlist)
+                        usersCollection.document(uid).update("wishList", wishlist)
                             .addOnSuccessListener {
                                 callback(true)
                             }
@@ -247,7 +246,7 @@ class UserRepository {
 
     fun isInWishlist(courseId: String, callback: (Boolean) -> Unit) {
         val uid = mAuth.currentUser?.uid
-        userCollection
+        usersCollection
             .document(uid!!)
             .get()
             .addOnSuccessListener { document ->
@@ -268,9 +267,32 @@ class UserRepository {
             }
     }
 
+    fun isInCourseList(courseId: String, callback: (Boolean) -> Unit) {
+        val uid = mAuth.currentUser?.uid
+        usersCollection
+            .document(uid!!)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val courseList = document.get("courseList") as MutableList<String>
+                    if (courseList.contains(courseId)) {
+                        callback(true)
+                    } else {
+                        callback(false)
+                    }
+                } else {
+                    Log.d("Firestore", "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("Firestore", "get failed with ", exception)
+                callback(false)
+            }
+    }
+
     fun addToCourseList(courseId: String, callback: (Boolean) -> Unit) {
         val uid = mAuth.currentUser?.uid
-        userCollection
+        usersCollection
             .document(uid!!)
             .get()
             .addOnSuccessListener { document ->
@@ -278,7 +300,7 @@ class UserRepository {
                     val courseList = document.get("courseList") as MutableList<String>
                     if (!courseList.contains(courseId)) {
                         courseList.add(courseId)
-                        userCollection.document(uid).update("courseList", courseList)
+                        usersCollection.document(uid).update("courseList", courseList)
                             .addOnSuccessListener {
                                 callback(true)
                             }
@@ -305,7 +327,7 @@ class UserRepository {
      * @return A callback function that takes a list of courses and instructors and a list of progress
      */
     fun getUserCourses(callback: (ArrayList<Map<Course, String>>, ArrayList<Number>) -> Unit) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .get()
             .addOnSuccessListener { document ->
@@ -350,7 +372,7 @@ class UserRepository {
     }
 
     fun getUserFavoriteCourseIds(callback: (ArrayList<String>) -> Unit) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .get()
             .addOnSuccessListener { document ->
@@ -371,7 +393,7 @@ class UserRepository {
     }
 
     fun getReminderDays(callback: (ArrayList<Number>) -> Unit) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .get()
             .addOnSuccessListener { document ->
@@ -386,7 +408,7 @@ class UserRepository {
     }
 
     fun getReminderTimes(callback: (ArrayList<Number>) -> Unit) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .get()
             .addOnSuccessListener { document ->
@@ -401,31 +423,31 @@ class UserRepository {
     }
 
     fun addReminderDay(day: Int) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .update("reminderDays", FieldValue.arrayUnion(day))
     }
 
     fun removeReminderDay(day: Int) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .update("reminderDays", FieldValue.arrayRemove(day))
     }
 
     fun addReminderTime(time: Int) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .update("reminderTimes", FieldValue.arrayUnion(time))
     }
 
     fun removeReminderTime(time: Int) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .update("reminderTimes", FieldValue.arrayRemove(time))
     }
 
     fun checkIfReminderToggled(callback: (Boolean) -> Unit) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .get()
             .addOnSuccessListener { document ->
@@ -440,7 +462,7 @@ class UserRepository {
     }
 
     fun toggleReminder(isToggle: Boolean, callback: (Boolean) -> Unit) {
-        userCollection
+        usersCollection
             .document(mAuth.currentUser!!.uid)
             .update("reminderNotification", isToggle)
             .addOnSuccessListener {

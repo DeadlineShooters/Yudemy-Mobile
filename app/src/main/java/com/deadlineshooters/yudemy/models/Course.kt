@@ -3,8 +3,7 @@ package com.deadlineshooters.yudemy.models
 import android.os.Parcelable
 import com.google.firebase.firestore.DocumentId
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 @kotlinx.parcelize.Parcelize
 data class Course(
@@ -19,7 +18,7 @@ data class Course(
     var sectionList: ArrayList<String> = arrayListOf(),
     var promotionalVideo: Video = Video(),
     var language: String = "",
-    var category: String = "",
+    var category: String = "", // uid
     var totalLecture: Int = 0,
     var totalLength: Int = 0, // in seconds
     var thumbnail: Image = Image(),

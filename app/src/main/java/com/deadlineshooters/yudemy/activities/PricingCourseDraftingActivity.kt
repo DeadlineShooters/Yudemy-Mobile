@@ -20,7 +20,7 @@ import java.util.Locale
 
 class PricingCourseDraftingActivity : BaseActivity() {
     private lateinit var binding: ActivityPricingCourseDraftingBinding
-    private var newPrice = 0.0
+    private var newPrice  = 0.0
 
     private lateinit var course: Course
 
@@ -39,7 +39,7 @@ class PricingCourseDraftingActivity : BaseActivity() {
 
         val tierStrings = Constants.PRICE_TIERS.map {
             if(it == 0.0) "Free" else
-            NumberFormat.getCurrencyInstance(Locale("vi", "VN")).format(it.toInt())
+                NumberFormat.getCurrencyInstance(Locale("vi", "VN")).format(it.toInt())
         }
         val currencyAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.currency))
         currencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

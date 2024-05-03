@@ -50,7 +50,7 @@
 
     <string name="play_preview_video">play preview video</string>
     <string name="preview_this_course">Preview this course</string>
-    <string name="buy_now">Buy now</string>
+    <string name="buy_now">MoMo</string>
     <string name="show_more">Show more</string>
     <string name="description">Description</string>
     <string name="view_profile">View profile</string>
@@ -214,11 +214,11 @@
     <string name="instructor_image">Photo</string>
     <string name="leave_a_rating">Leave a rating</string>
 
-    <string name="course_figures">(%1$d ratings) %2$d students</string>
+    <string name="course_figures">(%1$d rating) %2$d students</string>
     <string name="created_date">Created date %s</string>
     <string name="curriculum_overview">%1$d sections • %2$d lectures • %3$dh %4$dm total length</string>
 
-<!--    Course Detail Activity-->
+    <!--    Course Detail Activity-->
     <string name="instructor_reviews">%d Reviews</string>
     <string name="instructor_students">%d Students</string>
     <string name="section_title">Section %1$d - %2$s</string>
@@ -229,6 +229,7 @@
     <string name="mark_as_incomplete">Mark as incomplete</string>
     <string name="qa_for_lecture">Q&amp;A for lecture</string>
     <string name="no_matching_courses">No matching courses</string>
+    <string name="select_category">Select category</string>
     <string name="close_your_account">Close your account?</string>
     <string name="close_account_confirm_mess">Are you sure you want to close your account?</string>
     <string name="enter_your_password">Enter your password</string>
@@ -237,4 +238,8 @@
     <string name="category">Category</string>
 
     <string name="publish">Publish</string>
+    <string name="see_all">See all</string>
+    <string name="instructor_response">Instructor Response •</string>
+    <string name="no_feedback_found">No feedback found.</string>
+    <string name="you">You</string>
 </resources>

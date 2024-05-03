@@ -5,10 +5,18 @@ import android.util.Log
 import android.widget.Toast
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.CourseFeedback
+import com.deadlineshooters.yudemy.models.FeedbackResponse
+import com.deadlineshooters.yudemy.models.Instructor
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.utils.Constants
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.TaskCompletionSource
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 interface FeedbackCallback {
     fun onSuccess()
@@ -23,6 +31,8 @@ class CourseFeedbackRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
     private val feedbackCollection = mFireStore.collection(Constants.COURSE_FEEDBACK)
     private val usersCollection = mFireStore.collection(Constants.USERS)
+    private val coursesCollection = mFireStore.collection(Constants.COURSES)
+
 
     fun saveFeedback(oldRating : CourseFeedback?, course: Course, feedback: CourseFeedback, callback: FeedbackCallback) {
         var totalRatings = course.fiveStarCnt + course.fourStarCnt + course.threeStarCnt + course.twoStarCnt + course.oneStarCnt
@@ -42,6 +52,7 @@ class CourseFeedbackRepository {
                 2 -> course.twoStarCnt += 1
                 1 -> course.oneStarCnt += 1
             }
+
             newDoc
 
         } else {
@@ -66,7 +77,19 @@ class CourseFeedbackRepository {
                     "oneStarCnt", course.oneStarCnt
                 )
                     .addOnSuccessListener {
-                        callback.onSuccess()
+                        // Get a reference to the user document
+                        val userRef = mFireStore.collection(Constants.USERS).document(course.instructor)
+
+                        // Update the user document
+                        userRef.update(
+                            "instructor.totalReviews", FieldValue.increment(1)
+                        )
+                            .addOnSuccessListener {
+                                callback.onSuccess()
+                            }
+                            .addOnFailureListener { e ->
+                                callback.onFailure(e)
+                            }
                     }
                     .addOnFailureListener { e ->
                         callback.onFailure(e)
@@ -80,18 +103,6 @@ class CourseFeedbackRepository {
 
 
 
-    fun getCourseFeedback(courseId: String, callback: (List<CourseFeedback>) -> Unit) {
-        feedbackCollection.whereEqualTo("courseId", courseId)
-            .get()
-            .addOnSuccessListener { documents ->
-                val feedbackList = documents.map { it.toObject(CourseFeedback::class.java) }
-                callback(feedbackList)
-            }
-            .addOnFailureListener { e ->
-                Log.w(this.javaClass.simpleName, "Error getting documents: ", e)
-                callback(emptyList())
-            }
-    }
 
     fun getFeedbackForCourseAndUser(courseId: String, userId: String, callback: (CourseFeedback?) -> Unit) {
         feedbackCollection
@@ -108,10 +119,9 @@ class CourseFeedbackRepository {
             }
     }
 
-    fun getLatestCourseFeedback(courseId: String, context: Context, callback: (List<CourseFeedback>?) -> Unit) {
+    fun getLatestCourseFeedback(courseId: String, callback: (List<CourseFeedback>?) -> Unit) {
         feedbackCollection.whereEqualTo("courseId", courseId)
             .orderBy("createdDatetime", Query.Direction.DESCENDING)
-            .limit(2)
             .get()
             .addOnSuccessListener { documents ->
                 val feedbackList = documents.map { it.toObject(CourseFeedback::class.java) }
@@ -133,4 +143,88 @@ class CourseFeedbackRepository {
             }
         }
     }
+
+    fun getAllInstructorFeedback(
+        userId: String,
+        noInstructorResponse: Boolean?
+    ): Task<List<CourseFeedback>> {
+        val taskCompletionSource = TaskCompletionSource<List<CourseFeedback>>()
+
+        // First, get all courses created by the instructor
+        coursesCollection.whereEqualTo("instructor", userId)
+            .get()
+            .addOnSuccessListener { documents ->
+                val courses =
+                    documents.map { it.toObject(Course::class.java) } // Extract course objects
+                val courseMap =
+                    courses.associateBy { it.id } // Create a map with courseId as key and Course as value
+
+                // Then, get all feedback for these courses
+                feedbackCollection.whereIn("courseId", courses.map { it.id })
+                    .orderBy("createdDatetime", Query.Direction.DESCENDING)
+                    .get()
+                    .addOnSuccessListener { feedbackDocuments ->
+                        var feedbackList = feedbackDocuments.map { document ->
+                            val feedback = document.toObject(CourseFeedback::class.java)
+                            feedback.course = courseMap[feedback.courseId]
+                            feedback
+                        }
+                        // Filter feedback by instructor response
+                        if (noInstructorResponse != null) {
+                            feedbackList = if (noInstructorResponse) {
+                                feedbackList.filter { it.instructorResponse == null }
+                            } else {
+                                feedbackList.filter { it.instructorResponse != null }
+                            }
+                        }
+                        taskCompletionSource.setResult(feedbackList)
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e(
+                            this.javaClass.simpleName,
+                            "Can't get instructor's course feedback: $e"
+                        )
+                        taskCompletionSource.setException(e)
+                    }
+            }
+            .addOnFailureListener { e ->
+                Log.e(this.javaClass.simpleName, "Can't get instructor's courses: $e")
+                taskCompletionSource.setException(e)
+            }
+
+        return taskCompletionSource.task
+    }
+
+
+    fun saveFeedbackResponse(instructorId: String, feedbackId: String, responseText: String, callback: (Boolean, CourseFeedback?) -> Unit) {
+        val feedbackResponse = FeedbackResponse(
+            instructorId = instructorId, // replace with the actual instructor id
+            content = responseText,
+            createdDatetime = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(Date())
+        )
+
+        feedbackCollection.document(feedbackId)
+            .update("instructorResponse", feedbackResponse)
+            .addOnSuccessListener {
+                Log.d(this.javaClass.simpleName, "Feedback response saved successfully.")
+
+                feedbackCollection.document(feedbackId).get()
+                    .addOnSuccessListener { document ->
+                        val courseFeedback = document.toObject(CourseFeedback::class.java)
+                        callback(true, courseFeedback)
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e(this.javaClass.simpleName, "Can't get updated feedback: $e")
+                        callback(false, null)
+                    }
+            }
+            .addOnFailureListener { e ->
+                Log.e(this.javaClass.simpleName, "Can't save feedback response: $e")
+                callback(false, null)
+            }
+    }
+
+
+
+
 }

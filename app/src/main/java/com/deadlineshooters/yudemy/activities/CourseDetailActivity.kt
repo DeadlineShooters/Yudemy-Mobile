@@ -3,18 +3,22 @@ package com.deadlineshooters.yudemy.activities
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -22,15 +26,26 @@ import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.adapters.DetailSectionAdapter
 import com.deadlineshooters.yudemy.databinding.ActivityCourseDetailBinding
 import com.deadlineshooters.yudemy.dialogs.PreviewCourseDialog
+import com.deadlineshooters.yudemy.helpers.DialogHelper
 import com.deadlineshooters.yudemy.helpers.StringUtils
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.CourseFeedback
+import com.deadlineshooters.yudemy.models.Transaction
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.repositories.CourseFeedbackRepository
+import com.deadlineshooters.yudemy.repositories.CourseRepository
+import com.deadlineshooters.yudemy.repositories.TransactionRepository
 import com.deadlineshooters.yudemy.repositories.UserRepository
+import com.deadlineshooters.yudemy.utils.PaymentsUtil
+import com.deadlineshooters.yudemy.viewmodels.CheckoutViewModel
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
+import com.google.android.gms.common.api.CommonStatusCodes
+import com.google.android.gms.wallet.button.ButtonConstants
+import com.google.android.gms.wallet.button.ButtonOptions
+import com.google.android.gms.wallet.contract.TaskResultContracts
 import vn.momo.momo_partner.AppMoMoLib
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -40,6 +55,7 @@ class CourseDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCourseDetailBinding
 
     private val userRepository = UserRepository()
+    private val courseRepository = CourseRepository()
     private val courseFeedbackRepo = CourseFeedbackRepository()
     private lateinit var course: Course
 
@@ -53,7 +69,32 @@ class CourseDetailActivity : AppCompatActivity() {
     private var pendingPaymentRequest: PendingPaymentRequest? = null
     private lateinit var sectionAdapter: DetailSectionAdapter
     private lateinit var courseViewModel: CourseViewModel
+    private var isExpanded = false
 
+
+    private val paymentDataLauncher =
+
+        registerForActivityResult(TaskResultContracts.GetPaymentDataResult()) { taskResult ->
+            when (taskResult.status.statusCode) {
+                CommonStatusCodes.SUCCESS -> {
+                    taskResult.result!!.let {
+                        Log.i("Google Pay result:", it.toJson())
+                        model.setPaymentData(it)
+                        userRepository.addToCourseList(course.id) {}
+                        addTransaction()
+
+                        startActivity(
+                            Intent(
+                                this@CourseDetailActivity,
+                                StudentMainActivity::class.java
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
+    private val model: CheckoutViewModel by viewModels()
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,13 +103,27 @@ class CourseDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupActionBar()
 
+        course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            intent.getParcelableExtra("course", Course::class.java)!!
+        else
+            intent.getParcelableExtra<Course>("course")!!
 
-        course = intent.getParcelableExtra("course", Course::class.java) ?: Course()
         binding.btnViewProfile.setOnClickListener {
             val intent = Intent(this, InstructorProfileActivity::class.java)
             intent.putExtra("instructorId", course.instructor)
             startActivity(intent)
             Log.d("Instructor", course.instructor)
+        }
+
+        binding.showMoreBtn.setOnClickListener{
+            if(isExpanded){
+                binding.tvDesc.maxLines = 7
+                binding.showMoreBtn.text = "Show more"
+            } else {
+                binding.tvDesc.maxLines = Integer.MAX_VALUE
+                binding.showMoreBtn.text = "Show less"
+            }
+            isExpanded = !isExpanded
         }
         courseViewModel = ViewModelProvider(this)[CourseViewModel::class.java]
 
@@ -82,14 +137,20 @@ class CourseDetailActivity : AppCompatActivity() {
         amount = binding.tvPrice.text.toString()
 
         val currencyFormat = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
-        binding.tvPrice.text = currencyFormat.format(amount.toInt())
+        binding.tvPrice.text = currencyFormat.format(amount.toDouble())
 
-        if (environment == 0) {
-            AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEBUG);
-        } else if (environment == 1) {
-            AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT);
-        } else if (environment == 2) {
-            AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.PRODUCTION);
+        when (environment) {
+            0 -> {
+                AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEBUG);
+            }
+
+            1 -> {
+                AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.DEVELOPMENT);
+            }
+
+            2 -> {
+                AppMoMoLib.getInstance().setEnvironment(AppMoMoLib.ENVIRONMENT.PRODUCTION);
+            }
         }
 
         binding.btnBuy.setOnClickListener {
@@ -118,17 +179,55 @@ class CourseDetailActivity : AppCompatActivity() {
 
         }
 
-        binding.ivPlay.setOnClickListener {
+        binding.clPreviewCourse.setOnClickListener {
             val vidPath = course.promotionalVideo.secure_url
-            if(vidPath != "") {
+            if (vidPath != "") {
                 val previewCourseDialog = PreviewCourseDialog(vidPath)
                 previewCourseDialog.show(supportFragmentManager, "PreviewCourseDialog")
-            }
-            else
+            } else
                 Toast.makeText(this, "No promotional video available", Toast.LENGTH_SHORT).show()
         }
+
+        val googlePayButton = binding.googlePayButton
+
+        googlePayButton.initialize(
+            ButtonOptions.newBuilder()
+                .setButtonType(ButtonConstants.ButtonType.PLAIN)
+                .setCornerRadius(8)
+                .setAllowedPaymentMethods(PaymentsUtil.allowedPaymentMethods.toString()).build()
+        )
+        googlePayButton.setOnClickListener { requestPayment(course) }
+
+
+
+
+        userRepository.isInCourseList(course.id) { isInCourseList ->
+            val isCourseVisible = if (isInCourseList) VISIBLE else GONE
+            val isBuyVisible = if (isInCourseList) GONE else VISIBLE
+
+            updateButtonVisibility(isBuyVisible, isCourseVisible)
+            DialogHelper.showProgressDialog(this, "Loading course details...")
+            courseRepository.getCourseById(course.id) { courseRes ->
+                DialogHelper.hideProgressDialog()
+                if (courseRes!!.instructor == UserRepository.getCurrentUserID()) {
+                    updateButtonVisibility(GONE, VISIBLE)
+                }
+            }
+        }
+
+
+
+
     }
 
+    private fun updateButtonVisibility(isBuyVisible: Int, isCourseVisible: Int) {
+        binding.apply {
+            btnBuy.visibility = isBuyVisible
+            googlePayButton.visibility = isBuyVisible
+            btnWishlist.visibility = isBuyVisible
+            gotoCourseBtn.visibility = isCourseVisible
+        }
+    }
     private fun populateCourseDetails(course: Course) {
         binding.tvTitle.text = course.name
 
@@ -139,7 +238,8 @@ class CourseDetailActivity : AppCompatActivity() {
             .into(binding.ivThumbnail)
 
         binding.tvRating.text = course.avgRating.toString()
-        var totalRatings = course.oneStarCnt + course.twoStarCnt + course.threeStarCnt + course.fiveStarCnt + course.fourStarCnt
+        var totalRatings =
+            course.oneStarCnt + course.twoStarCnt + course.threeStarCnt + course.fiveStarCnt + course.fourStarCnt
         val figuresText =
             getString(R.string.course_figures, totalRatings, course.totalStudents)
         binding.tvFigures.text = figuresText
@@ -163,7 +263,7 @@ class CourseDetailActivity : AppCompatActivity() {
 
         // inject the 2 latest feedback
 
-        courseFeedbackRepo.getLatestCourseFeedback(course.id, this) { feedbackList ->
+        courseFeedbackRepo.getLatestCourseFeedback(course.id) { feedbackList ->
             // Clear the parent layout
             var parentLayout = binding.llFeedbacks
             parentLayout.removeAllViews()
@@ -174,9 +274,11 @@ class CourseDetailActivity : AppCompatActivity() {
                 Toast.makeText(this, "No feedback entries for this course yet.", Toast.LENGTH_SHORT)
                     .show()
             } else {
+                // Get the first two feedbacks from the list
+                val firstTwoFeedbacks = feedbackList.take(2)
 
-                // For each feedback, inflate a new feedback layout and add it to the parent layout
-                feedbackList.forEach { feedback ->
+                // For each feedback in the first two, inflate a new feedback layout and add it to the parent layout
+                firstTwoFeedbacks.forEach { feedback ->
                     // Inflate the feedback layout
                     val inflater = LayoutInflater.from(this)
                     val feedbackLayout =
@@ -190,15 +292,20 @@ class CourseDetailActivity : AppCompatActivity() {
                 }
 
                 if (feedbackList.size > 2) {
-                    binding.tvShowMoreFeedback.visibility = View.VISIBLE
+                    binding.tvShowMoreFeedback.visibility = VISIBLE
+                    binding.tvShowMoreFeedback.setOnClickListener {
+                        val intent = Intent(this, StudentFeedbackActivity::class.java)
+                        intent.putParcelableArrayListExtra("feedbackList", ArrayList(feedbackList))
+                        startActivity(intent)
+                    }
                 }
             }
         }
 
-
     }
 
-    fun updateLinearLayoutWithFeedback(linearLayout: View, feedback: CourseFeedback) {
+
+    private fun updateLinearLayoutWithFeedback(linearLayout: View, feedback: CourseFeedback) {
         val ratingBar = linearLayout.findViewById<RatingBar>(R.id.rb_review)
         val nameTextView = linearLayout.findViewById<TextView>(R.id.tv_name)
         val dateTextView = linearLayout.findViewById<TextView>(R.id.tv_date)
@@ -212,6 +319,19 @@ class CourseDetailActivity : AppCompatActivity() {
         dateTextView.text =
             feedback.createdDatetime // assuming you have a createdDatetime field in your feedback
         tvFeedback.text = feedback.feedback
+
+        if (feedback.instructorResponse != null) {
+            linearLayout.findViewById<LinearLayout>(R.id.ll_instructorResponse).visibility =
+                View.VISIBLE
+            courseFeedbackRepo.getUserFullName(feedback.instructorResponse!!.instructorId) { fullName ->
+                linearLayout.findViewById<TextView>(R.id.tv_instructorName).text = fullName
+            }
+            linearLayout.findViewById<TextView>(R.id.tv_responseDate).text =
+                feedback.instructorResponse!!.createdDatetime
+            linearLayout.findViewById<TextView>(R.id.tv_response).text =
+                feedback.instructorResponse!!.content
+        }
+
     }
 
     fun setInstructor(ins: User) {
@@ -303,6 +423,7 @@ class CourseDetailActivity : AppCompatActivity() {
     private fun handlePaymentSuccess(token: String?, phoneNumber: String?) {
         Log.d("message", "success")
         userRepository.addToCourseList(course.id) {}
+        addTransaction()
         startActivity(Intent(this@CourseDetailActivity, StudentMainActivity::class.java))
     }
 
@@ -317,6 +438,34 @@ class CourseDetailActivity : AppCompatActivity() {
                 binding.btnWishlist.text = "Wishlisted"
             } else {
                 binding.btnWishlist.text = "Add to wishlist"
+            }
+        }
+    }
+
+    private fun requestPayment(course: Course) {
+        val task = model.getLoadPaymentDataTask(priceCents = (course.price * 0.9).toLong())
+        task.addOnCompleteListener(paymentDataLauncher::launch)
+    }
+
+    private fun addTransaction() {
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        userRepository.getCurUser { currentUser ->
+            CourseRepository().getCourseById(course.id) { courseDoc ->
+                val transaction = courseDoc?.let { it1 ->
+                    Transaction(
+                        senderId = currentUser.id,
+                        receiverId = it1.instructor,
+                        courseId = course.id,
+                        amount = course.price,
+                        date = formatter.format(Date())
+                    )
+                }
+
+                // Add the transaction to the database
+                val transactionRepository = TransactionRepository()
+                if (transaction != null) {
+                    transactionRepository.addTransaction(transaction) {}
+                }
             }
         }
     }

@@ -21,6 +21,7 @@ import com.deadlineshooters.yudemy.activities.CreateCurriculumActivity
 import com.deadlineshooters.yudemy.activities.EditCourseLandingPageActivity
 import com.deadlineshooters.yudemy.activities.PricingCourseDraftingActivity
 import com.deadlineshooters.yudemy.databinding.FragmentCourseDraftingMenuBinding
+import com.deadlineshooters.yudemy.helpers.DialogHelper
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.SectionWithLectures
 import com.deadlineshooters.yudemy.repositories.CourseRepository
@@ -107,6 +108,30 @@ class CourseDraftingMenuFragment : Fragment() {
                     updateSwitchEnabled()
                     binding.courseStatus.text = if(course!!.status) "Published" else "Draft"
                 }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        DialogHelper.showProgressDialog(requireContext(), "Loading...")
+        // Fetch the latest course information from the database
+        course?.let { courseNonNull ->
+            CourseRepository().getCourseById(courseNonNull.id) { updatedCourse ->
+                if (updatedCourse != null) {
+                    course = updatedCourse
+                    // Update UI with the latest course data
+                    binding.tvCourseTitle.text = updatedCourse.name
+                    Glide.with(this)
+                        .load(updatedCourse.thumbnail.secure_url)
+                        .placeholder(R.drawable.placeholder)
+                        .into(binding.crsImgView)
+                    // Update other UI elements as needed
+                } else {
+                    // Handle the case where the course data could not be fetched
+                    Toast.makeText(context, "Failed to load course data.", Toast.LENGTH_SHORT).show()
+                }
+                DialogHelper.hideProgressDialog()
+            }
         }
     }
 
