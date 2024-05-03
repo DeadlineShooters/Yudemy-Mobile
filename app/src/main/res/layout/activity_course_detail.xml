@@ -43,8 +43,10 @@
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:id="@+id/cl_previewCourse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
 
 
                 <ImageView
@@ -69,7 +71,7 @@
                     android:src="@drawable/ic_play_filled_24"
 
                     app:layout_constraintBottom_toBottomOf="@+id/iv_thumbnail"
-                    app:layout_constraintEnd_toEndOf="@+id/iv_thumbnail"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -122,7 +124,7 @@
                     android:layout_height="wrap_content"
                     android:text="4,5"
                     android:textColor="@color/rating_color"
-                    android:textSize="15dp"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -178,19 +180,69 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/inter_bold"
-                android:text="1.299.000 đ"
+                android:text="1299000"
                 android:textColor="@color/black"
                 android:textSize="35sp" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_buy"
+                android:id="@+id/gotoCourseBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="8dp"
                 android:backgroundTint="@color/buynow_btn_color"
-                android:text="@string/buy_now"
-                android:textSize="18dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="Go to course"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                app:cornerRadius="0dp" />
+                app:cornerRadius="2dp"
+                app:layout_constraintHorizontal_bias="1.0" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_buy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="8dp"
+                    android:backgroundTint="#d82d8b"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="@string/buy_now"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="2dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.gms.wallet.button.PayButton
+                    android:id="@+id/googlePayButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/guideline5"
+                    app:layout_constraintTop_toTopOf="parent"></com.google.android.gms.wallet.button.PayButton>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_wishlist"
@@ -220,7 +272,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="5 sections • 53 lectures • 5h 31m total length"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_sections"
@@ -231,79 +283,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ll_toolbar" />
-<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="20dp"-->
-<!--                android:gravity="center_vertical"-->
-
-<!--                android:orientation="horizontal">-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:text="Section 1 - Getting started"-->
-<!--                    android:textSize="16dp"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--                &lt;!&ndash;  <ImageView-->
-<!--                      android:id="@+id/iv_minus"-->
-<!--                      android:layout_width="wrap_content"-->
-<!--                      android:layout_height="match_parent"-->
-<!--                      app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                      app:layout_constraintEnd_toEndOf="parent"-->
-<!--                      app:layout_constraintTop_toTopOf="parent"-->
-<!--                      tools:srcCompat="@drawable/ic_minus" />&ndash;&gt;-->
-<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="20dp"-->
-<!--                android:gravity="center_horizontal"-->
-<!--                android:orientation="horizontal">-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginEnd="10dp"-->
-<!--                    android:padding="15dp"-->
-<!--                    android:text="1"-->
-<!--                    android:textColor="@color/black"-->
-<!--                    android:textSize="18dp"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:orientation="vertical">-->
-
-<!--                    <TextView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:text="Introduction to the course"-->
-<!--                        android:textColor="@color/black"-->
-<!--                        android:textSize="20dp"-->
-<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--                    <TextView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:text="04:29"-->
-<!--                        android:textSize="14dp"-->
-<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toTopOf="parent" />-->
-<!--                </LinearLayout>-->
-<!--            </LinearLayout>-->
-
 
 
             <TextView
@@ -321,20 +300,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/inter_medium"
-                android:text="Want to learn how to process events with Logstash? Then you have come to the right place; this course is by far the most comprehensive course on Logstash here at Udemy! This course specifically covers Logstash, meaning than we can go into much more detail than if this course covered the entire Elastic Stack. So if you want to learn Logstash specifically, then this course is for you!
-
-\n\nThis course assumes no prior knowledge of or experience with Logstash. We start from the very basics and gradually transition into more advanced topics. The course is designed so that you can follow along the whole time step by step, and you can find all of the configuration files within a GitHub repository. The course covers topics such as handling Apache web server logs (both access and error logs), data enrichment, sending data to Elasticsearch, visualizing data with Kibana, along with covering a number of popular use cases that you are likely to come across. Upon completing this course, you will know all of the most important aspects of Logstash, and will be able to build complex pipeline configurations and process many different kinds of events and data."
+                android:text=""
+                android:maxLines="7"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
-            <!--            <TextView-->
-            <!--                android:id="@+id/tv_showMoreDesc"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:fontFamily="@font/inter_bold"-->
-            <!--                android:text="@string/show_more"-->
-            <!--                android:textColor="@color/design_default_color_primary"-->
-            <!--                android:textSize="18sp" />-->
+            <TextView
+                android:id="@+id/showMoreBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:clickable="true"
+                android:text="Show more"
+                android:textColor="#573AA1"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/instructorBio"
+                app:layout_constraintTop_toBottomOf="@+id/instructorBio" />
 
             <TextView
                 android:id="@+id/tv_instructor"
@@ -630,24 +612,24 @@
 
             <LinearLayout
                 android:id="@+id/ll_feedbacks"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                >
+                android:orientation="vertical">
 
 
             </LinearLayout>
+
             <TextView
-                android:layout_marginTop="10dp"
-                android:visibility="gone"
                 android:id="@+id/tv_showMoreFeedback"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:text="@string/see_all"
                 android:textAlignment="center"
                 android:textColor="@color/buynow_btn_color"
-                android:text="Show more" />
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 

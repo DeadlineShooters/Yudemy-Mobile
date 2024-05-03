@@ -1,18 +1,18 @@
 package com.deadlineshooters.yudemy.viewmodels
 
-import android.content.ComponentCallbacks
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
+import com.deadlineshooters.yudemy.helpers.SearchHelper
 import com.deadlineshooters.yudemy.models.Course
-import com.deadlineshooters.yudemy.models.Image
-import com.deadlineshooters.yudemy.models.User
-import com.deadlineshooters.yudemy.models.Video
 import com.deadlineshooters.yudemy.models.SectionWithLectures
 import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.deadlineshooters.yudemy.repositories.SectionRepository
+import com.google.android.gms.tasks.Task
+import kotlinx.coroutines.launch
 
 
 class CourseViewModel : ViewModel() {
@@ -23,7 +23,7 @@ class CourseViewModel : ViewModel() {
     private val _dashboardCourses = MutableLiveData<List<Course>>()
     val dashboardCourses: LiveData<List<Course>> = _dashboardCourses
 
-  private val _learningCourse = MutableLiveData<Course?>()
+    private val _learningCourse = MutableLiveData<Course?>()
     val learningCourse: LiveData<Course?> = _learningCourse
 
     private val _sectionsWithLectures = MutableLiveData<List<SectionWithLectures>>()
@@ -32,8 +32,11 @@ class CourseViewModel : ViewModel() {
     private val _wishlist = MutableLiveData<List<Course>>()
     val wishlist: LiveData<List<Course>> = _wishlist
 
+    private val _searchResult = MutableLiveData<List<Course>>()
+    val searchResult: LiveData<List<Course>> = _searchResult
+
     private val _courses = MutableLiveData<List<Course>>()
-    val courses get() = _courses
+    val courses: LiveData<List<Course>> = _courses
 
     private val _editingCourse = MutableLiveData<Course?>()
     val editingCourse: LiveData<Course?> = _editingCourse
@@ -55,8 +58,24 @@ class CourseViewModel : ViewModel() {
 
     }
 
-     fun refreshWishlist() {
-        courseRepository.getWishlist {courses ->
+    fun refreshCourses() {
+        courseRepository.getCourses { courses ->
+            _courses.value = courses
+
+            // Init data for Algolia
+            val searchHelper = SearchHelper()
+            for (course in courses) {
+                viewModelScope.launch {
+                    searchHelper.indexData(course)
+                }
+                Log.d("coroutine", course.name)
+            }
+        }
+
+    }
+
+    fun refreshWishlist() {
+        courseRepository.getWishlist { courses ->
             _wishlist.value = courses
         }
 
@@ -65,7 +84,7 @@ class CourseViewModel : ViewModel() {
     fun refreshSections(courseId: String) {
         val task = sectionRepository.getSectionsWithLectures(courseId)
 
-        task.addOnCompleteListener{ task ->
+        task.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 _sectionsWithLectures.value = task.result
             } else {
@@ -115,5 +134,24 @@ class CourseViewModel : ViewModel() {
             _courses.value = it
         }
     }
+
+    fun refreshSearchResult(input: String) {
+        courseRepository.searchCourses(input) { courses ->
+            _searchResult.value = courses
+        }
+    }
+
+    fun getTotalRevenueForInstructor(instructorId: String): Task<Int> {
+        return courseRepository.getCoursesByInstructor(instructorId).continueWith { task ->
+            if (task.isSuccessful) {
+                val courses = task.result
+                courses?.sumOf { course -> course.totalRevenue } ?: 0
+            } else {
+                0
+            }
+        }
+    }
+
+
 
 }
