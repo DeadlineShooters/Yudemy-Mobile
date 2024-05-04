@@ -85,7 +85,7 @@ class CourseDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupActionBar()
 
-        course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+        course = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             intent.getParcelableExtra("course", Course::class.java)!!
         else
             intent.getParcelableExtra<Course>("course")!!
@@ -97,8 +97,8 @@ class CourseDetailActivity : AppCompatActivity() {
             Log.d("Instructor", course.instructor)
         }
 
-        binding.showMoreBtn.setOnClickListener{
-            if(isExpanded){
+        binding.showMoreBtn.setOnClickListener {
+            if (isExpanded) {
                 binding.tvDesc.maxLines = 7
                 binding.showMoreBtn.text = "Show more"
             } else {
@@ -197,7 +197,6 @@ class CourseDetailActivity : AppCompatActivity() {
             binding.tvPrice.visibility = VISIBLE
         }
 
-        handleCourseInCourseList()
 
         userRepository.isInCourseList(course.id) { isInCourseList ->
             val isCourseVisible = if (isInCourseList) VISIBLE else GONE
@@ -207,7 +206,13 @@ class CourseDetailActivity : AppCompatActivity() {
             DialogHelper.showProgressDialog(this, "Loading course details...")
             courseRepository.getCourseById(course.id) { courseRes ->
                 DialogHelper.hideProgressDialog()
-                if (courseRes!!.instructor == UserRepository.getCurrentUserID()) {
+                if (courseRes!!.price == 0) {
+                    updateButtonVisibility(GONE, isCourseVisible)
+                    binding.enrollBtn.visibility = if (!isInCourseList && courseRes.instructor != UserRepository.getCurrentUserID()) VISIBLE else GONE
+                } else {
+                    binding.enrollBtn.visibility = GONE
+                }
+                if (courseRes.instructor == UserRepository.getCurrentUserID()) {
                     updateButtonVisibility(GONE, VISIBLE)
                 }
             }
@@ -445,7 +450,6 @@ class CourseDetailActivity : AppCompatActivity() {
                 binding.btnWishlist.text = "Add to wishlist"
             }
         }
-        handleCourseInCourseList()
         DialogHelper.hideProgressDialog()
     }
 
@@ -513,28 +517,5 @@ class CourseDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleCourseInCourseList() {
-        userRepository.isInCourseList(course.id) { isInCourseList ->
-            if (isInCourseList) {
-                binding.btnBuy.visibility = GONE
-                binding.googlePayButton.visibility = GONE
-                binding.btnWishlist.visibility = GONE
-                binding.enrollBtn.visibility = GONE
-                binding.gotoCourseBtn.visibility = VISIBLE
-            } else {
-                binding.gotoCourseBtn.visibility = GONE
-                if (course.price == 0) {
-                    binding.enrollBtn.visibility = VISIBLE
-                    binding.btnBuy.visibility = GONE
-                    binding.googlePayButton.visibility = GONE
-                    binding.btnWishlist.visibility = GONE
-                } else {
-                    binding.enrollBtn.visibility = GONE
-                    binding.btnBuy.visibility = VISIBLE
-                    binding.googlePayButton.visibility = VISIBLE
-                    binding.btnWishlist.visibility = VISIBLE
-                }
-            }
-        }
-    }
+
 }
