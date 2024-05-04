@@ -187,8 +187,6 @@ class CourseDetailActivity : AppCompatActivity() {
         googlePayButton.setOnClickListener { requestPayment(course) }
 
 
-
-
         binding.enrollBtn.setOnClickListener {
             handlePaymentSuccess("", "")
         }
@@ -200,8 +198,30 @@ class CourseDetailActivity : AppCompatActivity() {
         }
 
         handleCourseInCourseList()
+
+        userRepository.isInCourseList(course.id) { isInCourseList ->
+            val isCourseVisible = if (isInCourseList) VISIBLE else GONE
+            val isBuyVisible = if (isInCourseList) GONE else VISIBLE
+
+            updateButtonVisibility(isBuyVisible, isCourseVisible)
+            DialogHelper.showProgressDialog(this, "Loading course details...")
+            courseRepository.getCourseById(course.id) { courseRes ->
+                DialogHelper.hideProgressDialog()
+                if (courseRes!!.instructor == UserRepository.getCurrentUserID()) {
+                    updateButtonVisibility(GONE, VISIBLE)
+                }
+            }
+        }
     }
 
+    private fun updateButtonVisibility(isBuyVisible: Int, isCourseVisible: Int) {
+        binding.apply {
+            btnBuy.visibility = isBuyVisible
+            googlePayButton.visibility = isBuyVisible
+            btnWishlist.visibility = isBuyVisible
+            gotoCourseBtn.visibility = isCourseVisible
+        }
+    }
 
     private fun populateCourseDetails(course: Course) {
         binding.tvTitle.text = course.name
