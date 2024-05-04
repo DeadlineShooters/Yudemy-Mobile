@@ -133,10 +133,8 @@ class SectionRepository {
         for (section in sections) {
             val task = addSection(section.section).continueWithTask { task ->
                 val sectionId = task.result
-                section.section._id = sectionId
                 CourseRepository().addASection(course.id, sectionId)
                     .continueWithTask {
-                        course.sectionList.add(sectionId)
 
                         val lectureTasks = mutableListOf<Task<*>>()
                         for (lecture in section.lectures) {
@@ -148,7 +146,6 @@ class SectionRepository {
                                 lecture.content = media as Video
                                 lecture.sectionId = sectionId
                                 LectureRepository().addALecture(lecture, course).continueWith {
-                                    lecture._id = it.result
                                     tcs.setResult(null)
                                 }
                             }
@@ -178,7 +175,6 @@ class SectionRepository {
                     LectureRepository().deleteLectures(section.lectures, course)
                         .continueWithTask {
                             CourseRepository().removeSection(course.id, section.section._id)
-                            course.sectionList.remove(section.section._id)
                             it
                         }
                 }
