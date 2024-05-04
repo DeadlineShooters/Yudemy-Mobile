@@ -1,7 +1,10 @@
 package com.deadlineshooters.yudemy.repositories
 
+import android.content.Context
 import com.google.firebase.auth.EmailAuthProvider
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import com.deadlineshooters.yudemy.activities.StudentMainActivity
@@ -10,19 +13,31 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import javax.security.auth.callback.Callback
 
 class AuthenticationRepository {
     private val auth = FirebaseAuth.getInstance()
 
-    fun createAccount(email: String, password: String, callback: (String?) -> Unit)  {
+    fun createAccount(context: Context, email: String, password: String, callback: (String?) -> Unit)  {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
-                    val uId = user?.uid
-                    callback(uId)
+
+                    user?.sendEmailVerification()
+                        ?.addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Toast.makeText(context, "Please verify a verify email sent to ${user.email}", Toast.LENGTH_SHORT).show()
+                                waitForEmailVerification(user) { isVerified ->
+                                    if (isVerified) {
+                                        val uId = user.uid
+                                        callback(uId)
+                                    }
+                                }
+                            }
+                        }
                 } else {
                     val exception = task.exception
                     if (exception is FirebaseAuthUserCollisionException) {
@@ -148,5 +163,23 @@ class AuthenticationRepository {
                     callback(true)
                 }
             }
+    }
+
+    fun waitForEmailVerification(user: FirebaseUser, callback: (Boolean) -> Unit) {
+        val handler = Handler(Looper.getMainLooper())
+        val runnable = object : Runnable {
+            override fun run() {
+                user.reload().addOnCompleteListener {
+                    if (user.isEmailVerified) {
+                        callback(true)
+                    } else {
+                        // Repeat this check every 5 seconds
+                        handler.postDelayed(this, 5000)
+                    }
+                }
+            }
+        }
+        // Start the loop
+        handler.post(runnable)
     }
 }
