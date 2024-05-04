@@ -77,15 +77,6 @@ class SearchFragment : Fragment() {
             "Lifestyle", "Health & Fitness", "Music"
         )
 
-        binding.backBtn.setOnClickListener {
-            if (binding.emptyFrame.visibility == View.VISIBLE) {
-                requireActivity().supportFragmentManager.popBackStack()
-            } else {
-                binding.emptyFrame.visibility = View.VISIBLE
-                binding.resultList.visibility = View.GONE
-            }
-        }
-
         val categoryList = binding.categoryList
         val categoryAdapter = CategoryAdapter3(categories)
         categoryList.adapter = categoryAdapter
@@ -155,7 +146,6 @@ class SearchFragment : Fragment() {
         val searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text) as EditText
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                // Add your submission logic here
                 searchView.clearFocus()
                 true
             } else {

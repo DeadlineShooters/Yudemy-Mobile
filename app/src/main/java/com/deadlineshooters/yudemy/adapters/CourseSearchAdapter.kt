@@ -14,7 +14,6 @@ import com.algolia.instantsearch.core.hits.HitsView
 import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.models.AlgoliaCourse
-import com.deadlineshooters.yudemy.repositories.UserRepository
 import java.math.RoundingMode
 import java.text.NumberFormat
 import java.util.*
@@ -56,10 +55,7 @@ class CourseSearchAdapter : ListAdapter<AlgoliaCourse, CourseSearchAdapter.Cours
             val currencyFormat = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
 
             courseName.text = course.highlightedName?.toSpannedString() ?: course.name
-            UserRepository().getUserById(course.instructor) { user ->
-                instructor.text = user?.fullName
-
-            }
+            instructor.text = course.instructor
             ratingNumber.text = course.avgRating.toBigDecimal().setScale(1, RoundingMode.UP).toString()
             ratingStar.setStepSize(0.1f);
             ratingStar.rating = course.avgRating.toFloat();

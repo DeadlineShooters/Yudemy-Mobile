@@ -15,6 +15,9 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 class UserRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
@@ -145,6 +148,23 @@ class UserRepository {
                 callbacks(null)
             }
     }
+
+    suspend fun getUserById(userId: String): User? = suspendCancellableCoroutine { continuation ->
+        mFireStore.collection("users")
+            .document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    continuation.resume(document.toObject(User::class.java)!!)
+                } else {
+                    continuation.resume(null)
+                }
+            }
+            .addOnFailureListener {
+                continuation.resumeWithException(it)
+            }
+    }
+
 
     fun updateUserImage(userId: String, image: Image, callbacks: (User) -> Unit) {
         usersCollection.document(userId).update(

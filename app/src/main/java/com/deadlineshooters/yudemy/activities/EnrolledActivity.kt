@@ -14,6 +14,7 @@ import com.deadlineshooters.yudemy.adapters.CourseSearchAdapter
 import com.deadlineshooters.yudemy.databinding.ActivityEnrolledBinding
 import com.deadlineshooters.yudemy.models.AlgoliaCourse
 import com.deadlineshooters.yudemy.models.Course
+import com.deadlineshooters.yudemy.repositories.UserRepository
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.deadlineshooters.yudemy.viewmodels.QuerySuggestionViewModel
 
@@ -23,6 +24,7 @@ class EnrolledActivity : AppCompatActivity() {
     private lateinit var course: Course
     private val viewModel by viewModels<QuerySuggestionViewModel>()
     private val connection = ConnectionHandler()
+    val userRepository = UserRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,8 +33,9 @@ class EnrolledActivity : AppCompatActivity() {
         course = intent.getParcelableExtra<Course>("course") ?: Course()
 
         binding.courseName.text = course.name
-        binding.instructorName.text = course.instructor
-
+        userRepository.getUserById(course.instructor) {instructor ->
+            binding.instructorName.text = instructor!!.fullName
+        }
         binding.gotoCourse.setOnClickListener {
             val intent = Intent(this@EnrolledActivity, CourseLearningActivity::class.java)
             intent.putExtra("course", course)

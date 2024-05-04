@@ -66,16 +66,15 @@ class CourseViewModel : ViewModel() {
             val searchHelper = SearchHelper()
             viewModelScope.launch {
                 searchHelper.clearIndex()
-            }
-            for (course in courses) {
-                viewModelScope.launch {
+
+                courses.forEach { course ->
                     searchHelper.indexData(course)
+                    Log.d("coroutine", course.name)
                 }
-                Log.d("coroutine", course.name)
             }
         }
-
     }
+
 
     fun refreshWishlist() {
         courseRepository.getWishlist { courses ->
