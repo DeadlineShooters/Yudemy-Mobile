@@ -17,7 +17,7 @@ object Constants {
     const val CHANNEL_NAME = "Yudemy Notifications"
 
     const val PAYMENTS_ENVIRONMENT = WalletConstants.ENVIRONMENT_TEST
-    val PRICE_TIERS = arrayOf(0.0, 399000.0, 449000.0, 499000.0, 549000.0, 599000.0)
+    val PRICE_TIERS = arrayOf(0, 399000, 449000, 499000, 549000, 599000)
 
     /**
      * The allowed networks to be requested from the API. If the user has cards from networks not

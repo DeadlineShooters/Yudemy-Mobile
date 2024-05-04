@@ -15,6 +15,9 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 class UserRepository {
     private val mFireStore = FirebaseFirestore.getInstance()
@@ -25,10 +28,11 @@ class UserRepository {
      * Load user data onto any page
      * */
 
-    fun getUserData() : User{
+    fun getUserData(): User {
         // for testing
         return User("Test")
     }
+
     fun loadUserData(context: Any) {
         val documentReference = usersCollection.document(getCurrentUserID())
 
@@ -118,7 +122,7 @@ class UserRepository {
             .set(user)
     }
 
-    fun getCurUser(callbacks: (User) -> Unit){
+    fun getCurUser(callbacks: (User) -> Unit) {
         mFireStore.collection("users")
             .document(mAuth.currentUser!!.uid)
             .get()
@@ -129,29 +133,45 @@ class UserRepository {
             }
     }
 
-    fun getUserById(userId: String, callbacks: (User?) -> Unit){
+    fun getUserById(userId: String, callbacks: (User?) -> Unit) {
         mFireStore.collection("users")
             .document(userId)
             .get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
                     callbacks(document.toObject(User::class.java)!!)
-                }
-                else{
+                } else {
                     callbacks(null)
                 }
             }
-            .addOnFailureListener{
+            .addOnFailureListener {
                 callbacks(null)
             }
     }
 
-    fun updateUserImage(userId: String, image: Image, callbacks: (User) -> Unit){
+    suspend fun getUserById(userId: String): User? = suspendCancellableCoroutine { continuation ->
+        mFireStore.collection("users")
+            .document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    continuation.resume(document.toObject(User::class.java)!!)
+                } else {
+                    continuation.resume(null)
+                }
+            }
+            .addOnFailureListener {
+                continuation.resumeWithException(it)
+            }
+    }
+
+
+    fun updateUserImage(userId: String, image: Image, callbacks: (User) -> Unit) {
         usersCollection.document(userId).update(
             "image.public_id", image.public_id,
             "image.secure_url", image.secure_url
         ).addOnSuccessListener {
-            getUserById(userId){
+            getUserById(userId) {
                 callbacks(it!!)
             }
         }.addOnFailureListener {
@@ -297,7 +317,12 @@ class UserRepository {
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
+                    val wishList = document.get("wishList") as MutableList<String>
                     val courseList = document.get("courseList") as MutableList<String>
+                    if (wishList.contains(courseId)) {
+                        wishList.remove(courseId)
+                        usersCollection.document(uid).update("wishList", wishList)
+                    }
                     if (!courseList.contains(courseId)) {
                         courseList.add(courseId)
                         usersCollection.document(uid).update("courseList", courseList)
@@ -321,6 +346,8 @@ class UserRepository {
             }
     }
 
+
+
     /**
      * Get user courses with progress and instructor name
      *
@@ -334,7 +361,7 @@ class UserRepository {
             .document(mAuth.currentUser!!.uid)
             .get()
             .addOnSuccessListener { document ->
-                if(document != null) {
+                if (document != null) {
                     val data = document.data?.get("courseList")
                     val listCourse = if (data is ArrayList<*>) {
                         data as ArrayList<String>
@@ -377,8 +404,7 @@ class UserRepository {
                         .addOnSuccessListener { _ ->
                             callback(courseList, progressList)
                         }
-                }
-                else {
+                } else {
                     Log.d("Firestore", "No such document")
                 }
             }
@@ -389,13 +415,97 @@ class UserRepository {
             .document(mAuth.currentUser!!.uid)
             .get()
             .addOnSuccessListener { document ->
-                if(document != null) {
+                if (document != null) {
                     val listCourse = document.data?.get("favoriteCourses") as ArrayList<String>
                     callback(listCourse)
-                }
-                else {
+                } else {
                     Log.d("Firestore", "No such document")
                 }
+            }
+    }
+
+    fun addToFavorites(courseId: String, callback: (Boolean) -> Unit) {
+        val uid = mAuth.currentUser?.uid
+        usersCollection
+            .document(uid!!)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val favorites = document.get("favoriteCourses") as MutableList<String>
+                    if (!favorites.contains(courseId)) {
+                        favorites.add(courseId)
+                        usersCollection.document(uid).update("favoriteCourses", favorites)
+                            .addOnSuccessListener {
+                                callback(true)
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.d("Firestore", "update failed with ", exception)
+                                callback(false)
+                            }
+                    } else {
+                        callback(false)
+                    }
+                } else {
+                    Log.d("Firestore", "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("Firestore", "get failed with ", exception)
+                callback(false)
+            }
+    }
+
+    fun removeFromFavorites(courseId: String, callback: (Boolean) -> Unit) {
+        val uid = mAuth.currentUser?.uid
+        usersCollection
+            .document(uid!!)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val favorites = document.get("favoriteCourses") as MutableList<String>
+                    if (favorites.contains(courseId)) {
+                        favorites.remove(courseId)
+                        usersCollection.document(uid).update("favoriteCourses", favorites)
+                            .addOnSuccessListener {
+                                callback(true)
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.d("Firestore", "update failed with ", exception)
+                                callback(false)
+                            }
+                    } else {
+                        callback(false)
+                    }
+                } else {
+                    Log.d("Firestore", "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("Firestore", "get failed with ", exception)
+                callback(false)
+            }
+    }
+
+    fun isInFavorites(courseId: String, callback: (Boolean) -> Unit) {
+        val uid = mAuth.currentUser?.uid
+        usersCollection
+            .document(uid!!)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val favorites = document.get("favoriteCourses") as MutableList<String>
+                    if (favorites.contains(courseId)) {
+                        callback(true)
+                    } else {
+                        callback(false)
+                    }
+                } else {
+                    Log.d("Firestore", "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("Firestore", "get failed with ", exception)
+                callback(false)
             }
     }
 

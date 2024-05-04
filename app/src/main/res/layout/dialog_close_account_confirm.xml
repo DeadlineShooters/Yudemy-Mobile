@@ -36,7 +36,7 @@
       app:layout_constraintVertical_bias="1.0" />
 
   <TextView
-      android:id="@+id/textView40"
+      android:id="@+id/courseListTitle"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="16dp"
@@ -57,9 +57,9 @@
       android:layout_marginTop="32dp"
       android:text="@string/close_account_confirm_mess"
       android:textStyle="bold"
-      app:layout_constraintEnd_toEndOf="@+id/textView40"
-      app:layout_constraintStart_toStartOf="@+id/textView40"
-      app:layout_constraintTop_toBottomOf="@+id/textView40" />
+      app:layout_constraintEnd_toEndOf="@+id/courseListTitle"
+      app:layout_constraintStart_toStartOf="@+id/courseListTitle"
+      app:layout_constraintTop_toBottomOf="@+id/courseListTitle" />
 
   <com.google.android.material.textfield.TextInputLayout
       android:id="@+id/tlConfirmPwCloseAcc"
@@ -69,9 +69,9 @@
       android:hint="@string/enter_your_password"
       android:inputType="textPassword"
       android:textColorHint="@color/gray_250"
-      app:layout_constraintEnd_toEndOf="@+id/textView40"
+      app:layout_constraintEnd_toEndOf="@+id/courseListTitle"
       app:layout_constraintHorizontal_bias="0.0"
-      app:layout_constraintStart_toStartOf="@+id/textView40"
+      app:layout_constraintStart_toStartOf="@+id/courseListTitle"
       app:layout_constraintTop_toBottomOf="@+id/textView41"
       app:passwordToggleEnabled="true">
 

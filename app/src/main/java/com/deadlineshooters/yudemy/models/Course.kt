@@ -14,7 +14,7 @@ data class Course(
     var totalStudents: Int = 0,
     var introduction: String = "",
     var description: String = "",
-    var price: Double = 0.0,
+    var price: Int = 0,
     var sectionList: ArrayList<String> = arrayListOf(),
     var promotionalVideo: Video = Video(),
     var language: String = "",

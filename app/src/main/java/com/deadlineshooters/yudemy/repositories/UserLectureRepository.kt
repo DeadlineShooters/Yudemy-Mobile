@@ -3,6 +3,7 @@ package com.deadlineshooters.yudemy.repositories
 import android.content.ContentValues
 import android.util.Log
 import com.deadlineshooters.yudemy.models.Lecture
+import com.deadlineshooters.yudemy.models.UserLecture
 import com.deadlineshooters.yudemy.models.Video
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.android.gms.tasks.Tasks
@@ -22,7 +23,7 @@ class UserLectureRepository {
             .get()
             .addOnSuccessListener { documents ->
                 Log.d("Firestore", "addOnSuccessListener: ${documents.documents}")
-                for(document in documents) {
+                for (document in documents) {
                     isFinished = document.data["finished"] as Boolean
                 }
                 Log.d("LectureLearningFragment", "repo checkFinished: $isFinished")
@@ -125,12 +126,24 @@ class UserLectureRepository {
             .whereEqualTo("lectureId", lectureId)
             .get()
             .addOnSuccessListener { documents ->
-                for(document in documents) {
+                for (document in documents) {
                     document.reference.update("finished", isCompleted)
                 }
             }
             .addOnFailureListener { exception ->
                 Log.w("Firestore", "Error getting documents: ", exception)
+            }
+    }
+
+    fun newUserLecture(userLecture: UserLecture, callback: (Boolean) -> Unit) {
+        userLectureCollection
+            .add(userLecture)
+            .addOnSuccessListener {
+                callback(true)
+            }
+            .addOnFailureListener { exception ->
+                Log.d("Firestore", "add failed with ", exception)
+                callback(false)
             }
     }
 }

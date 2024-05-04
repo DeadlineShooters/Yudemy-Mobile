@@ -60,6 +60,16 @@ class FilterActivity : AppCompatActivity() {
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
+
+        binding.resetBtn.setOnClickListener {
+            binding.spinner.setSelection(0)
+
+            priceAdapter.resetCheckedItems()
+            languageAdapter.resetCheckedItems()
+            ratingAdapter.resetCheckedItems()
+            durationAdapter.resetCheckedItems()
+        }
+
     }
 
     override fun onPause() {
