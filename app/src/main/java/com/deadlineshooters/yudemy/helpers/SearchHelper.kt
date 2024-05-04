@@ -47,6 +47,10 @@ class SearchHelper {
         }
     }
 
+    suspend fun clearIndex() {
+        index.clearObjects()
+    }
+
     suspend fun searchIndex(s: String) {
         val query = query {
             query = s

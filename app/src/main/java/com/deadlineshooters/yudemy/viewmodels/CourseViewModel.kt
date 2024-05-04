@@ -64,6 +64,9 @@ class CourseViewModel : ViewModel() {
 
             // Init data for Algolia
             val searchHelper = SearchHelper()
+            viewModelScope.launch {
+                searchHelper.clearIndex()
+            }
             for (course in courses) {
                 viewModelScope.launch {
                     searchHelper.indexData(course)
@@ -93,7 +96,7 @@ class CourseViewModel : ViewModel() {
     }
 
     fun deleteCourse(course: Course) {
-        courseRepository.deleteCourseAndItsLectures(course)
+        courseRepository.deleteCourse(course)
             .addOnCompleteListener{ task ->
             if (task.isSuccessful) {
                 _dashboardCourses.postValue(_dashboardCourses.value!!.minus(course))
