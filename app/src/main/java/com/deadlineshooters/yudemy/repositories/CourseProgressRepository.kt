@@ -1,6 +1,8 @@
 package com.deadlineshooters.yudemy.repositories
 
 import android.util.Log
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -35,6 +37,17 @@ class CourseProgressRepository {
             }
             .addOnFailureListener {
                 Log.w("Firestore", "Error getting documents: ", it)
+            }
+    }
+
+    fun deleteProgressByCourse(courseId: String): Task<Void> {
+        return courseProgressCollection.whereEqualTo("courseId", courseId)
+            .get()
+            .continueWithTask { documents ->
+                val tasks = documents.result.map {
+                    courseProgressCollection.document(it.id).delete()
+                }
+                Tasks.whenAll(tasks)
             }
     }
 }

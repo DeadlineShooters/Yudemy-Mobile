@@ -64,7 +64,7 @@ class CreateCurriculumActivity : BaseActivity() {
             else
                 intent.getParcelableArrayListExtra<SectionWithLectures>("sections") as ArrayList<SectionWithLectures>
 
-        if(sectionWithLectures.isEmpty()) {
+        if(sectionWithLectures.isEmpty() && course.sectionList.isNotEmpty()) {
             SectionRepository().getSectionsWithLectures(course.id).addOnSuccessListener {
                 sectionWithLectures = it as ArrayList<SectionWithLectures>
             }

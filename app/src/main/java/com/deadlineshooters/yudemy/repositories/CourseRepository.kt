@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.utils.Constants
 import com.deadlineshooters.yudemy.models.Lecture
+import com.deadlineshooters.yudemy.models.Video
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
@@ -48,7 +49,7 @@ class CourseRepository {
                     course
                 } ?: emptyList()
 
-                val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()) 
+                val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 courses.sortedWith(compareBy { sdf.parse(it.createdDate) }).let { if (sortByNewest) it.reversed() else it }
             } else {
                 emptyList()
@@ -57,7 +58,7 @@ class CourseRepository {
     }
 
     fun getCourses(callback: (List<Course>) -> Unit) {
-        val courses = mutableListOf<Course>() 
+        val courses = mutableListOf<Course>()
 
         coursesCollection.get().addOnSuccessListener { courseDocument ->
             if (courseDocument != null) {
@@ -146,8 +147,6 @@ class CourseRepository {
             }
     }
 
-
-
     fun getCourses(): LiveData<List<Course>> {
         val coursesLiveData = MutableLiveData<List<Course>>()
 
@@ -200,11 +199,9 @@ class CourseRepository {
             .addOnSuccessListener { document ->
                 course = document?.toObject(Course::class.java)
                 callback(course)
-
             }
             .addOnFailureListener { exception ->
                 Log.w("Firestore", "Error getting documents: ", exception)
-
                 callback(null)
             }
     }
@@ -249,7 +246,10 @@ class CourseRepository {
             .update("price", price)
     }
 
-    fun deleteCourseAndItsLectures(course: Course): Task<Void> {
+    /**
+     * delete its sections, lectures, learner's progress, learner's course, learner's favorite course
+     */
+    fun deleteCourse(course: Course): Task<Void> {
         val sections = course.sectionList
 
         val tasks = mutableListOf<Task<*>>()
@@ -258,6 +258,9 @@ class CourseRepository {
                 .continueWithTask {
                     val lectures = it.result
                     LectureRepository().deleteLectures(lectures, course)
+                        .continueWithTask {
+                            SectionRepository().deleteSection(section)
+                        }
                 }
             tasks.add(task)
         }
@@ -265,6 +268,12 @@ class CourseRepository {
         return Tasks.whenAllComplete(tasks)
             .continueWithTask {
                 coursesCollection.document(course.id).delete()
+                    .continueWithTask {
+                        CourseProgressRepository().deleteProgressByCourse(course.id)
+                            .continueWithTask {
+                                UserRepository().removeCourse(course.id)
+                            }
+                    }
             }
     }
 
@@ -296,7 +305,7 @@ class CourseRepository {
             }
     }
 
-    fun deleteSection(courseId: String, sectionId: String): Task<Void> {
+    fun removeSection(courseId: String, sectionId: String): Task<Void> {
         return coursesCollection.document(courseId)
             .update("sectionList", FieldValue.arrayRemove(sectionId))
     }

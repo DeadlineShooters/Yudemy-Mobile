@@ -94,7 +94,7 @@ class CourseViewModel : ViewModel() {
     }
 
     fun deleteCourse(course: Course) {
-        courseRepository.deleteCourseAndItsLectures(course)
+        courseRepository.deleteCourse(course)
             .addOnCompleteListener{ task ->
             if (task.isSuccessful) {
                 _dashboardCourses.postValue(_dashboardCourses.value!!.minus(course))

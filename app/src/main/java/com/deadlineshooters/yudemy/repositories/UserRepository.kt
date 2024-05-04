@@ -327,6 +327,9 @@ class UserRepository {
      * @return A callback function that takes a list of courses and instructors and a list of progress
      */
     fun getUserCourses(callback: (ArrayList<Map<Course, String>>, ArrayList<Number>) -> Unit) {
+        val courseList = arrayListOf<Map<Course, String>>()
+        val progressList = arrayListOf<Number>()
+
         usersCollection
             .document(mAuth.currentUser!!.uid)
             .get()
@@ -340,29 +343,39 @@ class UserRepository {
                         ArrayList<String>()
                     }
 
-                    val progressTasks: ArrayList<Task<Number>> = arrayListOf()
                     val tasks = listCourse.map { courseId ->
                         val task = TaskCompletionSource<Map<Course, String>>()
                         CourseRepository().getCourseById(courseId) { course ->
-                            course?.instructor?.let {
-                                InstructorRepository().getInstructorNameById(it) { name ->
+                            if(course?.status == true) {
+                                InstructorRepository().getInstructorNameById(course.instructor) { name ->
                                     task.setResult(mapOf(course to (name ?: "")))
                                 }
                             }
+                            else {
+                                task.setResult(null)
+                            }
                         }
-                        val progressTask = TaskCompletionSource<Number>()
-                        CourseProgressRepository().getCourseProgressByCourse(courseId) { courseProgress ->
-                            progressTask.setResult(courseProgress)
+                        task.task.continueWithTask {
+                            val progressTask = TaskCompletionSource<Number>()
+                            if(it.result != null) {
+                                courseList.add(it.result)
+                                CourseProgressRepository().getCourseProgressByCourse(courseId) { courseProgress ->
+                                    progressTask.setResult(courseProgress)
+                                }
+                            }
+                            else {
+                                progressTask.setResult(null)
+                            }
+                            progressTask.task
+                                .continueWith { progress ->
+                                    if(progress.result != null)
+                                        progressList.add(progress.result)
+                                }
                         }
-                        progressTasks.add(progressTask.task)
-                        task.task
                     }
                     Tasks.whenAllSuccess<Map<Course, String>>(tasks)
-                        .addOnSuccessListener { courses ->
-                            Tasks.whenAllSuccess<Int>(progressTasks)
-                                .addOnSuccessListener { progresses ->
-                                    callback(ArrayList(courses), ArrayList(progresses))
-                                }
+                        .addOnSuccessListener { _ ->
+                            callback(courseList, progressList)
                         }
                 }
                 else {
@@ -480,6 +493,17 @@ class UserRepository {
                         }
                     }
                 }
+            }
+    }
+
+    fun removeCourse(courseId: String): Task<Void> {
+        return usersCollection
+            .document(mAuth.currentUser!!.uid)
+            .update("courseList", FieldValue.arrayRemove(courseId))
+            .continueWithTask {
+                usersCollection
+                    .document(mAuth.currentUser!!.uid)
+                    .update("favoriteCourses", FieldValue.arrayRemove(courseId))
             }
     }
 }
