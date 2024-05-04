@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.Html
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -45,7 +46,6 @@ import com.deadlineshooters.yudemy.repositories.CategoryRepository
 import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.deadlineshooters.yudemy.viewmodels.CategoryViewModel
 import com.github.dhaval2404.imagepicker.ImagePicker
-import io.ktor.http.ContentDisposition.Companion.File
 import java.io.File
 
 class EditCourseLandingPageActivity : BaseActivity(), CategoryFragment.DialogListener {
@@ -441,10 +441,10 @@ class EditCourseLandingPageActivity : BaseActivity(), CategoryFragment.DialogLis
                 AlertDialog.Builder(this)
                     .setTitle("Discard changes?")
                     .setMessage("You have unsaved changes. Are you sure you want to discard them?")
-                    .setPositiveButton("Discard") { _, _ ->
+                    .setPositiveButton(Html.fromHtml("<font color='#B32D0F'><b>Discard</b></font>")) { _, _ ->
                         finish()
                     }
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton(Html.fromHtml("<font color='#5624D0'><b>Cancel</b></font>"), null)
                     .show()
             } else {
                 finish()

@@ -64,7 +64,7 @@ class SignUpWithEmailActivity : AppCompatActivity() {
         }
 
         signUpBtn!!.setOnClickListener{
-            AuthenticationRepository().createAccount(email!!.text.toString(), password!!.text.toString()){uid ->
+            AuthenticationRepository().createAccount(this, email!!.text.toString(), password!!.text.toString()){uid ->
                 if(uid == "User already exists with this email"){
                     Toast.makeText(this, "${email!!.text} is already in used", Toast.LENGTH_SHORT).show()
                 }

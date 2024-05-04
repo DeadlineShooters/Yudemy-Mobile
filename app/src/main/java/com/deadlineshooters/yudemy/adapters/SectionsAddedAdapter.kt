@@ -20,7 +20,7 @@ import com.deadlineshooters.yudemy.models.SectionWithLectures
 import java.util.Collections
 
 
-class SectionsAddedAdapter(private val sections: ArrayList<SectionWithLectures>): RecyclerView.Adapter<SectionsAddedAdapter.ViewHolder>() {
+class SectionsAddedAdapter(private var sections: ArrayList<SectionWithLectures>): RecyclerView.Adapter<SectionsAddedAdapter.ViewHolder>() {
     lateinit var context: Context
     var onAddLectureClick: ((Int) -> Unit)? = null
     var onDeleteSectionClick: ((Int) -> Unit)? = null
@@ -141,5 +141,10 @@ class SectionsAddedAdapter(private val sections: ArrayList<SectionWithLectures>)
             notifyItemRangeChanged(fromPosition, toPosition - fromPosition + 1)
         else
             notifyItemRangeChanged(toPosition, fromPosition - toPosition + 1)
+    }
+
+    fun setItems(sections: ArrayList<SectionWithLectures>) {
+        this.sections = sections
+        notifyDataSetChanged()
     }
 }

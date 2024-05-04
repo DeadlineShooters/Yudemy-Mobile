@@ -1,9 +1,14 @@
 package com.deadlineshooters.yudemy.activities
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.text.Html
+import android.util.Log
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.deadlineshooters.yudemy.R
@@ -81,9 +86,19 @@ class PricingCourseDraftingActivity : BaseActivity() {
         }
 
         binding.toolbarPricingSetting.setNavigationOnClickListener {
-            val intent = Intent()
-            setResult(Activity.RESULT_CANCELED, intent)
-            finish()
+            newPrice = Constants.PRICE_TIERS[binding.spinnerTypePricing.selectedItemPosition]
+            if (course.price != newPrice) {
+                AlertDialog.Builder(this)
+                    .setTitle("Discard changes?")
+                    .setMessage("You have unsaved changes. Are you sure you want to discard them?")
+                    .setPositiveButton(Html.fromHtml("<font color='#B32D0F'><b>Discard</b></font>")) { _, _ ->
+                        finish()
+                    }
+                    .setNegativeButton(Html.fromHtml("<font color='#5624D0'><b>Cancel</b></font>"), null)
+                    .show()
+            } else {
+                finish()
+            }
         }
     }
 }

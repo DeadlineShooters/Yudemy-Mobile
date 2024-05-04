@@ -1,14 +1,11 @@
 package com.deadlineshooters.yudemy.activities
 
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -59,17 +56,6 @@ class CreateCurriculumActivity : BaseActivity() {
         else
             intent.getParcelableExtra<Course>("course")!!
 
-        sectionWithLectures = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                intent.getParcelableArrayListExtra("sections", SectionWithLectures::class.java) as ArrayList<SectionWithLectures>
-            else
-                intent.getParcelableArrayListExtra<SectionWithLectures>("sections") as ArrayList<SectionWithLectures>
-
-        if(sectionWithLectures.isEmpty() && course.sectionList.isNotEmpty()) {
-            SectionRepository().getSectionsWithLectures(course.id).addOnSuccessListener {
-                sectionWithLectures = it as ArrayList<SectionWithLectures>
-            }
-        }
-
         setupActionBar()
 
         binding.parentAddedSectionsLayout.setOnTouchListener { v, event ->
@@ -77,7 +63,15 @@ class CreateCurriculumActivity : BaseActivity() {
             false
         }
 
-        sectionAdapter = SectionsAddedAdapter(sectionWithLectures)
+        sectionAdapter = SectionsAddedAdapter(arrayListOf())
+
+        showProgressDialog("Loading curriculum...")
+        SectionRepository().getSectionsWithLectures(course.id).addOnSuccessListener {
+            sectionWithLectures = it as ArrayList<SectionWithLectures>
+            sectionAdapter.setItems(it)
+            hideProgressDialog()
+        }
+
         Log.d("CreateCurriculumActivity", "onCreate: $sectionWithLectures")
         binding.addedSections.adapter = sectionAdapter
         binding.addedSections.layoutManager = LinearLayoutManager(this)
@@ -263,16 +257,12 @@ class CreateCurriculumActivity : BaseActivity() {
                     .setNegativeButton(Html.fromHtml("<font color='#5624D0'><b>Cancel</b></font>")) { dialog, which ->
                     }
                     .setPositiveButton(Html.fromHtml("<font color='#B32D0F'><b>Discard</b></font>")) { dialog, which ->
-                        val intent = Intent()
-                        setResult(Activity.RESULT_CANCELED, intent)
                         finish()
                     }
                     .create()
                     .show()
             }
             else {
-                val intent = Intent()
-                setResult(Activity.RESULT_CANCELED, intent)
                 finish()
             }
         }
@@ -304,7 +294,7 @@ class CreateCurriculumActivity : BaseActivity() {
             .addSectionsWithLecture(sectionWithLectures, course).addOnSuccessListener {
             hideProgressDialog()
             Toast.makeText(this, "Curriculum saved successfully", Toast.LENGTH_SHORT).show()
-            onBack()
+                finish()
             }
             .addOnFailureListener {
                 hideProgressDialog()
@@ -344,22 +334,12 @@ class CreateCurriculumActivity : BaseActivity() {
             .addOnSuccessListener {
                 hideProgressDialog()
                 Toast.makeText(this, "Curriculum saved successfully", Toast.LENGTH_SHORT).show()
-                onBack()
+                finish()
             }
             .addOnFailureListener {
                 hideProgressDialog()
                 Toast.makeText(this, "Failed to save curriculum. Please try again", Toast.LENGTH_SHORT).show()
             }
-    }
-
-    private fun onBack() {
-        val intent = Intent()
-        intent.putParcelableArrayListExtra("sections", sectionWithLectures)
-        intent.putExtra("course", course)
-        Log.d("CreateCurriculumActivity", "onBackPressed: $sectionWithLectures")
-        Log.d("CreateCurriculumActivity", "onBackPressed: $course")
-        setResult(Activity.RESULT_OK, intent)
-        finish()
     }
 
     fun checkIfAnyChanged(): Boolean {
