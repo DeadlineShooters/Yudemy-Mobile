@@ -26,12 +26,21 @@ class QuestionRepository {
                     val task = TaskCompletionSource<ArrayList<Question>>()
                     mFireStore.collection("lectures").whereEqualTo("sectionId", section).get()
                         .addOnSuccessListener { lectureList ->
+                            var lectureTasks = mutableListOf<Task<ArrayList<Question>>>()
                             for (lecture in lectureList) {
+                                val questionListTask = TaskCompletionSource<ArrayList<Question>>()
                                 val lectureId = lecture.id
                                 getQuestionListByLectureId(lectureId){
-                                    task.setResult(it)
+//                                    task.setResult(it)
+//                                    lectureTasks.add(questionListTask.task)
+                                    questionListTask.setResult(it)
                                 }
+                                lectureTasks.add(questionListTask.task)
                             }
+                            Tasks.whenAllSuccess<ArrayList<Question>>(lectureTasks)
+                                .addOnSuccessListener {
+                                    task.setResult(it.flatten() as ArrayList<Question>)
+                                }
                         }
                     task.task
                 }
@@ -103,17 +112,25 @@ class QuestionRepository {
         }
     }
 
-    fun deleteQuestion(courseId: String, questionId: String, callback: (ArrayList<Question>) -> Unit){
-        questionsCollection.document(questionId).delete()
-        .addOnSuccessListener {
-            getQuestionListByCourseId(courseId){
-                callback(it)
+        fun deleteQuestion(courseId: String, questionId: String, callback: (ArrayList<Question>) -> Unit){
+            questionsCollection.document(questionId).delete()
+            .addOnSuccessListener {
+                mFireStore.collection("replies")
+                    .whereEqualTo("questionId", questionId)
+                    .get()
+                    .addOnSuccessListener { result ->
+                        for (document in result) {
+                            document.reference.delete()
+                        }
+                    }
+                getQuestionListByCourseId(courseId){
+                    callback(it)
+                }
+            }
+            .addOnFailureListener {
+                callback(ArrayList())
             }
         }
-        .addOnFailureListener {
-            callback(ArrayList())
-        }
-    }
 
     fun getQuestionsListOfInstructor(instructorId: String, callback: (ArrayList<Question>) -> Unit){
         mFireStore.collection("courses")
@@ -168,7 +185,7 @@ class QuestionRepository {
     }
 
 
-    fun getNoInstructorRepliesQuestions(questionList: ArrayList<Question>, callback: (ArrayList<Question>) -> Unit) {
+    fun getNoInstructorRepliesQuestions(questionList: ArrayList<Question>, instructorId: String, callback: (ArrayList<Question>) -> Unit) {
         val questionTasks = questionList.map { question ->
             val task = TaskCompletionSource<ArrayList<Question>>()
             mFireStore.collection("replies")
@@ -184,7 +201,7 @@ class QuestionRepository {
                                 .document(reply.getString("replier")!!)
                                 .get()
                                 .addOnSuccessListener { user ->
-                                    if (user["instructor"] != null) {
+                                    if(user.id != instructorId){
                                         replyTask.setResult(reply.toObject(Reply::class.java))
                                     }
                                     else{

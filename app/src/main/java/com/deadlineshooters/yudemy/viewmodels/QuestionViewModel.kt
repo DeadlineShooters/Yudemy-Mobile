@@ -60,8 +60,8 @@ class QuestionViewModel : ViewModel() {
         }
     }
 
-    fun getNoInstructorRepliesQuestions(questionList: ArrayList<Question>){
-        questionRepository.getNoInstructorRepliesQuestions(questionList){
+    fun getNoInstructorRepliesQuestions(questionList: ArrayList<Question>, instructorId: String){
+        questionRepository.getNoInstructorRepliesQuestions(questionList, instructorId){
             _questionNoReplies.value = it
         }
     }
