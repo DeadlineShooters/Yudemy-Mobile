@@ -93,7 +93,6 @@ class LectureRepository {
             ) { media ->
                 lecture.content = media as Video
                 LectureRepository().addALecture(lecture, course).addOnSuccessListener {
-                    lecture._id = it
                     tcs.setResult(it)
                 }
             }
