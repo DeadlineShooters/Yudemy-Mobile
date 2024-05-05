@@ -197,26 +197,6 @@ class CourseDetailActivity : AppCompatActivity() {
             binding.tvPrice.visibility = VISIBLE
         }
 
-
-        userRepository.isInCourseList(course.id) { isInCourseList ->
-            val isCourseVisible = if (isInCourseList) VISIBLE else GONE
-            val isBuyVisible = if (isInCourseList) GONE else VISIBLE
-
-            updateButtonVisibility(isBuyVisible, isCourseVisible)
-            DialogHelper.showProgressDialog(this, "Loading course details...")
-            courseRepository.getCourseById(course.id) { courseRes ->
-                DialogHelper.hideProgressDialog()
-                if (courseRes!!.price == 0) {
-                    updateButtonVisibility(GONE, isCourseVisible)
-                    binding.enrollBtn.visibility = if (!isInCourseList && courseRes.instructor != UserRepository.getCurrentUserID()) VISIBLE else GONE
-                } else {
-                    binding.enrollBtn.visibility = GONE
-                }
-                if (courseRes.instructor == UserRepository.getCurrentUserID()) {
-                    updateButtonVisibility(GONE, VISIBLE)
-                }
-            }
-        }
     }
 
     private fun updateButtonVisibility(isBuyVisible: Int, isCourseVisible: Int) {
@@ -451,6 +431,25 @@ class CourseDetailActivity : AppCompatActivity() {
                 binding.btnWishlist.text = "Wishlisted"
             } else {
                 binding.btnWishlist.text = "Add to wishlist"
+            }
+        }
+        userRepository.isInCourseList(course.id) { isInCourseList ->
+            val isCourseVisible = if (isInCourseList) VISIBLE else GONE
+            val isBuyVisible = if (isInCourseList) GONE else VISIBLE
+
+            updateButtonVisibility(isBuyVisible, isCourseVisible)
+            DialogHelper.showProgressDialog(this, "Loading course details...")
+            courseRepository.getCourseById(course.id) { courseRes ->
+                DialogHelper.hideProgressDialog()
+                if (courseRes!!.price == 0) {
+                    updateButtonVisibility(GONE, isCourseVisible)
+                    binding.enrollBtn.visibility = if (!isInCourseList && courseRes.instructor != UserRepository.getCurrentUserID()) VISIBLE else GONE
+                } else {
+                    binding.enrollBtn.visibility = GONE
+                }
+                if (courseRes.instructor == UserRepository.getCurrentUserID()) {
+                    updateButtonVisibility(GONE, VISIBLE)
+                }
             }
         }
         DialogHelper.hideProgressDialog()
