@@ -448,7 +448,7 @@ class CourseDetailActivity : AppCompatActivity() {
                     binding.enrollBtn.visibility = GONE
                 }
                 if (courseRes.instructor == UserRepository.getCurrentUserID()) {
-                    updateButtonVisibility(GONE, VISIBLE)
+                    updateButtonVisibility(GONE, GONE)
                 }
             }
         }
