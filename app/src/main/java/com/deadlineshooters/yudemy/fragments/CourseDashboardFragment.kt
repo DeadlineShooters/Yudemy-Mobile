@@ -6,19 +6,14 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.Html
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.RadioGroup
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,6 +22,7 @@ import com.deadlineshooters.yudemy.activities.BaseActivity
 import com.deadlineshooters.yudemy.adapters.CourseAdapter
 import com.deadlineshooters.yudemy.databinding.FragmentCourseDashboardBinding
 import com.deadlineshooters.yudemy.helpers.FragmentHelper
+import com.deadlineshooters.yudemy.helpers.SearchHelper
 import com.deadlineshooters.yudemy.models.Category
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.repositories.CategoryRepository
@@ -34,6 +30,9 @@ import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.deadlineshooters.yudemy.repositories.UserRepository
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class CourseDashboardFragment : Fragment() {
@@ -259,9 +258,18 @@ class CourseDashboardFragment : Fragment() {
             CourseRepository().addCourse(course).addOnSuccessListener {
                 (activity as BaseActivity).hideProgressDialog()
                 course.id = it
+
+                // Index data
+                val searchHelper = SearchHelper()
+                CoroutineScope(Dispatchers.Main).launch {
+                    searchHelper.indexData(course)
+                }
+
                 FragmentHelper.replaceFragment(CourseDraftingMenuFragment(), course, this)
                 dialog.dismiss()
             }
+
+
         }
 
         dialog.show()

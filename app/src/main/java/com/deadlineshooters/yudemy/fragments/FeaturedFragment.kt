@@ -18,6 +18,7 @@ import com.deadlineshooters.yudemy.activities.CourseDetailActivity
 import com.deadlineshooters.yudemy.adapters.CategoryAdapter1
 import com.deadlineshooters.yudemy.adapters.CourseListAdapter2
 import com.deadlineshooters.yudemy.databinding.FragmentFeaturedBinding
+import com.deadlineshooters.yudemy.repositories.CategoryRepository
 import com.deadlineshooters.yudemy.repositories.UserRepository
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 
@@ -29,61 +30,55 @@ import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
  */
 class FeaturedFragment : Fragment() {
     private lateinit var courseViewModel: CourseViewModel
-    private lateinit var binding: FragmentFeaturedBinding
-
+    private var _binding: FragmentFeaturedBinding? = null
+    private val binding get() = _binding!!
     private val userRepository = UserRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
-        binding = FragmentFeaturedBinding.inflate(inflater, container, false)
+        _binding = FragmentFeaturedBinding.inflate(inflater, container, false)
+        val view = inflater.inflate(R.layout.fragment_featured, container, false)
 
+        val recyclerView = binding.categoryButtonList
 
+        CategoryRepository().getCategories().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val categories = task.result?.map { it.name } ?: emptyList()
 
-        // Obtain a reference to the RecyclerView
-        val recyclerView = this.binding.categoryButtonList // Replace with your RecyclerView's ID
+                val adapter = CategoryAdapter1(categories)
+                adapter.onItemClick = { category ->
+                    val fragment = FeaturedCategoryFragment()
+                    val bundle = Bundle()
+                    bundle.putString("category", category)
+                    fragment.arguments = bundle
+                    val fragmentManager = activity?.supportFragmentManager
+                    val fragmentTransaction = fragmentManager?.beginTransaction()
+                    fragmentTransaction?.addToBackStack(null)
+                    fragmentTransaction?.replace(R.id.frameLayout, fragment)
+                    fragmentTransaction?.commit()
+                }
 
-        // Create sample data for demonstration
-        val categories = listOf(
-            "Development", "Business", "Office Productivity", "Design",
-            "Marketing", "Photography & Video", "Teaching & Academics",
-            "Finance & Accounting", "IT & Software", "Personal Development",
-            "Lifestyle", "Health & Fitness", "Music"
-        )
+                recyclerView.adapter = adapter
 
-        // Create an instance of the CategoryAdapter
-        val adapter = CategoryAdapter1(categories)
-        adapter.onItemClick = { category ->
-            val fragment = FeaturedCategoryFragment()
-            val bundle = Bundle()
-            bundle.putString("category", category)
-            fragment.arguments = bundle
-            val fragmentManager = activity?.supportFragmentManager
-            val fragmentTransaction = fragmentManager?.beginTransaction()
-            fragmentTransaction?.addToBackStack(null)
-            fragmentTransaction?.replace(R.id.frameLayout, fragment)
-            fragmentTransaction?.commit()
+                recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL)
+                recyclerView.addItemDecoration(SpaceItemDecoration(8))
+            }
         }
 
-        // Set the adapter on the RecyclerView
-        recyclerView.adapter = adapter
-
-        // Set a horizontal LinearLayoutManager for horizontal scrolling
-        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL)
-        recyclerView.addItemDecoration(SpaceItemDecoration(8))
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        courseViewModel = ViewModelProvider(this).get(CourseViewModel::class.java)
+        courseViewModel = ViewModelProvider(this)[CourseViewModel::class.java]
         courseViewModel.refreshCourses()
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
             val adapter = CourseListAdapter2(requireContext(), courses)
-            this.binding.courseList.layoutManager = LinearLayoutManager(context)
-            this.binding.courseList.adapter = adapter
+            binding.courseList.layoutManager = LinearLayoutManager(context)
+            binding.courseList.adapter = adapter
             adapter.onItemClick = { course ->
                 val intent = Intent(activity, CourseDetailActivity::class.java)
                 intent.putExtra("course", course)
@@ -92,13 +87,18 @@ class FeaturedFragment : Fragment() {
         })
 
         userRepository.getCurUser { user ->
-            this.binding.welcomeLine.text = "Welcome, ${user.fullName}"
+            binding.welcomeLine.text = "Welcome, ${user.fullName}"
             Glide.with(view)
                 .load(user.image.secure_url)
                 .circleCrop()
-                .into(this.binding.avatar);
+                .into(binding.avatar);
 
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     class SpaceItemDecoration(private val space: Int) : RecyclerView.ItemDecoration() {
@@ -110,7 +110,6 @@ class FeaturedFragment : Fragment() {
             outRect.right = space
             outRect.bottom = space
 
-            // Add top margin only for the first item to avoid double space between items
             if (parent.getChildLayoutPosition(view) == 0) {
                 outRect.top = space
             }
