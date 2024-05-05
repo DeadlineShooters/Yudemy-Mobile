@@ -309,6 +309,7 @@ class QADialog(private val courseId: String, private val curLecture: String) : D
             })
             questionDetailContent.text = question.details
 
+
             replyContent.doAfterTextChanged {
                 sendBtn.isClickable = replyContent.text.isNotBlank()
                 sendBtn.isEnabled = replyContent.text.isNotBlank()

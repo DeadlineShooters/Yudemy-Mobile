@@ -3,6 +3,7 @@ package com.deadlineshooters.yudemy.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -13,6 +14,9 @@ import com.deadlineshooters.yudemy.models.Instructor
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.repositories.AuthenticationRepository
 import com.deadlineshooters.yudemy.repositories.UserRepository
+import com.google.firebase.app
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class SignUpWithEmailActivity : AppCompatActivity() {
 //    private lateinit var binding: ActivitySignUpWithEmailBinding
@@ -81,5 +85,24 @@ class SignUpWithEmailActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        FirebaseAuth.getInstance().currentUser?.delete()?.addOnCompleteListener {
+            if (it.isSuccessful) {
+                Log.d("auth", "deleted user")
+            } else {
+                Log.d("auth", "not deleted")
+            }
+        }
+        AuthenticationRepository().signOut {
+            if (it == true) {
+                Log.d("auth", "signed out")
+            } else {
+                Log.d("auth", "not signed out")
+            }
+        }
+        Log.d("auth", "deleted")
     }
 }
