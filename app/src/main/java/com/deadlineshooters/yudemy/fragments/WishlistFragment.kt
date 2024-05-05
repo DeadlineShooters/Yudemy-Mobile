@@ -14,6 +14,7 @@ import com.deadlineshooters.yudemy.activities.CourseDetailActivity
 import com.deadlineshooters.yudemy.adapters.CategoryAdapter2
 import com.deadlineshooters.yudemy.adapters.CourseListAdapter1
 import com.deadlineshooters.yudemy.databinding.FragmentWishlistBinding
+import com.deadlineshooters.yudemy.repositories.CategoryRepository
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 
 // TODO: Rename parameter arguments, choose names that match
@@ -40,29 +41,30 @@ class WishlistFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val categories = listOf(
-            "Development", "Business", "Office Productivity", "Design",
-            "Marketing", "Photography & Video", "Teaching & Academics",
-            "Finance & Accounting", "IT & Software", "Personal Development",
-            "Lifestyle", "Health & Fitness", "Music"
-        )
 
-        val adapter = CategoryAdapter2(categories)
-        binding.categoryList.adapter = adapter
-        binding.categoryList.layoutManager = LinearLayoutManager(context)
-        binding.categoryList.addItemDecoration(FeaturedFragment.SpaceItemDecoration(8))
+        CategoryRepository().getCategories().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val categories = task.result?.map { it.name } ?: emptyList()
 
-        adapter.onItemClick = { category ->
-            val fragment = FeaturedCategoryFragment()
-            val bundle = Bundle()
-            bundle.putString("category", category)
-            fragment.arguments = bundle
-            val fragmentManager = activity?.supportFragmentManager
-            val fragmentTransaction = fragmentManager?.beginTransaction()
-            fragmentTransaction?.addToBackStack(null)
-            fragmentTransaction?.replace(R.id.frameLayout, fragment)
-            fragmentTransaction?.commit()
+                val adapter = CategoryAdapter2(categories)
+                binding.categoryList.adapter = adapter
+                binding.categoryList.layoutManager = LinearLayoutManager(context)
+                binding.categoryList.addItemDecoration(FeaturedFragment.SpaceItemDecoration(8))
+
+                adapter.onItemClick = { category ->
+                    val fragment = FeaturedCategoryFragment()
+                    val bundle = Bundle()
+                    bundle.putString("category", category)
+                    fragment.arguments = bundle
+                    val fragmentManager = activity?.supportFragmentManager
+                    val fragmentTransaction = fragmentManager?.beginTransaction()
+                    fragmentTransaction?.addToBackStack(null)
+                    fragmentTransaction?.replace(R.id.frameLayout, fragment)
+                    fragmentTransaction?.commit()
+                }
+            }
         }
+
 
         courseViewModel = ViewModelProvider(this)[CourseViewModel::class.java]
         courseViewModel.wishlist.observe(viewLifecycleOwner, Observer { courses ->

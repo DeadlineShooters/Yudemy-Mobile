@@ -8,7 +8,6 @@ import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.Lecture
 import com.deadlineshooters.yudemy.models.User
 import com.deadlineshooters.yudemy.utils.Constants
-import com.deadlineshooters.yudemy.models.Video
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
@@ -16,6 +15,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class CourseRepository {
     private val userRepository = UserRepository()
@@ -34,6 +34,7 @@ class CourseRepository {
                 task.result.id
             }
     }
+
 
     fun getCoursesByInstructor(instructorId: String? = null, sortByNewest: Boolean = true): Task<List<Course>> {
         val task = if (instructorId != null) {
