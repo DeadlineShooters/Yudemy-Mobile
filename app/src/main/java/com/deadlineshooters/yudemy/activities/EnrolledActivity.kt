@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.algolia.instantsearch.core.connection.ConnectionHandler
 import com.algolia.instantsearch.core.hits.connectHitsView
 import com.algolia.search.helper.deserialize
+import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.adapters.CourseSearchAdapter
 import com.deadlineshooters.yudemy.databinding.ActivityEnrolledBinding
 import com.deadlineshooters.yudemy.models.AlgoliaCourse
@@ -31,6 +32,18 @@ class EnrolledActivity : AppCompatActivity() {
         binding = ActivityEnrolledBinding.inflate(layoutInflater)
         setContentView(binding.root)
         course = intent.getParcelableExtra<Course>("course") ?: Course()
+
+        setSupportActionBar(binding.toolbarSignUpActivity)
+
+        val actionBar = supportActionBar
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true)
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
+        }
+
+        binding.toolbarSignUpActivity.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         binding.courseName.text = course.name
         userRepository.getUserById(course.instructor) {instructor ->
