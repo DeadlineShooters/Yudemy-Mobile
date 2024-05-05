@@ -19,6 +19,7 @@ import com.deadlineshooters.yudemy.activities.CourseLearningActivity
 import com.deadlineshooters.yudemy.databinding.FragmentMoreLearningBinding
 import com.deadlineshooters.yudemy.dialogs.CertificateDialog
 import com.deadlineshooters.yudemy.dialogs.QADialog
+import com.deadlineshooters.yudemy.helpers.DialogHelper
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.CourseFeedback
 import com.deadlineshooters.yudemy.repositories.CourseFeedbackRepository
@@ -94,7 +95,14 @@ class MoreLearningFragment : Fragment() {
         setupDialog()
 
         // Get feedback for course and user
-
+        DialogHelper.showProgressDialog(requireContext(), "Loading...")
+        courseFeedbackRepo.getFeedbackForCourseAndUser(
+            course!!.id,
+            UserRepository.getCurrentUserID()
+        ) { feedback ->
+            DialogHelper.hideProgressDialog()
+            updateUIWithFeedback(feedback)
+        }
         binding.tvLeaveRating.setOnClickListener {
             courseFeedbackRepo.getFeedbackForCourseAndUser(
                 course!!.id,

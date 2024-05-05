@@ -9,16 +9,32 @@
             android:layout_width="match_parent"
                                                        android:layout_height="match_parent" android:id="@+id/linearLayout3"
                                                        android:layout_marginLeft="16dp" android:layout_marginRight="16dp">
+        <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_sign_up_activity"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" app:contentInsetStart="0dp">
+
+            <TextView
+                    android:id="@+id/tv_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text=""
+                    android:textColor="@color/primary_text_color"
+                    android:textStyle="bold"/>
+        </androidx.appcompat.widget.Toolbar>
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="377dp"
                 android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="32dp"
-                android:id="@+id/constraintLayout4">
+                app:layout_constraintEnd_toEndOf="parent"
+                android:id="@+id/constraintLayout4" app:layout_constraintTop_toBottomOf="@+id/toolbar_sign_up_activity">
 
             <ImageView
                     android:layout_width="96dp"
-                    android:layout_height="96dp" app:srcCompat="@drawable/ic_launcher_background" android:id="@+id/imageView4"
+                    android:layout_height="96dp" app:srcCompat="@drawable/ic_launcher_background" android:id="@+id/thumbnail"
                     app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"/>
             <TextView
                     android:text="You are now enrolled in:"
@@ -26,7 +42,7 @@
                     android:layout_height="wrap_content" android:id="@+id/textView16"
                     app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_bias="0.5"
                     app:layout_constraintBottom_toTopOf="@+id/courseName" android:layout_marginStart="16dp"
-                    app:layout_constraintStart_toEndOf="@+id/imageView4" android:layout_marginTop="8dp"/>
+                    app:layout_constraintStart_toEndOf="@+id/thumbnail" android:layout_marginTop="8dp"/>
             <TextView
                     android:text="Course Name"
                     android:layout_width="wrap_content"

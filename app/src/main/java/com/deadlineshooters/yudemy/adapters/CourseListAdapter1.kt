@@ -10,6 +10,7 @@ import android.widget.RatingBar
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.helpers.StringUtils
 import com.deadlineshooters.yudemy.models.Course
 import java.math.RoundingMode
 import java.text.NumberFormat
@@ -42,7 +43,7 @@ class CourseListAdapter1(context: Context, private val resource: Int, private va
         instructor.text = course.instructor
         ratingNumber.text = course.avgRating.toBigDecimal().setScale(1, RoundingMode.UP).toString()
         ratingStar.setStepSize(0.1f);
-        ratingStar.rating = course.avgRating.toFloat();
+        ratingStar.rating = StringUtils.roundToOneDecimalPlace(course.avgRating).toFloat();
         (course.oneStarCnt + course.twoStarCnt + course.threeStarCnt + course.fourStarCnt + course.fiveStarCnt).toString()
             .also { ratingQuantity.text = "($it)" }
         if (course.price > 0) {

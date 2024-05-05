@@ -197,26 +197,6 @@ class CourseDetailActivity : AppCompatActivity() {
             binding.tvPrice.visibility = VISIBLE
         }
 
-
-        userRepository.isInCourseList(course.id) { isInCourseList ->
-            val isCourseVisible = if (isInCourseList) VISIBLE else GONE
-            val isBuyVisible = if (isInCourseList) GONE else VISIBLE
-
-            updateButtonVisibility(isBuyVisible, isCourseVisible)
-            DialogHelper.showProgressDialog(this, "Loading course details...")
-            courseRepository.getCourseById(course.id) { courseRes ->
-                DialogHelper.hideProgressDialog()
-                if (courseRes!!.price == 0) {
-                    updateButtonVisibility(GONE, isCourseVisible)
-                    binding.enrollBtn.visibility = if (!isInCourseList && courseRes.instructor != UserRepository.getCurrentUserID()) VISIBLE else GONE
-                } else {
-                    binding.enrollBtn.visibility = GONE
-                }
-                if (courseRes.instructor == UserRepository.getCurrentUserID()) {
-                    updateButtonVisibility(GONE, VISIBLE)
-                }
-            }
-        }
     }
 
     private fun updateButtonVisibility(isBuyVisible: Int, isCourseVisible: Int) {
@@ -237,7 +217,7 @@ class CourseDetailActivity : AppCompatActivity() {
             .load(course.thumbnail.secure_url)
             .into(binding.ivThumbnail)
 
-        binding.tvRating.text = course.avgRating.toString()
+        binding.tvRating.text = StringUtils.roundToOneDecimalPlace(course.avgRating).toString()
         var totalRatings =
             course.oneStarCnt + course.twoStarCnt + course.threeStarCnt + course.fiveStarCnt + course.fourStarCnt
         val figuresText =
@@ -301,6 +281,30 @@ class CourseDetailActivity : AppCompatActivity() {
                 }
             }
         }
+
+
+// Calculate the percentage for each star count
+        val fiveStarPercentage = if (totalRatings != 0) course.fiveStarCnt * 100 / totalRatings else 0
+        val fourStarPercentage = if (totalRatings != 0) course.fourStarCnt * 100 / totalRatings else 0
+        val threeStarPercentage = if (totalRatings != 0) course.threeStarCnt * 100 / totalRatings else 0
+        val twoStarPercentage = if (totalRatings != 0) course.twoStarCnt * 100 / totalRatings else 0
+        val oneStarPercentage = if (totalRatings != 0) course.oneStarCnt * 100 / totalRatings else 0
+
+// Set the progress and text for each ProgressBar and TextView
+        binding.pb5Star.progress = fiveStarPercentage
+        binding.tv5StarPercentage.text = "$fiveStarPercentage%"
+
+        binding.pb4Star.progress = fourStarPercentage
+        binding.tv4StarPercentage.text = "$fourStarPercentage%"
+
+        binding.pb3Star.progress = threeStarPercentage
+        binding.tv3StarPercentage.text = "$threeStarPercentage%"
+
+        binding.pb2Star.progress = twoStarPercentage
+        binding.tv2StarPercentage.text = "$twoStarPercentage%"
+
+        binding.pb1Star.progress = oneStarPercentage
+        binding.tv1StarPercentage.text = "$oneStarPercentage%"
 
     }
 
@@ -451,6 +455,25 @@ class CourseDetailActivity : AppCompatActivity() {
                 binding.btnWishlist.text = "Wishlisted"
             } else {
                 binding.btnWishlist.text = "Add to wishlist"
+            }
+        }
+        userRepository.isInCourseList(course.id) { isInCourseList ->
+            val isCourseVisible = if (isInCourseList) VISIBLE else GONE
+            val isBuyVisible = if (isInCourseList) GONE else VISIBLE
+
+            updateButtonVisibility(isBuyVisible, isCourseVisible)
+            DialogHelper.showProgressDialog(this, "Loading course details...")
+            courseRepository.getCourseById(course.id) { courseRes ->
+                DialogHelper.hideProgressDialog()
+                if (courseRes!!.price == 0) {
+                    updateButtonVisibility(GONE, isCourseVisible)
+                    binding.enrollBtn.visibility = if (!isInCourseList && courseRes.instructor != UserRepository.getCurrentUserID()) VISIBLE else GONE
+                } else {
+                    binding.enrollBtn.visibility = GONE
+                }
+                if (courseRes.instructor == UserRepository.getCurrentUserID()) {
+                    updateButtonVisibility(GONE, GONE)
+                }
             }
         }
         DialogHelper.hideProgressDialog()

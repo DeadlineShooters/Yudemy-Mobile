@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.BaseActivity
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
+import com.deadlineshooters.yudemy.helpers.StringUtils
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.viewmodels.InstructorViewModel
 
@@ -58,7 +59,7 @@ class InstructorCourseListAdapter(private val courseList: List<Course>, private 
         instructorViewModel.getInstructorById(courseList[0].instructor)
 
         courseName.text = course.name
-        ratingNumber.text = course.avgRating.toString()
+        ratingNumber.text = StringUtils.roundToOneDecimalPlace(course.avgRating).toString()
         ratingStar.rating = course.avgRating.toFloat()
         ratingAmount.text = course.totalStudents.toString()
         originalPrice.text = course.price.formatThousands()

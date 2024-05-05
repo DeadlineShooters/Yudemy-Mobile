@@ -38,7 +38,7 @@ class StudentFeedbackAdapter(private val feedbackList: ArrayList<CourseFeedback>
         holder.tvName.text
         holder.rbReview.rating = currentItem.rating.toFloat()
         holder.tvDate.text = currentItem.createdDatetime
-        holder.tvFeedback.text = currentItem.createdDatetime
+        holder.tvFeedback.text = currentItem.feedback
 
         // If there is a response from the instructor, show it
         if (currentItem.instructorResponse != null) {

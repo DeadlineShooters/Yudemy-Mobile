@@ -22,6 +22,7 @@ import android.widget.VideoView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
@@ -129,11 +130,13 @@ class EditCourseLandingPageActivity : BaseActivity(), CategoryFragment.DialogLis
 
         binding.buttonUploadVideo.setOnClickListener {
 //            DialogHelper.showProgressDialog(this, "Processing video...")
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "video/*"
+//            val intent = Intent(Intent.ACTION_GET_CONTENT)
+//            intent.type = "video/*"
+//
+//// Launch the file picker and handle the result
+//            startPickVideoForResult.launch(intent)
 
-// Launch the file picker and handle the result
-            startPickVideoForResult.launch(intent)
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
         }
 
         DialogHelper.showProgressDialog(this, "Loading course...")
@@ -173,6 +176,8 @@ class EditCourseLandingPageActivity : BaseActivity(), CategoryFragment.DialogLis
                     courseRepository.patchCourse(course) {
                         handleSuccess()
                     }
+                    if(it.secure_url == "")
+                        Toast.makeText(this, "Upload media failed", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -187,6 +192,8 @@ class EditCourseLandingPageActivity : BaseActivity(), CategoryFragment.DialogLis
                     courseRepository.patchCourse(course) {
                         handleSuccess()
                     }
+                    if(it.secure_url == "")
+                        Toast.makeText(this, "Upload media failed", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -268,6 +275,49 @@ class EditCourseLandingPageActivity : BaseActivity(), CategoryFragment.DialogLis
 //            DialogHelper.hideProgressDialog()
 
         }
+
+    val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        // Callback is invoked after the user selects a media item or closes the
+        // photo picker.
+        if (uri != null) {
+            Log.d("PhotoPicker", "Selected URI: $uri")
+
+            val uriPathHelper = URIPathHelper()
+            val videoFullPath = uriPathHelper.getPath(baseContext, uri)
+            Log.d("UploadVideo", "onActivityResult: $videoFullPath")
+            if (videoFullPath != null) {
+                val file = File(videoFullPath)
+                uploadedVideo = file
+
+                val retriever = MediaMetadataRetriever()
+                retriever.setDataSource(applicationContext, uri)
+                val time =
+                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                val timeInMillisec = time!!.toLong()
+
+                previewVideo.duration = (timeInMillisec / 1000).toDouble()
+                previewVideo.contentUri = uri
+
+                // glide the video thumbnail
+                val frame = retriever.getFrameAtTime(
+                    1000,
+                    MediaMetadataRetriever.OPTION_CLOSEST
+                ) // get frame at 1 second
+                retriever.release()
+
+
+                isVideoEdited = true
+                binding.btnSave.isEnabled = true
+                binding.ivPlay.visibility = View.INVISIBLE
+                binding.ivCourseVideo.visibility = View.INVISIBLE
+                binding.tvInstructionSaveVideo.visibility = View.VISIBLE
+                retriever.release()
+            } else {
+                Log.d("PhotoPicker", "No media selected")
+                Toast.makeText(this, "No media selected", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onResume() {

@@ -95,10 +95,12 @@ class CourseLearningActivity : BaseActivity() {
                 rotateScreen()
             }
             else {
-                val intent = Intent()
+                val intent = Intent(this, StudentMainActivity::class.java)
                 intent.putExtra("isUpdateProgress", isUpdateProgress)
-                setResult(Activity.RESULT_OK, intent)
+                intent.putExtra("isUpdateProgressPassed", true)
+                startActivity(intent)
                 finish()
+
             }
         }
     }

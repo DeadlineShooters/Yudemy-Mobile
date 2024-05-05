@@ -39,6 +39,8 @@ class PreviewCourseDialog(private val videoPath: String): DialogFragment() {
             .setSeekForwardIncrementMs(10000)
             .build()
 
+        exoPlayer!!.volume = 1f
+
         var mediaItem = MediaItem.fromUri(Uri.parse(videoPath))
         exoPlayer!!.setMediaItem(mediaItem)
         exoPlayer!!.prepare()
