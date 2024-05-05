@@ -94,6 +94,7 @@ class EditImageFragment : Fragment() {
                 val filepath = BaseActivity().saveBitmapToFile(bitmap, requireContext())
 
                 if (filepath != null) {
+                    BaseActivity().showProgressDialog("")
                     CloudinaryHelper().uploadToCloudinary(filepath) { image ->
                         if (image != null) {
 //                            val imageUrl = image.secure_url
@@ -106,6 +107,7 @@ class EditImageFragment : Fragment() {
                             Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
                         }
                     }
+                    BaseActivity().hideProgressDialog()
                 }
             } ?: run {
             }

@@ -22,6 +22,22 @@
           }
         },
         {
+          "client_id": "54920611721-flmelcd3090hj9inm5in4hc7e830v4mo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deadlineshooters.yudemy",
+            "certificate_hash": "8b8135325ea5f7e6b42c750b4e5e1ea31711c11c"
+          }
+        },
+        {
+          "client_id": "54920611721-ljug1n2q6t71gjastaehdu6bk3hicnt1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deadlineshooters.yudemy",
+            "certificate_hash": "dc804e4ddd3c628d790d2cf85da5cf18238f0358"
+          }
+        },
+        {
           "client_id": "54920611721-potqpf485o6iqflb4d8mkrpg1g1llgk7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
