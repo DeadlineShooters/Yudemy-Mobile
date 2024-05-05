@@ -10,6 +10,7 @@ import android.widget.Toast
 import com.deadlineshooters.yudemy.activities.StudentMainActivity
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -46,6 +47,8 @@ class AuthenticationRepository {
                     } else {
                         // Xử lý các loại lỗi khác
                         Log.d("auth error", exception?.message ?: "Unknown error")
+                        auth.currentUser?.delete()
+                        auth.signOut()
                         callback(null)
                     }
                 }

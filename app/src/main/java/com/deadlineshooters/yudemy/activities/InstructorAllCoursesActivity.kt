@@ -44,7 +44,8 @@ class InstructorAllCoursesActivity : BaseActivity() {
         }
 
         courseViewModel.courses.observe(this, Observer { it ->
-            instructorCourseListAdapter = InstructorCourseListAdapter(it, this)
+            val courses = it.filter { course -> course.status }
+            instructorCourseListAdapter = InstructorCourseListAdapter(courses, this)
             instructorAllCoursesView.adapter = instructorCourseListAdapter
             instructorAllCoursesView.layoutManager = LinearLayoutManager(this)
             instructorCourseListAdapter.onItemClick = { course ->
@@ -53,6 +54,7 @@ class InstructorAllCoursesActivity : BaseActivity() {
                 startActivity(intent)
             }
         })
+
 //
 //        instructorCourseListAdapter = InstructorCourseListAdapter(dumpCourseList)
 //        instructorAllCoursesView.adapter = instructorCourseListAdapter

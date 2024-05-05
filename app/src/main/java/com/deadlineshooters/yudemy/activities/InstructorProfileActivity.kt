@@ -3,6 +3,7 @@ package com.deadlineshooters.yudemy.activities
 import InstructorCourseListAdapter
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -68,7 +69,7 @@ class InstructorProfileActivity : BaseActivity() {
             ImageViewHelper().setImageViewFromUrl(it.image, instructorImage)
         })
 
-        if(instructorBio.lineCount <= 7){
+        if(instructorBio.maxLines < 7){
             showMoreBtn.visibility = TextView.GONE
         }
 
@@ -85,9 +86,10 @@ class InstructorProfileActivity : BaseActivity() {
 
 
         courseViewModel.courses.observe(this, Observer { it ->
-            instructorCoursesOverview.text = "My course (${it.size.toString()})"
+            val courses = it.filter { course -> course.status }
+            instructorCoursesOverview.text = "My course (${courses.size.toString()})"
 
-            instructorCourseListAdapter = InstructorCourseListAdapter(it, this)
+            instructorCourseListAdapter = InstructorCourseListAdapter(courses, this)
             instructorCoursesView.adapter = instructorCourseListAdapter
             instructorCoursesView.layoutManager = LinearLayoutManager(this)
 
