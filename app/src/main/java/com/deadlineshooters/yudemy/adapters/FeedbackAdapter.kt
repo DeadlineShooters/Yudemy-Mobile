@@ -108,7 +108,7 @@ class FeedbackAdapter(
                 // show response
                 userRepo.getUserById(UserRepository.getCurrentUserID()) { user ->
                     Glide.with(holder.itemView.context)
-                        .load(user!!.image.public_id)
+                        .load(user!!.image.secure_url)
                         .placeholder(R.drawable.placeholder_avatar)
                         .into(holder.ivYourAvatar)
 
@@ -145,7 +145,7 @@ class FeedbackAdapter(
                                 // show response
                                 userRepo.getUserById(UserRepository.getCurrentUserID()) { user ->
                                     Glide.with(holder.itemView.context)
-                                        .load(user!!.image.public_id)
+                                        .load(user!!.image.secure_url)
                                         .placeholder(R.drawable.placeholder_avatar)
                                         .into(holder.ivYourAvatar)
                                 }
