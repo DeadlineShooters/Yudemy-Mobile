@@ -9,6 +9,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.BaseActivity
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.viewmodels.InstructorViewModel
@@ -60,8 +61,9 @@ class InstructorCourseListAdapter(private val courseList: List<Course>, private 
         ratingNumber.text = course.avgRating.toString()
         ratingStar.rating = course.avgRating.toFloat()
         ratingAmount.text = course.totalStudents.toString()
-        discountPrice.text = course.price.toString()
-        originalPrice.text = ((course.price * 90) / 100).toString()
+        originalPrice.text = course.price.formatThousands()
+
+        discountPrice.text = ((course.price * 90) / 100).formatThousands()
         ImageViewHelper().setImageViewFromUrl(course.thumbnail, courseImage)
 
 //        // Observe LiveData using the lifecycle owner passed to the adapter
@@ -73,5 +75,10 @@ class InstructorCourseListAdapter(private val courseList: List<Course>, private 
 
     override fun getItemCount(): Int {
         return courseList.size
+    }
+
+    private fun Int.formatThousands(): String {
+        val regex = "(\\d)(?=(\\d{3})+\$)".toRegex()
+        return this.toString().replace(regex, "$1.")
     }
 }
