@@ -109,7 +109,7 @@ class LectureRepository {
 
     fun updateLectures(lectures: List<Lecture>, course: Course): Task<Void> {
         val tasks = lectures.map { lecture ->
-            lecturesCollection.document(lecture._id).set(lecture)
+//            lecturesCollection.document(lecture._id).set(lecture)
 
             val tcs = TaskCompletionSource<Void>()
             if(lecture.content.contentUri != null) {

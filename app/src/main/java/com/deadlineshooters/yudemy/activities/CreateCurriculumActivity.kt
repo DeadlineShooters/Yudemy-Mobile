@@ -331,14 +331,10 @@ class CreateCurriculumActivity : BaseActivity() {
                             }
                     }
             }
-            .addOnSuccessListener {
+            .addOnCompleteListener {
                 hideProgressDialog()
-                Toast.makeText(this, "Curriculum saved successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Curriculum saved", Toast.LENGTH_SHORT).show()
                 finish()
-            }
-            .addOnFailureListener {
-                hideProgressDialog()
-                Toast.makeText(this, "Failed to save curriculum. Please try again", Toast.LENGTH_SHORT).show()
             }
     }
 
