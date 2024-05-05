@@ -59,6 +59,8 @@ class CourseRevenueAnalyticsActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         binding.courseDateRangeFilter.adapter = adapter
+        binding.chart.description.isEnabled = false
+
 
         transactionViewModel.groupedTransactions.observe(this, Observer { transactions ->
             this.transactions = transactions

@@ -21,7 +21,17 @@ class StudentMainActivity : BaseActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        replaceFragment(FeaturedFragment())  // show Featured fragment firstly
+
+        val isUpdateProgressPassed = intent.getBooleanExtra("isUpdateProgressPassed", false)
+        if (isUpdateProgressPassed) {
+            // If isUpdateProgress was passed, replace fragment with MyLearningFragment
+            val isUpdateProgress = intent.getBooleanExtra("isUpdateProgress", false)
+            replaceFragment(MyLearningFragment.newInstance(isUpdateProgress))
+            binding.bottomNavigationView.selectedItemId = R.id.my_learning
+        } else {
+            // If isUpdateProgress was not passed, show FeaturedFragment
+            replaceFragment(FeaturedFragment())
+        }
 
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
