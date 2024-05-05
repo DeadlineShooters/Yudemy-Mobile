@@ -385,8 +385,8 @@ class UserRepository {
                         task.task.continueWithTask {
                             val progressTask = TaskCompletionSource<Number>()
                             if(it.result != null) {
-                                courseList.add(it.result)
                                 CourseProgressRepository().getCourseProgressByCourse(courseId) { courseProgress ->
+                                    courseList.add(it.result)
                                     progressTask.setResult(courseProgress)
                                 }
                             }

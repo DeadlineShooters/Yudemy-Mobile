@@ -23,10 +23,12 @@ class CourseProgressViewModel: ViewModel() {
 
     val combinedData = MediatorLiveData<Pair<ArrayList<Map<Course, String>>, ArrayList<Number>>>().apply {
         addSource(mylearningCourses) { courses ->
-            value = Pair(courses, myCoursesProgress.value ?: arrayListOf())
+            if(myCoursesProgress.value != null)
+                value = Pair(courses, myCoursesProgress.value ?: arrayListOf())
         }
         addSource(myCoursesProgress) { progresses ->
-            value = Pair(mylearningCourses.value ?: arrayListOf(), progresses)
+            if(mylearningCourses.value != null)
+                value = Pair(mylearningCourses.value ?: arrayListOf(), progresses)
         }
     }
 
