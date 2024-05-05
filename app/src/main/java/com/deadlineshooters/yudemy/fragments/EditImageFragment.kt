@@ -100,6 +100,7 @@ class EditImageFragment : Fragment() {
                             userViewModel.getCurUser()
                             (activity as BaseActivity).hideProgressDialog()
                         } else {
+                            (activity as BaseActivity).hideProgressDialog()
                             Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
                         }
                     }
