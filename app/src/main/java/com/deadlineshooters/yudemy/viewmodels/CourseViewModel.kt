@@ -4,15 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
-import com.deadlineshooters.yudemy.helpers.SearchHelper
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.models.SectionWithLectures
 import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.deadlineshooters.yudemy.repositories.SectionRepository
 import com.google.android.gms.tasks.Task
-import kotlinx.coroutines.launch
 
 
 class CourseViewModel : ViewModel() {
@@ -63,15 +60,15 @@ class CourseViewModel : ViewModel() {
             _courses.value = courses
 
             // Init data for Algolia
-            val searchHelper = SearchHelper()
-            viewModelScope.launch {
-                searchHelper.clearIndex()
-
-                courses.forEach { course ->
-                    searchHelper.indexData(course)
-                    Log.d("coroutine", course.name)
-                }
-            }
+//            val searchHelper = SearchHelper()
+//            viewModelScope.launch {
+//                searchHelper.clearIndex()
+//
+//                courses.forEach { course ->
+//                    searchHelper.indexData(course)
+//                    Log.d("coroutine", course.name)
+//                }
+//            }
         }
     }
 

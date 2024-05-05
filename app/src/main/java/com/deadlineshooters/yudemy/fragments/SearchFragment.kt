@@ -24,6 +24,7 @@ import com.deadlineshooters.yudemy.adapters.*
 import com.deadlineshooters.yudemy.databinding.FragmentSearchBinding
 import com.deadlineshooters.yudemy.models.AlgoliaCourse
 import com.deadlineshooters.yudemy.models.Suggestion
+import com.deadlineshooters.yudemy.repositories.CategoryRepository
 import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 import com.deadlineshooters.yudemy.viewmodels.QuerySuggestionViewModel
@@ -70,31 +71,31 @@ class SearchFragment : Fragment() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val categories = listOf(
-            "Development", "Business", "Office Productivity", "Design",
-            "Marketing", "Photography & Video", "Teaching & Academics",
-            "Finance & Accounting", "IT & Software", "Personal Development",
-            "Lifestyle", "Health & Fitness", "Music"
-        )
-
         val categoryList = binding.categoryList
-        val categoryAdapter = CategoryAdapter3(categories)
-        categoryList.adapter = categoryAdapter
-        categoryList.layoutManager = object : LinearLayoutManager(context) {
-            override fun canScrollVertically() = false
-        }
-        categoryList.addItemDecoration(FeaturedFragment.SpaceItemDecoration(8))
 
-        categoryAdapter.onItemClick = { category ->
-            val fragment = FeaturedCategoryFragment()
-            val bundle = Bundle()
-            bundle.putString("category", category)
-            fragment.arguments = bundle
-            val fragmentManager = activity?.supportFragmentManager
-            val fragmentTransaction = fragmentManager?.beginTransaction()
-            fragmentTransaction?.addToBackStack(null)
-            fragmentTransaction?.replace(R.id.frameLayout, fragment)
-            fragmentTransaction?.commit()
+        CategoryRepository().getCategories().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val categories = task.result?.map { it.name } ?: emptyList()
+
+                val categoryAdapter = CategoryAdapter3(categories)
+                categoryList.adapter = categoryAdapter
+                categoryList.layoutManager = object : LinearLayoutManager(context) {
+                    override fun canScrollVertically() = false
+                }
+                categoryList.addItemDecoration(FeaturedFragment.SpaceItemDecoration(8))
+
+                categoryAdapter.onItemClick = { category ->
+                    val fragment = FeaturedCategoryFragment()
+                    val bundle = Bundle()
+                    bundle.putString("category", category)
+                    fragment.arguments = bundle
+                    val fragmentManager = activity?.supportFragmentManager
+                    val fragmentTransaction = fragmentManager?.beginTransaction()
+                    fragmentTransaction?.addToBackStack(null)
+                    fragmentTransaction?.replace(R.id.frameLayout, fragment)
+                    fragmentTransaction?.commit()
+                }
+            }
         }
 
         val searchView = binding.searchView
@@ -111,7 +112,7 @@ class SearchFragment : Fragment() {
         binding.resultList.layoutManager = LinearLayoutManager(requireContext())
         binding.resultList.adapter = resultAdapter
         resultAdapter.setOnItemClickListener { course ->
-            courseRepository.getCourseById(course.objectID.toString()) {courseDoc ->
+            courseRepository.getCourseById(course.objectID.toString()) { courseDoc ->
                 val intent = Intent(requireContext(), CourseDetailActivity::class.java)
                 intent.putExtra("course", courseDoc)
                 startActivity(intent)
