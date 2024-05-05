@@ -26,7 +26,6 @@ class AuthenticationRepository {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
-
                     user?.sendEmailVerification()
                         ?.addOnCompleteListener { task ->
                             if (task.isSuccessful) {
@@ -37,6 +36,7 @@ class AuthenticationRepository {
                                         callback(uId)
                                     }
                                 }
+
                             }
                         }
                 } else {
@@ -46,15 +46,11 @@ class AuthenticationRepository {
                         callback("User already exists with this email")
                     } else {
                         // Xử lý các loại lỗi khác
-                        Log.d("auth error", exception?.message ?: "Unknown error")
-                        auth.currentUser?.delete()
-                        auth.signOut()
                         callback(null)
                     }
                 }
             }
     }
-
 
     fun logInWithEmail(email: String, password: String, callback: (String?) -> Unit) {
         auth.signInWithEmailAndPassword(email, password)

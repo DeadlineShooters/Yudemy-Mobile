@@ -83,25 +83,4 @@ class SignUpWithEmailActivity : AppCompatActivity() {
             }
         }
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        val user = FirebaseAuth.getInstance().currentUser
-
-        AuthenticationRepository().signOut {
-            if (it == true) {
-                Log.d("auth", "signed out")
-                user?.delete()?.addOnCompleteListener {deleted ->
-                    if (deleted.isSuccessful) {
-                        Log.d("auth", "deleted user")
-                    } else {
-                        Log.d("auth", "not deleted")
-                    }
-                }
-            } else {
-                Log.d("auth", "not signed out")
-            }
-        }
-    }
 }
