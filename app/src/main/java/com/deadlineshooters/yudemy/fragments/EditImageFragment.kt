@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.BaseActivity
+import com.deadlineshooters.yudemy.activities.CourseLearningActivity
 import com.deadlineshooters.yudemy.helpers.CloudinaryHelper
 import com.deadlineshooters.yudemy.helpers.ImageViewHelper
 import com.deadlineshooters.yudemy.models.Image
@@ -53,7 +54,6 @@ class EditImageFragment : Fragment() {
         }
         instructorViewModel = ViewModelProvider(this)[InstructorViewModel::class.java]
         userViewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
-//        userViewModel.getCurUser()
     }
 
     override fun onCreateView(
@@ -75,9 +75,7 @@ class EditImageFragment : Fragment() {
         }
 
         userViewModel.userData.observe(viewLifecycleOwner, Observer {user ->
-            if(user.instructor != null){
-                ImageViewHelper().setImageViewFromUrl(Image(user.image.secure_url, user.image.public_id), editedImage)
-            }
+            ImageViewHelper().setImageViewFromUrl(Image(user.image.secure_url, user.image.public_id), editedImage)
         })
 
         startForImagePickerResult = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -92,17 +90,17 @@ class EditImageFragment : Fragment() {
             editedImage.drawable?.let { drawable ->
                 val bitmap = (drawable as BitmapDrawable).bitmap
                 val filepath = BaseActivity().saveBitmapToFile(bitmap, requireContext())
-
                 if (filepath != null) {
+                    (activity as BaseActivity).showProgressDialog("")
                     CloudinaryHelper().uploadToCloudinary(filepath) { image ->
                         if (image != null) {
-//                            val imageUrl = image.secure_url
-//                            val publicId = image.public_id
                             userViewModel.updateUserImage(BaseActivity().getCurrentUserID(), image)
                             Toast.makeText(context, "Image updated successfully", Toast.LENGTH_SHORT).show()
                             requireActivity().supportFragmentManager.popBackStack()
                             userViewModel.getCurUser()
+                            (activity as BaseActivity).hideProgressDialog()
                         } else {
+                            (activity as BaseActivity).hideProgressDialog()
                             Toast.makeText(context, "Fail", Toast.LENGTH_SHORT).show()
                         }
                     }
