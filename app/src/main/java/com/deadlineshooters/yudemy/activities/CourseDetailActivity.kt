@@ -341,7 +341,10 @@ class CourseDetailActivity : AppCompatActivity() {
             getString(R.string.instructor_reviews, ins.instructor!!.totalReviews)
         binding.tvStudents.text =
             getString(R.string.instructor_students, ins.instructor!!.totalStudents)
-
+        Glide.with(this)
+            .load(ins.image.secure_url)
+            .circleCrop()
+            .into(binding.instructorImg)
         binding.btnViewProfile.setOnClickListener {
             val intent = Intent(this, InstructorProfileActivity::class.java)
             intent.putExtra("instructorId", ins.id)

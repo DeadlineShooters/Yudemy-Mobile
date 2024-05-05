@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.activities.AboutUsActivity
 import com.deadlineshooters.yudemy.activities.BaseActivity
@@ -90,7 +91,10 @@ class AccountFragment : Fragment() {
         userViewModel.userData.observe(viewLifecycleOwner, Observer {user ->
             fullName.text = user.fullName
 
-            ImageViewHelper().setImageViewFromUrl(user.image, avatar)
+            Glide.with(view)
+                .load(user.image.secure_url)
+                .circleCrop()
+                .into(avatar)
         })
 
         email.text = curUserEmail
