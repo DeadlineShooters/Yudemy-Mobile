@@ -282,6 +282,30 @@ class CourseDetailActivity : AppCompatActivity() {
             }
         }
 
+
+// Calculate the percentage for each star count
+        val fiveStarPercentage = if (totalRatings != 0) course.fiveStarCnt * 100 / totalRatings else 0
+        val fourStarPercentage = if (totalRatings != 0) course.fourStarCnt * 100 / totalRatings else 0
+        val threeStarPercentage = if (totalRatings != 0) course.threeStarCnt * 100 / totalRatings else 0
+        val twoStarPercentage = if (totalRatings != 0) course.twoStarCnt * 100 / totalRatings else 0
+        val oneStarPercentage = if (totalRatings != 0) course.oneStarCnt * 100 / totalRatings else 0
+
+// Set the progress and text for each ProgressBar and TextView
+        binding.pb5Star.progress = fiveStarPercentage
+        binding.tv5StarPercentage.text = "$fiveStarPercentage%"
+
+        binding.pb4Star.progress = fourStarPercentage
+        binding.tv4StarPercentage.text = "$fourStarPercentage%"
+
+        binding.pb3Star.progress = threeStarPercentage
+        binding.tv3StarPercentage.text = "$threeStarPercentage%"
+
+        binding.pb2Star.progress = twoStarPercentage
+        binding.tv2StarPercentage.text = "$twoStarPercentage%"
+
+        binding.pb1Star.progress = oneStarPercentage
+        binding.tv1StarPercentage.text = "$oneStarPercentage%"
+
     }
 
 
