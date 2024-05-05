@@ -127,7 +127,7 @@ public class CourseAdapter(private val fragmentContext: CourseDashboardFragment,
         holder.tv_price.text = currencyFormat.format(course.price)
 
 
-        holder.tv_rating.text = course.avgRating.toString()
+        holder.tv_rating.text = StringUtils.roundToOneDecimalPlace(course.avgRating).toString()
         holder.tv_totalEarning.text = currencyFormat.format(course.totalRevenue)
     }
 

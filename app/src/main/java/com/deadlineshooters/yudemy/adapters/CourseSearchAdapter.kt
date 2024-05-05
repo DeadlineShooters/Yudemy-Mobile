@@ -13,6 +13,7 @@ import com.algolia.instantsearch.android.inflate
 import com.algolia.instantsearch.core.hits.HitsView
 import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.helpers.StringUtils
 import com.deadlineshooters.yudemy.models.AlgoliaCourse
 import java.math.RoundingMode
 import java.text.NumberFormat
@@ -58,7 +59,7 @@ class CourseSearchAdapter : ListAdapter<AlgoliaCourse, CourseSearchAdapter.Cours
             instructor.text = course.instructor
             ratingNumber.text = course.avgRating.toBigDecimal().setScale(1, RoundingMode.UP).toString()
             ratingStar.setStepSize(0.1f);
-            ratingStar.rating = course.avgRating.toFloat();
+            ratingStar.rating = StringUtils.roundToOneDecimalPlace(course.avgRating).toFloat();
             ratingQuantity.text = ""
             if (course.price > 0) {
                 originalPrice.text = currencyFormat.format(course.price.toInt())
