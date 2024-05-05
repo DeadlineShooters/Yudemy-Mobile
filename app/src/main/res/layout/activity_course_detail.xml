@@ -308,7 +308,6 @@
                 android:fontFamily="@font/inter_medium"
                 android:maxLines="7"
                 android:text=""
-                android:textColor="@color/black"
                 android:textSize="14sp" />
 
             <TextView

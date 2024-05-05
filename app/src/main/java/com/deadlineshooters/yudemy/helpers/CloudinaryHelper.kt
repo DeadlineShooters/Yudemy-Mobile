@@ -79,6 +79,8 @@ class CloudinaryHelper {
                         } else {
                             Log.e("t", "Upload failed with unknown error")
                         }
+
+                        callback(if (isVideo) Video() else Image())
                     }
 
                     override fun onStart(requestId: String?) {
