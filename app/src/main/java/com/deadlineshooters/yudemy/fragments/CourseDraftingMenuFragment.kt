@@ -1,32 +1,24 @@
 package com.deadlineshooters.yudemy.fragments
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.activities.BaseActivity
 import com.deadlineshooters.yudemy.activities.CreateCurriculumActivity
 import com.deadlineshooters.yudemy.activities.EditCourseLandingPageActivity
 import com.deadlineshooters.yudemy.activities.PricingCourseDraftingActivity
 import com.deadlineshooters.yudemy.databinding.FragmentCourseDraftingMenuBinding
 import com.deadlineshooters.yudemy.helpers.DialogHelper
 import com.deadlineshooters.yudemy.models.Course
-import com.deadlineshooters.yudemy.models.SectionWithLectures
 import com.deadlineshooters.yudemy.repositories.CourseRepository
-import com.deadlineshooters.yudemy.repositories.SectionRepository
-import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,8 +36,6 @@ class CourseDraftingMenuFragment : Fragment() {
     private var param2: String? = null
 
     private lateinit var binding: FragmentCourseDraftingMenuBinding
-
-    private var sectionWithLectures: ArrayList<SectionWithLectures> = arrayListOf()
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,10 +65,7 @@ class CourseDraftingMenuFragment : Fragment() {
         setupActionBar()
         binding.switchPublishCourse.isChecked = course!!.status
 
-        SectionRepository().getSectionsWithLectures(course!!.id).addOnSuccessListener {
-            sectionWithLectures = it as ArrayList<SectionWithLectures>
-            updateSwitchEnabled()
-        }
+        updateSwitchPublish()
 
         binding.courseStatus.text = if(course!!.status) "Published" else "Draft"
 
@@ -89,23 +76,25 @@ class CourseDraftingMenuFragment : Fragment() {
             .into(binding.crsImgView)
 
         binding.navCurriculum.setOnClickListener {
-            navToCurriculum()
+            val intent = Intent(activity, CreateCurriculumActivity::class.java)
+            intent.putExtra("course", course)
+            startActivity(intent)
         }
         binding.navLandingPage.setOnClickListener {
             val intent = Intent(activity, EditCourseLandingPageActivity::class.java)
             intent.putExtra("course", course)
-            startForResultCourseLanding.launch(intent)
+            startActivity(intent)
         }
         binding.navPricing.setOnClickListener {
             val intent = Intent(activity, PricingCourseDraftingActivity::class.java)
             intent.putExtra("course", course)
-            startForResultPricing.launch(intent)
+            startActivity(intent)
         }
         binding.switchPublishCourse.setOnCheckedChangeListener { _, isChecked ->
             course!!.status = isChecked
             CourseRepository().updateCourseStatus(course!!.id, isChecked)
                 .addOnSuccessListener {
-                    updateSwitchEnabled()
+                    updateSwitchPublish()
                     binding.courseStatus.text = if(course!!.status) "Published" else "Draft"
                 }
         }
@@ -116,6 +105,7 @@ class CourseDraftingMenuFragment : Fragment() {
         DialogHelper.showProgressDialog(requireContext(), "Loading...")
         // Fetch the latest course information from the database
         course?.let { courseNonNull ->
+            val prevStatus = courseNonNull.status
             CourseRepository().getCourseById(courseNonNull.id) { updatedCourse ->
                 if (updatedCourse != null) {
                     course = updatedCourse
@@ -131,6 +121,16 @@ class CourseDraftingMenuFragment : Fragment() {
                     Toast.makeText(context, "Failed to load course data.", Toast.LENGTH_SHORT).show()
                 }
                 DialogHelper.hideProgressDialog()
+                if(prevStatus && !checkIfCanPublish()) {
+                    binding.switchPublishCourse.isChecked = false
+                    CourseRepository().updateCourseStatus(course!!.id, false)
+                        .addOnSuccessListener {
+                            updateSwitchPublish()
+                            binding.courseStatus.text = "Draft"
+                        }
+                }
+                else
+                    updateSwitchPublish()
             }
         }
     }
@@ -149,72 +149,13 @@ class CourseDraftingMenuFragment : Fragment() {
         binding.toolbarCourseDraftingMenu.setNavigationOnClickListener { activity.supportFragmentManager.popBackStack() }
     }
 
-    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-
-            sectionWithLectures = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                data!!.getParcelableArrayListExtra("sections", SectionWithLectures::class.java) as ArrayList<SectionWithLectures>
-            else
-                data!!.getParcelableArrayListExtra<SectionWithLectures>("sections") as ArrayList<SectionWithLectures>
-
-            course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                data.getParcelableExtra("course", Course::class.java)!!
-            else
-                data.getParcelableExtra<Course>("course")!!
-
-            Log.d("CourseDraftingMenuFragment", "onActivityResult: sectionWithLectures $sectionWithLectures")
-
-            updateSwitchEnabled()
-        }
-    }
-
-    private val startForResultCourseLanding = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-
-            course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                data!!.getParcelableExtra("course", Course::class.java)!!
-            else
-                data!!.getParcelableExtra<Course>("course")!!
-
-            Log.d("CourseDraftingMenuFragment", "onActivityResult: course $course")
-            binding.tvCourseTitle.text = course?.name ?: ""
-            Glide.with(this)
-                .load(course?.thumbnail?.secure_url)
-                .placeholder(R.drawable.placeholder)
-                .into(binding.crsImgView)
-
-            updateSwitchEnabled()
-        }
-    }
-
-    private val startForResultPricing = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-
-            course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                data!!.getParcelableExtra("course", Course::class.java)!!
-            else
-                data!!.getParcelableExtra<Course>("course")!!
-
-            updateSwitchEnabled()
-        }
-    }
-
-    private fun navToCurriculum() {
-        val intent = Intent(activity, CreateCurriculumActivity::class.java)
-        intent.putExtra("course", course)
-        intent.putParcelableArrayListExtra("sections", sectionWithLectures)
-        startForResult.launch(intent)
-    }
-
     private fun checkIfCanPublish(): Boolean {
-        return sectionWithLectures.isNotEmpty() && course!!.name != "" && course!!.description != "" && course!!.introduction != "" && course!!.thumbnail.secure_url != ""
+        return course!!.sectionList.isNotEmpty() && course!!.name != "" && course!!.description != "" && course!!.introduction != "" && course!!.thumbnail.secure_url != "" && course!!.promotionalVideo.secure_url != ""
     }
 
-    private fun updateSwitchEnabled() {
-        binding.switchPublishCourse.isEnabled = (course!!.status || checkIfCanPublish())
+    private fun updateSwitchPublish() {
+        binding.switchPublishCourse.isChecked = course!!.status
+        binding.switchPublishCourse.isEnabled = checkIfCanPublish()
     }
 
     companion object {

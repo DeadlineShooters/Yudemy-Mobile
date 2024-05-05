@@ -12,6 +12,9 @@ import com.deadlineshooters.yudemy.BuildConfig
 import com.deadlineshooters.yudemy.models.AlgoliaCourse
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.repositories.CourseRepository
+import com.deadlineshooters.yudemy.repositories.UserRepository
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 class SearchHelper {
 
@@ -26,25 +29,34 @@ class SearchHelper {
 
     val index = client.initIndex(indexName = IndexName("yudemy_courses"))
 
-    suspend fun indexData(course: Course) {
-        index.run {
-            val record = AlgoliaCourse(
-                name = course.name,
-                instructor = course.instructor,
-                category = course.category,
-                introduction = course.introduction,
-                description = course.description,
-                language = course.language,
-                price = course.price,
-                avgRating = course.avgRating,
-                totalLength = course.totalLength,
-                createdDate = course.createdDate,
-                thumbnail = course.thumbnail.secure_url,
-                _highlightResult = null,
-                objectID = ObjectID(course.id),
-            )
-            saveObject(AlgoliaCourse.serializer(), record).wait()
+    suspend fun indexData(course: Course) = coroutineScope {
+        val instructor = UserRepository().getUserById(course.instructor)
+        launch {
+            index.run {
+                val record = AlgoliaCourse(
+                    name = course.name,
+                    instructor = instructor!!.fullName,
+                    category = course.category,
+                    introduction = course.introduction,
+                    description = course.description,
+                    language = course.language,
+                    price = course.price,
+                    avgRating = course.avgRating,
+                    totalLength = course.totalLength,
+                    createdDate = course.createdDate,
+                    thumbnail = course.thumbnail.secure_url,
+                    _highlightResult = null,
+                    objectID = ObjectID(course.id),
+                )
+                saveObject(AlgoliaCourse.serializer(), record).wait()
+            }
         }
+    }
+
+
+
+    suspend fun clearIndex() {
+        index.clearObjects()
     }
 
     suspend fun searchIndex(s: String) {

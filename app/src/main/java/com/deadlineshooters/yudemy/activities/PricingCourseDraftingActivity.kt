@@ -1,10 +1,11 @@
 package com.deadlineshooters.yudemy.activities
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
@@ -16,11 +17,11 @@ import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.repositories.CourseRepository
 import com.deadlineshooters.yudemy.utils.Constants
 import java.text.NumberFormat
-import java.util.Locale
+import java.util.*
 
 class PricingCourseDraftingActivity : BaseActivity() {
     private lateinit var binding: ActivityPricingCourseDraftingBinding
-    private var newPrice  = 0.0
+    private var newPrice  = 0
 
     private lateinit var course: Course
 
@@ -38,7 +39,7 @@ class PricingCourseDraftingActivity : BaseActivity() {
         newPrice = course.price
 
         val tierStrings = Constants.PRICE_TIERS.map {
-            if(it == 0.0) "Free" else
+            if(it == 0) "Free" else
                 NumberFormat.getCurrencyInstance(Locale("vi", "VN")).format(it.toInt())
         }
         val currencyAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, resources.getStringArray(R.array.currency))
@@ -52,7 +53,7 @@ class PricingCourseDraftingActivity : BaseActivity() {
         binding.spinnerTypePricing.setSelection(Constants.PRICE_TIERS.indexOf(course.price))
 
         binding.btnSavePricing.setOnClickListener {
-            newPrice = Constants.PRICE_TIERS[binding.spinnerTypePricing.selectedItemPosition]
+            newPrice = Constants.PRICE_TIERS[binding.spinnerTypePricing.selectedItemPosition].toInt()
 
             if(course.price != newPrice) {
                 course.price = newPrice
@@ -85,9 +86,19 @@ class PricingCourseDraftingActivity : BaseActivity() {
         }
 
         binding.toolbarPricingSetting.setNavigationOnClickListener {
-            val intent = Intent()
-            setResult(Activity.RESULT_CANCELED, intent)
-            finish()
+            newPrice = Constants.PRICE_TIERS[binding.spinnerTypePricing.selectedItemPosition]
+            if (course.price != newPrice) {
+                AlertDialog.Builder(this)
+                    .setTitle("Discard changes?")
+                    .setMessage("You have unsaved changes. Are you sure you want to discard them?")
+                    .setPositiveButton(Html.fromHtml("<font color='#B32D0F'><b>Discard</b></font>")) { _, _ ->
+                        finish()
+                    }
+                    .setNegativeButton(Html.fromHtml("<font color='#5624D0'><b>Cancel</b></font>"), null)
+                    .show()
+            } else {
+                finish()
+            }
         }
     }
 }

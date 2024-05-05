@@ -2,7 +2,6 @@ package com.deadlineshooters.yudemy.activities
 
 import InstructorCourseListAdapter
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -11,9 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.deadlineshooters.yudemy.R
-import com.deadlineshooters.yudemy.models.Course
-import com.deadlineshooters.yudemy.models.Image
-import com.deadlineshooters.yudemy.models.Video
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
 
 class InstructorAllCoursesActivity : BaseActivity() {
@@ -37,7 +33,7 @@ class InstructorAllCoursesActivity : BaseActivity() {
         val instructorId = intent.getStringExtra("instructorId") ?: ""
 
         backBtn = findViewById(R.id.backBtn15)
-        textView40 = findViewById(R.id.textView40)
+        textView40 = findViewById(R.id.courseListTitle)
         instructorAllCoursesView = findViewById(R.id.instructorAllCoursesView)
 
         courseViewModel = ViewModelProvider(this)[CourseViewModel::class.java]

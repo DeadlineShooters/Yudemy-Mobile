@@ -3,6 +3,7 @@ package com.deadlineshooters.yudemy.repositories
 import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.deadlineshooters.yudemy.models.CourseProgress
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -48,6 +49,18 @@ class CourseProgressRepository {
                     courseProgressCollection.document(it.id).delete()
                 }
                 Tasks.whenAll(tasks)
+            }
+    }
+
+    fun newCourseProgress(courseProgress: CourseProgress, callback: (Boolean) -> Unit) {
+        courseProgressCollection
+            .add(courseProgress)
+            .addOnSuccessListener {
+                callback(true)
+            }
+            .addOnFailureListener { exception ->
+                Log.d("Firestore", "add failed with ", exception)
+                callback(false)
             }
     }
 }

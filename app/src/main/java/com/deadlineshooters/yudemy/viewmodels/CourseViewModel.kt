@@ -64,21 +64,22 @@ class CourseViewModel : ViewModel() {
 
             // Init data for Algolia
             val searchHelper = SearchHelper()
-            for (course in courses) {
-                viewModelScope.launch {
+            viewModelScope.launch {
+                searchHelper.clearIndex()
+
+                courses.forEach { course ->
                     searchHelper.indexData(course)
+                    Log.d("coroutine", course.name)
                 }
-                Log.d("coroutine", course.name)
             }
         }
-
     }
+
 
     fun refreshWishlist() {
         courseRepository.getWishlist { courses ->
             _wishlist.value = courses
         }
-
     }
 
     fun refreshSections(courseId: String) {

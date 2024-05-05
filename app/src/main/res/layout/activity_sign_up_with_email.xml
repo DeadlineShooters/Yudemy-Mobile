@@ -31,7 +31,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView17"
+        android:id="@+id/courseName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -42,13 +42,13 @@
         app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
     <TextView
-        android:id="@+id/textView18"
+        android:id="@+id/instructorName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="service and privacy policy."
-        app:layout_constraintEnd_toEndOf="@+id/textView17"
-        app:layout_constraintStart_toStartOf="@+id/textView17"
-        app:layout_constraintTop_toBottomOf="@+id/textView17" />
+        app:layout_constraintEnd_toEndOf="@+id/courseName"
+        app:layout_constraintStart_toStartOf="@+id/courseName"
+        app:layout_constraintTop_toBottomOf="@+id/courseName" />
 
     <EditText
         android:id="@+id/nameInput"
@@ -61,7 +61,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView18" />
+        app:layout_constraintTop_toBottomOf="@+id/instructorName" />
 
     <EditText
         android:id="@+id/mailInput"

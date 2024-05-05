@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +18,7 @@ import com.algolia.instantsearch.core.hits.connectHitsView
 import com.algolia.instantsearch.searchbox.connectView
 import com.algolia.search.helper.deserialize
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.activities.CourseDetailActivity
 import com.deadlineshooters.yudemy.activities.FilterActivity
 import com.deadlineshooters.yudemy.adapters.*
 import com.deadlineshooters.yudemy.databinding.FragmentSearchBinding
@@ -74,11 +77,6 @@ class SearchFragment : Fragment() {
             "Lifestyle", "Health & Fitness", "Music"
         )
 
-        binding.backBtn.setOnClickListener {
-            binding.emptyFrame.visibility = View.VISIBLE
-            binding.resultList.visibility = View.GONE
-        }
-
         val categoryList = binding.categoryList
         val categoryAdapter = CategoryAdapter3(categories)
         categoryList.adapter = categoryAdapter
@@ -112,9 +110,18 @@ class SearchFragment : Fragment() {
 
         binding.resultList.layoutManager = LinearLayoutManager(requireContext())
         binding.resultList.adapter = resultAdapter
+        resultAdapter.setOnItemClickListener { course ->
+            courseRepository.getCourseById(course.objectID.toString()) {courseDoc ->
+                val intent = Intent(requireContext(), CourseDetailActivity::class.java)
+                intent.putExtra("course", courseDoc)
+                startActivity(intent)
+            }
+        }
         connection += viewModel.courseSearcher.connectHitsView(resultAdapter) {
             it.hits.deserialize(AlgoliaCourse.serializer())
         }
+        viewModel.courseSearcher.setQuery(searchView.query.toString())
+        viewModel.courseSearcher.searchAsync()
 
         searchView.setOnClickListener {
             searchView.isIconified = false
@@ -136,6 +143,16 @@ class SearchFragment : Fragment() {
             }
         }
 
+        val searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text) as EditText
+        searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                searchView.clearFocus()
+                true
+            } else {
+                false
+            }
+        }
+
         viewModel.courseSearcher.response.subscribe { response ->
             val courses = response?.hits?.deserialize(AlgoliaCourse.serializer())
             if (courses != null) {
@@ -148,6 +165,10 @@ class SearchFragment : Fragment() {
         searchBoxView.setText(searchView.query.toString())
         viewModel.suggestions.observe(viewLifecycleOwner) { searchBoxView.setText(it.query, true) }
 
+        binding.filterBtn.setOnClickListener {
+            val intent = Intent(activity, FilterActivity::class.java)
+            startActivityForResult(intent, FILTER_REQUEST_CODE)
+        }
 
 // Old version without indexing
 //        courseViewModel = ViewModelProvider(this)[CourseViewModel::class.java]
@@ -222,10 +243,6 @@ class SearchFragment : Fragment() {
 //
 //        })
 
-        binding.filterBtn.setOnClickListener {
-            val intent = Intent(activity, FilterActivity::class.java)
-            startActivityForResult(intent, FILTER_REQUEST_CODE)
-        }
     }
 
     override fun onDestroyView() {
@@ -243,11 +260,10 @@ class SearchFragment : Fragment() {
             val ratingOptions = data?.getStringArrayExtra("ratingOptions")
             val durationOptions = data?.getStringArrayExtra("durationOptions")
 
-
             var courses: List<AlgoliaCourse> = originalCourses
 
             courses = courses.filter { course ->
-                (priceOptions?.isEmpty() ?: true || priceOptions?.contains(if (course.price == 0.0) "Free" else "Paid") ?: true) &&
+                (priceOptions?.isEmpty() ?: true || priceOptions?.contains(if (course.price == 0) "Free" else "Paid") ?: true) &&
                         (languageOptions?.isEmpty() ?: true || languageOptions?.contains(course.language) ?: true) &&
                         (ratingOptions?.isEmpty() ?: true || ratingOptions?.any { rating ->
                             val ratingNumber = if (rating.contains("& up")) {
@@ -260,15 +276,14 @@ class SearchFragment : Fragment() {
                         (durationOptions?.isEmpty() ?: true || durationOptions?.any { duration -> course.totalLength in duration.toSecondsRange() } ?: true)
             }
 
-
-            println(courses)
-
             courses = when (sortOption) {
                 "Ratings" -> courses.sortedByDescending { it.avgRating }
                 "Newest" -> courses.sortedByDescending { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(it.createdDate) }
                 else -> courses
             }
             resultAdapter.submitList(courses)
+            binding.emptyFrame.visibility = View.GONE
+            binding.resultList.visibility = View.VISIBLE
         }
     }
 

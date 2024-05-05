@@ -1,13 +1,11 @@
 package com.deadlineshooters.yudemy.activities
 
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.LinearLayout
@@ -16,8 +14,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,14 +24,8 @@ import com.deadlineshooters.yudemy.databinding.ActivityCourseDetailBinding
 import com.deadlineshooters.yudemy.dialogs.PreviewCourseDialog
 import com.deadlineshooters.yudemy.helpers.DialogHelper
 import com.deadlineshooters.yudemy.helpers.StringUtils
-import com.deadlineshooters.yudemy.models.Course
-import com.deadlineshooters.yudemy.models.CourseFeedback
-import com.deadlineshooters.yudemy.models.Transaction
-import com.deadlineshooters.yudemy.models.User
-import com.deadlineshooters.yudemy.repositories.CourseFeedbackRepository
-import com.deadlineshooters.yudemy.repositories.CourseRepository
-import com.deadlineshooters.yudemy.repositories.TransactionRepository
-import com.deadlineshooters.yudemy.repositories.UserRepository
+import com.deadlineshooters.yudemy.models.*
+import com.deadlineshooters.yudemy.repositories.*
 import com.deadlineshooters.yudemy.utils.PaymentsUtil
 import com.deadlineshooters.yudemy.viewmodels.CheckoutViewModel
 import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
@@ -80,15 +70,7 @@ class CourseDetailActivity : AppCompatActivity() {
                     taskResult.result!!.let {
                         Log.i("Google Pay result:", it.toJson())
                         model.setPaymentData(it)
-                        userRepository.addToCourseList(course.id) {}
-                        addTransaction()
-
-                        startActivity(
-                            Intent(
-                                this@CourseDetailActivity,
-                                StudentMainActivity::class.java
-                            )
-                        )
+                        handlePaymentSuccess("", "")
                     }
                 }
             }
@@ -103,7 +85,7 @@ class CourseDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupActionBar()
 
-        course = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+        course = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             intent.getParcelableExtra("course", Course::class.java)!!
         else
             intent.getParcelableExtra<Course>("course")!!
@@ -115,8 +97,8 @@ class CourseDetailActivity : AppCompatActivity() {
             Log.d("Instructor", course.instructor)
         }
 
-        binding.showMoreBtn.setOnClickListener{
-            if(isExpanded){
+        binding.showMoreBtn.setOnClickListener {
+            if (isExpanded) {
                 binding.tvDesc.maxLines = 7
                 binding.showMoreBtn.text = "Show more"
             } else {
@@ -167,6 +149,12 @@ class CourseDetailActivity : AppCompatActivity() {
             }
         }
 
+        binding.gotoCourseBtn.setOnClickListener {
+            val intent = Intent(this, CourseLearningActivity::class.java)
+            intent.putExtra("course", course)
+            startActivity(intent)
+        }
+
 
         courseViewModel.sectionsWithLectures.observe(
             this
@@ -199,6 +187,15 @@ class CourseDetailActivity : AppCompatActivity() {
         googlePayButton.setOnClickListener { requestPayment(course) }
 
 
+        binding.enrollBtn.setOnClickListener {
+            handlePaymentSuccess("", "")
+        }
+
+        if (course.price == 0) {
+            binding.tvPrice.visibility = GONE
+        } else {
+            binding.tvPrice.visibility = VISIBLE
+        }
 
 
         userRepository.isInCourseList(course.id) { isInCourseList ->
@@ -209,15 +206,17 @@ class CourseDetailActivity : AppCompatActivity() {
             DialogHelper.showProgressDialog(this, "Loading course details...")
             courseRepository.getCourseById(course.id) { courseRes ->
                 DialogHelper.hideProgressDialog()
-                if (courseRes!!.instructor == UserRepository.getCurrentUserID()) {
+                if (courseRes!!.price == 0) {
+                    updateButtonVisibility(GONE, isCourseVisible)
+                    binding.enrollBtn.visibility = if (!isInCourseList && courseRes.instructor != UserRepository.getCurrentUserID()) VISIBLE else GONE
+                } else {
+                    binding.enrollBtn.visibility = GONE
+                }
+                if (courseRes.instructor == UserRepository.getCurrentUserID()) {
                     updateButtonVisibility(GONE, VISIBLE)
                 }
             }
         }
-
-
-
-
     }
 
     private fun updateButtonVisibility(isBuyVisible: Int, isCourseVisible: Int) {
@@ -228,6 +227,7 @@ class CourseDetailActivity : AppCompatActivity() {
             gotoCourseBtn.visibility = isCourseVisible
         }
     }
+
     private fun populateCourseDetails(course: Course) {
         binding.tvTitle.text = course.name
 
@@ -244,7 +244,7 @@ class CourseDetailActivity : AppCompatActivity() {
             getString(R.string.course_figures, totalRatings, course.totalStudents)
         binding.tvFigures.text = figuresText
         binding.tvCreatedDate.text = getString(R.string.created_date, course.createdDate)
-        binding.tvPrice.text = StringUtils.trimDecimalZero(course.price.toString())
+        binding.tvPrice.text = StringUtils.trimDecimalZero((course.price * 0.9).toString())
 
         val totalLengthHours = course.totalLength / 3600
         val totalLengthMinutes = (course.totalLength % 3600) / 60
@@ -359,7 +359,9 @@ class CourseDetailActivity : AppCompatActivity() {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_black_color_back_24dp)
         }
 
-        binding.toolbarSignUpActivity.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+        binding.toolbarSignUpActivity.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     //Get token through MoMo app
@@ -423,8 +425,15 @@ class CourseDetailActivity : AppCompatActivity() {
     private fun handlePaymentSuccess(token: String?, phoneNumber: String?) {
         Log.d("message", "success")
         userRepository.addToCourseList(course.id) {}
-        addTransaction()
-        startActivity(Intent(this@CourseDetailActivity, StudentMainActivity::class.java))
+        CourseRepository().updateCourseStats(course.id) {}
+        if (course.price != 0) {
+            addTransaction()
+        }
+        newCourseProgress()
+        generateUserLectures()
+        val intent = Intent(this@CourseDetailActivity, EnrolledActivity::class.java)
+        intent.putExtra("course", course)
+        startActivity(intent)
     }
 
     private fun handlePaymentFailure(message: String) {
@@ -433,6 +442,7 @@ class CourseDetailActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        DialogHelper.showProgressDialog(this, "Loading...")
         userRepository.isInWishlist(course.id) { isInWishlist ->
             if (isInWishlist) {
                 binding.btnWishlist.text = "Wishlisted"
@@ -440,6 +450,7 @@ class CourseDetailActivity : AppCompatActivity() {
                 binding.btnWishlist.text = "Add to wishlist"
             }
         }
+        DialogHelper.hideProgressDialog()
     }
 
     private fun requestPayment(course: Course) {
@@ -456,7 +467,7 @@ class CourseDetailActivity : AppCompatActivity() {
                         senderId = currentUser.id,
                         receiverId = it1.instructor,
                         courseId = course.id,
-                        amount = course.price,
+                        amount = (course.price * 0.9),
                         date = formatter.format(Date())
                     )
                 }
@@ -469,4 +480,42 @@ class CourseDetailActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun newCourseProgress() {
+        userRepository.getCurUser { currentUser ->
+            val courseProgress = CourseProgress(
+                userId = currentUser.id,
+                courseId = course.id,
+                percentCompleted = 0
+            )
+
+            val courseProgressRepository = CourseProgressRepository()
+            courseProgressRepository.newCourseProgress(courseProgress) {}
+        }
+    }
+
+    private fun generateUserLectures() {
+        userRepository.getCurUser { currentUser ->
+            LectureRepository().getLectureListByCourseId(course.id) { lectureList ->
+                lectureList.forEach { lecture ->
+                    val userLecture = UserLecture(
+                        userId = currentUser.id,
+                        lectureId = lecture._id,
+                        finished = false
+                    )
+
+                    val userLectureRepository = UserLectureRepository()
+                    userLectureRepository.newUserLecture(userLecture) { success ->
+                        if (success) {
+                            Log.d("Firestore", "Successfully added UserLecture for lectureId: ${lecture._id}")
+                        } else {
+                            Log.d("Firestore", "Failed to add UserLecture for lectureId: ${lecture._id}")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 }
