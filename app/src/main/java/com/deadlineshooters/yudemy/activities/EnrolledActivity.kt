@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.algolia.instantsearch.core.connection.ConnectionHandler
 import com.algolia.instantsearch.core.hits.connectHitsView
 import com.algolia.search.helper.deserialize
+import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
 import com.deadlineshooters.yudemy.adapters.CourseSearchAdapter
 import com.deadlineshooters.yudemy.databinding.ActivityEnrolledBinding
@@ -46,7 +47,7 @@ class EnrolledActivity : AppCompatActivity() {
         }
 
         binding.courseName.text = course.name
-        userRepository.getUserById(course.instructor) {instructor ->
+        userRepository.getUserById(course.instructor) { instructor ->
             binding.instructorName.text = instructor!!.fullName
         }
         binding.gotoCourse.setOnClickListener {
@@ -54,6 +55,10 @@ class EnrolledActivity : AppCompatActivity() {
             intent.putExtra("course", course)
             startActivity(intent)
         }
+
+        Glide.with(this)
+            .load(course.thumbnail.secure_url)
+            .into(binding.thumbnail);
 
         val courseListAdapter = CourseSearchAdapter()
         binding.courseList.layoutManager = LinearLayoutManager(this)

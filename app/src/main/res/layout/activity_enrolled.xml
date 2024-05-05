@@ -34,7 +34,7 @@
 
             <ImageView
                     android:layout_width="96dp"
-                    android:layout_height="96dp" app:srcCompat="@drawable/ic_launcher_background" android:id="@+id/imageView4"
+                    android:layout_height="96dp" app:srcCompat="@drawable/ic_launcher_background" android:id="@+id/thumbnail"
                     app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"/>
             <TextView
                     android:text="You are now enrolled in:"
@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content" android:id="@+id/textView16"
                     app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_bias="0.5"
                     app:layout_constraintBottom_toTopOf="@+id/courseName" android:layout_marginStart="16dp"
-                    app:layout_constraintStart_toEndOf="@+id/imageView4" android:layout_marginTop="8dp"/>
+                    app:layout_constraintStart_toEndOf="@+id/thumbnail" android:layout_marginTop="8dp"/>
             <TextView
                     android:text="Course Name"
                     android:layout_width="wrap_content"
