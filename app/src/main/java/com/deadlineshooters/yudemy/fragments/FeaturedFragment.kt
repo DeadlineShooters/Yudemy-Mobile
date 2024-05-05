@@ -29,8 +29,8 @@ import com.deadlineshooters.yudemy.viewmodels.CourseViewModel
  */
 class FeaturedFragment : Fragment() {
     private lateinit var courseViewModel: CourseViewModel
-    private var _binding: FragmentFeaturedBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentFeaturedBinding
+
     private val userRepository = UserRepository()
 
     override fun onCreateView(
@@ -38,13 +38,12 @@ class FeaturedFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        _binding = FragmentFeaturedBinding.inflate(inflater, container, false)
-        val view = inflater.inflate(R.layout.fragment_featured, container, false)
+        binding = FragmentFeaturedBinding.inflate(inflater, container, false)
 
 
 
         // Obtain a reference to the RecyclerView
-        val recyclerView = binding.categoryButtonList // Replace with your RecyclerView's ID
+        val recyclerView = this.binding.categoryButtonList // Replace with your RecyclerView's ID
 
         // Create sample data for demonstration
         val categories = listOf(
@@ -83,8 +82,8 @@ class FeaturedFragment : Fragment() {
         courseViewModel.refreshCourses()
         courseViewModel.courses.observe(viewLifecycleOwner, Observer { courses ->
             val adapter = CourseListAdapter2(requireContext(), courses)
-            binding.courseList.layoutManager = LinearLayoutManager(context)
-            binding.courseList.adapter = adapter
+            this.binding.courseList.layoutManager = LinearLayoutManager(context)
+            this.binding.courseList.adapter = adapter
             adapter.onItemClick = { course ->
                 val intent = Intent(activity, CourseDetailActivity::class.java)
                 intent.putExtra("course", course)
@@ -93,18 +92,13 @@ class FeaturedFragment : Fragment() {
         })
 
         userRepository.getCurUser { user ->
-            binding.welcomeLine.text = "Welcome, ${user.fullName}"
+            this.binding.welcomeLine.text = "Welcome, ${user.fullName}"
             Glide.with(view)
                 .load(user.image.secure_url)
                 .circleCrop()
-                .into(binding.avatar);
+                .into(this.binding.avatar);
 
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     class SpaceItemDecoration(private val space: Int) : RecyclerView.ItemDecoration() {
