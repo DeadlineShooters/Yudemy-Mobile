@@ -99,7 +99,7 @@
                 android:fontFamily="@font/inter_bold"
                 android:text="Data Processing with Logstash (and Filebeat)"
                 android:textColor="@color/black"
-                android:textSize="30sp" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/tv_intro"
@@ -108,7 +108,7 @@
 
                 android:text="Process data with Logstash, which is a key part of the ELK stack (Elasticsearch, Logstash, Kibana) and Elastic Stack."
                 android:textColor="@color/black"
-                android:textSize="20dp" />
+                android:textSize="14sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -145,7 +145,7 @@
 
                 android:text="(2,827 ratings) 20,348 students"
                 android:textColor="@color/black"
-                android:textSize="18dp" />
+                android:textSize="14sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -171,7 +171,7 @@
 
                     android:text="Created date Apr 9, 2022 "
                     android:textColor="@color/black"
-                    android:textSize="18dp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <TextView
@@ -182,7 +182,7 @@
                 android:fontFamily="@font/inter_bold"
                 android:text="1299000"
                 android:textColor="@color/black"
-                android:textSize="35sp" />
+                android:textSize="24sp" />
 
             <com.google.android.material.button.MaterialButton
                     android:layout_width="match_parent"
@@ -306,20 +306,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/inter_medium"
-                android:text=""
                 android:maxLines="7"
+                android:text=""
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/showMoreBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="10dp"
                 android:clickable="true"
                 android:text="Show more"
                 android:textColor="#573AA1"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/instructorBio"
                 app:layout_constraintTop_toBottomOf="@+id/instructorBio" />
@@ -349,7 +349,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Lead Developer"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -367,7 +367,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
-                        android:id="@+id/imageView"
+                        android:id="@+id/instructorImg"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         app:srcCompat="@drawable/ic_launcher_background" />
@@ -385,14 +385,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="29.214 Reviews"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/tv_students"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="152.348 Students"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>
 
