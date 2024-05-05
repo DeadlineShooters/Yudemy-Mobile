@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.deadlineshooters.yudemy.R
+import com.deadlineshooters.yudemy.helpers.StringUtils
 import com.deadlineshooters.yudemy.models.Course
 import com.deadlineshooters.yudemy.repositories.UserRepository
 import java.math.RoundingMode
@@ -51,7 +52,7 @@ class CourseListAdapter2(private val context: Context, private val courses: List
         }
         holder.ratingNumber.text = course.avgRating.toBigDecimal().setScale(1, RoundingMode.UP).toString()
         holder.ratingStar.setStepSize(0.1f);
-        holder.ratingStar.rating = course.avgRating.toFloat();
+        holder.ratingStar.rating = StringUtils.roundToOneDecimalPlace(course.avgRating).toFloat()
         (course.oneStarCnt + course.twoStarCnt + course.threeStarCnt + course.fourStarCnt + course.fiveStarCnt).toString()
             .also { holder.ratingQuantity.text = "($it)" }
         if (course.price > 0) {

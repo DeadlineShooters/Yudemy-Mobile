@@ -237,7 +237,7 @@ class CourseDetailActivity : AppCompatActivity() {
             .load(course.thumbnail.secure_url)
             .into(binding.ivThumbnail)
 
-        binding.tvRating.text = course.avgRating.toString()
+        binding.tvRating.text = StringUtils.roundToOneDecimalPlace(course.avgRating).toString()
         var totalRatings =
             course.oneStarCnt + course.twoStarCnt + course.threeStarCnt + course.fiveStarCnt + course.fourStarCnt
         val figuresText =
