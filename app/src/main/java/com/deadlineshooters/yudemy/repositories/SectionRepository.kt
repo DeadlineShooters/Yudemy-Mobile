@@ -156,9 +156,7 @@ class SectionRepository {
             }
             tasks.add(task)
         }
-        return Tasks.whenAllComplete(tasks).continueWith { task ->
-            null
-        }
+        return Tasks.whenAll(tasks)
     }
 
     fun updateSections(sections: List<Section>): Task<Void> {
