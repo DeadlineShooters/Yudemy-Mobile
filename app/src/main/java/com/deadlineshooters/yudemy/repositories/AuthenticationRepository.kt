@@ -165,7 +165,7 @@ class AuthenticationRepository {
             }
     }
 
-    fun waitForEmailVerification(user: FirebaseUser, callback: (Boolean) -> Unit) {
+    private fun waitForEmailVerification(user: FirebaseUser, callback: (Boolean) -> Unit) {
         val handler = Handler(Looper.getMainLooper())
         val runnable = object : Runnable {
             override fun run() {
